@@ -1,6 +1,7 @@
 env-->
-    . PORT=5000
-    . MONGO_URI= your mongodb url
-    . CLOUDINARY_CLOUD_NAME=diaphykwp
-    . CLOUDINARY_API_KEY=568247445284736
-    . CLOUDINARY_API_SECRET=dbyr4mqNy4AH02J_cDVDfBvJuyY
+    PORT=5000
+    MONGO_URI= your mongodb url
+    CLOUDINARY_CLOUD_NAME=diaphykwp
+    CLOUDINARY_API_KEY=568247445284736
+    CLOUDINARY_API_SECRET=dbyr4mqNy4AH02J_cDVDfBvJuyY
+    FRONTEND_URL=http://localhost:3000

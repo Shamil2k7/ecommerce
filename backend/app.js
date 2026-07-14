@@ -3,10 +3,21 @@ dotenv.config();
 
 import express from "express";
 import connectDB from "./src/config/db.js";
-
+import cors from "cors";
 
 // Creating express object
 const app = express();
+
+//CORS
+app.use(cors({origin:process.env.FRONTEND_URL, 
+  credentials:true})
+);
+
+//MIDDLEWARES
+app.use(express.static('public'));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+
 connectDB();
 
 // Handling GET request
@@ -15,8 +26,7 @@ app.get("/", (req, res) => {
   res.end();
 });
 
-// Port Number
-const PORT = process.env.PORT || 5000;
 
+const PORT = process.env.PORT || 5000;
 // Server Setup
 app.listen(PORT, console.log(`Server started on port ${PORT}`));
