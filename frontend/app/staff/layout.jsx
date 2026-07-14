@@ -1,4 +1,5 @@
 
+import StaffSidebar from "@/components/SaffSidebar/SaffSidebar";
 import styles from "./StaffDashboard.module.css";
 
 export default function StaffLayout({ children }) {
@@ -7,7 +8,7 @@ export default function StaffLayout({ children }) {
       <StaffSidebar />
 
       <div className={styles.main}>
-         <
+         
 
         <main className={styles.content}>
           {children}
