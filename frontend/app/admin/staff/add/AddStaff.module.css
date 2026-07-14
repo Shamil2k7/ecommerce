@@ -1,0 +1,187 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header h1 {
+  font-size: 32px;
+  color: var(--text);
+}
+
+.header p {
+  margin-top: 6px;
+  color: var(--text-soft);
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+  color: var(--text-soft);
+  font-weight: 600;
+  transition: .3s;
+}
+
+.back:hover {
+  color: var(--primary);
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 24px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  box-shadow: var(--shadow-sm);
+}
+
+.card + .card {
+  margin-top: 20px;
+}
+
+.card h3 {
+  margin-bottom: 20px;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 18px;
+}
+
+.field label {
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.field input,
+.field textarea,
+.field select,
+.card select {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: .3s;
+  background: white;
+}
+
+.field textarea {
+  resize: vertical;
+}
+
+.field input:focus,
+.field textarea:focus,
+.field select:focus,
+.card select:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(46,41,38,.08);
+}
+
+.upload {
+  width: 100%;
+  height: 260px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-lg);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  overflow: hidden;
+  transition: .3s;
+}
+
+.upload:hover {
+  border-color: var(--primary);
+  background: var(--secondary-soft);
+}
+
+.upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.cancelBtn,
+.saveBtn {
+  flex: 1;
+  height: 48px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+  transition: .3s;
+}
+
+.cancelBtn {
+  background: white;
+  border: 1px solid var(--line);
+}
+
+.cancelBtn:hover {
+  background: var(--secondary-soft);
+}
+
+.saveBtn {
+  background: var(--primary);
+  color: white;
+}
+
+.saveBtn:hover {
+  background: var(--primary-hover);
+}
+
+@media (max-width:900px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width:768px) {
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .row {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 20px;
+  }
+}
+
+@media (max-width:480px) {
+  .header h1 {
+    font-size: 24px;
+  }
+
+  .actions {
+    flex-direction: column;
+  }
+
+  .upload {
+    height: 220px;
+  }
+}

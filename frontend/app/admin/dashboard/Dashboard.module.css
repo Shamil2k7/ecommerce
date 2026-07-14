@@ -1,0 +1,352 @@
+.dashboard {
+  display: flex;
+  flex-direction: column;
+  gap: 30px;
+}
+
+/* Heading */
+
+.heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.heading h1 {
+  font-size: 32px;
+  color: var(--text);
+}
+
+.heading p {
+  color: var(--text-soft);
+  margin-top: 6px;
+}
+
+/* =======================
+      Dashboard Cards
+======================= */
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  transition: .3s;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.icon {
+  width: 65px;
+  height: 65px;
+
+  background: var(--secondary-soft);
+  color: var(--primary);
+
+  border-radius: 16px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card h3 {
+  font-size: 15px;
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+.card h2 {
+  font-size: 28px;
+  margin: 8px 0;
+  color: var(--text);
+}
+
+.card span {
+  font-size: 14px;
+  color: var(--success);
+}
+
+/* =======================
+      Charts
+======================= */
+
+.grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.chartCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+}
+
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 22px;
+}
+
+.cardHeader h2 {
+  font-size: 20px;
+  color: var(--text);
+}
+
+.chartPlaceholder {
+  height: 320px;
+
+  border-radius: var(--radius-md);
+
+  background: linear-gradient(
+    135deg,
+    #f8f5f1,
+    #f2ece4
+  );
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  color: var(--text-soft);
+  font-size: 18px;
+  border: 2px dashed var(--line);
+}
+
+/* =======================
+      Low Stock
+======================= */
+
+.stockList {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.stockList div {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  padding: 14px 16px;
+
+  border-radius: var(--radius-md);
+
+  background: var(--bg);
+
+  transition: .3s;
+}
+
+.stockList div:hover {
+  background: var(--secondary-soft);
+}
+
+.stockList span {
+  color: var(--text);
+}
+
+.stockList strong {
+  color: var(--danger);
+}
+
+/* =======================
+      Tables
+======================= */
+
+.bottom {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.tableCard {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  overflow-x: auto;
+}
+
+.tableCard table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.tableCard th {
+  text-align: left;
+  padding: 16px 12px;
+
+  color: var(--text-soft);
+
+  font-size: 14px;
+
+  border-bottom: 1px solid var(--line);
+}
+
+.tableCard td {
+  padding: 18px 12px;
+  border-bottom: 1px solid var(--line);
+  color: var(--text);
+}
+
+.tableCard tbody tr {
+  transition: .3s;
+}
+
+.tableCard tbody tr:hover {
+  background: var(--secondary-soft);
+}
+
+.status {
+  display: inline-block;
+
+  padding: 6px 14px;
+
+  border-radius: 50px;
+
+  background: var(--success-bg);
+
+  color: var(--success);
+
+  font-size: 13px;
+
+  font-weight: 600;
+}
+
+/* =======================
+      Scrollbar
+======================= */
+
+.tableCard::-webkit-scrollbar {
+  height: 6px;
+}
+
+.tableCard::-webkit-scrollbar-thumb {
+  background: #ccc;
+  border-radius: 50px;
+}
+
+/* =======================
+      Responsive
+======================= */
+
+@media (max-width: 1200px) {
+
+  .cards {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}
+
+@media (max-width: 992px) {
+
+  .grid {
+    grid-template-columns: 1fr;
+  }
+
+  .bottom {
+    grid-template-columns: 1fr;
+  }
+
+}
+
+@media (max-width: 768px) {
+
+  .dashboard {
+    gap: 20px;
+  }
+
+  .heading {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 10px;
+  }
+
+  .heading h1 {
+    font-size: 28px;
+  }
+
+  .cards {
+    grid-template-columns: 1fr;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .icon {
+    width: 55px;
+    height: 55px;
+  }
+
+  .card h2 {
+    font-size: 24px;
+  }
+
+  .chartPlaceholder {
+    height: 250px;
+  }
+
+  .tableCard {
+    padding: 18px;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .dashboard {
+    gap: 16px;
+  }
+
+  .heading h1 {
+    font-size: 24px;
+  }
+
+  .card {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .icon {
+    margin-bottom: 8px;
+  }
+
+  .card h2 {
+    font-size: 22px;
+  }
+
+  .chartPlaceholder {
+    height: 200px;
+    font-size: 16px;
+  }
+
+  .tableCard th,
+  .tableCard td {
+    padding: 12px 8px;
+    font-size: 13px;
+  }
+
+  .status {
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+}

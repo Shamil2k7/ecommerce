@@ -1,0 +1,166 @@
+.page {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 30px 5%;
+  min-height: 100vh;
+}
+
+.breadcrumb {
+  color: var(--text-soft);
+  font-size: 14px;
+  margin-bottom: 20px;
+}
+
+.topBar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  gap: 20px;
+}
+
+.topBar h1 {
+  font-size: 32px;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.topBar p {
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.actions input {
+  width: 280px;
+  height: 45px;
+  padding: 0 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-pill);
+  outline: none;
+  background: var(--surface);
+  transition: .3s;
+}
+
+.actions input:focus {
+  border-color: var(--primary);
+}
+
+.actions select {
+  height: 45px;
+  padding: 0 16px;
+  border-radius: var(--radius-pill);
+  border: 1px solid var(--line);
+  background: var(--surface);
+  cursor: pointer;
+  outline: none;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 30px;
+  align-items: start;
+}
+
+.productsGrid {
+  display: grid;
+  grid-template-columns: repeat(4,1fr);
+  gap: 25px;
+}
+
+.empty {
+  grid-column: 1/-1;
+  text-align: center;
+  padding: 100px 20px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--line);
+}
+
+.empty h2 {
+  margin-bottom: 10px;
+  color: var(--text);
+}
+
+.empty p {
+  color: var(--text-soft);
+}
+
+/* ===========================
+        Responsive
+=========================== */
+
+@media (max-width:1200px) {
+
+  .productsGrid {
+    grid-template-columns: repeat(3,1fr);
+  }
+
+}
+
+@media (max-width:992px) {
+
+  .layout {
+    grid-template-columns: 1fr;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(3,1fr);
+  }
+
+}
+
+@media (max-width:768px) {
+
+  .page {
+    padding: 20px;
+  }
+
+  .topBar {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .actions {
+    width: 100%;
+    flex-direction: column;
+  }
+
+  .actions input,
+  .actions select {
+    width: 100%;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(2,1fr);
+    gap: 18px;
+  }
+
+}
+
+@media (max-width:480px) {
+
+  .page {
+    padding: 15px;
+  }
+
+  .breadcrumb {
+    font-size: 13px;
+  }
+
+  .topBar h1 {
+    font-size: 24px;
+  }
+
+  .productsGrid {
+    grid-template-columns: repeat(2,1fr);
+    gap: 15px;
+  }
+
+}

@@ -1,0 +1,172 @@
+.topbar {
+  background: var(--primary);
+  color: white;
+  text-align: center;
+  padding: 8px;
+  font-size: 13px;
+}
+
+.header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.container {
+  max-width: 1300px;
+  margin: auto;
+  padding: 15px 20px;
+
+  display: flex;
+  align-items: center;
+  gap: 25px;
+}
+
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 25px;
+  font-weight: bold;
+  color: var(--text);
+}
+
+.dot {
+  width: 10px;
+  height: 10px;
+  background: var(--warning);
+  border-radius: 50%;
+}
+
+.search {
+  flex: 1;
+}
+
+.search input {
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 30px;
+  border: 1px solid var(--line);
+  background: var(--secondary-soft);
+  outline: none;
+}
+
+.search input:focus {
+  border-color: var(--primary);
+}
+
+.nav {
+  display: flex;
+  gap: 30px;
+}
+
+.nav a {
+  font-weight: 500;
+  transition: .3s;
+}
+
+.nav a:hover {
+  color: var(--primary);
+}
+
+.icons {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+
+  font-size: 22px;
+}
+
+.cart {
+  position: relative;
+}
+
+.badge {
+  position: absolute;
+  top: -8px;
+  right: -10px;
+
+  width: 18px;
+  height: 18px;
+
+  border-radius: 50%;
+  background: red;
+  color: white;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 10px;
+}
+
+.menuBtn {
+  display: none;
+  font-size: 28px;
+}
+
+.mobileMenu {
+  display: none;
+}
+
+/* Tablet */
+
+@media (max-width:991px){
+
+  .container{
+    flex-wrap: wrap;
+  }
+
+  .search{
+    order:3;
+    width:100%;
+  }
+
+}
+
+/* Mobile */
+
+@media (max-width:768px){
+
+  .container{
+    justify-content: space-between;
+  }
+
+  .search{
+    display:none;
+  }
+
+  .nav{
+    display:none;
+  }
+
+  .icons{
+    display:none;
+  }
+
+  .menuBtn{
+    display:block;
+  }
+
+  .mobileMenu{
+    display:none;
+    flex-direction:column;
+    padding:20px;
+    gap:18px;
+    background:white;
+    border-top:1px solid var(--line);
+  }
+
+  .show{
+    display:flex;
+  }
+
+  .mobileMenu a{
+    font-size:17px;
+    font-weight:500;
+  }
+
+}

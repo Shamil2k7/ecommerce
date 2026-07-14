@@ -1,0 +1,209 @@
+.container{
+max-width:1300px;
+margin:40px auto;
+padding:0 20px;
+
+display:grid;
+grid-template-columns:280px 1fr;
+gap:30px;
+}
+
+.sidebar{
+background:var(--surface);
+border:1px solid var(--line);
+border-radius:var(--radius-lg);
+padding:30px;
+
+text-align:center;
+
+height:fit-content;
+}
+
+.avatar{
+position:relative;
+display:inline-block;
+cursor:pointer;
+}
+
+.avatar img{
+width:130px;
+height:130px;
+
+border-radius:50%;
+
+object-fit:cover;
+
+border:4px solid var(--secondary);
+}
+
+.overlay{
+position:absolute;
+inset:0;
+
+border-radius:50%;
+
+background:rgba(0,0,0,.45);
+
+display:flex;
+justify-content:center;
+align-items:center;
+
+color:white;
+
+opacity:0;
+
+transition:.3s;
+}
+
+.avatar:hover .overlay{
+opacity:1;
+}
+
+.sidebar h2{
+margin-top:18px;
+}
+
+.sidebar p{
+margin-top:6px;
+color:var(--text-soft);
+}
+
+.menu{
+display:flex;
+flex-direction:column;
+gap:10px;
+margin-top:30px;
+}
+
+.menu a{
+display:flex;
+align-items:center;
+gap:12px;
+
+padding:14px 18px;
+
+border-radius:10px;
+
+cursor:pointer;
+
+transition:.3s;
+}
+
+.menu a:hover,
+.active{
+background:var(--primary);
+color:white;
+}
+
+.content{
+display:flex;
+flex-direction:column;
+gap:25px;
+}
+
+.card{
+background:var(--surface);
+
+border:1px solid var(--line);
+
+border-radius:var(--radius-lg);
+
+padding:30px;
+}
+
+.card h2{
+margin-bottom:25px;
+}
+
+.grid{
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:20px;
+}
+
+.field{
+display:flex;
+flex-direction:column;
+}
+
+.field label{
+margin-bottom:8px;
+font-weight:600;
+}
+
+.field input{
+padding:14px;
+
+border:1px solid var(--line);
+
+border-radius:10px;
+
+background:var(--bg);
+
+outline:none;
+}
+
+.field input:focus{
+border-color:var(--primary);
+background:white;
+}
+
+.save{
+margin-top:30px;
+
+height:50px;
+
+padding:0 30px;
+
+background:var(--primary);
+
+color:white;
+
+border-radius:10px;
+
+font-weight:600;
+
+transition:.3s;
+}
+
+.save:hover{
+background:var(--primary-hover);
+}
+
+@media(max-width:992px){
+
+.container{
+grid-template-columns:1fr;
+}
+
+}
+
+@media(max-width:768px){
+
+.grid{
+grid-template-columns:1fr;
+}
+
+.card,
+.sidebar{
+padding:20px;
+}
+
+}
+
+@media(max-width:480px){
+
+.avatar img{
+width:110px;
+height:110px;
+}
+
+.sidebar h2{
+font-size:22px;
+}
+
+.card{
+padding:18px;
+}
+
+}

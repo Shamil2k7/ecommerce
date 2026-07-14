@@ -1,0 +1,84 @@
+.row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.upload {
+  position: relative;
+  width: 100%;
+  height: 260px;
+  overflow: hidden;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--line);
+  cursor: pointer;
+}
+
+.upload img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 10px;
+  opacity: 0;
+  transition: .3s;
+}
+
+.upload:hover .overlay {
+  opacity: 1;
+}
+
+.actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 20px;
+}
+
+.saveBtn,
+.cancelBtn,
+.deleteBtn {
+  flex: 1;
+  height: 48px;
+  border-radius: var(--radius-md);
+  font-weight: 600;
+}
+
+.saveBtn {
+  background: var(--primary);
+  color: white;
+}
+
+.saveBtn:hover {
+  background: var(--primary-hover);
+}
+
+.cancelBtn {
+  background: white;
+  border: 1px solid var(--line);
+}
+
+.deleteBtn {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+.deleteBtn:hover {
+  background: var(--danger);
+  color: white;
+}
+
+@media (max-width: 900px) {
+  .row {
+    grid-template-columns: 1fr;
+  }
+}
