@@ -4,6 +4,7 @@ dotenv.config();
 import express from "express";
 import connectDB from "./src/config/db.js";
 
+
 // Creating express object
 const app = express();
 connectDB();
