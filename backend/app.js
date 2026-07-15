@@ -40,7 +40,7 @@ app.use("/api/auth", authRoutes);
 app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
 });
-app.use('/api/order',orderRouter)
+// app.use('/api/order',orderRouter)
 
 const PORT = process.env.PORT || 5000;
 // Server Setup
