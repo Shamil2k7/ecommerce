@@ -2,21 +2,85 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import { Eye, EyeOff, Mail, Lock } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import GoogleLoginButton from "@/components/GoogleLoginButton";
 import styles from "./Login.module.css";
 
 export default function LoginPage() {
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
+  const [successMsg, setSuccessMsg] = useState("");
+
+  const { login } = useAuth();
+  const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMsg("");
+    setSuccessMsg("");
+
+    if (!email || !password) {
+      setErrorMsg("Please fill in all fields");
+      return;
+    }
+
+    setLoading(true);
+    const result = await login(email, password);
+    setLoading(false);
+
+    if (result.success) {
+      setSuccessMsg("Logged in successfully! Redirecting...");
+      setTimeout(() => {
+        router.push("/");
+        router.refresh();
+      }, 1000);
+    } else {
+      setErrorMsg(result.message || "Invalid credentials. Please try again.");
+    }
+  };
 
   return (
     <section className={styles.container}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <h1>Welcome Back 👋</h1>
+          <h1>Welcome Back </h1>
           <p>Login to continue shopping.</p>
         </div>
 
-        <form className={styles.form}>
+        {errorMsg && (
+          <div style={{
+            padding: "10px 14px",
+            backgroundColor: "#fef2f2",
+            border: "1px solid #fee2e2",
+            color: "#b91c1c",
+            borderRadius: "6px",
+            fontSize: "14px",
+            marginBottom: "16px"
+          }}>
+            {errorMsg}
+          </div>
+        )}
+
+        {successMsg && (
+          <div style={{
+            padding: "10px 14px",
+            backgroundColor: "#f0fdf4",
+            border: "1px solid #dcfce7",
+            color: "#15803d",
+            borderRadius: "6px",
+            fontSize: "14px",
+            marginBottom: "16px"
+          }}>
+            {successMsg}
+          </div>
+        )}
+
+        <form className={styles.form} onSubmit={handleSubmit}>
           <div className={styles.field}>
             <label>Email Address</label>
 
@@ -26,6 +90,9 @@ export default function LoginPage() {
               <input
                 type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                required
               />
             </div>
           </div>
@@ -39,6 +106,9 @@ export default function LoginPage() {
               <input
                 type={showPassword ? "text" : "password"}
                 placeholder="Enter your password"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
               />
 
               <button
@@ -70,10 +140,28 @@ export default function LoginPage() {
           <button
             type="submit"
             className={styles.loginBtn}
+            disabled={loading}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              gap: "8px",
+              opacity: loading ? 0.7 : 1,
+              cursor: loading ? "not-allowed" : "pointer"
+            }}
           >
-            Login
+            {loading && <Loader2 size={16} className="animate-spin" />}
+            {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+
+        <div style={{ display: "flex", alignItems: "center", margin: "16px 0", color: "var(--text-soft)", fontSize: "14px" }}>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
+          <span style={{ padding: "0 10px" }}>or</span>
+          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
+        </div>
+
+        <GoogleLoginButton />
 
         <div className={styles.footer}>
           Don't have an account?

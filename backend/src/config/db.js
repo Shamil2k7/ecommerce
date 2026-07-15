@@ -1,4 +1,8 @@
 import mongoose from "mongoose";
+import dns from "dns";
+
+// Bypass local gateway DNS proxies that fail to resolve SRV records (e.g. mobile hotspots)
+dns.setServers(["8.8.8.8", "8.8.4.4"]);
 
 const connectDB = async () => {
   try {
