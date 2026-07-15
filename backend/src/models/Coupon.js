@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+import mongoose from "mongoose";
 
 const couponSchema = new mongoose.Schema(
   {
@@ -41,7 +41,7 @@ const couponSchema = new mongoose.Schema(
 
     usageLimit: {
       type: Number,
-      default: 0, 
+      default: 0,
       min: 0,
     },
 
@@ -58,8 +58,10 @@ const couponSchema = new mongoose.Schema(
     },
   },
   {
-    timestamps: true, // Automatically adds createdAt and updatedAt
+    timestamps: true,
   }
 );
 
-module.exports = mongoose.model("Coupon", couponSchema);
+const Coupon = mongoose.model("Coupon", couponSchema);
+
+export default Coupon;

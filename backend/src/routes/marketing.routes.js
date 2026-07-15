@@ -1,13 +1,13 @@
-const express = require("express");
-const router = express.Router();
-
-const {
+import express from "express";
+import {
   createCoupon,
   getCoupons,
   getCouponById,
   updateCoupon,
   deleteCoupon,
-} = require("../controllers/marketing/coupon.controller");
+} from "../controllers/marketing/coupon.controller.js";
+
+const router = express.Router();
 
 router.post("/", createCoupon);
 router.get("/", getCoupons);
@@ -15,4 +15,4 @@ router.get("/:id", getCouponById);
 router.put("/:id", updateCoupon);
 router.delete("/:id", deleteCoupon);
 
-module.exports = router;
+export default router;
