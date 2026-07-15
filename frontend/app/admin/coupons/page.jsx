@@ -1,46 +1,68 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import axios from "axios";
 import styles from "./Coupons.module.css";
 
-const coupons = [
-  {
-    id: 1,
-    code: "WELCOME10",
-    type: "Percentage",
-    discount: "10%",
-    minimum: "$50",
-    expiry: "31 Dec 2026",
-    status: "Active",
-  },
-  {
-    id: 2,
-    code: "SAVE100",
-    type: "Fixed",
-    discount: "$100",
-    minimum: "$500",
-    expiry: "15 Aug 2026",
-    status: "Active",
-  },
-  {
-    id: 3,
-    code: "FREESHIP",
-    type: "Free Shipping",
-    discount: "Free",
-    minimum: "$30",
-    expiry: "01 Jul 2026",
-    status: "Expired",
-  },
-];
-
 export default function CouponsPage() {
+  const [coupons, setCoupons] = useState([]);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const filtered = coupons.filter((item) =>
-    item.code.toLowerCase().includes(search.toLowerCase())
+  // Get all coupons
+  const fetchCoupons = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons`
+      );
+
+      console.log("Coupons:", response.data);
+
+      setCoupons(response.data);
+    } catch (error) {
+      console.log("Fetch coupon error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchCoupons();
+  }, []);
+
+  // Delete coupon
+  const handleDelete = async (id) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this coupon?"
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`
+      );
+
+      setCoupons((prev) => prev.filter((coupon) => coupon._id !== id));
+    } catch (error) {
+      console.log("Delete error:", error);
+    }
+  };
+
+  // Search
+  const filteredCoupons = coupons.filter((item) =>
+    item.code?.toLowerCase().includes(search.toLowerCase())
   );
+
+  if (loading) {
+    return (
+      <section className={styles.container}>
+        <h2>Loading Coupons...</h2>
+      </section>
+    );
+  }
 
   return (
     <section className={styles.container}>
@@ -50,7 +72,10 @@ export default function CouponsPage() {
           <p>Manage discount coupons</p>
         </div>
 
-        <Link href="/admin/coupons/add" className={styles.addBtn}>
+        <Link
+          href="/admin/coupons/add"
+          className={styles.addBtn}
+        >
           <Plus size={18} />
           Add Coupon
         </Link>
@@ -75,6 +100,8 @@ export default function CouponsPage() {
               <th>Type</th>
               <th>Discount</th>
               <th>Minimum Order</th>
+              <th>Maximum Discount</th>
+              <th>Usage Limit</th>
               <th>Expiry</th>
               <th>Status</th>
               <th>Actions</th>
@@ -82,48 +109,62 @@ export default function CouponsPage() {
           </thead>
 
           <tbody>
-            {filtered.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <span className={styles.code}>{item.code}</span>
-                </td>
+            {filteredCoupons.length > 0 ? (
+              filteredCoupons.map((item) => (
+                <tr key={item._id}>
+                  <td>
+                    <span className={styles.code}>
+                      {item.code}
+                    </span>
+                  </td>
 
-                <td>{item.type}</td>
+                  <td>Percentage</td>
 
-                <td>{item.discount}</td>
+                  <td>{item.discount}%</td>
 
-                <td>{item.minimum}</td>
+                  <td>₹{item.minimumOrderAmount}</td>
 
-                <td>{item.expiry}</td>
+                  <td>₹{item.maximumDiscount}</td>
 
-                <td>
-                  <span
-                    className={
-                      item.status === "Active"
-                        ? styles.active
-                        : styles.expired
-                    }
-                  >
-                    {item.status}
-                  </span>
-                </td>
+                  <td>{item.usageLimit}</td>
 
-                <td>
-                  <div className={styles.actions}>
-                    <Link
-                      href={`/admin/coupons/edit/${item.id}`}
-                      className={styles.actionBtn}
+                  <td>
+                    {new Date(item.expirydate).toLocaleDateString("en-GB")}
+                  </td>
+
+                  <td>
+                    <span
+                      className={
+                        item.status === "Active"
+                          ? styles.active
+                          : styles.expired
+                      }
                     >
-                      <Pencil size={18} />
-                    </Link>
+                      {item.status}
+                    </span>
+                  </td>
 
-                    <button>
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
+                  <td>
+                    <div className={styles.actions}>
+                      <Link
+                        href={`/admin/coupons/edit/${item._id}`}
+                        className={styles.actionBtn}
+                      >
+                        <Pencil size={18} />
+                      </Link>
+
+                      <button onClick={() => handleDelete(item._id)}>
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan="9">No Coupons Found</td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>
