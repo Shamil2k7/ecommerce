@@ -135,3 +135,88 @@ height:46px;
 }
 
 }
+
+.countrySelector {
+  position: relative;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.countryBtn {
+  background: none;
+  border: none;
+  color: var(--text);
+  font-size: 15px;
+  font-weight: 500;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  padding: 0 4px;
+  height: 100%;
+  font-family: inherit;
+}
+
+.dropdownArrow {
+  font-size: 8px;
+  color: var(--text-soft);
+}
+
+.countryDropdown {
+  position: absolute;
+  top: 100%;
+  left: -40px;
+  margin-top: 8px;
+  background-color: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-md);
+  z-index: 100;
+  width: 250px;
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+.countryItem {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  color: var(--text);
+  font-size: 14px;
+}
+
+.countryItem:hover {
+  background-color: var(--bg);
+}
+
+.dropdownFlag {
+  font-size: 18px;
+}
+
+.dropdownName {
+  flex: 1;
+  text-align: left;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dropdownCode {
+  color: var(--text-soft);
+  font-weight: 500;
+}
+
+.divider {
+  color: var(--line);
+  margin: 0 4px;
+  font-size: 16px;
+  font-weight: 300;
+}
+
+.phoneInputVal {
+  padding-left: 2px !important;
+}
