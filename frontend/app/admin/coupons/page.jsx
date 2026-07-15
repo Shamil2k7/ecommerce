@@ -33,24 +33,26 @@ export default function CouponsPage() {
   }, []);
 
   // Delete coupon
-  const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this coupon?"
+const handleDelete = async (id) => {
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this coupon?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    const res = await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`
     );
 
-    if (!confirmDelete) return;
+    console.log(res.data);
 
-    try {
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`
-      );
-
-      setCoupons((prev) => prev.filter((coupon) => coupon._id !== id));
-    } catch (error) {
-      console.log("Delete error:", error);
-    }
-  };
-
+    // Reload coupons after delete
+    fetchCoupons();
+  } catch (error) {
+    console.log(error.response?.data || error.message);
+  }
+};
   // Search
   const filteredCoupons = coupons.filter((item) =>
     item.code?.toLowerCase().includes(search.toLowerCase())
@@ -169,5 +171,6 @@ export default function CouponsPage() {
         </table>
       </div>
     </section>
-  );
+
+   );
 }
