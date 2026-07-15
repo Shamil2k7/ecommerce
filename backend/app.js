@@ -1,36 +1,43 @@
-const dotenv = require("dotenv");
+import dotenv from "dotenv";
 dotenv.config();
-
-const express = require("express");
-const cors = require("cors");
-
-const connectDB = require("./src/config/db");
-
-const couponRoutes = require("./src/routes/marketing.routes");
+import express from "express";
+import cookieParser from "cookie-parser";
+import cors from "cors";
+import connectDB from "./src/config/db.js";
+import authRoutes from "./src/routes/auth.routes.js";
 
 const app = express();
 
-// Connect Database
-connectDB();
+//CORS
+app.use(cors({origin:process.env.FRONTEND_URL, 
+  credentials:true})
+);
 
-// Middleware
-app.use(cors());
-
+//MIDDLEWARES
+app.use(express.static('public'));
 app.use(express.json());
-
 app.use(express.urlencoded({ extended: true }));
 
-// Home Route
+connectDB();
+
+// Middlewares
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
+app.use(express.json());
+app.use(cookieParser());
+
+app.use("/api/auth", authRoutes);
+
+// Handling GET request
 app.get("/", (req, res) => {
-  res.send("A simple Node App is running on this server");
+  res.send("A simple Node App is " + "running on this server");
 });
+// app.use('/api/order',orderRouter)
 
-// Coupon Routes
-app.use("/api/marketing/coupons", couponRoutes);
-
-// Server
 const PORT = process.env.PORT || 5000;
-
-app.listen(PORT, () => {
-  console.log(`🚀 Server started on port ${PORT}`);
-});
+// Server Setup
+app.listen(PORT, console.log(`Server started on port ${PORT}`));
