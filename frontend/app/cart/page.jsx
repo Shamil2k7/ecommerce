@@ -98,11 +98,11 @@ export default function CartPage() {
             <span>Total</span>
             <span>₹{total.toLocaleString()}</span>
           </div>
-
-          <button className={styles.checkout}>
-            Checkout
-          </button>
-
+          <a href="/checkout">
+            <button className={styles.checkout}>
+              Checkout
+            </button>
+          </a>
           <Link
             href="/products"
             className={styles.continue}
