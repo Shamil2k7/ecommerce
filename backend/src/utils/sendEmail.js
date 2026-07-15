@@ -15,6 +15,7 @@ const sendEmail = async (options) => {
       pass: process.env.SMTP_PASS,
     },
   });
+// From shopaura
 
   const mailOptions = {
     from: `"ShopAura" <${process.env.SMTP_USER}>`,
