@@ -25,7 +25,7 @@ app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
   res.end();
 });
-
+app.use('/api/order',orderRouter)
 
 const PORT = process.env.PORT || 5000;
 // Server Setup
