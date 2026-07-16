@@ -1,6 +1,11 @@
 "use client";
 
-import { useMemo, useState} from "react";
+import {
+  Suspense,
+  useEffect,
+  useMemo,
+  useState,
+} from "react";
 import { useSearchParams } from "next/navigation";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
@@ -9,44 +14,71 @@ import productsDataMock from "@/data/products";
 
 import styles from "./ProductsPage.module.css";
 
-export default function ProductsContent() {
+function ProductsContent() {
   const searchParams = useSearchParams();
 
-  // Get category from URL
-  // Example: /products?category=Electronics
   const initialCategory = searchParams.get("category") || "";
 
   const [productsData, setProductsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedCategories, setSelectedCategories] = useState(
+    initialCategory ? [initialCategory] : []
+  );
+
+  const [selectedBrands, setSelectedBrands] = useState([]);
+  const [sortBy, setSortBy] = useState("popular");
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
-    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+    const apiBase =
+      process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+
     fetch(`${apiBase}/api/products`)
       .then((res) => res.json())
       .then((json) => {
-        if (json.data && json.data.products) {
+        if (json?.data?.products) {
           const mapped = json.data.products.map((p) => {
-            const hasDiscount = p.discountPrice && p.discountPrice > 0 && p.discountPrice < p.price;
-            const price = hasDiscount ? p.discountPrice : p.price;
-            const oldPrice = hasDiscount ? p.price : null;
-            const discount = hasDiscount ? Math.round(((p.price - p.discountPrice) / p.price) * 100) : null;
+            const hasDiscount =
+              p.discountPrice > 0 &&
+              p.discountPrice < p.price;
+
             return {
               id: p._id,
               name: p.name,
-              category: typeof p.category === "object" ? p.category?.name : "Accessories",
-              image: p.images?.[0]?.url || "/images/headphone.png",
-              price: price,
-              oldPrice: oldPrice,
-              discount: discount,
+              category:
+                typeof p.category === "object"
+                  ? p.category?.name
+                  : p.category,
+              brand:
+                typeof p.brand === "object"
+                  ? p.brand?.name
+                  : p.brand,
+              image:
+                p.images?.[0]?.url ||
+                "/images/headphone.png",
+              price: hasDiscount
+                ? p.discountPrice
+                : p.price,
+              oldPrice: hasDiscount ? p.price : null,
+              discount: hasDiscount
+                ? Math.round(
+                    ((p.price - p.discountPrice) /
+                      p.price) *
+                      100
+                  )
+                : 0,
               rating: p.ratingsAverage || 5,
               reviews: p.ratingsCount || 0,
             };
           });
+
           setProductsData(mapped);
+        } else {
+          setProductsData(productsDataMock);
         }
       })
-      .catch((err) => {
-        console.warn("Failed to fetch products, using static mock fallback:", err.message);
+      .catch(() => {
         setProductsData(productsDataMock);
       })
       .finally(() => {
@@ -54,45 +86,35 @@ export default function ProductsContent() {
       });
   }, []);
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
-
   useEffect(() => {
     if (initialCategory) {
       setSelectedCategories([initialCategory]);
-    } else {
-      setSelectedCategories([]);
     }
   }, [initialCategory]);
-
-  const [selectedBrands, setSelectedBrands] = useState([]);
-  const [sortBy, setSortBy] = useState("popular");
-  const [search, setSearch] = useState("");
 
   const filteredProducts = useMemo(() => {
     let data = [...productsData];
 
-    // Search
-    if (search.trim()) {
+    if (search) {
       data = data.filter((item) =>
-        item.name.toLowerCase().includes(search.toLowerCase())
+        item.name
+          .toLowerCase()
+          .includes(search.toLowerCase())
       );
     }
 
-    // Category
-    if (selectedCategories.length > 0) {
+    if (selectedCategories.length) {
       data = data.filter((item) =>
         selectedCategories.includes(item.category)
       );
     }
 
-    // Brand
-    if (selectedBrands.length > 0) {
+    if (selectedBrands.length) {
       data = data.filter((item) =>
         selectedBrands.includes(item.brand)
       );
     }
 
-    // Sorting
     switch (sortBy) {
       case "priceLow":
         data.sort((a, b) => a.price - b.price);
@@ -107,7 +129,7 @@ export default function ProductsContent() {
         break;
 
       case "newest":
-        data.sort((a, b) => b.id - a.id);
+        data.sort((a, b) => b.id.localeCompare(a.id));
         break;
 
       default:
@@ -115,14 +137,20 @@ export default function ProductsContent() {
     }
 
     return data;
-  }, [productsData, search, selectedCategories, selectedBrands, sortBy]);
+  }, [
+    productsData,
+    search,
+    selectedCategories,
+    selectedBrands,
+    sortBy,
+  ]);
 
   return (
     <main className={styles.page}>
-      {/* Breadcrumb */}
-      <div className={styles.breadcrumb}>Home / Products</div>
+      <div className={styles.breadcrumb}>
+        Home / Products
+      </div>
 
-      {/* Top Bar */}
       <div className={styles.topBar}>
         <div>
           <h1>All Products</h1>
@@ -134,20 +162,32 @@ export default function ProductsContent() {
             type="text"
             placeholder="Search products..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
           />
 
-          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <select
+            value={sortBy}
+            onChange={(e) =>
+              setSortBy(e.target.value)
+            }
+          >
             <option value="popular">Popular</option>
             <option value="newest">Newest</option>
-            <option value="priceLow">Price Low → High</option>
-            <option value="priceHigh">Price High → Low</option>
-            <option value="rating">Highest Rated</option>
+            <option value="priceLow">
+              Price Low → High
+            </option>
+            <option value="priceHigh">
+              Price High → Low
+            </option>
+            <option value="rating">
+              Highest Rated
+            </option>
           </select>
         </div>
       </div>
 
-      {/* Main Layout */}
       <div className={styles.layout}>
         <FilterSidebar
           selectedCategories={selectedCategories}
@@ -158,18 +198,17 @@ export default function ProductsContent() {
 
         <div className={styles.productsGrid}>
           {loading ? (
-            <div className={styles.empty}>
-              <h2>Loading products...</h2>
-              <p>Fetching the latest catalog from our backend.</p>
-            </div>
-          ) : filteredProducts.length > 0 ? (
+            <h2>Loading...</h2>
+          ) : filteredProducts.length ? (
             filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
             ))
           ) : (
             <div className={styles.empty}>
               <h2>No Products Found</h2>
-              <p>Try changing your search or filters.</p>
             </div>
           )}
         </div>
