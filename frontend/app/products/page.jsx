@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState, Suspense } from "react";
+import { useMemo, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
 import FilterSidebar from "@/components/FilterSidebar/FilterSidebar";
-import productsData from "@/data/products";
+import productsDataMock from "@/data/products";
 
 import styles from "./ProductsPage.module.css";
 
@@ -16,14 +16,56 @@ function ProductsContent() {
   // Example: /products?category=Electronics
   const initialCategory = searchParams.get("category") || "";
 
-  const [selectedCategories, setSelectedCategories] = useState(
-    initialCategory ? [initialCategory] : []
-  );
+  const [productsData, setProductsData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const apiBase = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5001";
+    fetch(`${apiBase}/api/products`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data && json.data.products) {
+          const mapped = json.data.products.map((p) => {
+            const hasDiscount = p.discountPrice && p.discountPrice > 0 && p.discountPrice < p.price;
+            const price = hasDiscount ? p.discountPrice : p.price;
+            const oldPrice = hasDiscount ? p.price : null;
+            const discount = hasDiscount ? Math.round(((p.price - p.discountPrice) / p.price) * 100) : null;
+            return {
+              id: p._id,
+              name: p.name,
+              category: typeof p.category === "object" ? p.category?.name : "Accessories",
+              image: p.images?.[0]?.url || "/images/headphone.png",
+              price: price,
+              oldPrice: oldPrice,
+              discount: discount,
+              rating: p.ratingsAverage || 5,
+              reviews: p.ratingsCount || 0,
+            };
+          });
+          setProductsData(mapped);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to fetch products, using static mock fallback:", err.message);
+        setProductsData(productsDataMock);
+      })
+      .finally(() => {
+        setLoading(false);
+      });
+  }, []);
+
+  const [selectedCategories, setSelectedCategories] = useState([]);
+
+  useEffect(() => {
+    if (initialCategory) {
+      setSelectedCategories([initialCategory]);
+    } else {
+      setSelectedCategories([]);
+    }
+  }, [initialCategory]);
 
   const [selectedBrands, setSelectedBrands] = useState([]);
-
   const [sortBy, setSortBy] = useState("popular");
-
   const [search, setSearch] = useState("");
 
   const filteredProducts = useMemo(() => {
@@ -51,7 +93,6 @@ function ProductsContent() {
     }
 
     // Sorting
-
     switch (sortBy) {
       case "priceLow":
         data.sort((a, b) => a.price - b.price);
@@ -74,30 +115,18 @@ function ProductsContent() {
     }
 
     return data;
-  }, [
-    search,
-    selectedCategories,
-    selectedBrands,
-    sortBy,
-  ]);
+  }, [productsData, search, selectedCategories, selectedBrands, sortBy]);
 
   return (
     <main className={styles.page}>
       {/* Breadcrumb */}
-
-      <div className={styles.breadcrumb}>
-        Home / Products
-      </div>
+      <div className={styles.breadcrumb}>Home / Products</div>
 
       {/* Top Bar */}
-
       <div className={styles.topBar}>
         <div>
           <h1>All Products</h1>
-
-          <p>
-            Showing {filteredProducts.length} Products
-          </p>
+          <p>Showing {filteredProducts.length} Products</p>
         </div>
 
         <div className={styles.actions}>
@@ -105,68 +134,42 @@ function ProductsContent() {
             type="text"
             placeholder="Search products..."
             value={search}
-            onChange={(e) =>
-              setSearch(e.target.value)
-            }
+            onChange={(e) => setSearch(e.target.value)}
           />
 
-          <select
-            value={sortBy}
-            onChange={(e) =>
-              setSortBy(e.target.value)
-            }
-          >
-            <option value="popular">
-              Popular
-            </option>
-
-            <option value="newest">
-              Newest
-            </option>
-
-            <option value="priceLow">
-              Price Low → High
-            </option>
-
-            <option value="priceHigh">
-              Price High → Low
-            </option>
-
-            <option value="rating">
-              Highest Rated
-            </option>
+          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+            <option value="popular">Popular</option>
+            <option value="newest">Newest</option>
+            <option value="priceLow">Price Low → High</option>
+            <option value="priceHigh">Price High → Low</option>
+            <option value="rating">Highest Rated</option>
           </select>
         </div>
       </div>
 
       {/* Main Layout */}
-
       <div className={styles.layout}>
         <FilterSidebar
           selectedCategories={selectedCategories}
-          setSelectedCategories={
-            setSelectedCategories
-          }
+          setSelectedCategories={setSelectedCategories}
           selectedBrands={selectedBrands}
           setSelectedBrands={setSelectedBrands}
         />
 
         <div className={styles.productsGrid}>
-          {filteredProducts.length > 0 ? (
+          {loading ? (
+            <div className={styles.empty}>
+              <h2>Loading products...</h2>
+              <p>Fetching the latest catalog from our backend.</p>
+            </div>
+          ) : filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <ProductCard
-                key={product.id}
-                product={product}
-              />
+              <ProductCard key={product.id} product={product} />
             ))
           ) : (
             <div className={styles.empty}>
               <h2>No Products Found</h2>
-
-              <p>
-                Try changing your search or
-                filters.
-              </p>
+              <p>Try changing your search or filters.</p>
             </div>
           )}
         </div>
@@ -175,3 +178,10 @@ function ProductsContent() {
   );
 }
 
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <ProductsContent />
+    </Suspense>
+  );
+}
