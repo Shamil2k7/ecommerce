@@ -5,7 +5,7 @@ import Link from "next/link";
 import styles from "./Navbar.module.css";
 import { CgProfile } from "react-icons/cg";
 import { CiHeart } from "react-icons/ci";
-import { IoCartOutline } from "react-icons/io5";
+import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
@@ -14,7 +14,10 @@ export default function Navbar() {
 
   const handleLogoutClick = async () => {
     await logout();
+    setMenuOpen(false);
   };
+
+  const closeMenu = () => setMenuOpen(false);
 
   return (
     <>
@@ -25,28 +28,47 @@ export default function Navbar() {
 
       <header className={styles.header}>
         <div className={styles.container}>
-          {/* Logo */}
-          <Link href="/" className={styles.logo}>
-            <span className={styles.dot}></span>
-            ShopAura
-          </Link>
+          
+          {/* Top row elements (Logo left, Hamburger right on mobile) */}
+          <div className={styles.topRow}>
+            {/* Logo */}
+            <Link href="/" className={styles.logo} onClick={closeMenu}>
+              <span className={styles.dot}></span>
+              ShopAura
+            </Link>
 
-          {/* Search */}
-          <div className={styles.search}>
-            <input
-              type="text"
-              placeholder="Search products..."
-            />
+            {/* Mobile Hamburger Button */}
+            <button
+              className={styles.menuBtn}
+              onClick={() => setMenuOpen(!menuOpen)}
+              aria-label="Open navigation menu"
+            >
+              ☰
+            </button>
           </div>
 
-          {/* Desktop Navigation */}
+          {/* Search Bar Row (Stacks completely under Logo/Hamburger on mobile) */}
+          <div className={styles.searchRow}>
+            <div className={styles.search}>
+              <IoSearchOutline className={styles.searchIcon} />
+              <input
+                type="text"
+                placeholder="Search for Products"
+              />
+            </div>
+            <Link href="/wishlist" className={styles.mobileWishlist} onClick={closeMenu}>
+              <CiHeart />
+            </Link>
+          </div>
+
+          {/* Desktop Navigation Links */}
           <nav className={styles.nav}>
             <Link href="/">Home</Link>
             <Link href="/products">Products</Link>
           </nav>
 
-          {/* Icons */}
-          <div className={styles.icons} style={{ display: "flex", alignItems: "center", gap: "15px" }}>
+          {/* Desktop Actions/Icons Bar */}
+          <div className={styles.icons}>
             {user ? (
               <>
                 <Link href="/profile" title={`Profile: ${user.fullName}`}>
@@ -73,16 +95,14 @@ export default function Navbar() {
                 </button>
               </>
             ) : (
-              <>
-                <Link href="/auth/login" title="Login">
-                  <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                    <CgProfile />
-                    <span style={{ fontSize: "13px", fontWeight: "600", color: "#4f46e5" }}>
-                      Login
-                    </span>
-                  </div>
-                </Link>
-              </>
+              <Link href="/auth/login" title="Login">
+                <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
+                  <CgProfile />
+                  <span style={{ fontSize: "13px", fontWeight: "600", color: "#4f46e5" }}>
+                    Login
+                  </span>
+                </div>
+              </Link>
             )}
 
             <Link href="/wishlist"><CiHeart /></Link>
@@ -92,39 +112,47 @@ export default function Navbar() {
               <span className={styles.badge}>0</span>
             </Link>
           </div>
-
-          {/* Mobile Menu */}
-          <button
-            className={styles.menuBtn}
-            onClick={() => setMenuOpen(!menuOpen)}
-          >
-            ☰
-          </button>
         </div>
 
-        {/* Mobile Nav */}
-        <div
-          className={`${styles.mobileMenu} ${
-            menuOpen ? styles.show : ""
-          }`}
-        >
-          <Link href="/">Home</Link>
-          <Link href="/products">Products</Link>
-          <Link href="/categories">Categories</Link>
-          <Link href="/contact">Contact</Link>
+        {/* Backdrop overlay */}
+        <div 
+          className={`${styles.overlay} ${menuOpen ? styles.show : ""}`} 
+          onClick={closeMenu}
+        />
+
+        {/* Mobile Navigation Drawer */}
+        <div className={`${styles.mobileMenu} ${menuOpen ? styles.show : ""}`}>
+          
+          {/* Drawer Close Button */}
+          <button 
+            className={styles.closeBtn} 
+            onClick={closeMenu}
+            aria-label="Close navigation menu"
+          >
+            ✕
+          </button>
+
+          <Link href="/" onClick={closeMenu}>Home</Link>
+          <Link href="/products" onClick={closeMenu}>Products</Link>
+          <Link href="/categories" onClick={closeMenu}>Categories</Link>
+          <Link href="/contact" onClick={closeMenu}>Contact</Link>
+          
+          <hr style={{ border: "0", borderTop: "1px solid var(--line)", margin: "10px 0" }} />
+          
           {user ? (
             <>
-              <Link href="/profile">Profile ({user.fullName})</Link>
+              <Link href="/profile" onClick={closeMenu}>Profile ({user.fullName})</Link>
               <button 
                 onClick={handleLogoutClick}
                 style={{ 
                   textAlign: "left", 
                   background: "none", 
                   border: "none", 
-                  padding: "10px 0", 
+                  padding: "0", 
                   color: "#ef4444", 
-                  fontSize: "inherit",
+                  fontSize: "17px",
                   fontFamily: "inherit",
+                  fontWeight: "500",
                   cursor: "pointer"
                 }}
               >
@@ -132,10 +160,10 @@ export default function Navbar() {
               </button>
             </>
           ) : (
-            <Link href="/auth/login">Login / Register</Link>
+            <Link href="/auth/login" onClick={closeMenu}>Login / Register</Link>
           )}
-          <Link href="/wishlist">Wishlist</Link>
-          <Link href="/cart">Cart</Link>
+          <Link href="/wishlist" onClick={closeMenu}>Wishlist</Link>
+          <Link href="/cart" onClick={closeMenu}>Cart</Link>
         </div>
       </header>
     </>
