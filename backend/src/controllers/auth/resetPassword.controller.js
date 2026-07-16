@@ -9,8 +9,8 @@ const resetPassword = async (req, res) => {
     return res.status(400).json({ success: false, message: "Token and password are required" });
   }
 
-  if (password.length < 6) {
-    return res.status(400).json({ success: false, message: "Password must be at least 6 characters long" });
+  if (password.length < 8) {
+    return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
   }
 
   try {

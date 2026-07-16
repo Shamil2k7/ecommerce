@@ -175,7 +175,7 @@ export default function LoginPage() {
 
         <div className={styles.imageSection}>
           <img 
-            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800" 
+            src="https://i.pinimg.com/1200x/89/70/0a/89700ac2584feaede2c609d5340acbaa.jpg" 
             alt="ShopAura SignIn" 
             className={styles.sideImage}
           />
