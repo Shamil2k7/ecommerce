@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect, Suspense } from "react";
+import { useMemo, useState} from "react";
 import { useSearchParams } from "next/navigation";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
@@ -9,7 +9,7 @@ import productsDataMock from "@/data/products";
 
 import styles from "./ProductsPage.module.css";
 
-function ProductsContent() {
+export default function ProductsContent() {
   const searchParams = useSearchParams();
 
   // Get category from URL
@@ -26,8 +26,6 @@ function ProductsContent() {
       .then((json) => {
         if (json.data && json.data.products) {
           const mapped = json.data.products.map((p) => {
-<<<<<<< HEAD
-<<<<<<< HEAD
             const hasDiscount = p.discountPrice && p.discountPrice > 0 && p.discountPrice < p.price;
             const price = hasDiscount ? p.discountPrice : p.price;
             const oldPrice = hasDiscount ? p.price : null;
@@ -112,12 +110,7 @@ function ProductsContent() {
         break;
 
       case "newest":
-        data.sort((a, b) => {
-          if (typeof a.id === "number" && typeof b.id === "number") {
-            return b.id - a.id;
-          }
-          return String(b.id).localeCompare(String(a.id));
-        });
+        data.sort((a, b) => b.id - a.id);
         break;
 
       default:
