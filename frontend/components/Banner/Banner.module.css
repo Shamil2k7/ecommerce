@@ -20,8 +20,8 @@
 
 /* Swiper Navigation */
 
-:global(.swiper-button-prev),
-:global(.swiper-button-next) {
+.bannerSection :global(.swiper-button-prev),
+.bannerSection :global(.swiper-button-next) {
   color: #ffffff;
   background: rgba(0, 0, 0, 0.35);
   width: 45px;
@@ -29,20 +29,20 @@
   border-radius: 50%;
 }
 
-:global(.swiper-button-prev::after),
-:global(.swiper-button-next::after) {
+.bannerSection :global(.swiper-button-prev::after),
+.bannerSection :global(.swiper-button-next::after) {
   font-size: 18px;
   font-weight: bold;
 }
 
 /* Swiper Pagination */
 
-:global(.swiper-pagination-bullet) {
+.bannerSection :global(.swiper-pagination-bullet) {
   background: white;
   opacity: 0.6;
 }
 
-:global(.swiper-pagination-bullet-active) {
+.bannerSection :global(.swiper-pagination-bullet-active) {
   background: #ffc220;
   opacity: 1;
 }
@@ -63,8 +63,8 @@
     border-radius: 12px;
   }
 
-  :global(.swiper-button-prev),
-  :global(.swiper-button-next) {
+  .bannerSection :global(.swiper-button-prev),
+  .bannerSection :global(.swiper-button-next) {
     display: none;
   }
 }
