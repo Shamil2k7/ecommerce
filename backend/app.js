@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-dotenv.config();
 
 import path from "path";
 import { fileURLToPath } from "url";
@@ -43,13 +42,10 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
-<<<<<<< HEAD
 
-=======
 app.use("/api/settings", settingsRoutes);
 
 // Handling GET request
->>>>>>> 809d570b30806f08a878b35b74474fa9a8c89c55
 app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
 });
