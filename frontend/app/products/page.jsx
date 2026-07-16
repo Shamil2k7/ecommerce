@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, Suspense } from "react";
+import { useMemo, useState} from "react";
 import { useSearchParams } from "next/navigation";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
@@ -9,7 +9,7 @@ import productsData from "@/data/products";
 
 import styles from "./ProductsPage.module.css";
 
-function ProductsContent() {
+export default function ProductsContent() {
   const searchParams = useSearchParams();
 
   // Get category from URL

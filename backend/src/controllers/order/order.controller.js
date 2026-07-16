@@ -1,96 +1,95 @@
-// import Order from "../models/orderModel.js";
-// import Product from "../models/productModel.js";
-// import User from "../models/userModel.js";
+import Order from "../../models/Order.js";
+import Product from "../../models/product.model.js";
 
-// // Add Order
-// export const addOrder = async (req, res) => {
-//   try {
-//     const {
-//       productId,
-//       userId,
-//       quantity,
-//       paymentMethod,
-//       discount,
-//       tax,
-//       shippingAddress,
-//     } = req.body;
+// Create Order
+export const createOrder = async (req, res) => {
+  try {
+    const {
+      productId,
+      userId,
+      quantity,
+      paymentMethod,
+      shippingAddress,
+    } = req.body;
 
-//     // Check required fields
-//     if (
-//       !productId ||
-//       !userId ||
-//       !quantity ||
-//       !paymentMethod ||
-//       !shippingAddress
-//     ) {
-//       return res.status(400).json({
-//         success: false,
-//         message: "All required fields are mandatory.",
-//       });
-//     }
+    // Validate required fields
+    if (
+      !productId ||
+      !userId ||
+      !quantity ||
+      !paymentMethod ||
+      !shippingAddress
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "All fields are required",
+      });
+    }
 
-//     // Check Product
-//     const product = await Product.findById(productId);
+    // Check Product
+    const product = await Product.findById(productId);
 
-//     if (!product) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "Product not found.",
-//       });
-//     }
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
 
-//     // Check User
-//     const user = await User.findById(userId);
+    // Check Stock
+    if (product.stock < quantity) {
+      return res.status(400).json({
+        success: false,
+        message: "Insufficient stock",
+      });
+    }
 
-//     if (!user) {
-//       return res.status(404).json({
-//         success: false,
-//         message: "User not found.",
-//       });
-//     }
+    // Price Calculation
+    const price =
+      product.discountPrice > 0
+        ? product.discountPrice
+        : product.price;
 
-//     // Calculate Price
-//     const subTotal = product.price * quantity;
-//     const finalDiscount = discount || 0;
-//     const finalTax = tax || 0;
-//     const totalAmount = subTotal - finalDiscount + finalTax;
+    const subTotal = price * quantity;
 
-//     // Generate Order Number
-//     const lastOrder = await Order.findOne().sort({ orderNumber: -1 });
+    const tax = Number((subTotal * 0.18).toFixed(2)); // 18%
 
-//     const orderNumber = lastOrder
-//       ? lastOrder.orderNumber + 1
-//       : 100001;
+    const discount = 0;
 
-//     // Save Order
-//     const order = new Order({
-//       productId,
-//       userId,
-//       orderNumber,
-//       quantity,
-//       paymentMethod,
-//       subTotal,
-//       discount: finalDiscount,
-//       tax: finalTax,
-//       totalAmount,
-//       shippingAddress,
-//     });
+    const totalAmount = subTotal + tax - discount;
 
-//     await order.save();
+    // Generate Order Number
+    const orderNumber = Date.now();
 
-//     res.status(201).json({
-//       success: true,
-//       message: "Order placed successfully.",
-//       order,
-//     });
-//   } catch (error) {
-//     console.error(error);
+    // Create Order
+    const order = await Order.create({
+      productId,
+      userId,
+      orderNumber,
+      quantity,
+      paymentMethod,
+      subTotal,
+      discount,
+      tax,
+      totalAmount,
+      shippingAddress,
+    });
 
-//     res.status(500).json({
-//       success: false,
-//       message: "Failed to place order.",
-//       error: error.message,
-//     });
-//   }
-// };
-    
+    // Reduce Stock
+    product.stock -= quantity;
+    await product.save();
+
+    res.status(201).json({
+      success: true,
+      message: "Order Created Successfully",
+      order,
+    });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
