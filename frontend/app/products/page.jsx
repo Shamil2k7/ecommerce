@@ -26,6 +26,8 @@ function ProductsContent() {
       .then((json) => {
         if (json.data && json.data.products) {
           const mapped = json.data.products.map((p) => {
+<<<<<<< HEAD
+<<<<<<< HEAD
             const hasDiscount = p.discountPrice && p.discountPrice > 0 && p.discountPrice < p.price;
             const price = hasDiscount ? p.discountPrice : p.price;
             const oldPrice = hasDiscount ? p.price : null;
