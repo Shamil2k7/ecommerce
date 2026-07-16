@@ -26,14 +26,6 @@ const categories = [
     name: "Accessories",
     image: "https://images.unsplash.com/photo-1523170335258-f5ed11844a49?w=500",
   },
-//   {
-//     name: "Sports",
-//     image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?w=500",
-//   },
-//   {
-//     name: "Gaming",
-//     image: "https://images.unsplash.com/photo-1606144042614-b2417e99c4e3?w=500",
-//   },
 ];
 
 export default function Categories() {
@@ -51,14 +43,9 @@ export default function Categories() {
               href="/products"
               key={index}
               className={styles.card}
+              style={{ backgroundImage: `url(${category.image})` }}
             >
-              <div className={styles.image}>
-                <img
-                  src={category.image}
-                  alt={category.name}
-                />
-              </div>
-
+              <div className={styles.overlay}></div>
               <h3>{category.name}</h3>
             </Link>
           ))}

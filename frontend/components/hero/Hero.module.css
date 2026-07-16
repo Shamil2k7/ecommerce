@@ -3,6 +3,7 @@
   background: var(--bg);
   padding: 20px 0;
   font-family: var(--font-inter), sans-serif;
+  overflow-x: hidden;
 }
 
 .carouselWrapper {
