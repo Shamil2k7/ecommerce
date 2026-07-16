@@ -15,20 +15,15 @@ const forgotPassword = async (req, res) => {
       return res.status(404).json({ success: false, message: "User with this email does not exist" });
     }
 
-    // Generate plain-text reset token
     const resetToken = crypto.randomBytes(20).toString("hex");
 
-    // Store secure hashed version of the token and set expiration (1 hour)
-    user.resetPasswordToken = crypto
-      .createHash("sha256")
-      .update(resetToken)
-      .digest("hex");
-    user.resetPasswordExpires = Date.now() + 3600000;
+    // Store a hashed version of the token in the DB — the plain token goes to the user via email
+    user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
+    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
 
     await user.save({ validateBeforeSave: false });
 
-    // Client Link to Reset Password
-    const resetUrl = `http://localhost:3000/auth/reset-password?token=${resetToken}`;
+    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/auth/reset-password?token=${resetToken}`;
     const message = `Please click on the link to reset your password: \n\n ${resetUrl}`;
 
     try {
@@ -61,3 +56,4 @@ const forgotPassword = async (req, res) => {
 };
 
 export default forgotPassword;
+

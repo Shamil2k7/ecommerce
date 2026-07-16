@@ -7,6 +7,7 @@ import resetPassword from "../controllers/auth/resetPassword.controller.js";
 import changePassword from "../controllers/auth/changePassword.controller.js";
 import googleLogin from "../controllers/auth/google.controller.js";
 import getUsers from "../controllers/auth/getUsers.controller.js";
+import toggleBlockUser from "../controllers/auth/blockUser.controller.js";
 import protect from "../middlewares/auth.middleware.js";
 
 const router = express.Router();
@@ -19,8 +20,9 @@ router.post("/reset-password", resetPassword);
 router.post("/change-password", protect, changePassword);
 router.post("/google", googleLogin);
 router.get("/users", protect, getUsers);
+router.patch("/users/:id/block", protect, toggleBlockUser);
 
-// Returns active logged-in user profile retrieved by JWT
+// Get the logged-in user's profile from the JWT cookie
 router.get("/me", protect, (req, res) => {
   return res.status(200).json({
     success: true,

@@ -1,6 +1,7 @@
 import jwt from "jsonwebtoken";
 import User from "../models/userModels.js";
 
+// Protect private routes — verify JWT from cookie
 const protect = async (req, res, next) => {
   let token = req.cookies.jwt;
 

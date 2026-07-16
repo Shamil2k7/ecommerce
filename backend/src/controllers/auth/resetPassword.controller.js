@@ -14,6 +14,7 @@ const resetPassword = async (req, res) => {
   }
 
   try {
+    // Hash the incoming token to match what's stored in the DB
     const hashedToken = crypto
       .createHash("sha256")
       .update(token)

@@ -21,16 +21,20 @@ export default function GoogleLoginButton() {
       if (window.google && window.google.accounts) {
         setGoogleLoaded(true);
         clearInterval(checkInterval);
-        initializeGoogleButton();
       }
     };
 
     checkGoogleScript();
-
     checkInterval = setInterval(checkGoogleScript, 500);
 
     return () => clearInterval(checkInterval);
   }, []);
+
+  // Run once the Google script is ready
+  useEffect(() => {
+    if (!googleLoaded) return;
+    initializeGoogleButton();
+  }, [googleLoaded]);
 
   const initializeGoogleButton = () => {
     try {
@@ -39,7 +43,7 @@ export default function GoogleLoginButton() {
         callback: handleCredentialResponse,
       });
 
-      // Render the official Google styled login button
+      // Render Google's sign-in button
       window.google.accounts.id.renderButton(
         document.getElementById("google-signin-btn-container"),
         {
@@ -64,7 +68,7 @@ export default function GoogleLoginButton() {
     try {
       const result = await googleLogin(response.credential);
       if (result.success) {
-        // Successful login, refresh or route home (handled by caller page layouts)
+        // Reload to update auth state across the app
         window.location.reload();
       } else {
         setAuthError(result.message || "Google authentication failed");
@@ -77,7 +81,7 @@ export default function GoogleLoginButton() {
   };
 
   const handleFallbackClick = () => {
-    // If client API fails to load (e.g. adblocker, network error, or dummy config)
+    // Google script didn't load — show a message
     alert(
       "Google Sign-In is currently in placeholder mode.\n\nTo enable production authentication:\n1. Create a Google Client ID in Google Cloud Console.\n2. Add it to NEXT_PUBLIC_GOOGLE_CLIENT_ID environment variable.\n3. Make sure the accounts.google.com/gsi script is loaded successfully."
     );
@@ -94,14 +98,14 @@ export default function GoogleLoginButton() {
         </div>
       )}
 
-      {/* Container where Google's official iframe button will render */}
+      {/* Google renders its button inside this div */}
       <div 
         id="google-signin-btn-container" 
         className={styles.googleContainer}
         style={{ display: googleLoaded && !loading ? "block" : "none" }}
       />
 
-      {/* Fallback button styled matching instructions when GIS client is not yet loaded */}
+      {/* Shown while the Google script is still loading */}
       {(!googleLoaded && !loading) && (
         <button
           type="button"
