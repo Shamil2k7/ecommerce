@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   Search,
@@ -11,55 +12,60 @@ import {
 
 import styles from "./Products.module.css";
 
-const productData = [
-  {
-    id: 1,
-    image: "/products/shoe.jpg",
-    name: "Nike Air Max",
-    category: "Shoes",
-    brand: "Nike",
-    price: 5999,
-    stock: 24,
-    status: "Active",
-  },
-  {
-    id: 2,
-    image: "/products/iphone.jpg",
-    name: "iPhone 16 Pro",
-    category: "Electronics",
-    brand: "Apple",
-    price: 129999,
-    stock: 12,
-    status: "Active",
-  },
-  {
-    id: 3,
-    image: "/products/headphone.jpg",
-    name: "Sony WH-1000XM5",
-    category: "Electronics",
-    brand: "Sony",
-    price: 28999,
-    stock: 5,
-    status: "Low Stock",
-  },
-  {
-    id: 4,
-    image: "/products/tshirt.jpg",
-    name: "Oversized T-Shirt",
-    category: "Fashion",
-    brand: "H&M",
-    price: 999,
-    stock: 0,
-    status: "Out of Stock",
-  },
-];
-
 export default function ProductsPage() {
+  const router = useRouter();
   const [search, setSearch] = useState("");
+  const [productData, setProductData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [loading, setLoading] = useState(true);
 
-  const filteredProducts = productData.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    // Fetch products
+    fetch("http://localhost:5000/api/products")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data && json.data.products) {
+          setProductData(json.data.products);
+        }
+      })
+      .catch((err) => console.error("Error fetching products:", err))
+      .finally(() => setLoading(false));
+
+    // Fetch categories
+    fetch("http://localhost:5000/api/categories")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data) {
+          setCategories(json.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching categories:", err));
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure you want to delete this product?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+        method: "DELETE",
+      });
+      if (res.ok) {
+        setProductData((prev) => prev.filter((p) => p._id !== id));
+      } else {
+        alert("Failed to delete product");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting product");
+    }
+  };
+
+  const filteredProducts = productData.filter((item) => {
+    const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
+    const itemCategoryName = typeof item.category === "object" ? item.category?.name : item.category;
+    const matchesCategory = selectedCategory === "All Categories" || itemCategoryName === selectedCategory;
+    return matchesSearch && matchesCategory;
+  });
 
   return (
     <section className={styles.products}>
@@ -73,7 +79,7 @@ export default function ProductsPage() {
           <p>Manage all products</p>
         </div>
 
-        <button className={styles.addBtn} onClick={() => window.location.href = "/admin/products/add"}>
+        <button className={styles.addBtn} onClick={() => router.push("/admin/products/add")}>
           <Plus size={18} />
           Add Product
         </button>
@@ -97,11 +103,11 @@ export default function ProductsPage() {
           />
         </div>
 
-        <select>
-          <option>All Categories</option>
-          <option>Electronics</option>
-          <option>Fashion</option>
-          <option>Shoes</option>
+        <select value={selectedCategory} onChange={(e) => setSelectedCategory(e.target.value)}>
+          <option value="All Categories">All Categories</option>
+          {categories.map((cat) => (
+            <option key={cat._id} value={cat.name}>{cat.name}</option>
+          ))}
         </select>
 
         <select>
@@ -137,70 +143,84 @@ export default function ProductsPage() {
 
           <tbody>
 
-            {filteredProducts.map((product) => (
-
-              <tr key={product.id}>
-
-                <td>
-                  <img
-                    src={product.image}
-                    alt={product.name}
-                    className={styles.image}
-                  />
+            {loading ? (
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>
+                  Loading products...
                 </td>
-
-                <td>{product.name}</td>
-
-                <td>{product.category}</td>
-
-                <td>{product.brand}</td>
-
-                <td>
-                  ₹{product.price.toLocaleString()}
-                </td>
-
-                <td>{product.stock}</td>
-
-                <td>
-
-                  <span
-                    className={`${styles.status}
-                    ${
-                      product.status === "Active"
-                        ? styles.active
-                        : product.status === "Low Stock"
-                        ? styles.low
-                        : styles.out
-                    }`}
-                  >
-                    {product.status}
-                  </span>
-
-                </td>
-
-                <td>
-
-                  <div className={styles.actions}>
-
-                    <button title="View">
-                      <Eye size={18} />
-                    </button>
-
-                    <button title="Edit">
-                      <Pencil size={18} />
-                    </button>
-
-                    <button title="Delete">
-                      <Trash2 size={18} />
-                    </button>
-
-                  </div>
-
-                </td>
-
               </tr>
+            ) : filteredProducts.length > 0 ? (
+              filteredProducts.map((product) => (
 
-            ))}
+                <tr key={product._id}>
+
+                  <td>
+                    <img
+                      src={product.images?.[0]?.url || "/images/headphone.png"}
+                      alt={product.name}
+                      className={styles.image}
+                    />
+                  </td>
+
+                  <td>{product.name}</td>
+
+                  <td>{typeof product.category === "object" ? product.category?.name : product.category || "Uncategorized"}</td>
+
+                  <td>{product.brand || "-"}</td>
+
+                  <td>
+                    ₹{product.price.toLocaleString()}
+                  </td>
+
+                  <td>{product.stock}</td>
+
+                  <td>
+
+                    <span
+                      className={`${styles.status}
+                      ${
+                        product.stock > 10
+                          ? styles.active
+                          : product.stock > 0
+                          ? styles.low
+                          : styles.out
+                      }`}
+                    >
+                      {product.stock > 10 ? "Active" : product.stock > 0 ? "Low Stock" : "Out of Stock"}
+                    </span>
+
+                  </td>
+
+                  <td>
+
+                    <div className={styles.actions}>
+
+                      <button title="View" onClick={() => router.push(`/products?category=${encodeURIComponent(typeof product.category === "object" ? product.category?.name : product.category)}`)}>
+                        <Eye size={18} />
+                      </button>
+
+                      <button title="Edit" onClick={() => router.push(`/admin/products/edit/${product._id}`)}>
+                        <Pencil size={18} />
+                      </button>
+
+                      <button title="Delete" onClick={() => handleDelete(product._id)}>
+                        <Trash2 size={18} />
+                      </button>
+
+                    </div>
+
+                  </td>
+
+                </tr>
+
+              ))
+            ) : (
+              <tr>
+                <td colSpan="8" style={{ textAlign: "center", padding: "20px" }}>
+                  No products found.
+                </td>
+              </tr>
+            )}
 
           </tbody>
 

@@ -1,6 +1,7 @@
+import dotenv from "dotenv";
+
 import path from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -41,7 +42,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/marketing/coupons", couponRoutes);
+app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
 
 //staff routes
@@ -50,7 +51,7 @@ app.use("/api/staff", staffRoutes);
 app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
 });
-// app.use('/api/order',orderRouter)
+
 
 const PORT = process.env.PORT || 5000;
 // Server Setup

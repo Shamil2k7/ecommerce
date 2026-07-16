@@ -1,198 +1,208 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import axios from "axios";
 import styles from "./Settings.module.css";
 
-export default function SettingsPage() {
-  const [settings, setSettings] = useState({
-    storeName: "My Store",
-    email: "admin@example.com",
-    phone: "+91 9876543210",
-    address: "Kochi, Kerala",
-    currency: "INR",
-    timezone: "Asia/Kolkata",
-    tax: "18",
-    shipping: "100",
-    maintenance: false,
-    emailNotification: true,
+const API = process.env.NEXT_PUBLIC_BACKEND_URL;
+
+export default function Page() {
+  const [loading, setLoading] = useState(false);
+
+  const [formData, setFormData] = useState({
+    storeName: "",
+    tagline: "",
   });
 
-  const handleChange = (field, value) => {
-    setSettings({
-      ...settings,
-      [field]: value,
+  const [logo, setLogo] = useState(null);
+  const [favicon, setFavicon] = useState(null);
+
+  const [logoPreview, setLogoPreview] = useState("");
+  const [faviconPreview, setFaviconPreview] = useState("");
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await axios.get(`${API}/api/settings`);
+
+      if (res.data.success) {
+        const data = res.data.settings;
+
+        setFormData({
+          storeName: data.storeName || "",
+          tagline: data.tagline || "",
+        });
+
+        setLogoPreview(data.logo || "");
+        setFaviconPreview(data.favicon || "");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
     });
   };
 
+  const handleLogo = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    setLogo(file);
+    setLogoPreview(URL.createObjectURL(file));
+  };
+
+  const handleFavicon = (e) => {
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    setFavicon(file);
+    setFaviconPreview(URL.createObjectURL(file));
+  };
+
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+
+      await axios.put(`${API}/api/settings`, formData);
+
+      if (logo) {
+        const fd = new FormData();
+        fd.append("logo", logo);
+
+        await axios.put(`${API}/api/settings/logo`, fd, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      if (favicon) {
+        const fd = new FormData();
+        fd.append("favicon", favicon);
+
+        await axios.put(`${API}/api/settings/favicon`, fd, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+      }
+
+      alert("Settings Updated Successfully");
+
+      fetchSettings();
+    } catch (error) {
+      console.log(error);
+      alert("Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
-    <section className={styles.container}>
+    <div className={styles.wrapper}>
       <div className={styles.header}>
-        <h1>Settings</h1>
-        <p>Manage your store settings</p>
+        <div>
+          <h1 className={styles.settingsTitle}>Site Settings</h1>
+
+          <p className={styles.settingsDescription}>
+            Manage your storefront branding
+          </p>
+        </div>
       </div>
 
-      <form className={styles.form}>
-        {/* Store Information */}
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <div>
+            <h2>Branding</h2>
+            <p>Logo, favicon and store details</p>
+          </div>
 
-        <div className={styles.card}>
-          <h2>Store Information</h2>
+          <button
+            onClick={handleSubmit}
+            className={styles.saveBtn}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Changes"}
+          </button>
+        </div>
 
-          <div className={styles.grid}>
-            <div className={styles.field}>
+        <div className={styles.cardContent}>
+          <div className={styles.form}>
+
+            <div className={styles.formGroup}>
+              <label>Logo</label>
+
+              {logoPreview && (
+                <img
+                  src={logoPreview}
+                  alt="logo"
+                  width={120}
+                  height={120}
+                />
+              )}
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleLogo}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
+              <label>Favicon</label>
+
+              {faviconPreview && (
+                <img
+                  src={faviconPreview}
+                  alt="favicon"
+                  width={70}
+                  height={70}
+                />
+              )}
+
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFavicon}
+              />
+            </div>
+
+            <div className={styles.formGroup}>
               <label>Store Name</label>
 
               <input
-                value={settings.storeName}
-                onChange={(e) =>
-                  handleChange("storeName", e.target.value)
-                }
+                type="text"
+                name="storeName"
+                value={formData.storeName}
+                onChange={handleChange}
+                placeholder="Enter Store Name"
               />
             </div>
 
-            <div className={styles.field}>
-              <label>Email</label>
+            <div className={styles.formGroup}>
+              <label>Tagline</label>
 
               <input
-                type="email"
-                value={settings.email}
-                onChange={(e) =>
-                  handleChange("email", e.target.value)
-                }
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label>Phone</label>
-
-              <input
-                value={settings.phone}
-                onChange={(e) =>
-                  handleChange("phone", e.target.value)
-                }
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label>Address</label>
-
-              <input
-                value={settings.address}
-                onChange={(e) =>
-                  handleChange("address", e.target.value)
-                }
+                type="text"
+                name="tagline"
+                value={formData.tagline}
+                onChange={handleChange}
+                placeholder="Enter Store Tagline"
               />
             </div>
           </div>
         </div>
-
-        {/* Store Settings */}
-
-        <div className={styles.card}>
-          <h2>Store Settings</h2>
-
-          <div className={styles.grid}>
-            <div className={styles.field}>
-              <label>Currency</label>
-
-              <select
-                value={settings.currency}
-                onChange={(e) =>
-                  handleChange("currency", e.target.value)
-                }
-              >
-                <option>INR</option>
-                <option>USD</option>
-                <option>AED</option>
-              </select>
-            </div>
-
-            <div className={styles.field}>
-              <label>Timezone</label>
-
-              <select
-                value={settings.timezone}
-                onChange={(e) =>
-                  handleChange("timezone", e.target.value)
-                }
-              >
-                <option>Asia/Kolkata</option>
-                <option>Asia/Dubai</option>
-                <option>UTC</option>
-              </select>
-            </div>
-
-            <div className={styles.field}>
-              <label>Tax (%)</label>
-
-              <input
-                type="number"
-                value={settings.tax}
-                onChange={(e) =>
-                  handleChange("tax", e.target.value)
-                }
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label>Shipping Charge</label>
-
-              <input
-                type="number"
-                value={settings.shipping}
-                onChange={(e) =>
-                  handleChange("shipping", e.target.value)
-                }
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Preferences */}
-
-        <div className={styles.card}>
-          <h2>Preferences</h2>
-
-          <div className={styles.switchRow}>
-            <label>Email Notifications</label>
-
-            <input
-              type="checkbox"
-              checked={settings.emailNotification}
-              onChange={(e) =>
-                handleChange(
-                  "emailNotification",
-                  e.target.checked
-                )
-              }
-            />
-          </div>
-
-          <div className={styles.switchRow}>
-            <label>Maintenance Mode</label>
-
-            <input
-              type="checkbox"
-              checked={settings.maintenance}
-              onChange={(e) =>
-                handleChange(
-                  "maintenance",
-                  e.target.checked
-                )
-              }
-            />
-          </div>
-        </div>
-
-        <div className={styles.actions}>
-          <button type="reset" className={styles.cancel}>
-            Cancel
-          </button>
-
-          <button type="submit" className={styles.save}>
-            Save Settings
-          </button>
-        </div>
-      </form>
-    </section>
+      </div>
+    </div>
   );
 }

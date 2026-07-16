@@ -83,34 +83,34 @@ export default function LoginPage() {
 
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.field}>
-              <label>Email Address</label>
-
               <div className={styles.inputBox}>
                 <Mail size={18} />
 
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  id="email"
+                  placeholder=" "
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+                <label htmlFor="email" className={styles.floatingLabel}>Email Address</label>
               </div>
             </div>
 
             <div className={styles.field}>
-              <label>Password</label>
-
               <div className={styles.inputBox}>
                 <Lock size={18} />
 
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  id="password"
+                  placeholder=" "
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <label htmlFor="password" className={styles.floatingLabel}>Password</label>
 
                 <button
                   type="button"
@@ -175,7 +175,7 @@ export default function LoginPage() {
 
         <div className={styles.imageSection}>
           <img 
-            src="https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=800" 
+            src="https://i.pinimg.com/1200x/89/70/0a/89700ac2584feaede2c609d5340acbaa.jpg" 
             alt="ShopAura SignIn" 
             className={styles.sideImage}
           />

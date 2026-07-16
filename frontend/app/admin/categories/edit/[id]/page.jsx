@@ -1,30 +1,135 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { ArrowLeft, Upload, Trash2 } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
-import styles from "../../Categories.module.css";
+import styles from "./EditCategory.module.css";
 
 export default function EditCategoryPage() {
-  const [category, setCategory] = useState({
-    name: "Electronics",
-    slug: "electronics",
-    parent: "None",
-    description: "Electronic gadgets and accessories.",
-    status: "Active",
-    image: "/categories/electronics.jpg",
-  });
+  const { id } = useParams();
+  const router = useRouter();
+
+  // Form states
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+  const [parentCategory, setParentCategory] = useState("");
+  const [description, setDescription] = useState("");
+  const [isActive, setIsActive] = useState("Active");
+  const [currentImage, setCurrentImage] = useState("");
+  const [newImageFile, setNewImageFile] = useState(null);
+
+  // Categories list
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    // 1. Fetch all categories to populate parent selection dropdown
+    fetch("http://localhost:5000/api/categories")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data) {
+          setCategories(json.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching categories:", err));
+
+    // 2. Fetch current category details
+    fetch(`http://localhost:5000/api/categories/${id}`)
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data) {
+          const cat = json.data;
+          setName(cat.name || "");
+          setSlug(cat.slug || "");
+          setParentCategory(typeof cat.parentCategory === "object" ? cat.parentCategory?._id : cat.parentCategory || "");
+          setDescription(cat.description || "");
+          setIsActive(cat.isActive !== false ? "Active" : "Inactive");
+          setCurrentImage(cat.image?.url || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500");
+        }
+      })
+      .catch((err) => console.error("Error loading category:", err))
+      .finally(() => setLoading(false));
+  }, [id]);
 
   const handleImage = (e) => {
     const file = e.target.files[0];
-
     if (file) {
-      setCategory({
-        ...category,
-        image: URL.createObjectURL(file),
-      });
+      setNewImageFile(file);
+      setCurrentImage(URL.createObjectURL(file));
     }
   };
+
+  const handleDelete = async () => {
+    if (!confirm("Are you sure you want to delete this category?")) return;
+    try {
+      const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
+        method: "DELETE",
+      });
+      const json = await res.json();
+      if (res.ok) {
+        alert("Category deleted successfully!");
+        router.push("/admin/categories");
+      } else {
+        alert(`Failed to delete category: ${json.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting category");
+    }
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!name) {
+      alert("Category Name is required.");
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const formData = new FormData();
+      formData.append("name", name);
+      formData.append("slug", slug);
+      formData.append("description", description);
+      formData.append("parentCategory", parentCategory || "");
+      formData.append("isActive", isActive === "Active" ? "true" : "false");
+
+      if (newImageFile) {
+        formData.append("image", newImageFile);
+      }
+
+      const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
+        method: "PATCH",
+        body: formData,
+      });
+
+      const json = await res.json();
+      if (res.ok) {
+        alert("Category updated successfully!");
+        router.push("/admin/categories");
+      } else {
+        alert(`Failed to update category: ${json.message || "Unknown error"}`);
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error updating category.");
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className={styles.container} style={{ textAlign: "center", padding: "50px" }}>
+        <h2>Loading Category Details...</h2>
+      </div>
+    );
+  }
+
+  // Filter out the current category so it can't be set as its own parent
+  const parentCandidates = categories.filter((cat) => cat._id !== id);
 
   return (
     <section className={styles.container}>
@@ -40,118 +145,118 @@ export default function EditCategoryPage() {
         </div>
       </div>
 
-      <div className={styles.grid}>
-        {/* Left */}
-        <div className={styles.card}>
-          <h3>Category Details</h3>
-
-          <div className={styles.field}>
-            <label>Name</label>
-            <input
-              value={category.name}
-              onChange={(e) =>
-                setCategory({ ...category, name: e.target.value })
-              }
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label>Slug</label>
-            <input
-              value={category.slug}
-              onChange={(e) =>
-                setCategory({ ...category, slug: e.target.value })
-              }
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label>Parent Category</label>
-
-            <select
-              value={category.parent}
-              onChange={(e) =>
-                setCategory({ ...category, parent: e.target.value })
-              }
-            >
-              <option>None</option>
-              <option>Electronics</option>
-              <option>Fashion</option>
-              <option>Home</option>
-            </select>
-          </div>
-
-          <div className={styles.field}>
-            <label>Description</label>
-
-            <textarea
-              rows="5"
-              value={category.description}
-              onChange={(e) =>
-                setCategory({
-                  ...category,
-                  description: e.target.value,
-                })
-              }
-            />
-          </div>
-        </div>
-
-        {/* Right */}
-        <div>
+      <form onSubmit={handleSubmit}>
+        <div className={styles.grid}>
+          {/* Left */}
           <div className={styles.card}>
-            <h3>Category Image</h3>
+            <h3>Category Details</h3>
 
-            <label className={styles.upload}>
-              <img src={category.image} alt="Category" />
-
-              <div className={styles.overlay}>
-                <Upload size={22} />
-                Change Image
-              </div>
-
+            <div className={styles.field}>
+              <label>Name *</label>
               <input
-                type="file"
-                hidden
-                accept="image/*"
-                onChange={handleImage}
+                type="text"
+                required
+                value={name}
+                onChange={(e) => setName(e.target.value)}
               />
-            </label>
+            </div>
+
+            <div className={styles.field}>
+              <label>Slug</label>
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>Parent Category</label>
+              <select
+                value={parentCategory}
+                onChange={(e) => setParentCategory(e.target.value)}
+              >
+                <option value="">None</option>
+                {parentCandidates.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
+            <div className={styles.field}>
+              <label>Description</label>
+              <textarea
+                rows="5"
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+              />
+            </div>
           </div>
 
-          <div className={styles.card}>
-            <h3>Status</h3>
+          {/* Right */}
+          <div>
+            <div className={styles.card}>
+              <h3>Category Image</h3>
 
-            <select
-              value={category.status}
-              onChange={(e) =>
-                setCategory({
-                  ...category,
-                  status: e.target.value,
-                })
-              }
-            >
-              <option>Active</option>
-              <option>Inactive</option>
-            </select>
-          </div>
+              <label className={styles.upload}>
+                <img src={currentImage} alt="Category" />
 
-          <div className={styles.actions}>
-            <button className={styles.deleteBtn}>
-              <Trash2 size={18} />
-              Delete
-            </button>
+                <div className={styles.overlay}>
+                  <Upload size={22} />
+                  Change Image
+                </div>
 
-            <button className={styles.cancelBtn}>
-              Cancel
-            </button>
+                <input
+                  type="file"
+                  hidden
+                  accept="image/*"
+                  onChange={handleImage}
+                />
+              </label>
+            </div>
 
-            <button className={styles.saveBtn}>
-              Update Category
-            </button>
+            <div className={styles.card}>
+              <h3>Status</h3>
+              <select
+                value={isActive}
+                onChange={(e) => setIsActive(e.target.value)}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.deleteBtn}
+                onClick={handleDelete}
+              >
+                <Trash2 size={18} />
+                Delete
+              </button>
+
+              <button
+                type="button"
+                className={styles.cancelBtn}
+                onClick={() => router.push("/admin/categories")}
+              >
+                Cancel
+              </button>
+
+              <button
+                type="submit"
+                className={styles.saveBtn}
+                disabled={submitting}
+              >
+                {submitting ? "Updating..." : "Update Category"}
+              </button>
+            </div>
           </div>
         </div>
-      </div>
+      </form>
     </section>
   );
 }

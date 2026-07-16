@@ -15,21 +15,21 @@
 }
 
 .container {
-  max-width: 1300px;
+  max-width: 1400px;
   margin: auto;
   padding: 15px 20px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  gap: 25px;
+  gap: 24px;
 }
 
 .topRow {
   display: flex;
   align-items: center;
-  gap: 8px;
+  justify-content: space-between;
+  gap: 12px;
+  flex-shrink: 0;
 }
-
 .logo {
   display: flex;
   align-items: center;
@@ -207,36 +207,168 @@
   opacity: 1;
   pointer-events: auto;
 }
+.logo {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-decoration: none;
+  min-width: 0;
+}
+
+.logoImage {
+  width: 52px;
+  height: 52px;
+  border-radius: 10px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.logoText {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.logoText h2 {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--text);
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
+.logoText p {
+  margin: 2px 0 0;
+  font-size: 12px;
+  color: #6b7280;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
 
 /* Tablet & Mobile Layout Shifts */
-@media (max-width: 991px) {
-  .container {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    padding: 15px 16px;
-    gap: 12px;
-  }
+@media (max-width:991px){
 
-  .topRow {
-    width: 100%;
-    justify-content: space-between;
-  }
+.container{
+    padding:14px 16px;
+    gap:14px;
+    flex-wrap:wrap;
+}
 
-  .menuBtn {
-    display: block;
-  }
-  
-  .searchRow {
-    width: 100%;
-    max-width: 100%;
-    order: 3;
-  }
+.topRow{
+    width:100%;
+}
 
-  .mobileWishlist {
-    display: block;
-  }
+.menuBtn{
+    display:block;
+}
 
-  .nav, .icons {
-    display: none;
-  }
+.searchRow{
+    order:2;
+    width:100%;
+    max-width:100%;
+}
+
+.mobileWishlist{
+    display:block;
+}
+
+.nav,
+.icons{
+    display:none;
+}
+
+.logoImage{
+    width:46px;
+    height:46px;
+}
+
+.logoText h2{
+    font-size:20px;
+}
+
+.logoText p{
+    font-size:11px;
+}
+
+}
+
+@media (max-width:768px){
+
+.topbar{
+    font-size:11px;
+    padding:7px 10px;
+}
+
+.container{
+    padding:12px;
+}
+
+.logoImage{
+    width:40px;
+    height:40px;
+}
+
+.logoText h2{
+    font-size:18px;
+}
+
+.logoText p{
+    font-size:10px;
+    max-width:140px;
+}
+
+.search input{
+    height:44px;
+    font-size:14px;
+    padding:0 16px 0 42px;
+}
+
+.searchIcon{
+    left:14px;
+    font-size:18px;
+}
+
+.menuBtn{
+    font-size:26px;
+}
+
+.mobileMenu{
+    width:280px;
+    left:-280px;
+}
+
+.mobileMenu.show{
+    left:0;
+}
+
+}
+
+@media (max-width:480px){
+
+.logoImage{
+    width:34px;
+    height:34px;
+}
+
+.logoText h2{
+    font-size:16px;
+}
+
+.logoText p{
+    display:none;
+}
+
+.search input{
+    height:40px;
+    font-size:13px;
+}
+
+.badge{
+    width:16px;
+    height:16px;
+    font-size:9px;
+}
+
 }

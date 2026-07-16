@@ -9,18 +9,19 @@ background:var(--bg);
 
 .card{
 width:100%;
-max-width:950px;
+max-width:1000px;
 background:var(--surface);
 border:1px solid var(--line);
 border-radius:var(--radius-lg);
 box-shadow:var(--shadow-md);
 display:flex;
+flex-direction:row;
 overflow:hidden;
 }
 
 .formSection {
   flex: 1.1;
-  padding: 40px;
+  padding: 30px 40px;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -29,10 +30,14 @@ overflow:hidden;
 .imageSection {
   flex: 0.9;
   position: relative;
+  min-height: 520px;
   display: block;
 }
 
 .sideImage {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -40,38 +45,33 @@ overflow:hidden;
 
 .header{
 text-align:center;
-margin-bottom:30px;
+margin-bottom:12px;
 }
 
 .header h1{
-font-size:32px;
+font-size:26px;
 color:var(--text);
 }
 
 .header p{
-margin-top:8px;
+margin-top:4px;
 color:var(--text-soft);
+font-size:14px;
 }
 
 .form{
 display:flex;
 flex-direction:column;
-gap:20px;
+gap:12px;
 }
 
 .field{
 display:flex;
 flex-direction:column;
-gap:8px;
-}
-
-.field label{
-font-weight:600;
-color:var(--text);
 }
 
 .inputBox{
-height:52px;
+height:46px;
 display:flex;
 align-items:center;
 gap:12px;
@@ -79,6 +79,7 @@ padding:0 16px;
 border:1px solid var(--line);
 border-radius:var(--radius-md);
 background:var(--bg);
+position: relative;
 }
 
 .inputBox input{
@@ -86,7 +87,50 @@ flex:1;
 border:none;
 outline:none;
 background:transparent;
-font-size:15px;
+font-size:14px;
+height: 100%;
+padding-top: 12px;
+color: var(--text);
+}
+
+.floatingLabel {
+  position: absolute;
+  left: 45px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+  font-size: 13.5px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}
+
+.floatingLabelPhone {
+  position: absolute;
+  left: 140px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+  font-size: 13.5px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}
+
+.inputBox input:focus ~ .floatingLabel,
+.inputBox input:not(:placeholder-shown) ~ .floatingLabel {
+  top: 10px;
+  transform: translateY(-50%) scale(0.8);
+  color: var(--primary);
+}
+
+.inputBox input:focus ~ .floatingLabelPhone,
+.inputBox input:not(:placeholder-shown) ~ .floatingLabelPhone {
+  top: 10px;
+  transform: translateY(-50%) scale(0.8);
+  color: var(--primary);
 }
 
 .inputBox button{
@@ -112,11 +156,11 @@ accent-color:var(--primary);
 }
 
 .registerBtn{
-height:50px;
+height:44px;
 background:var(--primary);
 color:white;
 border-radius:var(--radius-md);
-font-size:16px;
+font-size:15px;
 font-weight:600;
 transition:.3s;
 }
@@ -126,7 +170,7 @@ background:var(--primary-hover);
 }
 
 .footer{
-margin-top:25px;
+margin-top:15px;
 text-align:center;
 color:var(--text-soft);
 }
@@ -137,33 +181,67 @@ color:var(--primary);
 font-weight:600;
 }
 
-@media(max-width:768px){
+/* Tablet Layout */
+@media (max-width: 1024px) {
   .card {
-    max-width: 500px;
+    max-width: 90%;
+  }
+  .formSection {
+    padding: 35px;
   }
   .imageSection {
-    display: none;
+    min-height: 500px;
   }
 }
 
-@media(max-width:480px){
+/* Mobile Layout */
+@media (max-width: 600px) {
+  .card {
+    flex-direction: column-reverse;
+    max-width: 500px;
+    margin: 0 auto;
+  }
+  
+  .imageSection {
+    flex: none;
+    width: 100%;
+    height: 240px;
+    min-height: auto;
+  }
 
-.formSection{
-padding:25px;
+  .sideImage {
+    position: relative;
+    height: 240px;
+  }
+
+  .formSection {
+    flex: none;
+    width: 100%;
+    padding: 30px 20px;
+  }
 }
 
-.header h1{
-font-size:28px;
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 28px;
+  }
+
+  .inputBox {
+    height: 48px;
+  }
+
+  .registerBtn {
+    height: 46px;
+  }
 }
 
-.inputBox{
-height:48px;
-}
-
-.registerBtn{
-height:46px;
-}
-
+@media (max-width: 360px) {
+  .formSection {
+    padding: 25px 15px;
+  }
+  .header h1 {
+    font-size: 26px;
+  }
 }
 
 .countrySelector {

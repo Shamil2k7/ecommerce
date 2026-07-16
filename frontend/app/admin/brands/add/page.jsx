@@ -1,91 +1,86 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { ArrowLeft, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import styles from "./AddCategory.module.css";
+import styles from "./AddBrand.module.css";
 
-export default function AddCategoryPage() {
+export default function AddBrandPage() {
   const router = useRouter();
 
-  // Form states
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [parentCategory, setParentCategory] = useState("");
   const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState("Active");
-  const [imageFile, setImageFile] = useState(null);
+
+  const [logoFile, setLogoFile] = useState(null);
   const [preview, setPreview] = useState(null);
 
-  // Parent Categories options
-  const [categories, setCategories] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    // Fetch categories to populate dropdown
-    fetch("http://localhost:5000/api/categories")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.data) {
-          setCategories(json.data);
-        }
-      })
-      .catch((err) => console.error("Error fetching parent categories:", err));
-  }, []);
+  const handleNameChange = (value) => {
+    setName(value);
 
-  const handleNameChange = (val) => {
-    setName(val);
-    const generatedSlug = val
+    const generatedSlug = value
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
+
     setSlug(generatedSlug);
   };
 
-  const handleImage = (e) => {
+  const handleLogo = (e) => {
     const file = e.target.files[0];
+
     if (file) {
-      setImageFile(file);
+      setLogoFile(file);
       setPreview(URL.createObjectURL(file));
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name) {
-      alert("Category Name is required.");
+
+    if (!name.trim()) {
+      alert("Brand name is required.");
       return;
     }
 
     setSubmitting(true);
+
     try {
       const formData = new FormData();
-      formData.append("name", name);
-      if (description) formData.append("description", description);
-      if (parentCategory) formData.append("parentCategory", parentCategory);
-      formData.append("isActive", isActive === "Active" ? "true" : "false");
 
-      if (imageFile) {
-        formData.append("image", imageFile);
+      formData.append("name", name);
+      formData.append("slug", slug);
+      formData.append("description", description);
+      formData.append(
+        "isActive",
+        isActive === "Active" ? "true" : "false"
+      );
+
+      if (logoFile) {
+        formData.append("logo", logoFile);
       }
 
-      const res = await fetch("http://localhost:5000/api/categories", {
+      const res = await fetch("http://localhost:5000/api/brands", {
         method: "POST",
         body: formData,
       });
 
       const json = await res.json();
+
       if (res.ok) {
-        alert("Category created successfully!");
-        router.push("/admin/categories");
+        alert("Brand created successfully!");
+        router.push("/admin/brands");
       } else {
-        alert(`Failed to save category: ${json.message || "Unknown error"}`);
+        alert(json.message || "Failed to create brand");
       }
     } catch (err) {
       console.error(err);
-      alert("Error saving category.");
+      alert("Something went wrong.");
     } finally {
       setSubmitting(false);
     }
@@ -95,29 +90,31 @@ export default function AddCategoryPage() {
     <section className={styles.container}>
       <div className={styles.header}>
         <div>
-          <Link href="/admin/categories" className={styles.back}>
+          <Link href="/admin/brands" className={styles.back}>
             <ArrowLeft size={18} />
             Back
           </Link>
 
-          <h1>Add Category</h1>
-          <p>Create a new product category</p>
+          <h1>Add Brand</h1>
+          <p>Create a new product brand</p>
         </div>
       </div>
 
       <form className={styles.form} onSubmit={handleSubmit}>
         <div className={styles.grid}>
           {/* Left */}
+
           <div className={styles.left}>
             <div className={styles.card}>
-              <h3>Category Details</h3>
+              <h3>Brand Details</h3>
 
               <div className={styles.field}>
-                <label>Category Name *</label>
+                <label>Brand Name *</label>
+
                 <input
                   type="text"
+                  placeholder="Enter brand name"
                   required
-                  placeholder="Enter category name"
                   value={name}
                   onChange={(e) => handleNameChange(e.target.value)}
                 />
@@ -125,45 +122,35 @@ export default function AddCategoryPage() {
 
               <div className={styles.field}>
                 <label>Slug</label>
+
                 <input
                   type="text"
-                  placeholder="category-slug"
+                  placeholder="brand-slug"
                   value={slug}
                   onChange={(e) => setSlug(e.target.value)}
                 />
               </div>
 
               <div className={styles.field}>
-                <label>Parent Category</label>
-                <select
-                  value={parentCategory}
-                  onChange={(e) => setParentCategory(e.target.value)}
-                >
-                  <option value="">None</option>
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className={styles.field}>
                 <label>Description</label>
+
                 <textarea
-                  rows="5"
-                  placeholder="Category description..."
+                  rows={6}
+                  placeholder="Brand description..."
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
+                  onChange={(e) =>
+                    setDescription(e.target.value)
+                  }
+                />
               </div>
             </div>
           </div>
 
           {/* Right */}
+
           <div className={styles.right}>
             <div className={styles.card}>
-              <h3>Category Image</h3>
+              <h3>Brand Logo</h3>
 
               <label className={styles.uploadBox}>
                 {preview ? (
@@ -171,7 +158,7 @@ export default function AddCategoryPage() {
                 ) : (
                   <>
                     <Upload size={35} />
-                    <span>Upload Image</span>
+                    <span>Upload Logo</span>
                   </>
                 )}
 
@@ -179,16 +166,19 @@ export default function AddCategoryPage() {
                   type="file"
                   hidden
                   accept="image/*"
-                  onChange={handleImage}
+                  onChange={handleLogo}
                 />
               </label>
             </div>
 
             <div className={styles.card}>
               <h3>Status</h3>
+
               <select
                 value={isActive}
-                onChange={(e) => setIsActive(e.target.value)}
+                onChange={(e) =>
+                  setIsActive(e.target.value)
+                }
               >
                 <option value="Active">Active</option>
                 <option value="Inactive">Inactive</option>
@@ -199,7 +189,7 @@ export default function AddCategoryPage() {
               <button
                 type="button"
                 className={styles.cancelBtn}
-                onClick={() => router.push("/admin/categories")}
+                onClick={() => router.push("/admin/brands")}
               >
                 Cancel
               </button>
@@ -209,7 +199,7 @@ export default function AddCategoryPage() {
                 className={styles.saveBtn}
                 disabled={submitting}
               >
-                {submitting ? "Saving..." : "Save Category"}
+                {submitting ? "Saving..." : "Save Brand"}
               </button>
             </div>
           </div>
