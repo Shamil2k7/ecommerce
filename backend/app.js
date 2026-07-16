@@ -1,6 +1,8 @@
+import dotenv from "dotenv";
+dotenv.config();
+
 import path from "path";
 import { fileURLToPath } from "url";
-import dotenv from "dotenv";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -13,6 +15,7 @@ import connectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import couponRoutes from "./src/routes/marketing.routes.js"
 import orderRoutes from "./src/routes/order.routes.js";
+import settingsRoutes from "./src/routes/settingsRoutes.js";
 const app = express();
 
 //CORS
@@ -40,7 +43,13 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
+<<<<<<< HEAD
 
+=======
+app.use("/api/settings", settingsRoutes);
+
+// Handling GET request
+>>>>>>> 809d570b30806f08a878b35b74474fa9a8c89c55
 app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
 });

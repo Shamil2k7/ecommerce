@@ -1,3 +1,5 @@
+import dotenv from "dotenv";
+dotenv.config()
 import { v2 as cloudinary } from "cloudinary";
 import dotenv from "dotenv";
 
@@ -10,6 +12,7 @@ cloudinary.config({
   secure: true,
 });
 
+<<<<<<< HEAD
 // Check Cloudinary Connection
 cloudinary.api
   .ping()
@@ -19,5 +22,15 @@ cloudinary.api
   .catch((error) => {
     console.error("❌ Cloudinary Connection Failed:", error);
   });
+=======
+
+
+try {
+  const result = await cloudinary.api.ping();
+  console.log("Cloudinary Connected:", result);
+} catch (error) {
+  console.error("Cloudinary Connection Failed:", error.message);
+}
+>>>>>>> 809d570b30806f08a878b35b74474fa9a8c89c55
 
 export default cloudinary;

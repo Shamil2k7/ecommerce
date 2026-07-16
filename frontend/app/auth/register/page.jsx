@@ -80,8 +80,8 @@ export default function RegisterPage() {
       return;
     }
 
-    if (password.length < 6) {
-      setErrorMsg("Password must be at least 6 characters long");
+    if (password.length < 8) {
+      setErrorMsg("Password must be at least 8 characters long");
       return;
     }
 
@@ -147,38 +147,36 @@ export default function RegisterPage() {
 
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.field}>
-              <label>Full Name</label>
-
               <div className={styles.inputBox}>
                 <User size={18} />
                 <input
                   type="text"
-                  placeholder="Enter your full name"
+                  id="fullName"
+                  placeholder=" "
                   value={fullName}
                   onChange={(e) => setFullName(e.target.value)}
                   required
                 />
+                <label htmlFor="fullName" className={styles.floatingLabel}>Full Name</label>
               </div>
             </div>
 
             <div className={styles.field}>
-              <label>Email Address</label>
-
               <div className={styles.inputBox}>
                 <Mail size={18} />
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  id="email"
+                  placeholder=" "
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+                <label htmlFor="email" className={styles.floatingLabel}>Email Address</label>
               </div>
             </div>
 
             <div className={styles.field}>
-              <label>Phone Number</label>
-
               <div className={styles.inputBox}>
                 <Phone size={18} />
                 
@@ -216,7 +214,8 @@ export default function RegisterPage() {
 
                 <input
                   type="tel"
-                  placeholder="Enter phone number"
+                  id="phone"
+                  placeholder=" "
                   className={styles.phoneInputVal}
                   value={phone}
                   onChange={(e) => {
@@ -225,22 +224,23 @@ export default function RegisterPage() {
                   }}
                   required
                 />
+                <label htmlFor="phone" className={styles.floatingLabelPhone}>Phone Number</label>
               </div>
             </div>
 
             <div className={styles.field}>
-              <label>Password</label>
-
               <div className={styles.inputBox}>
                 <Lock size={18} />
 
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Create password"
+                  id="password"
+                  placeholder=" "
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <label htmlFor="password" className={styles.floatingLabel}>Password</label>
 
                 <button
                   type="button"
@@ -258,18 +258,18 @@ export default function RegisterPage() {
             </div>
 
             <div className={styles.field}>
-              <label>Confirm Password</label>
-
               <div className={styles.inputBox}>
                 <Lock size={18} />
 
                 <input
                   type={showConfirm ? "text" : "password"}
-                  placeholder="Confirm password"
+                  id="confirmPassword"
+                  placeholder=" "
                   value={confirmPassword}
                   onChange={(e) => setConfirmPassword(e.target.value)}
                   required
                 />
+                <label htmlFor="confirmPassword" className={styles.floatingLabel}>Confirm Password</label>
 
                 <button
                   type="button"
@@ -313,7 +313,7 @@ export default function RegisterPage() {
             </button>
           </form>
 
-          <div style={{ display: "flex", alignItems: "center", margin: "16px 0", color: "var(--text-soft)", fontSize: "14px" }}>
+          <div style={{ display: "flex", alignItems: "center", margin: "10px 0", color: "var(--text-soft)", fontSize: "14px" }}>
             <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
             <span style={{ padding: "0 10px" }}>or</span>
             <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
