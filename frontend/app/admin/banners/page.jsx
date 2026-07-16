@@ -1,45 +1,47 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import styles from "./Banners.module.css";
 
-const banners = [
-  {
-    id: 1,
-    image: "/offerbanner1.jfif",
-    order: 1,
-    status: "Active",
-    created: "12 Jul 2026",
-  },
-  {
-    id: 2,
-    image: "/offerbanner1.jfif",
-    order: 2,
-    status: "Active",
-    created: "11 Jul 2026",
-  },
-  {
-    id: 3,
-    image: "/offerbanner1.jfif",
-    order: 3,
-    status: "Inactive",
-    created: "10 Jul 2026",
-  },
-];
-
 export default function BannerPage() {
+  const [banners, setBanners] = useState([]);
   const [search, setSearch] = useState("");
 
-  const filtered = banners.filter((item) =>
-    item.id.toString().includes(search)
+  const API = process.env.NEXT_PUBLIC_API_URL;
+
+  const getBanners = async () => {
+    try {
+      const res = await axios.get(`${API}/api/marketing/banners`);
+      setBanners(res.data.banners || []);
+    } catch (error) {
+      console.error("Get Banners Error:", error);
+    }
+  };
+
+  useEffect(() => {
+    getBanners();
+  }, []);
+
+  const handleDelete = async (id) => {
+    if (!window.confirm("Delete this banner?")) return;
+
+    try {
+      await axios.delete(`${API}/api/marketing/banners/${id}`);
+      getBanners();
+    } catch (error) {
+      console.error("Delete Banner Error:", error);
+    }
+  };
+
+  const filtered = banners.filter((banner) =>
+    banner.displayOrder?.toString().includes(search)
   );
 
   return (
     <section className={styles.container}>
-      {/* Header */}
-
       <div className={styles.header}>
         <div>
           <h1>Banners</h1>
@@ -52,11 +54,8 @@ export default function BannerPage() {
         </Link>
       </div>
 
-      {/* Search */}
-
       <div className={styles.searchBox}>
         <Search size={18} />
-
         <input
           type="text"
           placeholder="Search banner..."
@@ -64,8 +63,6 @@ export default function BannerPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-
-      {/* Table */}
 
       <div className={styles.table}>
         <table>
@@ -81,50 +78,65 @@ export default function BannerPage() {
           </thead>
 
           <tbody>
-            {filtered.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <img
-                    src={item.image}
-                    alt="Banner"
-                    className={styles.image}
-                  />
-                </td>
+            {filtered.length > 0 ? (
+              filtered.map((item, index) => (
+                <tr key={item._id}>
+                  <td>
+                    <img
+                      src={item.image}
+                      alt="Banner"
+                      className={styles.image}
+                    />
+                  </td>
 
-                <td>Banner {item.id}</td>
+                  <td>Banner {index + 1}</td>
 
-                <td>{item.order}</td>
+                  <td>{item.displayOrder}</td>
 
-                <td>{item.created}</td>
+                  <td>
+                    {item.createdAt
+                      ? new Date(item.createdAt).toLocaleDateString()
+                      : "-"}
+                  </td>
 
-                <td>
-                  <span
-                    className={
-                      item.status === "Active"
-                        ? styles.active
-                        : styles.inactive
-                    }
-                  >
-                    {item.status}
-                  </span>
-                </td>
-
-                <td>
-                  <div className={styles.actions}>
-                    <Link
-                      href={`/admin/banners/edit/${item.id}`}
-                      className={styles.actionBtn}
+                  <td>
+                    <span
+                      className={
+                        item.status === "Active"
+                          ? styles.active
+                          : styles.inactive
+                      }
                     >
-                      <Pencil size={18} />
-                    </Link>
+                      {item.status}
+                    </span>
+                  </td>
 
-                    <button>
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
+                  <td>
+                    <div className={styles.actions}>
+                      <Link
+                        href={`/admin/banners/edit/${item._id}`}
+                        className={styles.actionBtn}
+                      >
+                        <Pencil size={18} />
+                      </Link>
+
+                      <button
+                        className={styles.actionBtn}
+                        onClick={() => handleDelete(item._id)}
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={6} style={{ textAlign: "center" }}>
+                  No banners found
                 </td>
               </tr>
-            ))}
+            )}
           </tbody>
         </table>
       </div>

@@ -38,13 +38,13 @@ app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
-app.use("/api/marketing/coupons", couponRoutes);
+app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
-// Handling GET request
+
 app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
 });
-// app.use('/api/order',orderRouter)
+
 
 const PORT = process.env.PORT || 5000;
 // Server Setup
