@@ -1,4 +1,4 @@
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 
 import cloudinary from "../../config/cloudinary.js";
 import Staff from "../../models/Staff.js";
