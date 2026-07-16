@@ -332,7 +332,7 @@ export default function RegisterPage() {
 
         <div className={styles.imageSection}>
           <img 
-            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800" 
+            src="https://i.pinimg.com/1200x/22/b5/60/22b5604eca105ae195aa809dc734d071.jpg" 
             alt="ShopAura SignUp" 
             className={styles.sideImage}
           />
