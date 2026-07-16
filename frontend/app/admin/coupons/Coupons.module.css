@@ -140,6 +140,62 @@ background:var(--primary);
 color:white;
 }
 
+.modalOverlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,.45);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 999;
+}
+
+.modal {
+  width: 550px;
+  background: #fff;
+  border-radius: 12px;
+  padding: 25px;
+}
+
+.modal h2 {
+  margin-bottom: 20px;
+}
+
+.modal form {
+  display: grid;
+  gap: 15px;
+}
+
+.modal input,
+.modal select {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  outline: none;
+}
+
+.modalButtons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+}
+
+.modalButtons button {
+  padding: 10px 18px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.modalButtons button:first-child {
+  background: #ddd;
+}
+
+.modalButtons button:last-child {
+  background: #0b5cff;
+  color: white;
+}
+
 @media(max-width:1024px){
 
 .header{
