@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState} from "react";
+import { useMemo, useState, useEffect, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
@@ -9,7 +9,7 @@ import productsDataMock from "@/data/products";
 
 import styles from "./ProductsPage.module.css";
 
-export default function ProductsContent() {
+function ProductsContent() {
   const searchParams = useSearchParams();
 
   // Get category from URL
@@ -30,11 +30,14 @@ export default function ProductsContent() {
             const price = hasDiscount ? p.discountPrice : p.price;
             const oldPrice = hasDiscount ? p.price : null;
             const discount = hasDiscount ? Math.round(((p.price - p.discountPrice) / p.price) * 100) : null;
+            const rawImage = p.images?.[0]?.url || "/images/headphone.png";
+            const imageUrl = rawImage.startsWith("/uploads") ? `${apiBase}${rawImage}` : rawImage;
             return {
               id: p._id,
               name: p.name,
               category: typeof p.category === "object" ? p.category?.name : "Accessories",
-              image: p.images?.[0]?.url || "/images/headphone.png",
+              brand: typeof p.brand === "object" ? p.brand?.name : (p.brand || "Unknown"),
+              image: imageUrl,
               price: price,
               oldPrice: oldPrice,
               discount: discount,
@@ -107,7 +110,12 @@ export default function ProductsContent() {
         break;
 
       case "newest":
-        data.sort((a, b) => b.id - a.id);
+        data.sort((a, b) => {
+          if (typeof a.id === "number" && typeof b.id === "number") {
+            return b.id - a.id;
+          }
+          return String(b.id).localeCompare(String(a.id));
+        });
         break;
 
       default:

@@ -5,7 +5,7 @@ import { ArrowLeft } from "lucide-react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import axios from "axios";
-import styles from "../../CouponsEdit.module.css";
+import styles from "../../add/AddCoupon.module.css";
 
 export default function EditCouponPage() {
   const { id } = useParams();
