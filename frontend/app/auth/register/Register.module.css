@@ -9,12 +9,33 @@ background:var(--bg);
 
 .card{
 width:100%;
-max-width:500px;
+max-width:950px;
 background:var(--surface);
 border:1px solid var(--line);
 border-radius:var(--radius-lg);
-padding:40px;
 box-shadow:var(--shadow-md);
+display:flex;
+overflow:hidden;
+}
+
+.formSection {
+  flex: 1.1;
+  padding: 40px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.imageSection {
+  flex: 0.9;
+  position: relative;
+  display: block;
+}
+
+.sideImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .header{
@@ -116,9 +137,18 @@ color:var(--primary);
 font-weight:600;
 }
 
+@media(max-width:768px){
+  .card {
+    max-width: 500px;
+  }
+  .imageSection {
+    display: none;
+  }
+}
+
 @media(max-width:480px){
 
-.card{
+.formSection{
 padding:25px;
 }
 

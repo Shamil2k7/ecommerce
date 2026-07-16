@@ -111,221 +111,231 @@ export default function RegisterPage() {
   return (
     <section className={styles.container}>
       <div className={styles.card}>
-        <div className={styles.header}>
-          <h1>Create Account</h1>
-          <p>Register to start shopping with ShopAura.</p>
-        </div>
-
-        {errorMsg && (
-          <div style={{
-            padding: "10px 14px",
-            backgroundColor: "#fef2f2",
-            border: "1px solid #fee2e2",
-            color: "#b91c1c",
-            borderRadius: "6px",
-            fontSize: "14px",
-            marginBottom: "16px"
-          }}>
-            {errorMsg}
+        <div className={styles.formSection}>
+          <div className={styles.header}>
+            <h1>Create Account</h1>
+            <p>Register to start shopping with ShopAura.</p>
           </div>
-        )}
 
-        {successMsg && (
-          <div style={{
-            padding: "10px 14px",
-            backgroundColor: "#f0fdf4",
-            border: "1px solid #dcfce7",
-            color: "#15803d",
-            borderRadius: "6px",
-            fontSize: "14px",
-            marginBottom: "16px"
-          }}>
-            {successMsg}
-          </div>
-        )}
-
-        <form className={styles.form} onSubmit={handleSubmit}>
-          <div className={styles.field}>
-            <label>Full Name</label>
-
-            <div className={styles.inputBox}>
-              <User size={18} />
-              <input
-                type="text"
-                placeholder="Enter your full name"
-                value={fullName}
-                onChange={(e) => setFullName(e.target.value)}
-                required
-              />
+          {errorMsg && (
+            <div style={{
+              padding: "10px 14px",
+              backgroundColor: "#fef2f2",
+              border: "1px solid #fee2e2",
+              color: "#b91c1c",
+              borderRadius: "6px",
+              fontSize: "14px",
+              marginBottom: "16px"
+            }}>
+              {errorMsg}
             </div>
-          </div>
+          )}
 
-          <div className={styles.field}>
-            <label>Email Address</label>
-
-            <div className={styles.inputBox}>
-              <Mail size={18} />
-              <input
-                type="email"
-                placeholder="Enter your email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
+          {successMsg && (
+            <div style={{
+              padding: "10px 14px",
+              backgroundColor: "#f0fdf4",
+              border: "1px solid #dcfce7",
+              color: "#15803d",
+              borderRadius: "6px",
+              fontSize: "14px",
+              marginBottom: "16px"
+            }}>
+              {successMsg}
             </div>
-          </div>
+          )}
 
-          <div className={styles.field}>
-            <label>Phone Number</label>
+          <form className={styles.form} onSubmit={handleSubmit}>
+            <div className={styles.field}>
+              <label>Full Name</label>
 
-            <div className={styles.inputBox}>
-              <Phone size={18} />
-              
-              <div className={styles.countrySelector}>
+              <div className={styles.inputBox}>
+                <User size={18} />
+                <input
+                  type="text"
+                  placeholder="Enter your full name"
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className={styles.field}>
+              <label>Email Address</label>
+
+              <div className={styles.inputBox}>
+                <Mail size={18} />
+                <input
+                  type="email"
+                  placeholder="Enter your email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className={styles.field}>
+              <label>Phone Number</label>
+
+              <div className={styles.inputBox}>
+                <Phone size={18} />
+                
+                <div className={styles.countrySelector}>
+                  <button
+                    type="button"
+                    className={styles.countryBtn}
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                  >
+                    <span>{selectedCountry.flag} {selectedCountry.code}</span>
+                    <span className={styles.dropdownArrow}>▼</span>
+                  </button>
+                  
+                  {dropdownOpen && (
+                    <div className={styles.countryDropdown}>
+                      {countries.map((c) => (
+                        <div
+                          key={c.code + c.name}
+                          className={styles.countryItem}
+                          onClick={() => {
+                            setSelectedCountry(c);
+                            setDropdownOpen(false);
+                          }}
+                        >
+                          <span className={styles.dropdownFlag}>{c.flag}</span>
+                          <span className={styles.dropdownName}>{c.name}</span>
+                          <span className={styles.dropdownCode}>{c.code}</span>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                <span className={styles.divider}>|</span>
+
+                <input
+                  type="tel"
+                  placeholder="Enter phone number"
+                  className={styles.phoneInputVal}
+                  value={phone}
+                  onChange={(e) => {
+                    const value = e.target.value.replace(/\D/g, "");
+                    setPhone(value);
+                  }}
+                  required
+                />
+              </div>
+            </div>
+
+            <div className={styles.field}>
+              <label>Password</label>
+
+              <div className={styles.inputBox}>
+                <Lock size={18} />
+
+                <input
+                  type={showPassword ? "text" : "password"}
+                  placeholder="Create password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+
                 <button
                   type="button"
-                  className={styles.countryBtn}
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
+                  onClick={() =>
+                    setShowPassword(!showPassword)
+                  }
                 >
-                  <span>{selectedCountry.flag} {selectedCountry.code}</span>
-                  <span className={styles.dropdownArrow}>▼</span>
+                  {showPassword ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
                 </button>
-                
-                {dropdownOpen && (
-                  <div className={styles.countryDropdown}>
-                    {countries.map((c) => (
-                      <div
-                        key={c.code + c.name}
-                        className={styles.countryItem}
-                        onClick={() => {
-                          setSelectedCountry(c);
-                          setDropdownOpen(false);
-                        }}
-                      >
-                        <span className={styles.dropdownFlag}>{c.flag}</span>
-                        <span className={styles.dropdownName}>{c.name}</span>
-                        <span className={styles.dropdownCode}>{c.code}</span>
-                      </div>
-                    ))}
-                  </div>
-                )}
               </div>
-
-              <span className={styles.divider}>|</span>
-
-              <input
-                type="tel"
-                placeholder="Enter phone number"
-                className={styles.phoneInputVal}
-                value={phone}
-                onChange={(e) => {
-                  const value = e.target.value.replace(/\D/g, "");
-                  setPhone(value);
-                }}
-                required
-              />
             </div>
+
+            <div className={styles.field}>
+              <label>Confirm Password</label>
+
+              <div className={styles.inputBox}>
+                <Lock size={18} />
+
+                <input
+                  type={showConfirm ? "text" : "password"}
+                  placeholder="Confirm password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                />
+
+                <button
+                  type="button"
+                  onClick={() =>
+                    setShowConfirm(!showConfirm)
+                  }
+                >
+                  {showConfirm ? (
+                    <EyeOff size={18} />
+                  ) : (
+                    <Eye size={18} />
+                  )}
+                </button>
+              </div>
+            </div>
+
+            <label className={styles.checkbox}>
+              <input 
+                type="checkbox" 
+                checked={termsAccepted} 
+                onChange={(e) => setTermsAccepted(e.target.checked)}
+              />
+              I agree to the Terms & Conditions and Privacy Policy.
+            </label>
+
+            <button
+              type="submit"
+              className={styles.registerBtn}
+              disabled={loading}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+                opacity: loading ? 0.7 : 1,
+                cursor: loading ? "not-allowed" : "pointer"
+              }}
+            >
+              {loading && <Loader2 size={16} className="animate-spin" />}
+              {loading ? "Creating Account..." : "Create Account"}
+            </button>
+          </form>
+
+          <div style={{ display: "flex", alignItems: "center", margin: "16px 0", color: "var(--text-soft)", fontSize: "14px" }}>
+            <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
+            <span style={{ padding: "0 10px" }}>or</span>
+            <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
           </div>
 
-          <div className={styles.field}>
-            <label>Password</label>
+          <GoogleLoginButton />
 
-            <div className={styles.inputBox}>
-              <Lock size={18} />
+          <div className={styles.footer}>
+            Already have an account?
 
-              <input
-                type={showPassword ? "text" : "password"}
-                placeholder="Create password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-
-              <button
-                type="button"
-                onClick={() =>
-                  setShowPassword(!showPassword)
-                }
-              >
-                {showPassword ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
-                )}
-              </button>
-            </div>
+            <Link href="/auth/login">
+              Login
+            </Link>
           </div>
-
-          <div className={styles.field}>
-            <label>Confirm Password</label>
-
-            <div className={styles.inputBox}>
-              <Lock size={18} />
-
-              <input
-                type={showConfirm ? "text" : "password"}
-                placeholder="Confirm password"
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                required
-              />
-
-              <button
-                type="button"
-                onClick={() =>
-                  setShowConfirm(!showConfirm)
-                }
-              >
-                {showConfirm ? (
-                  <EyeOff size={18} />
-                ) : (
-                  <Eye size={18} />
-                )}
-              </button>
-            </div>
-          </div>
-
-          <label className={styles.checkbox}>
-            <input 
-              type="checkbox" 
-              checked={termsAccepted} 
-              onChange={(e) => setTermsAccepted(e.target.checked)}
-            />
-            I agree to the Terms & Conditions and Privacy Policy.
-          </label>
-
-          <button
-            type="submit"
-            className={styles.registerBtn}
-            disabled={loading}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              opacity: loading ? 0.7 : 1,
-              cursor: loading ? "not-allowed" : "pointer"
-            }}
-          >
-            {loading && <Loader2 size={16} className="animate-spin" />}
-            {loading ? "Creating Account..." : "Create Account"}
-          </button>
-        </form>
-
-        <div style={{ display: "flex", alignItems: "center", margin: "16px 0", color: "var(--text-soft)", fontSize: "14px" }}>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
-          <span style={{ padding: "0 10px" }}>or</span>
-          <div style={{ flex: 1, height: "1px", backgroundColor: "var(--line)" }}></div>
         </div>
 
-        <GoogleLoginButton />
-
-        <div className={styles.footer}>
-          Already have an account?
-
-          <Link href="/auth/login">
-            Login
-          </Link>
+        <div className={styles.imageSection}>
+          <img 
+            src="https://images.unsplash.com/photo-1490481651871-ab68de25d43d?q=80&w=800" 
+            alt="ShopAura SignUp" 
+            className={styles.sideImage}
+          />
         </div>
       </div>
     </section>
