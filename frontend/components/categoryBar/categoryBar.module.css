@@ -1,0 +1,122 @@
+.categoryBar {
+    background: var(--surface);
+    border-bottom: 1px solid var(--line);
+    padding: 14px 20px;
+    font-family: var(--font-inter), sans-serif;
+}
+
+.container {
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.list {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.list::-webkit-scrollbar {
+    display: none;
+}
+
+.item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-decoration: none;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.iconWrapper {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background-color: var(--bg);
+    color: var(--text);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.name {
+    margin-top: 7px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--text);
+    transition: color 0.2s ease;
+    white-space: nowrap;
+}
+
+/* Hover effects */
+.item:hover .iconWrapper {
+    transform: translateY(-3px);
+    background-color: var(--secondary);
+}
+
+.item:hover .name {
+    color: var(--primary-hover);
+}
+
+/* ---------- Tablet ---------- */
+@media (max-width: 1024px) {
+    .list {
+        gap: 22px;
+    }
+
+    .categoryBar {
+        padding: 10px 16px;
+    }
+
+    .iconWrapper {
+        width: 36px;
+        height: 36px;
+    }
+
+    .name {
+        font-size: 11px;
+        margin-top: 6px;
+    }
+}
+
+/* ---------- Mobile ---------- */
+@media (max-width: 640px) {
+    .list {
+        gap: 16px;
+    }
+
+    .categoryBar {
+        padding: 8px 12px;
+    }
+
+    .iconWrapper {
+        width: 30px;
+        height: 30px;
+    }
+
+    .name {
+        font-size: 9.5px;
+        margin-top: 5px;
+    }
+}
+
+/* ---------- Small mobile ---------- */
+@media (max-width: 380px) {
+    .list {
+        gap: 12px;
+    }
+
+    .iconWrapper {
+        width: 28px;
+        height: 28px;
+    }
+
+    .name {
+        font-size: 9px;
+    }
+}
