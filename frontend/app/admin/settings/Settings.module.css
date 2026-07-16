@@ -1,156 +1,339 @@
-.container{
-display:flex;
-flex-direction:column;
-gap:24px;
+/* ===========================
+   Wrapper
+=========================== */
+
+.wrapper {
+  width: 100%;
+  min-height: 100vh;
+  padding: 32px;
+  background: #f8f5ef;
+  box-sizing: border-box;
 }
 
-.header h1{
-font-size:32px;
-color:var(--text);
+.header {
+  margin-bottom: 24px;
 }
 
-.header p{
-margin-top:6px;
-color:var(--text-soft);
+.settingsTitle {
+  margin: 0;
+  font-size: 34px;
+  font-weight: 700;
+  color: #222;
 }
 
-.form{
-display:flex;
-flex-direction:column;
-gap:24px;
+.settingsDescription {
+  margin-top: 6px;
+  color: #7a746d;
+  font-size: 15px;
 }
 
-.card{
-background:var(--surface);
-border:1px solid var(--line);
-border-radius:var(--radius-lg);
-padding:24px;
-box-shadow:var(--shadow-sm);
+/* ===========================
+   Card
+=========================== */
+
+.card {
+  background: #fff;
+  border: 1px solid #e8e2dc;
+  border-radius: 22px;
+  overflow: hidden;
 }
 
-.card h2{
-margin-bottom:20px;
-font-size:20px;
+.cardHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 28px 30px;
+  border-bottom: 1px solid #ece6df;
 }
 
-.grid{
-display:grid;
-grid-template-columns:repeat(2,1fr);
-gap:20px;
+.cardHeader h2 {
+  margin: 0;
+  font-size: 26px;
+  color: #222;
 }
 
-.field{
-display:flex;
-flex-direction:column;
+.cardHeader p {
+  margin-top: 5px;
+  color: #817972;
+  font-size: 15px;
 }
 
-.field label{
-margin-bottom:8px;
-font-weight:600;
+.cardContent {
+  padding: 30px;
 }
 
-.field input,
-.field select{
-padding:14px;
-border:1px solid var(--line);
-border-radius:var(--radius-md);
-background:var(--bg);
-outline:none;
-transition:.3s;
+/* ===========================
+   Save Button
+=========================== */
+
+.saveBtn {
+  border: none;
+  background: #1f1a17;
+  color: #fff;
+  padding: 14px 28px;
+  border-radius: 999px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 600;
+  transition: .25s;
 }
 
-.field input:focus,
-.field select:focus{
-border-color:var(--primary);
-background:white;
+.saveBtn:hover {
+  background: #000;
 }
 
-.switchRow{
-display:flex;
-justify-content:space-between;
-align-items:center;
-padding:16px 0;
-border-bottom:1px solid var(--line);
+.saveBtn:disabled {
+  opacity: .7;
+  cursor: not-allowed;
 }
 
-.switchRow:last-child{
-border-bottom:none;
+/* ===========================
+   Form Layout
+=========================== */
+
+.form {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 26px 22px;
 }
 
-.switchRow input{
-width:20px;
-height:20px;
-accent-color:var(--primary);
+.formGroup {
+  display: flex;
+  flex-direction: column;
 }
 
-.actions{
-display:flex;
-justify-content:flex-end;
-gap:15px;
+.formGroup label {
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 10px;
 }
 
-.cancel,
-.save{
-height:48px;
-padding:0 28px;
-border-radius:var(--radius-md);
-font-weight:600;
-transition:.3s;
+/* ===========================
+   Upload Fields
+=========================== */
+
+.formGroup:has(input[type="file"]) {
+  display: grid;
+  grid-template-columns: 72px 1fr;
+  grid-template-areas:
+    "label label"
+    "preview input";
+  gap: 12px 18px;
+  align-items: center;
 }
 
-.cancel{
-background:white;
-border:1px solid var(--line);
+.formGroup:has(input[type="file"]) label {
+  grid-area: label;
+  margin-bottom: 0;
 }
 
-.cancel:hover{
-background:var(--secondary-soft);
+.formGroup:has(input[type="file"]) img {
+  grid-area: preview;
 }
 
-.save{
-background:var(--primary);
-color:white;
+.formGroup:has(input[type="file"]) input[type="file"] {
+  grid-area: input;
 }
 
-.save:hover{
-background:var(--primary-hover);
+/* ===========================
+   Preview Images
+=========================== */
+
+.formGroup img {
+  width: 70px;
+  height: 70px;
+  object-fit: contain;
+  border-radius: 12px;
+  border: 1px solid #e5ddd4;
+  background: #fff;
+  padding: 6px;
+  margin: 0;
 }
 
-@media(max-width:900px){
-.grid{
-grid-template-columns:1fr;
-}
-}
+/* favicon */
 
-@media(max-width:768px){
-
-.header h1{
-font-size:28px;
+.formGroup:nth-child(2) img {
+  width: 54px;
+  height: 54px;
 }
 
-.card{
-padding:20px;
+/* ===========================
+   File Input
+=========================== */
+
+.formGroup input[type="file"] {
+  width: 100%;
+  min-height: 72px;
+  border: 2px dashed #ddd3c7;
+  border-radius: 14px;
+  background: #f8f5ef;
+  padding: 18px;
+  cursor: pointer;
+  box-sizing: border-box;
 }
 
-.actions{
-flex-direction:column;
+.formGroup input[type="file"]::file-selector-button {
+  background: #211d1b;
+  color: white;
+  border: none;
+  padding: 9px 18px;
+  border-radius: 8px;
+  cursor: pointer;
+  margin-right: 12px;
 }
 
-.cancel,
-.save{
-width:100%;
+/* ===========================
+   Text Inputs
+=========================== */
+
+.formGroup input[type="text"] {
+  width: 100%;
+  height: 56px;
+  border: 1px solid #e5ddd4;
+  border-radius: 14px;
+  background: #f8f5ef;
+  padding: 0 18px;
+  font-size: 15px;
+  color: #222;
+  outline: none;
+  transition: .25s;
+  box-sizing: border-box;
 }
 
+.formGroup input[type="text"]:focus {
+  background: #fff;
+  border-color: #222;
 }
 
-@media(max-width:480px){
+/* ===========================
+   Tablet
+=========================== */
 
-.header h1{
-font-size:24px;
+@media (max-width:992px) {
+
+  .wrapper {
+    padding: 24px;
+  }
+
+  .form {
+    grid-template-columns: 1fr;
+  }
+
+  .cardHeader {
+    flex-direction: column;
+    gap: 18px;
+    align-items: flex-start;
+  }
+
+  .saveBtn {
+    width: 100%;
+  }
 }
 
-.card{
-padding:16px;
+/* ===========================
+   Mobile
+=========================== */
+
+@media (max-width:768px) {
+
+  .wrapper {
+    padding: 16px;
+  }
+
+  .settingsTitle {
+    font-size: 28px;
+  }
+
+  .settingsDescription {
+    font-size: 14px;
+  }
+
+  .card {
+    border-radius: 18px;
+  }
+
+  .cardHeader,
+  .cardContent {
+    padding: 20px;
+  }
+
+  .cardHeader h2 {
+    font-size: 22px;
+  }
+
+  .form {
+    gap: 20px;
+  }
+
+  .formGroup:has(input[type="file"]) {
+    grid-template-columns: 60px 1fr;
+    gap: 12px;
+  }
+
+  .formGroup img {
+    width: 58px;
+    height: 58px;
+  }
+
+  .formGroup:nth-child(2) img {
+    width: 48px;
+    height: 48px;
+  }
+
+  .formGroup input[type="file"] {
+    min-height: 60px;
+    padding: 14px;
+    font-size: 14px;
+  }
+
+  .formGroup input[type="file"]::file-selector-button {
+    padding: 8px 14px;
+    font-size: 13px;
+  }
+
+  .formGroup input[type="text"] {
+    height: 50px;
+    font-size: 14px;
+  }
 }
 
+/* ===========================
+   Small Mobile
+=========================== */
+
+@media (max-width:480px) {
+
+  .wrapper {
+    padding: 12px;
+  }
+
+  .settingsTitle {
+    font-size: 24px;
+  }
+
+  .cardHeader,
+  .cardContent {
+    padding: 16px;
+  }
+
+  .formGroup:has(input[type="file"]) {
+    grid-template-columns: 50px 1fr;
+  }
+
+  .formGroup img {
+    width: 45px;
+    height: 45px;
+  }
+
+  .formGroup:nth-child(2) img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .saveBtn {
+    width: 100%;
+    padding: 13px;
+    font-size: 14px;
+  }
 }

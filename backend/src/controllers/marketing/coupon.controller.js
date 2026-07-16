@@ -1,9 +1,6 @@
 import Coupon from "../../models/Coupon.js";
-
-// ================= CREATE COUPON =================
+//creat
 export const createCoupon = async (req, res) => {
-  console.log("========== CREATE COUPON ==========");
-
   try {
     const {
       name,
@@ -20,11 +17,11 @@ export const createCoupon = async (req, res) => {
       return res.status(400).send("All fields are required");
     }
 
-    const coupon = await Coupon.findOne({
+    const existingCoupon = await Coupon.findOne({
       code: code.toUpperCase(),
     });
 
-    if (coupon) {
+    if (existingCoupon) {
       return res.status(400).send("Coupon Already Exists");
     }
 
@@ -46,42 +43,77 @@ export const createCoupon = async (req, res) => {
   }
 };
 
-// ================= GET ALL =================
+//find all
 export const getCoupons = async (req, res) => {
   try {
-    const coupons = await Coupon.find();
-    res.json(coupons);
+    const coupons = await Coupon.find().sort({ createdAt: -1 });
+    return res.status(200).json(coupons);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 };
 
-// ================= GET SINGLE =================
+//findone
 export const getCouponById = async (req, res) => {
   try {
     const coupon = await Coupon.findById(req.params.id);
-    res.json(coupon);
+
+    if (!coupon) {
+      return res.status(404).send("Coupon Not Found");
+    }
+
+    return res.status(200).json(coupon);
   } catch (error) {
-    res.status(500).send(error.message);
+    return res.status(500).send(error.message);
   }
 };
-
-// ================= UPDATE =================
+//update
 export const updateCoupon = async (req, res) => {
   try {
-    await Coupon.findByIdAndUpdate(req.params.id, req.body);
-    res.send("Coupon Updated Successfully");
+    console.log("Update Controller Called");
+    console.log("ID :", req.params.id);
+    console.log("BODY :", req.body);
+
+    const updatedCoupon = await Coupon.findByIdAndUpdate(
+      req.params.id,
+      req.body,
+      {
+        returnDocument: "after",
+        runValidators: true,
+      }
+    );
+
+    if (!updatedCoupon) {
+      return res.status(404).send("Coupon Not Found");
+    }
+
+    return res.status(200).json({
+      message: "Coupon Updated Successfully",
+      coupon: updatedCoupon,
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.log(error);
+    return res.status(500).send(error.message);
   }
 };
 
-// ================= DELETE =================
+//delete
 export const deleteCoupon = async (req, res) => {
   try {
-    await Coupon.findByIdAndDelete(req.params.id);
-    res.send("Coupon Deleted Successfully");
+    console.log("Delete Controller Called");
+    console.log("ID :", req.params.id);
+
+    const deletedCoupon = await Coupon.findByIdAndDelete(req.params.id);
+
+    if (!deletedCoupon) {
+      return res.status(404).send("Coupon Not Found");
+    }
+
+    return res.status(200).json({
+      message: "Coupon Deleted Successfully",
+    });
   } catch (error) {
-    res.status(500).send(error.message);
+    console.log(error);
+    return res.status(500).send(error.message);
   }
 };

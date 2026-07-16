@@ -10,8 +10,13 @@
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.7.4",
     "multer": "^2.2.0",
+<<<<<<< HEAD
     "multer-storage-cloudinary": "^4.0.0",
     "nodemailer": "^9.0.3"
+=======
+    "nodemailer": "^7.0.5",
+    "streamifier": "^0.1.1"
+>>>>>>> 9633fee8511124423dba8fa588bb6d1e05c02379
   },
   "scripts": {
     "start": "node app.js",
