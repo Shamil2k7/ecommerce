@@ -70,12 +70,10 @@ flex-direction:column;
 gap:8px;
 }
 
-.field label{
-font-weight:600;
-}
+
 
 .inputBox{
-height:52px;
+height:54px;
 display:flex;
 align-items:center;
 gap:12px;
@@ -83,6 +81,7 @@ padding:0 16px;
 border:1px solid var(--line);
 border-radius:var(--radius-md);
 background:var(--bg);
+position: relative;
 }
 
 .inputBox input{
@@ -91,6 +90,29 @@ border:none;
 outline:none;
 background:transparent;
 font-size:15px;
+height: 100%;
+padding-top: 14px;
+color: var(--text);
+}
+
+.floatingLabel {
+  position: absolute;
+  left: 45px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+  font-size: 14px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}
+
+.inputBox input:focus ~ .floatingLabel,
+.inputBox input:not(:placeholder-shown) ~ .floatingLabel {
+  top: 14px;
+  transform: translateY(-50%) scale(0.85);
+  color: var(--primary);
 }
 
 .inputBox button{
@@ -152,7 +174,7 @@ font-weight:600;
 /* Tablet Layout */
 @media (max-width: 1024px) {
   .card {
-    max-width: 900px;
+    max-width: 90%;
   }
   .formSection {
     padding: 35px;
@@ -163,7 +185,7 @@ font-weight:600;
 }
 
 /* Mobile Layout */
-@media (max-width: 768px) {
+@media (max-width: 600px) {
   .card {
     flex-direction: column-reverse;
     max-width: 480px;

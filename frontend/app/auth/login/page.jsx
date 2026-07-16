@@ -83,34 +83,34 @@ export default function LoginPage() {
 
           <form className={styles.form} onSubmit={handleSubmit}>
             <div className={styles.field}>
-              <label>Email Address</label>
-
               <div className={styles.inputBox}>
                 <Mail size={18} />
 
                 <input
                   type="email"
-                  placeholder="Enter your email"
+                  id="email"
+                  placeholder=" "
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
+                <label htmlFor="email" className={styles.floatingLabel}>Email Address</label>
               </div>
             </div>
 
             <div className={styles.field}>
-              <label>Password</label>
-
               <div className={styles.inputBox}>
                 <Lock size={18} />
 
                 <input
                   type={showPassword ? "text" : "password"}
-                  placeholder="Enter your password"
+                  id="password"
+                  placeholder=" "
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
                 />
+                <label htmlFor="password" className={styles.floatingLabel}>Password</label>
 
                 <button
                   type="button"
