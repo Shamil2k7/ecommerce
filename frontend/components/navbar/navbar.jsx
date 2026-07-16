@@ -6,17 +6,9 @@ import styles from "./Navbar.module.css";
 import { CgProfile } from "react-icons/cg";
 import { CiHeart } from "react-icons/ci";
 import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
-import { useAuth } from "@/context/AuthContext";
 
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
-  const { user, logout } = useAuth();
-
-  const handleLogoutClick = async () => {
-    await logout();
-    setMenuOpen(false);
-  };
-
   const closeMenu = () => setMenuOpen(false);
 
   return (
@@ -69,45 +61,15 @@ export default function Navbar() {
 
           {/* Desktop Actions/Icons Bar */}
           <div className={styles.icons}>
-            {user ? (
-              <>
-                <Link href="/profile" title={`Profile: ${user.fullName}`}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                    <CgProfile />
-                    <span style={{ fontSize: "14px", fontWeight: "500", color: "#4b5563" }}>
-                      {user.fullName.split(" ")[0]}
-                    </span>
-                  </div>
-                </Link>
-                <button
-                  onClick={handleLogoutClick}
-                  style={{
-                    background: "none",
-                    border: "none",
-                    cursor: "pointer",
-                    fontSize: "13px",
-                    fontWeight: "600",
-                    color: "#ef4444",
-                    padding: "4px 8px",
-                  }}
-                >
-                  Logout
-                </button>
-              </>
-            ) : (
-              <Link href="/auth/login" title="Login">
-                <div style={{ display: "flex", alignItems: "center", gap: "5px" }}>
-                  <CgProfile />
-                  <span style={{ fontSize: "13px", fontWeight: "600", color: "#4f46e5" }}>
-                    Login
-                  </span>
-                </div>
-              </Link>
-            )}
+            <Link href="/profile" title="Profile">
+              <CgProfile />
+            </Link>
 
-            <Link href="/wishlist"><CiHeart /></Link>
+            <Link href="/wishlist" title="Wishlist">
+              <CiHeart />
+            </Link>
 
-            <Link href="/cart" className={styles.cart}>
+            <Link href="/cart" className={styles.cart} title="Cart">
               <IoCartOutline />
               <span className={styles.badge}>0</span>
             </Link>
@@ -139,29 +101,11 @@ export default function Navbar() {
           
           <hr style={{ border: "0", borderTop: "1px solid var(--line)", margin: "10px 0" }} />
           
-          {user ? (
-            <>
-              <Link href="/profile" onClick={closeMenu}>Profile ({user.fullName})</Link>
-              <button 
-                onClick={handleLogoutClick}
-                style={{ 
-                  textAlign: "left", 
-                  background: "none", 
-                  border: "none", 
-                  padding: "0", 
-                  color: "#ef4444", 
-                  fontSize: "17px",
-                  fontFamily: "inherit",
-                  fontWeight: "500",
-                  cursor: "pointer"
-                }}
-              >
-                Logout
-              </button>
-            </>
-          ) : (
-            <Link href="/auth/login" onClick={closeMenu}>Login / Register</Link>
-          )}
+          {/* Profile Icon Menu Item for Mobile Viewport */}
+          <Link href="/profile" className={styles.mobileMenuIconLink} onClick={closeMenu}>
+            <CgProfile style={{ fontSize: "22px" }} /> Profile
+          </Link>
+          
           <Link href="/wishlist" onClick={closeMenu}>Wishlist</Link>
           <Link href="/cart" onClick={closeMenu}>Cart</Link>
         </div>
