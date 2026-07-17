@@ -21,8 +21,6 @@ export default function EditBannerPage() {
 
   const [updating, setUpdating] = useState(false);
 
-  // ================= GET BANNER =================
-
   useEffect(() => {
     if (id) {
       getBanner();
@@ -46,8 +44,6 @@ export default function EditBannerPage() {
     }
   };
 
-  // ================= IMAGE CHANGE =================
-
   const handleImage = (e) => {
     const file = e.target.files[0];
 
@@ -65,8 +61,7 @@ export default function EditBannerPage() {
     reader.readAsDataURL(file);
   };
 
-  // ================= UPDATE =================
-
+  
   const handleUpdate = async () => {
     try {
       setUpdating(true);
@@ -89,8 +84,6 @@ export default function EditBannerPage() {
       setUpdating(false);
     }
   };
-
-  // ================= DELETE =================
 
   const handleDelete = async () => {
     if (!window.confirm("Delete this banner?")) return;
