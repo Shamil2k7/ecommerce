@@ -16,7 +16,8 @@
 
 .settingsTitle {
   margin: 0;
-  font-size: 34px;
+    font-size:clamp(1.5rem,3vw,2rem);
+    line-height:1.2;
   font-weight: 700;
   color: #222;
 }
@@ -24,7 +25,7 @@
 .settingsDescription {
   margin-top: 6px;
   color: #7a746d;
-  font-size: 15px;
+font-size:clamp(.85rem,2vw,.95rem);
 }
 
 /* ===========================
@@ -48,7 +49,7 @@
 
 .cardHeader h2 {
   margin: 0;
-  font-size: 26px;
+ font-size:clamp(1.2rem,2.4vw,1.5rem);
   color: #222;
 }
 
@@ -70,10 +71,10 @@
   border: none;
   background: #1f1a17;
   color: #fff;
-  padding: 14px 28px;
+  padding:12px 22px;
+font-size:14px;
   border-radius: 999px;
   cursor: pointer;
-  font-size: 15px;
   font-weight: 600;
   transition: .25s;
 }
@@ -103,10 +104,24 @@
 }
 
 .formGroup label {
-  font-size: 15px;
+    font-size:clamp(.9rem,1.5vw,.95rem);
   font-weight: 600;
   color: #222;
   margin-bottom: 10px;
+}
+.textarea {
+  width: 100%;
+  min-height: 120px;
+  padding: 16px;
+  border: 1px solid #e5ddd4;
+  border-radius: 14px;
+  background: #f8f5ef;
+  resize: vertical;
+  font-family: inherit;
+  font-size: 15px;
+  outline: none;
+  transition: 0.25s;
+  box-sizing: border-box;
 }
 
 /* ===========================

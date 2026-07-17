@@ -12,6 +12,13 @@ export default function Page() {
   const [formData, setFormData] = useState({
     storeName: "",
     tagline: "",
+    email: "",
+    phone: "",
+    address: "",
+    facebook: "",
+    instagram: "",
+    twitter: "",
+    youtube: "",
   });
 
   const [logo, setLogo] = useState(null);
@@ -34,26 +41,32 @@ export default function Page() {
         setFormData({
           storeName: data.storeName || "",
           tagline: data.tagline || "",
+          email: data.email || "",
+          phone: data.phone || "",
+          address: data.address || "",
+          facebook: data.facebook || "",
+          instagram: data.instagram || "",
+          twitter: data.twitter || "",
+          youtube: data.youtube || "",
         });
 
         setLogoPreview(data.logo || "");
         setFaviconPreview(data.favicon || "");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
     }
   };
 
   const handleChange = (e) => {
-    setFormData({
-      ...formData,
+    setFormData((prev) => ({
+      ...prev,
       [e.target.name]: e.target.value,
-    });
+    }));
   };
 
   const handleLogo = (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
 
     setLogo(file);
@@ -62,7 +75,6 @@ export default function Page() {
 
   const handleFavicon = (e) => {
     const file = e.target.files[0];
-
     if (!file) return;
 
     setFavicon(file);
@@ -99,9 +111,12 @@ export default function Page() {
 
       alert("Settings Updated Successfully");
 
+      setLogo(null);
+      setFavicon(null);
+
       fetchSettings();
-    } catch (error) {
-      console.log(error);
+    } catch (err) {
+      console.log(err);
       alert("Something went wrong");
     } finally {
       setLoading(false);
@@ -113,9 +128,8 @@ export default function Page() {
       <div className={styles.header}>
         <div>
           <h1 className={styles.settingsTitle}>Site Settings</h1>
-
           <p className={styles.settingsDescription}>
-            Manage your storefront branding
+            Manage your storefront branding and footer details.
           </p>
         </div>
       </div>
@@ -123,14 +137,14 @@ export default function Page() {
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <div>
-            <h2>Branding</h2>
-            <p>Logo, favicon and store details</p>
+            <h2>Store Settings</h2>
+            <p>Branding, contact information and social media.</p>
           </div>
 
           <button
-            onClick={handleSubmit}
             className={styles.saveBtn}
             disabled={loading}
+            onClick={handleSubmit}
           >
             {loading ? "Saving..." : "Save Changes"}
           </button>
@@ -138,17 +152,12 @@ export default function Page() {
 
         <div className={styles.cardContent}>
           <div className={styles.form}>
-
+            {/* Logo */}
             <div className={styles.formGroup}>
               <label>Logo</label>
 
               {logoPreview && (
-                <img
-                  src={logoPreview}
-                  alt="logo"
-                  width={120}
-                  height={120}
-                />
+                <img src={logoPreview} alt="logo" />
               )}
 
               <input
@@ -158,16 +167,12 @@ export default function Page() {
               />
             </div>
 
+            {/* Favicon */}
             <div className={styles.formGroup}>
               <label>Favicon</label>
 
               {faviconPreview && (
-                <img
-                  src={faviconPreview}
-                  alt="favicon"
-                  width={70}
-                  height={70}
-                />
+                <img src={faviconPreview} alt="favicon" />
               )}
 
               <input
@@ -177,6 +182,7 @@ export default function Page() {
               />
             </div>
 
+            {/* Store Name */}
             <div className={styles.formGroup}>
               <label>Store Name</label>
 
@@ -185,10 +191,11 @@ export default function Page() {
                 name="storeName"
                 value={formData.storeName}
                 onChange={handleChange}
-                placeholder="Enter Store Name"
+                placeholder="ShopAura"
               />
             </div>
 
+            {/* Tagline */}
             <div className={styles.formGroup}>
               <label>Tagline</label>
 
@@ -197,7 +204,98 @@ export default function Page() {
                 name="tagline"
                 value={formData.tagline}
                 onChange={handleChange}
-                placeholder="Enter Store Tagline"
+                placeholder="Premium Shopping Experience"
+              />
+            </div>
+
+            {/* Email */}
+            <div className={styles.formGroup}>
+              <label>Email</label>
+
+              <input
+                type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
+                placeholder="support@shopaura.com"
+              />
+            </div>
+
+            {/* Phone */}
+            <div className={styles.formGroup}>
+              <label>Phone</label>
+
+              <input
+                type="text"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
+                placeholder="+91 9876543210"
+              />
+            </div>
+
+            {/* Address */}
+            <div className={styles.formGroup} style={{ gridColumn: "1 / -1" }}>
+              <label>Address</label>
+
+              <textarea
+                className={styles.textarea}
+                name="address"
+                value={formData.address}
+                onChange={handleChange}
+                placeholder="Enter complete office address"
+              />
+            </div>
+
+            {/* Facebook */}
+            <div className={styles.formGroup}>
+              <label>Facebook URL</label>
+
+              <input
+                type="text"
+                name="facebook"
+                value={formData.facebook}
+                onChange={handleChange}
+                placeholder="https://facebook.com/..."
+              />
+            </div>
+
+            {/* Instagram */}
+            <div className={styles.formGroup}>
+              <label>Instagram URL</label>
+
+              <input
+                type="text"
+                name="instagram"
+                value={formData.instagram}
+                onChange={handleChange}
+                placeholder="https://instagram.com/..."
+              />
+            </div>
+
+            {/* Twitter */}
+            <div className={styles.formGroup}>
+              <label>Twitter/X URL</label>
+
+              <input
+                type="text"
+                name="twitter"
+                value={formData.twitter}
+                onChange={handleChange}
+                placeholder="https://x.com/..."
+              />
+            </div>
+
+            {/* YouTube */}
+            <div className={styles.formGroup}>
+              <label>YouTube URL</label>
+
+              <input
+                type="text"
+                name="youtube"
+                value={formData.youtube}
+                onChange={handleChange}
+                placeholder="https://youtube.com/..."
               />
             </div>
           </div>
