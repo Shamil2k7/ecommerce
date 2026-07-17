@@ -21,6 +21,8 @@ export default function EditBannerPage() {
 
   const [updating, setUpdating] = useState(false);
 
+  // ================= GET BANNER =================
+
   useEffect(() => {
     if (id) {
       getBanner();
@@ -61,7 +63,8 @@ export default function EditBannerPage() {
     reader.readAsDataURL(file);
   };
 
-  
+  // ================= UPDATE =================
+
   const handleUpdate = async () => {
     try {
       setUpdating(true);
