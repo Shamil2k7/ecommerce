@@ -5,23 +5,40 @@ import Category from "../../models/category.model.js";
 import ApiError from "../../utils/ApiError.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
+import Brand from "../../models/brand.model.js";
 
 // @desc Create product (multipart/form-data, field "images" up to 6 files)
 // @route POST /api/products
 export const createProduct = asyncHandler(async (req, res) => {
-  const { category } = req.body;
+  const { category, brand } = req.body;
 
-  const categoryExists = await Category.findById(category);
-  if (!categoryExists) throw new ApiError(404, "Category not found");
+const categoryExists = await Category.findById(category);
+if (!categoryExists) {
+  throw new ApiError(404, "Category not found");
+}
 
-  const images =
-    req.files?.map((file, index) => ({
-      url: `/uploads/products/${file.filename}`,
-      public_id: file.filename,
-      isPrimary: index === 0,
-    })) || [];
+const brandExists = await Brand.findById(brand);
+if (!brandExists) {
+  throw new ApiError(404, "Brand not found");
+}
 
-  const product = await Product.create({ ...req.body, images });
+const images =
+  req.files?.map((file, index) => ({
+    url: `/uploads/products/${file.filename}`,
+    public_id: file.filename,
+    isPrimary: index === 0,
+  })) || [];
+
+const product = await Product.create({
+  ...req.body,
+  category,
+  brand,
+  images,
+});
+
+return res
+  .status(201)
+  .json(new ApiResponse(201, product, "Product created successfully"));
 
   return res.status(201).json(new ApiResponse(201, product, "Product created successfully"));
 });

@@ -69,6 +69,7 @@ export default function AddProductPage() {
       formData.append("slug", slug);
       formData.append("category", category);
       formData.append("price", Number(price));
+      formData.append("brand", selectedBrandId);
       
       if (salePrice) {
         formData.append("discountPrice", Number(salePrice));

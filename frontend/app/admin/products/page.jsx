@@ -17,7 +17,11 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
   const [productData, setProductData] = useState([]);
   const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
+  const [selectedBrand, setSelectedBrand] = useState("All Brands");
+
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -31,6 +35,16 @@ export default function ProductsPage() {
       })
       .catch((err) => console.error("Error fetching products:", err))
       .finally(() => setLoading(false));
+
+    // Fetch brands
+    fetch("http://localhost:5000/api/brands")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data) {
+          setBrands(json.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching brands:", err));
 
     // Fetch categories
     fetch("http://localhost:5000/api/categories")
@@ -61,10 +75,29 @@ export default function ProductsPage() {
   };
 
   const filteredProducts = productData.filter((item) => {
-    const matchesSearch = item.name.toLowerCase().includes(search.toLowerCase());
-    const itemCategoryName = typeof item.category === "object" ? item.category?.name : item.category;
-    const matchesCategory = selectedCategory === "All Categories" || itemCategoryName === selectedCategory;
-    return matchesSearch && matchesCategory;
+    const matchesSearch = item.name
+      .toLowerCase()
+      .includes(search.toLowerCase());
+
+    const itemCategoryName =
+      typeof item.category === "object"
+        ? item.category?.name
+        : item.category;
+
+    const itemBrandName =
+      typeof item.brand === "object"
+        ? item.brand?.name
+        : item.brand;
+
+    const matchesCategory =
+      selectedCategory === "All Categories" ||
+      itemCategoryName === selectedCategory;
+
+    const matchesBrand =
+      selectedBrand === "All Brands" ||
+      itemBrandName === selectedBrand;
+
+    return matchesSearch && matchesCategory && matchesBrand;
   });
 
   return (
@@ -110,12 +143,17 @@ export default function ProductsPage() {
           ))}
         </select>
 
-        <select>
-          <option>All Brands</option>
-          <option>Apple</option>
-          <option>Nike</option>
-          <option>Sony</option>
-          <option>Samsung</option>
+        <select
+          value={selectedBrand}
+          onChange={(e) => setSelectedBrand(e.target.value)}
+        >
+          <option value="All Brands">All Brands</option>
+
+          {brands.map((brand) => (
+            <option key={brand._id} value={brand.name}>
+              {brand.name}
+            </option>
+          ))}
         </select>
 
       </div>
@@ -166,7 +204,11 @@ export default function ProductsPage() {
 
                   <td>{typeof product.category === "object" ? product.category?.name : product.category || "Uncategorized"}</td>
 
-                  <td>{product.brand || "-"}</td>
+                  <td>
+                    {typeof product.brand === "object"
+                      ? product.brand.name
+                      : product.brand || "-"}
+                  </td>
 
                   <td>
                     ₹{product.price.toLocaleString()}
@@ -178,13 +220,12 @@ export default function ProductsPage() {
 
                     <span
                       className={`${styles.status}
-                      ${
-                        product.stock > 10
+                      ${product.stock > 10
                           ? styles.active
                           : product.stock > 0
-                          ? styles.low
-                          : styles.out
-                      }`}
+                            ? styles.low
+                            : styles.out
+                        }`}
                     >
                       {product.stock > 10 ? "Active" : product.stock > 0 ? "Low Stock" : "Out of Stock"}
                     </span>

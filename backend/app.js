@@ -13,6 +13,7 @@ import cors from "cors";
 import connectDB from "./src/config/db.js";
 import authRoutes from "./src/routes/auth.routes.js";
 import couponRoutes from "./src/routes/marketing.routes.js"
+import productRoutes from "./src/routes/product.routes.js";
 import orderRoutes from "./src/routes/order.routes.js";
 const app = express();
 
@@ -41,6 +42,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api", productRoutes);
 // Handling GET request
 app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
