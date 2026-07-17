@@ -37,9 +37,10 @@ const productSchema = new Schema(
       required: [true, "Category is required"],
     },
     brand: {
-      type: Schema.Types.ObjectId,
-      ref: "Brand",
-    },
+  type: mongoose.Schema.Types.ObjectId,
+  ref: "Brand",
+  required: true,
+},
     price: {
       type: Number,
       required: [true, "Price is required"],
