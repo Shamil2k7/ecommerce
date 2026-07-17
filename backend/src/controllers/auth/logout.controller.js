@@ -1,3 +1,4 @@
+// Logout user
 const logout = async (req, res) => {
   try {
     // Clear JWT cookie

@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 
 const AuthContext = createContext();
 
+// Base URL for all auth API calls
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth`;
-console.log(API_BASE_URL,'hhhhhhhhhhhhhhhhhh');
 
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Validate session on load
+  // Check if the user is logged in on every page load
   const checkAuth = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/me`, {
@@ -21,7 +21,7 @@ export function AuthProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include",
+        credentials: "include", // needed to send the JWT cookie cross-origin
       });
 
       const data = await response.json();
@@ -43,7 +43,6 @@ export function AuthProvider({ children }) {
     checkAuth();
   }, []);
 
-  // Register
   const register = async (fullName, email, phone, password) => {
     try {
       const response = await fetch(`${API_BASE_URL}/register`, {
@@ -68,7 +67,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Login
   const login = async (email, password) => {
     try {
       const response = await fetch(`${API_BASE_URL}/login`, {
@@ -93,7 +91,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout
   const logout = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/logout`, {
@@ -118,7 +115,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Forgot Password
   const forgotPassword = async (email) => {
     try {
       const response = await fetch(`${API_BASE_URL}/forgot-password`, {
@@ -136,7 +132,7 @@ export function AuthProvider({ children }) {
         return { 
           success: true, 
           message: data.message,
-          token: data.token // Returned only in development mode for direct URL testing
+          token: data.token 
         };
       } else {
         return { success: false, message: data.message || "Failed to send reset link" };
@@ -146,7 +142,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Reset Password
   const resetPassword = async (token, password) => {
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password`, {
@@ -171,7 +166,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Change Password (requires authentication)
   const changePassword = async (currentPassword, newPassword) => {
     try {
       const response = await fetch(`${API_BASE_URL}/change-password`, {
@@ -195,7 +189,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Google authentication
   const googleLogin = async (token) => {
     try {
       const response = await fetch(`${API_BASE_URL}/google`, {

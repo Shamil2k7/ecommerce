@@ -124,17 +124,45 @@
 }
 
 .actions button {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: var(--bg);
+  height: 34px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
   display: flex;
-  justify-content: center;
   align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: opacity 0.15s;
 }
 
-.actions button:hover {
-  background: var(--primary);
+.actions button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Block button — red */
+.blockBtn {
+  background: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger);
+}
+
+.blockBtn:hover:not(:disabled) {
+  background: var(--danger);
+  color: white;
+}
+
+/* Unblock button — green */
+.unblockBtn {
+  background: var(--success-bg);
+  color: var(--success);
+  border: 1px solid var(--success);
+}
+
+.unblockBtn:hover:not(:disabled) {
+  background: var(--success);
   color: white;
 }
 

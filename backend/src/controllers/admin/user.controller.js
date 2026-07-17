@@ -1,5 +1,5 @@
 import User from "../models/userModels.js";
-import bcrypt from "bcryptjs";
+import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import createToken from "../utils/createToken.js";
 
@@ -25,7 +25,7 @@ const createUser = async (req, res) => {
 
     const salt = await bcrypt.genSalt(12);
     const hashedPassword = await bcrypt.hash(password, salt);
-    
+
     const user = await User.create({
       fullName,
       email,

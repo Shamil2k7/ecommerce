@@ -40,6 +40,11 @@ const menuItems = [
     icon: ShoppingCart,
   },
   {
+    title: "Brands",
+    href: "/admin/brands",
+    icon: ShoppingCart,
+  },
+  {
     title: "Customers",
     href: "/admin/customers",
     icon: Users,

@@ -1,6 +1,7 @@
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
 
+// Login user
 const login = async (req, res) => {
   const { email, password } = req.body;
 
@@ -18,11 +19,13 @@ const login = async (req, res) => {
       return res.status(403).json({ success: false, message: "Your account is blocked" });
     }
 
+    // Check password
     const isMatch = await user.matchPassword(password);
     if (!isMatch) {
       return res.status(401).json({ success: false, message: "Invalid email or password" });
     }
 
+    // Generate token and set cookie
     createToken(res, user._id);
 
     return res.status(200).json({
