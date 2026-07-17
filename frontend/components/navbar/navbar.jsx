@@ -9,7 +9,8 @@ import Image from "next/image";
 
 export default function Navbar() {
   const API = process.env.NEXT_PUBLIC_API_URL;
-  console.log(API);
+  console.log(API,'navbaaaarr');
+  console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
