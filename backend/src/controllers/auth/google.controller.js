@@ -13,7 +13,6 @@ const googleLogin = async (req, res) => {
   }
 
   try {
-    // Verify token with Google API
     const verificationResponse = await fetch(
       `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
     );
@@ -35,7 +34,6 @@ const googleLogin = async (req, res) => {
       });
     }
 
-    // Check if user already exists
     let user = await User.findOne({ email });
 
     if (user) {
@@ -62,10 +60,9 @@ const googleLogin = async (req, res) => {
         },
       });
     } else {
-      // Create new user if registering for the first time
       const generatedPhone = `G-${sub.slice(-10)}`;
 
-      // Handle rare phone collision case
+      // If a Google sub ID collision happens, append a timestamp to make it unique
       const phoneExists = await User.findOne({ phone: generatedPhone });
       const finalPhone = phoneExists ? `G-${sub.slice(-10)}-${Date.now().toString().slice(-4)}` : generatedPhone;
 
@@ -73,34 +70,27 @@ const googleLogin = async (req, res) => {
 
       user = await User.create({
         fullName: name || "Google User",
-        email: email,
+        email,
         phone: finalPhone,
         password: generatedPassword,
         isVerified: true,
       });
 
-      if (user) {
-        createToken(res, user._id);
+      createToken(res, user._id);
 
-        return res.status(201).json({
-          success: true,
-          message: "Google Registration successful",
-          user: {
-            _id: user._id,
-            fullName: user.fullName,
-            email: user.email,
-            phone: user.phone,
-            role: user.role,
-            isVerified: user.isVerified,
-            isBlocked: user.isBlocked,
-          },
-        });
-      } else {
-        return res.status(400).json({
-          success: false,
-          message: "Failed to create account during Google Auth",
-        });
-      }
+      return res.status(201).json({
+        success: true,
+        message: "Google Registration successful",
+        user: {
+          _id: user._id,
+          fullName: user.fullName,
+          email: user.email,
+          phone: user.phone,
+          role: user.role,
+          isVerified: user.isVerified,
+          isBlocked: user.isBlocked,
+        },
+      });
     }
   } catch (error) {
     return res.status(500).json({

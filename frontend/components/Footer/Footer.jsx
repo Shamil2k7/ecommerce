@@ -1,6 +1,8 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 import styles from "./Footer.module.css";
 
 import {
@@ -10,102 +12,180 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
+const API = process.env.NEXT_PUBLIC_BACKEND_URL;
+
 export default function Footer() {
+  const [settings, setSettings] = useState(null);
+
+  useEffect(() => {
+    fetchSettings();
+  }, []);
+
+  const fetchSettings = async () => {
+    try {
+      const res = await axios.get(`${API}/api/settings`);
+
+      if (res.data.success) {
+        setSettings(res.data.settings);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
   return (
     <footer className={styles.footer}>
       <div className={styles.container}>
-        {/* Brand */}
+        {/* About */}
 
-        <div className={styles.about}>
-          <h2>ShopAura</h2>
+        <div className={styles.column}>
+          <h4>ABOUT</h4>
 
-          <p>
-            Shop the latest fashion, electronics, accessories and more.
-            Premium quality products with fast delivery.
-          </p>
-
-          <div className={styles.social}>
-            <a href="#">
-              <FaFacebookF />
-            </a>
-
-            <a href="#">
-              <FaInstagram />
-            </a>
-
-            <a href="#">
-              <FaTwitter />
-            </a>
-
-            <a href="#">
-              <FaYoutube />
-            </a>
-          </div>
+          <ul>
+            <li><Link href="/contact">Contact Us</Link></li>
+            <li><Link href="/about">About Us</Link></li>
+            <li><Link href="/careers">Careers</Link></li>
+            <li><Link href="/blog">Blog</Link></li>
+            <li><Link href="/press">Press</Link></li>
+          </ul>
         </div>
 
         {/* Shop */}
 
-        <div>
-          <h3>Shop</h3>
+        <div className={styles.column}>
+          <h4>SHOP</h4>
 
           <ul>
-            <li>
-              <Link href="/products">All Products</Link>
-            </li>
-
-            <li>
-              <Link href="/categories">Categories</Link>
-            </li>
-
-            <li>
-              <Link href="/wishlist">Wishlist</Link>
-            </li>
-
-            <li>
-              <Link href="/cart">Cart</Link>
-            </li>
+            <li><Link href="/products">All Products</Link></li>
+            <li><Link href="/categories">Categories</Link></li>
+            <li><Link href="/wishlist">Wishlist</Link></li>
+            <li><Link href="/cart">Cart</Link></li>
+            <li><Link href="/offers">Offers</Link></li>
           </ul>
         </div>
 
-        {/* Support */}
+        {/* Help */}
 
-        <div>
-          <h3>Support</h3>
+        <div className={styles.column}>
+          <h4>HELP</h4>
 
           <ul>
-            <li>
-              <Link href="/contact">Contact Us</Link>
-            </li>
-
-            <li>
-              <Link href="/about">About Us</Link>
-            </li>
-
-            <li>
-              <Link href="/privacy">Privacy Policy</Link>
-            </li>
-
-            <li>
-              <Link href="/terms">Terms & Conditions</Link>
-            </li>
+            <li><Link href="/payments">Payments</Link></li>
+            <li><Link href="/shipping">Shipping</Link></li>
+            <li><Link href="/returns">Returns</Link></li>
+            <li><Link href="/faq">FAQ</Link></li>
           </ul>
         </div>
 
-        {/* Contact */}
+        {/* Policies */}
 
-        <div>
-          <h3>Contact</h3>
+        <div className={styles.column}>
+          <h4>POLICIES</h4>
 
-          <ul className={styles.contact}>
-            <li>Email: support@shopaura.com</li>
-            <li>Phone: +91 9876543210</li>
-            <li>Kochi, Kerala, India</li>
+          <ul>
+            <li><Link href="/privacy">Privacy Policy</Link></li>
+            <li><Link href="/terms">Terms & Conditions</Link></li>
+            <li><Link href="/refund">Refund Policy</Link></li>
+            <li><Link href="/cookies">Cookie Policy</Link></li>
           </ul>
+        </div>
+
+        {/* Mail */}
+
+        <div className={`${styles.column} ${styles.borderLeft}`}>
+          <h4>MAIL US</h4>
+
+          <div className={styles.contact}>
+            {settings?.email && <p>{settings.email}</p>}
+            {settings?.phone && <p>{settings.phone}</p>}
+          </div>
+
+          <h4 className={styles.socialTitle}>SOCIAL</h4>
+
+          <div className={styles.social}>
+            {settings?.facebook && (
+              <a
+                href={settings.facebook}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaFacebookF />
+              </a>
+            )}
+
+            {settings?.twitter && (
+              <a
+                href={settings.twitter}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaTwitter />
+              </a>
+            )}
+
+            {settings?.youtube && (
+              <a
+                href={settings.youtube}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaYoutube />
+              </a>
+            )}
+
+            {settings?.instagram && (
+              <a
+                href={settings.instagram}
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                <FaInstagram />
+              </a>
+            )}
+          </div>
+        </div>
+
+        {/* Address */}
+
+        <div className={styles.column}>
+          <h4>REGISTERED OFFICE ADDRESS</h4>
+
+          <div className={styles.contact}>
+            <p>{settings?.storeName}</p>
+
+            {settings?.address
+              ?.split("\n")
+              .map((line, index) => (
+                <p key={index}>{line}</p>
+              ))}
+
+            {settings?.phone && (
+              <p className={styles.phone}>
+                Phone : {settings.phone}
+              </p>
+            )}
+          </div>
         </div>
       </div>
 
       <div className={styles.bottom}>
-        © {new Date().getFullYear()} ShopAura. All Rights Reserved.
+        <div>Become a Seller</div>
+
+        <div>Gift Cards</div>
+
+        <div>Help Center</div>
+
+        <div>
+          © {new Date().getFullYear()}{" "}
+          {settings?.storeName || "ShopAura"}
+        </div>
+
+        <div className={styles.payment}>
+          <img src="/payments/visa.svg" alt="Visa" />
+          <img src="/payments/mastercard.svg" alt="MasterCard" />
+          <img src="/payments/rupay.svg" alt="RuPay" />
+          <img src="/payments/paypal.svg" alt="PayPal" />
+        </div>
       </div>
     </footer>
   );

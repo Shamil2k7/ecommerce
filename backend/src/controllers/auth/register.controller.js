@@ -1,6 +1,7 @@
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
 
+// Register new user
 const register = async (req, res) => {
   const { fullName, email, phone, password } = req.body;
 
@@ -52,11 +53,6 @@ const register = async (req, res) => {
           isVerified: user.isVerified,
           isBlocked: user.isBlocked,
         },
-      });
-    } else {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid user data",
       });
     }
   } catch (error) {

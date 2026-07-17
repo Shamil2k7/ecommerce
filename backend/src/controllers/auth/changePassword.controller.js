@@ -1,5 +1,6 @@
 import User from "../../models/userModels.js";
 
+// Change password for logged-in user
 const changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 

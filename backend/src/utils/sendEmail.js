@@ -1,7 +1,7 @@
 import nodemailer from "nodemailer";
 
 const sendEmail = async (options) => {
-  // Fallback to console log in development/local environments
+  // If SMTP is not configured, just log the email instead of crashing
   if (!process.env.SMTP_HOST || !process.env.SMTP_USER || !process.env.SMTP_PASS) {
     console.log(`[Email Log] Sent to: ${options.email} | Subject: ${options.subject}`);
     return;
@@ -15,7 +15,6 @@ const sendEmail = async (options) => {
       pass: process.env.SMTP_PASS,
     },
   });
-// From shopaura
 
   const mailOptions = {
     from: `"ShopAura" <${process.env.SMTP_USER}>`,

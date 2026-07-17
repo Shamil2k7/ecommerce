@@ -1,8 +1,9 @@
 import User from "../../models/userModels.js";
 
+// Get all users (admin)
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find({}).select("-password");
+    const users = await User.find({}).select("-password"); // exclude password field
     return res.status(200).json({
       success: true,
       users,
