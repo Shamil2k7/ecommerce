@@ -17,6 +17,8 @@ import authRoutes from "./src/routes/auth.routes.js";
 import couponRoutes from "./src/routes/marketing.routes.js"
 import orderRoutes from "./src/routes/order.routes.js";
 import staffRoutes from "./src/routes/staff.routes.js";
+import settingsRoutes from "./src/routes/settingsRoutes.js";
+
 const app = express();
 
 //CORS
@@ -44,6 +46,7 @@ app.use(cookieParser());
 app.use("/api/auth", authRoutes);
 app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
+app.use("/api/settings", settingsRoutes);
 
 //staff routes
 app.use("/api/staff", staffRoutes);
