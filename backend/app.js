@@ -19,6 +19,7 @@ import productRoutes from "./src/routes/product.routes.js";
 import orderRoutes from "./src/routes/order.routes.js";
 import staffRoutes from "./src/routes/staff.routes.js";
 import settingsRoutes from "./src/routes/settingsRoutes.js";
+import cartRoutes from "./src/routes/cart.routes.js";
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api", productRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/staff", staffRoutes);
+app.use("/api/cart", cartRoutes);
 // Handling GET request
 app.get("/", (req, res) => {
   res.send("A simple Node App is " + "running on this server");
