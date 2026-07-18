@@ -18,7 +18,10 @@ export default function AddBanner() {
     displayOrder: 1,
     status: "Active",
   });
-
+  const [errors, setErrors] = useState({
+    image: "",
+    displayOrder: "",
+  });
   // Image Upload
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -36,28 +39,54 @@ export default function AddBanner() {
         ...prev,
         image: reader.result,
       }));
+
+      setErrors((prev) => ({
+        ...prev,
+        image: "",
+      }));
     };
   };
-
   // Input Change
   const handleChange = (e) => {
+    const { name, value } = e.target;
+
     setBanner((prev) => ({
       ...prev,
-      [e.target.name]:
-        e.target.name === "displayOrder"
-          ? Number(e.target.value)
-          : e.target.value,
+      [name]:
+        name === "displayOrder"
+          ? Number(value)
+          : value,
     }));
+
+    setErrors((prev) => ({
+      ...prev,
+      [name]: "",
+    }));
+  };
+  const validateForm = () => {
+    const newErrors = {};
+
+    if (!banner.image) {
+      newErrors.image = "Banner image is required";
+    }
+
+    if (!banner.displayOrder && banner.displayOrder !== 0) {
+      newErrors.displayOrder = "Display Order is required";
+    } else if (Number(banner.displayOrder) < 1) {
+      newErrors.displayOrder =
+        "Display Order must be greater than 0";
+    }
+
+    setErrors(newErrors);
+
+    return Object.keys(newErrors).length === 0;
   };
 
   // Save Banner
   const handleSubmit = async () => {
-    try {
-      if (!banner.image) {
-        alert("Please select a banner image");
-        return;
-      }
+    if (!validateForm()) return;
 
+    try {
       setLoading(true);
 
       const res = await axios.post(
@@ -70,92 +99,115 @@ export default function AddBanner() {
       router.push("/admin/banners");
     } catch (error) {
       alert(
-        error.response?.data?.message || "Failed to create banner"
+        error.response?.data?.message ||
+        "Failed to create banner"
       );
     } finally {
       setLoading(false);
     }
   };
+ return (
+  <section className={styles.container}>
+    <div className={styles.header}>
+      <Link href="/admin/banners" className={styles.back}>
+        <ArrowLeft size={18} />
+        Back to Banners
+      </Link>
 
-  return (
-    <section className={styles.container}>
-      <div className={styles.header}>
-        <Link href="/admin/banners" className={styles.back}>
-          <ArrowLeft size={18} />
-          Back to Banners
-        </Link>
+      <h1>Add Banner</h1>
+      <p>Upload a homepage slider image.</p>
+    </div>
 
-        <h1>Add Banner</h1>
-        <p>Upload a homepage slider image.</p>
-      </div>
+    <div className={styles.card}>
+      {/* Banner Image */}
+      <div className={styles.field}>
+        <label>Banner Image</label>
 
-      <div className={styles.card}>
-        <div className={styles.field}>
-          <label>Banner Image</label>
-
-          <label className={styles.upload}>
-            {preview ? (
-              <img src={preview} alt="Banner Preview" />
-            ) : (
-              <>
-                <Upload size={40} />
-                <span>Upload Banner</span>
-              </>
-            )}
-
-            <input
-              hidden
-              type="file"
-              accept="image/*"
-              onChange={handleImage}
-            />
-          </label>
-        </div>
-
-        <div className={styles.field}>
-          <label>Display Order</label>
+        <label
+          className={`${styles.upload} ${
+            errors.image ? styles.errorUpload : ""
+          }`}
+        >
+          {preview ? (
+            <img src={preview} alt="Banner Preview" />
+          ) : (
+            <>
+              <Upload size={40} />
+              <span>Upload Banner</span>
+            </>
+          )}
 
           <input
-            type="number"
-            name="displayOrder"
-            value={banner.displayOrder}
-            onChange={handleChange}
+            hidden
+            type="file"
+            accept="image/*"
+            onChange={handleImage}
           />
-        </div>
+        </label>
 
-        <div className={styles.field}>
-          <label>Status</label>
-
-          <select
-            name="status"
-            value={banner.status}
-            onChange={handleChange}
-          >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
-          </select>
-        </div>
-
-        <div className={styles.buttons}>
-          <button
-            type="button"
-            className={styles.cancel}
-            onClick={() => router.push("/admin/banners")}
-            disabled={loading}
-          >
-            Cancel
-          </button>
-
-          <button
-            type="button"
-            className={styles.save}
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading ? "Saving..." : "Save Banner"}
-          </button>
-        </div>
+        {errors.image && (
+          <p className={styles.error}>{errors.image}</p>
+        )}
       </div>
-    </section>
-  );
+
+      {/* Display Order */}
+      <div className={styles.field}>
+        <label>Display Order</label>
+
+        <input
+          type="number"
+          name="displayOrder"
+          min="1"
+          value={banner.displayOrder}
+          onChange={handleChange}
+          placeholder="Enter display order"
+          className={
+            errors.displayOrder ? styles.errorInput : ""
+          }
+        />
+
+        {errors.displayOrder && (
+          <p className={styles.error}>
+            {errors.displayOrder}
+          </p>
+        )}
+      </div>
+
+      {/* Status */}
+      <div className={styles.field}>
+        <label>Status</label>
+
+        <select
+          name="status"
+          value={banner.status}
+          onChange={handleChange}
+        >
+          <option value="Active">Active</option>
+          <option value="Inactive">Inactive</option>
+        </select>
+      </div>
+
+      {/* Buttons */}
+      <div className={styles.buttons}>
+        <button
+          type="button"
+          className={styles.cancel}
+          onClick={() => router.push("/admin/banners")}
+          disabled={loading}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className={styles.save}
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading ? "Saving..." : "Save Banner"}
+        </button>
+      </div>
+    </div>
+  </section>
+);
 }
