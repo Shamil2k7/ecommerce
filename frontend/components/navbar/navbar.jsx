@@ -8,8 +8,9 @@ import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 import Image from "next/image";
 
 export default function Navbar() {
-  const API = process.env.NEXT_PUBLIC_BACKEND_URL;
-  console.log(API);
+  const API = process.env.NEXT_PUBLIC_API_URL;
+  console.log(API,'navbaaaarr');
+  console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
 
   const [menuOpen, setMenuOpen] = useState(false);
 

@@ -125,6 +125,31 @@ const orderSchema = new mongoose.Schema(
         default: "India",
       },
     },
+    refundRequested: {
+      type: Boolean,
+      default: false,
+    },
+
+    refundStatus: {
+      type: String,
+      enum: [
+        "None",
+        "Pending",
+        "Approved",
+        "Rejected",
+        "Completed",
+      ],
+      default: "None",
+    },
+
+    refundReason: {
+      type: String,
+      default: "",
+    },
+
+    refundDate: {
+      type: Date,
+    },
   },
   {
     timestamps: true,

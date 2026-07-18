@@ -32,7 +32,7 @@ const brandSchema = new Schema(
   { timestamps: true }
 );
 
-brandSchema.pre("validate", function (next) {
+brandSchema.pre("validate", function () {
   if (this.name && !this.slug) {
     this.slug = this.name
       .toLowerCase()
@@ -40,7 +40,6 @@ brandSchema.pre("validate", function (next) {
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
   }
-  next();
 });
 
 const Brand = mongoose.model("Brand", brandSchema);

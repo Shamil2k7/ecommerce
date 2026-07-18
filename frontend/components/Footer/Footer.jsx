@@ -12,7 +12,7 @@ import {
   FaYoutube,
 } from "react-icons/fa";
 
-const API = process.env.NEXT_PUBLIC_BACKEND_URL;
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Footer() {
   const [settings, setSettings] = useState(null);

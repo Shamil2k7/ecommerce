@@ -1,0 +1,35 @@
+.emptyCart {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 50vh;
+  text-align: center;
+}
+
+.emptyCartTitle {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin: 1rem 0;
+  color: #333;
+}
+
+.emptyCartSub {
+  color: #666;
+  margin-bottom: 2rem;
+}
+
+.continueShoppingBtn {
+  background: #111;
+  color: white;
+  padding: 0.8rem 2rem;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 500;
+  transition: all 0.3s ease;
+}
+
+.continueShoppingBtn:hover {
+  background: #333;
+  transform: translateY(-2px);
+}

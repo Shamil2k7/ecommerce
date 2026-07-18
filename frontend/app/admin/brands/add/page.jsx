@@ -40,51 +40,70 @@ export default function AddBrandPage() {
     }
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+ const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    if (!name.trim()) {
-      alert("Brand name is required.");
+  if (!name.trim()) {
+    alert("Brand name is required.");
+    return;
+  }
+
+  setSubmitting(true);
+
+  try {
+    const formData = new FormData();
+
+    formData.append("name", name);
+    formData.append("slug", slug);
+    formData.append("description", description);
+    formData.append(
+      "isActive",
+      isActive === "Active" ? "true" : "false"
+    );
+
+    if (logoFile) {
+      formData.append("logo", logoFile);
+    }
+
+    const res = await fetch("http://localhost:5000/api/brands", {
+      method: "POST",
+      body: formData,
+    });
+
+    // Read response as text first
+    const text = await res.text();
+
+    console.log("Status:", res.status);
+    console.log("Response:", text);
+
+    let json;
+
+    try {
+      json = JSON.parse(text);
+    } catch (err) {
+      console.error("Backend returned HTML instead of JSON:");
+      console.error(text);
+
+      alert(
+        `Server Error (${res.status})\n\nCheck the backend terminal for the actual error.`
+      );
+
       return;
     }
 
-    setSubmitting(true);
-
-    try {
-      const formData = new FormData();
-
-      formData.append("name", name);
-      formData.append("slug", slug);
-      formData.append("description", description);
-      formData.append(
-        "isActive",
-        isActive === "Active" ? "true" : "false"
-      );
-
-      if (logoFile) {
-        formData.append("logo", logoFile);
-      }
-
-      const res = await fetch("http://localhost:5000/api/brands", {
-        method: "POST",
-        body: formData,
-      });
-
-      const json = await res.json();
-
-      if (res.ok) {
-        alert("Brand created successfully!");
-        router.push("/admin/brands");
-      } else {
-        alert(json.message || "Failed to create brand");
-      }
-    } catch (err) {
-      console.error(err);
-      alert("Something went wrong.");
-    } finally {
-      setSubmitting(false);
+    if (res.ok) {
+      alert("Brand created successfully!");
+      router.push("/admin/brands");
+    } else {
+      alert(json.message || "Failed to create brand");
     }
-  };
+  } catch (err) {
+    console.error(err);
+    alert("Network error. Make sure the backend is running.");
+  } finally {
+    setSubmitting(false);
+  }
+};
 
   return (
     <section className={styles.container}>

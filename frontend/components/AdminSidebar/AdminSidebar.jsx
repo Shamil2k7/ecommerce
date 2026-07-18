@@ -3,7 +3,10 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+
 import {
+  BanknoteArrowDown,
+  ShieldHalf,
   LayoutDashboard,
   Package,
   Shapes,
@@ -39,10 +42,17 @@ const menuItems = [
     href: "/admin/orders",
     icon: ShoppingCart,
   },
+{
+    title: "Refunds",
+    href: "/admin/refunds",
+    icon: BanknoteArrowDown,
+  },
+  
+  
   {
     title: "Brands",
     href: "/admin/brands",
-    icon: ShoppingCart,
+    icon: ShieldHalf,
   },
   {
     title: "Customers",
@@ -74,6 +84,7 @@ const menuItems = [
     href: "/admin/settings",
     icon: Settings,
   },
+ 
 ];
 
 export default function AdminSidebar() {
