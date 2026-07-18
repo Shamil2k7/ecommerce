@@ -118,6 +118,7 @@ export default function StaffPage() {
         <table>
           <thead>
             <tr>
+              {/* <th>name</th> */}
               <th>Staff</th>
               <th>Email</th>
               <th>Phone</th>
@@ -135,14 +136,15 @@ export default function StaffPage() {
                   <td>
                     <div className={styles.staff}>
                       <img
-                        src={
-                          item.image ||
-                          "https://via.placeholder.com/60"
-                        }
+                        src={item.image || "https://via.placeholder.com/60"}
                         alt={item.name}
                       />
 
-                      <span>{item.name}</span>
+                      <div className={styles.staffInfo}>
+                        <span className={styles.staffName}>
+                          {item.name}
+                        </span>
+                      </div>
                     </div>
                   </td>
 

@@ -2,6 +2,7 @@
   display: flex;
   align-items: center;
   gap: 12px;
+  min-width: 0;
 }
 
 .staff img {
@@ -9,6 +10,20 @@
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
+}
+
+.staffInfo {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.staffName {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .actionBtn {
@@ -91,7 +106,9 @@
 
 .table table {
   width: 100%;
+  min-width: 1100px;
   border-collapse: collapse;
+  table-layout: auto;
 }
 
 .table th {
@@ -105,6 +122,8 @@
   padding: 18px;
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
+  overflow: visible;
+  text-overflow: unset;
 }
 
 .table tbody tr:hover {
@@ -164,6 +183,42 @@
 .actions button:hover {
   background: var(--primary);
   color: white;
+}
+
+.table th:nth-child(1),
+.table td:nth-child(1) {
+  width: 260px;
+}
+
+.table th:nth-child(2),
+.table td:nth-child(2) {
+  width: 260px;
+  word-break: break-word;
+}
+
+.table th:nth-child(3),
+.table td:nth-child(3) {
+  width: 170px;
+}
+
+.table th:nth-child(4),
+.table td:nth-child(4) {
+  width: 150px;
+}
+
+.table th:nth-child(5),
+.table td:nth-child(5) {
+  width: 170px;
+}
+
+.table th:nth-child(6),
+.table td:nth-child(6) {
+  width: 120px;
+}
+
+.table th:nth-child(7),
+.table td:nth-child(7) {
+  width: 120px;
 }
 
 @media (max-width:1024px) {
