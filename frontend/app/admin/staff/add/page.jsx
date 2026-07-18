@@ -145,7 +145,7 @@ export default function AddStaffPage() {
               <input
                 type="text"
                 name="name"
-                placeholder="John Smith"
+                placeholder="Enter Your Name"
                 value={staff.name}
                 onChange={handleChange}
                 required
@@ -158,7 +158,7 @@ export default function AddStaffPage() {
               <input
                 type="email"
                 name="email"
-                placeholder="john@gmail.com"
+                placeholder="Enter Your Email"
                 value={staff.email}
                 onChange={handleChange}
                 required
@@ -173,7 +173,7 @@ export default function AddStaffPage() {
               <input
                 type="text"
                 name="phone"
-                placeholder="+91 9876543210"
+                placeholder="+91 1234567890"
                 value={staff.phone}
                 onChange={handleChange}
                 required
