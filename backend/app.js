@@ -48,7 +48,10 @@ app.use("/api/auth", authRoutes);
 app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api", productRoutes);
+<<<<<<< HEAD
 app.use("/api/settings", settingsRoutes);
+=======
+>>>>>>> a5f92bb9bc4cc8555b4b962fea37fe59111d4d33
 app.use("/api/staff", staffRoutes);
 // Handling GET request
 app.get("/", (req, res) => {
