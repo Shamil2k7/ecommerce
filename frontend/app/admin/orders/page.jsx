@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   Search,
   Eye,
@@ -11,62 +11,93 @@ import {
 
 import styles from "./Orders.module.css";
 
-const orders = [
-  {
-    id: "#ORD1001",
-    customer: "John Doe",
-    date: "13 Jul 2026",
-    total: 5499,
-    payment: "Paid",
-    status: "Delivered",
-  },
-  {
-    id: "#ORD1002",
-    customer: "Emma Watson",
-    date: "12 Jul 2026",
-    total: 1299,
-    payment: "Pending",
-    status: "Processing",
-  },
-  {
-    id: "#ORD1003",
-    customer: "Michael",
-    date: "11 Jul 2026",
-    total: 8999,
-    payment: "Paid",
-    status: "Shipped",
-  },
-  {
-    id: "#ORD1004",
-    customer: "Sarah",
-    date: "10 Jul 2026",
-    total: 2499,
-    payment: "Failed",
-    status: "Cancelled",
-  },
-];
+const API_URL = "http://localhost:5000/api/orders";
 
 export default function OrdersPage() {
+  const [orders, setOrders] = useState([]);
+  const [selectedOrder, setSelectedOrder] = useState(null);
   const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const filteredOrders = orders.filter(
-    (order) =>
-      order.id.toLowerCase().includes(search.toLowerCase()) ||
-      order.customer.toLowerCase().includes(search.toLowerCase())
-  );
+  useEffect(() => {
+    getOrders();
+  }, []);
+
+  const getOrders = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(API_URL);
+      const data = await res.json();
+
+      if (data.success) {
+        setOrders(data.orders);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const filteredOrders = orders.filter((order) => {
+    const orderNo = order?.orderNumber?.toString() || "";
+    const customer =
+      order?.shippingAddress?.fullName?.toLowerCase() || "";
+
+    return (
+      orderNo.includes(search) ||
+      customer.includes(search.toLowerCase())
+    );
+  });
+
+  const updateStatus = async (id, status) => {
+    try {
+      const res = await fetch(`${API_URL}/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          orderStatus: status,
+        }),
+      });
+
+      const data = await res.json();
+
+      if (data.success) {
+        setOrders((prev) =>
+          prev.map((item) =>
+            item._id === id
+              ? {
+                  ...item,
+                  orderStatus: status,
+                }
+              : item
+          )
+        );
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className={styles.orders}>
+        <h2>Loading Orders...</h2>
+      </section>
+    );
+  }
 
   return (
     <section className={styles.orders}>
-      {/* Header */}
-
       <div className={styles.header}>
         <div>
           <h1>Orders</h1>
           <p>Manage customer orders</p>
         </div>
       </div>
-
-      {/* Search */}
 
       <div className={styles.searchBox}>
         <Search size={18} />
@@ -78,15 +109,13 @@ export default function OrdersPage() {
           onChange={(e) => setSearch(e.target.value)}
         />
       </div>
-
-      {/* Table */}
+            {/* Orders Table */}
 
       <div className={styles.tableWrapper}>
         <table>
-
           <thead>
             <tr>
-              <th>Order ID</th>
+              <th>Order No</th>
               <th>Customer</th>
               <th>Date</th>
               <th>Total</th>
@@ -97,93 +126,311 @@ export default function OrdersPage() {
           </thead>
 
           <tbody>
-
-            {filteredOrders.map((order) => (
-
-              <tr key={order.id}>
-
-                <td>{order.id}</td>
-
-                <td>{order.customer}</td>
-
-                <td>{order.date}</td>
-
-                <td>₹{order.total.toLocaleString()}</td>
-
-                <td>
-                  <span
-                    className={`${styles.payment} ${
-                      order.payment === "Paid"
-                        ? styles.paid
-                        : order.payment === "Pending"
-                        ? styles.pending
-                        : styles.failed
-                    }`}
-                  >
-                    {order.payment}
-                  </span>
+            {filteredOrders.length === 0 ? (
+              <tr>
+                <td
+                  colSpan="7"
+                  style={{
+                    textAlign: "center",
+                    padding: "30px",
+                  }}
+                >
+                  No Orders Found
                 </td>
-
-                <td>
-
-                  <span
-                    className={`${styles.status} ${
-                      order.status === "Delivered"
-                        ? styles.delivered
-                        : order.status === "Processing"
-                        ? styles.processing
-                        : order.status === "Shipped"
-                        ? styles.shipped
-                        : styles.cancelled
-                    }`}
-                  >
-                    {order.status}
-                  </span>
-
-                </td>
-
-                <td>
-
-                  <div className={styles.actions}>
-
-                    <button title="View">
-                      <Eye size={18} />
-                    </button>
-
-                    <button title="Ship">
-                      <Truck size={18} />
-                    </button>
-
-                    <button title="Complete">
-                      <CheckCircle size={18} />
-                    </button>
-
-                    <button title="Cancel">
-                      <XCircle size={18} />
-                    </button>
-
-                  </div>
-
-                </td>
-
               </tr>
+            ) : (
+              filteredOrders.map((order) => (
+                <tr key={order._id}>
+                  <td>
+                    #{order.orderNumber}
+                  </td>
 
-            ))}
+                  <td>
+                    {order.shippingAddress?.fullName || "-"}
+                  </td>
 
+                  <td>
+                    {order.createdAt
+                      ? new Date(
+                          order.createdAt
+                        ).toLocaleDateString("en-IN")
+                      : "-"}
+                  </td>
+
+                  <td>
+                    ₹
+                    {Number(
+                      order.totalAmount || 0
+                    ).toLocaleString("en-IN")}
+                  </td>
+
+                  <td>
+                    <span
+                      className={`${styles.payment}
+                      ${
+                        order.paymentStatus === "Paid"
+                          ? styles.paid
+                          : order.paymentStatus === "Pending"
+                          ? styles.pending
+                          : styles.failed
+                      }`}
+                    >
+                      {order.paymentStatus}
+                    </span>
+                  </td>
+
+                  <td>
+                    <span
+                      className={`${styles.status}
+                      ${
+                        order.orderStatus === "Delivered"
+                          ? styles.delivered
+                          : order.orderStatus === "Processing"
+                          ? styles.processing
+                          : order.orderStatus === "Shipped"
+                          ? styles.shipped
+                          : styles.cancelled
+                      }`}
+                    >
+                      {order.orderStatus}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div className={styles.actions}>
+
+                      <button
+                        title="View"
+                        onClick={() =>
+                          setSelectedOrder(order)
+                        }
+                      >
+                        <Eye size={18} />
+                      </button>
+
+                      <button
+                        title="Ship"
+                        onClick={() =>
+                          updateStatus(
+                            order._id,
+                            "Shipped"
+                          )
+                        }
+                      >
+                        <Truck size={18} />
+                      </button>
+
+                      <button
+                        title="Delivered"
+                        onClick={() =>
+                          updateStatus(
+                            order._id,
+                            "Delivered"
+                          )
+                        }
+                      >
+                        <CheckCircle size={18} />
+                      </button>
+
+                      <button
+                        title="Cancel"
+                        onClick={() => {
+                          if (
+                            confirm(
+                              "Cancel this order?"
+                            )
+                          ) {
+                            updateStatus(
+                              order._id,
+                              "Cancelled"
+                            );
+                          }
+                        }}
+                      >
+                        <XCircle size={18} />
+                      </button>
+
+                    </div>
+                  </td>
+
+                </tr>
+              ))
+            )}
           </tbody>
-
         </table>
       </div>
+            {/* Order Details Modal */}
+
+      {selectedOrder && (
+        <div
+          className={styles.modalOverlay}
+          onClick={() => setSelectedOrder(null)}
+        >
+          <div
+            className={styles.modal}
+            onClick={(e) => e.stopPropagation()}
+          >
+            {/* Header */}
+
+            <div className={styles.modalHeader}>
+              <h2>Order Details</h2>
+
+              <button
+                className={styles.closeBtn}
+                onClick={() => setSelectedOrder(null)}
+              >
+                ✕
+              </button>
+            </div>
+
+            {/* Product */}
+
+            <div className={styles.section}>
+              <h3>Product Details</h3>
+
+              <div className={styles.product}>
+                <img
+                  src={
+                    selectedOrder?.productId?.image ||
+                    "/no-image.png"
+                  }
+                  alt={
+                    selectedOrder?.productId?.name ||
+                    "Product"
+                  }
+                />
+
+                <div>
+                  <h4>
+                    {selectedOrder?.productId?.name ||
+                      "Product"}
+                  </h4>
+
+                  <p>
+                    <strong>Price:</strong> ₹
+                    {Number(
+                      selectedOrder?.productId?.price || 0
+                    ).toLocaleString("en-IN")}
+                  </p>
+
+                  <p>
+                    <strong>Quantity:</strong>{" "}
+                    {selectedOrder?.quantity}
+                  </p>
+
+                  <p>
+                    <strong>Product ID:</strong>{" "}
+                    {selectedOrder?.productId?._id}
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            {/* Customer */}
+
+            <div className={styles.section}>
+              <h3>Customer Details</h3>
+
+              <p>
+                <strong>Name:</strong>{" "}
+                {selectedOrder?.shippingAddress?.fullName}
+              </p>
+
+              <p>
+                <strong>Phone:</strong>{" "}
+                {selectedOrder?.shippingAddress?.phone}
+              </p>
+            </div>
+
+            {/* Shipping */}
+
+            <div className={styles.section}>
+              <h3>Shipping Address</h3>
+
+              <p>
+                {selectedOrder?.shippingAddress?.address}
+              </p>
+
+              <p>
+                {selectedOrder?.shippingAddress?.city},{" "}
+                {selectedOrder?.shippingAddress?.state}
+              </p>
+
+              <p>
+                {selectedOrder?.shippingAddress?.pincode}
+              </p>
+
+              <p>
+                {selectedOrder?.shippingAddress?.country}
+              </p>
+            </div>
+
+            {/* Payment */}
+
+            <div className={styles.section}>
+              <h3>Payment Information</h3>
+
+              <p>
+                <strong>Method:</strong>{" "}
+                {selectedOrder?.paymentMethod}
+              </p>
+
+              <p>
+                <strong>Status:</strong>{" "}
+                {selectedOrder?.paymentStatus}
+              </p>
+
+              <p>
+                <strong>Order Status:</strong>{" "}
+                {selectedOrder?.orderStatus}
+              </p>
+            </div>
+
+            {/* Summary */}
+
+            <div className={styles.section}>
+              <h3>Order Summary</h3>
+
+              <p>
+                <strong>Subtotal:</strong> ₹
+                {Number(
+                  selectedOrder?.subTotal || 0
+                ).toLocaleString("en-IN")}
+              </p>
+
+              <p>
+                <strong>Discount:</strong> ₹
+                {Number(
+                  selectedOrder?.discount || 0
+                ).toLocaleString("en-IN")}
+              </p>
+
+              <p>
+                <strong>Tax:</strong> ₹
+                {Number(
+                  selectedOrder?.tax || 0
+                ).toLocaleString("en-IN")}
+              </p>
+
+              <h2>
+                Total: ₹
+                {Number(
+                  selectedOrder?.totalAmount || 0
+                ).toLocaleString("en-IN")}
+              </h2>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Pagination */}
 
       <div className={styles.pagination}>
         <button>Previous</button>
         <button className={styles.active}>1</button>
-        <button>2</button>
-        <button>3</button>
         <button>Next</button>
       </div>
+
     </section>
   );
 }
