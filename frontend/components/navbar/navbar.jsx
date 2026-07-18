@@ -30,6 +30,7 @@ export default function Navbar() {
   const fetchSettings = async () => {
     try {
       const res = await fetch(`${API}/api/settings`);
+      console.log('hhhhhhhhhhhhhhhhhh')
       const data = await res.json();
 
       if (data.success) {
