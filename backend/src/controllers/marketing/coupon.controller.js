@@ -70,9 +70,9 @@ export const getCouponById = async (req, res) => {
 //update
 export const updateCoupon = async (req, res) => {
   try {
-    console.log("Update Controller Called");
-    console.log("ID :", req.params.id);
-    console.log("BODY :", req.body);
+    // console.log("Update Controller Called");
+    // console.log("ID :", req.params.id);
+    // console.log("BODY :", req.body);
 
     const updatedCoupon = await Coupon.findByIdAndUpdate(
       req.params.id,
@@ -100,8 +100,8 @@ export const updateCoupon = async (req, res) => {
 //delete
 export const deleteCoupon = async (req, res) => {
   try {
-    console.log("Delete Controller Called");
-    console.log("ID :", req.params.id);
+    // console.log("Delete Controller Called");
+    // console.log("ID :", req.params.id);
 
     const deletedCoupon = await Coupon.findByIdAndDelete(req.params.id);
 
