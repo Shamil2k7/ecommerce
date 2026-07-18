@@ -3,7 +3,7 @@ import Script from "next/script";
 import "./globals.css";
 import LayoutWrapper from "@/components/LayoutWrapper";
 import { AuthProvider } from "@/context/AuthContext";
-
+import { CartProvider } from "@/context/CartContext";
 const inter = Inter({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -23,9 +23,11 @@ export default function RootLayout({ children }) {
     >
       <body>
         <AuthProvider>
-          <LayoutWrapper>
-            {children}
-          </LayoutWrapper>
+          <CartProvider>
+            <LayoutWrapper>
+              {children}
+            </LayoutWrapper>
+          </CartProvider>
         </AuthProvider>
         <Script 
           src="https://accounts.google.com/gsi/client" 
