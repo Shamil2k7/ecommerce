@@ -27,9 +27,7 @@ export default function EditStaffPage() {
     status: "Active",
   });
 
-  // ==========================
-  // Fetch Staff
-  // ==========================
+
 
 useEffect(() => {
   if (id) {

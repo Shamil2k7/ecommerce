@@ -9,8 +9,6 @@ cloudinary.config({
   secure: true,
 });
 
-
-
 try {
   const result = await cloudinary.api.ping();
   console.log("Cloudinary Connected:", result);

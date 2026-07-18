@@ -101,6 +101,7 @@ export default function StaffPage() {
           <Plus size={18} />
           Add Staff
         </Link>
+        
       </div>
 
       <div className={styles.searchBox}>
