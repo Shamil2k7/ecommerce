@@ -1,7 +1,7 @@
 import Cart from "../../models/Cart.js";
+import Product from "../../models/product.model.js";
 import Coupon from "../../models/Coupon.js";
 import { calculateCartTotals } from "../../utils/cartCalculations.js";
-
 
 const getCartByUser = async (userId) => {
   let cart = await Cart.findOne({ userId });
@@ -18,13 +18,25 @@ const getCartByUser = async (userId) => {
 
 // Recalculate cart totals
 const updateCartTotals = async (cart) => {
-  await cart.populate("couponApplied");
-  await cart.populate("offerApplied");
+  // Populate coupon safely
+  if (cart.couponApplied) {
+    await cart.populate("couponApplied");
+  }
+
+  // Populate offer only if one is actually stored
+  if (cart.offerApplied) {
+    try {
+      await cart.populate("offerApplied");
+    } catch (err) {
+      console.log("Offer model not found, skipping populate.");
+      cart.offerApplied = null;
+    }
+  }
 
   const totals = calculateCartTotals(
     cart,
-    cart.couponApplied,
-    cart.offerApplied
+    cart.couponApplied || null,
+    cart.offerApplied || null
   );
 
   cart.subtotal = totals.subtotal;
@@ -40,8 +52,6 @@ const updateCartTotals = async (cart) => {
   return cart;
 };
 
-
-
 // Get Cart
 
 export const getCart = async (req, res) => {
@@ -50,77 +60,95 @@ export const getCart = async (req, res) => {
 
     await updateCartTotals(cart);
 
-    res.json(cart);
+    return res.status(200).json({
+      success: true,
+      cart,
+    });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({ message: "Failed to load cart." });
+    console.error("GET CART ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 
 
 // Add To Cart
-
 export const addToCart = async (req, res) => {
   try {
     const {
       userId,
       productId,
-      name,
-      image,
-      color,
-      size,
-      price,
-      originalPrice,
-      quantity,
-      stock,
+      quantity = 1,
+      color = "",
+      size = "",
     } = req.body;
 
     if (!userId || !productId) {
       return res.status(400).json({
-        message: "User and Product are required.",
+        success: false,
+        message: "User ID and Product ID are required.",
+      });
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found.",
       });
     }
 
     const cart = await getCartByUser(userId);
 
-    const item = cart.products.find(
-      (p) =>
-        p.productId.toString() === productId &&
-        p.color === color &&
-        p.size === size
+    const existingItem = cart.products.find(
+      (item) =>
+        item.productId.toString() === productId &&
+        item.color === color &&
+        item.size === size
     );
 
-    if (item) {
-      item.quantity += Number(quantity || 1);
-      item.subtotal = item.quantity * item.price;
+    const sellingPrice =
+      product.discountPrice && product.discountPrice > 0
+        ? product.discountPrice
+        : product.price;
+
+    if (existingItem) {
+      existingItem.quantity += Number(quantity);
     } else {
       cart.products.push({
-        productId,
-        name,
-        image,
+        productId: product._id,
+        name: product.name,
+        image: product.images?.[0]?.url || "",
         color,
         size,
-        price,
-        originalPrice: originalPrice || price,
-        quantity: quantity || 1,
-        stock: stock || 10,
-        subtotal: price * (quantity || 1),
+        price: sellingPrice,
+        originalPrice: product.price,
+        quantity: Number(quantity),
+        stock: product.stock || 0,
       });
     }
 
     await updateCartTotals(cart);
 
-    res.json(cart);
+    return res.status(200).json({
+      success: true,
+      message: "Product added to cart successfully.",
+      cart,
+    });
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      message: "Unable to add product.",
+    console.error(error);
+
+    return res.status(500).json({
+      success: false,
+      message: error.message,
     });
   }
 };
-
-
 
 // Quantity Update 
 

@@ -1,24 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
 import styles from "./FilterSidebar.module.css";
-
-const categories = [
-  "Electronics",
-  "Fashion",
-  "Shoes",
-  "Beauty",
-  "Furniture",
-  "Accessories",
-];
-
-const brands = [
-  "Apple",
-  "Samsung",
-  "Sony",
-  "Nike",
-  "Adidas",
-  "Puma",
-];
 
 export default function FilterSidebar({
   selectedCategories,
@@ -26,6 +9,30 @@ export default function FilterSidebar({
   selectedBrands,
   setSelectedBrands,
 }) {
+  const [categoriesList, setCategoriesList] = useState([]);
+  const [brandsList, setBrandsList] = useState([]);
+
+  useEffect(() => {
+    // Load Categories
+    fetch("http://localhost:5000/api/categories")
+      .then((res) => res.json())
+      .then((json) => {
+        setCategoriesList(json.data || []);
+      })
+      .catch((err) =>
+        console.error("Failed to load categories:", err)
+      );
+
+    // Load Brands
+    fetch("http://localhost:5000/api/brands")
+      .then((res) => res.json())
+      .then((json) => {
+        setBrandsList(json.data || []);
+      })
+      .catch((err) =>
+        console.error("Failed to load brands:", err)
+      );
+  }, []);
 
   // Category Filter
   const handleCategory = (category) => {
@@ -55,7 +62,7 @@ export default function FilterSidebar({
     }
   };
 
-  // Clear All Filters
+  // Clear Filters
   const clearFilters = () => {
     setSelectedCategories([]);
     setSelectedBrands([]);
@@ -63,6 +70,7 @@ export default function FilterSidebar({
 
   return (
     <aside className={styles.sidebar}>
+      {/* Header */}
 
       <div className={styles.header}>
         <h3>Filters</h3>
@@ -78,59 +86,64 @@ export default function FilterSidebar({
       {/* Categories */}
 
       <div className={styles.filterSection}>
-
         <h4>Categories</h4>
 
-        {categories.map((category) => (
-          <label
-            key={category}
-            className={styles.checkbox}
-          >
-            <input
-              type="checkbox"
-              checked={selectedCategories.includes(category)}
-              onChange={() =>
-                handleCategory(category)
-              }
-            />
+        {categoriesList.length > 0 ? (
+          categoriesList.map((category) => (
+            <label
+              key={category._id}
+              className={styles.checkbox}
+            >
+              <input
+                type="checkbox"
+                checked={selectedCategories.includes(
+                  category.name
+                )}
+                onChange={() =>
+                  handleCategory(category.name)
+                }
+              />
 
-            <span>{category}</span>
-
-          </label>
-        ))}
-
+              <span>{category.name}</span>
+            </label>
+          ))
+        ) : (
+          <p>No Categories</p>
+        )}
       </div>
 
       {/* Brands */}
 
       <div className={styles.filterSection}>
-
         <h4>Brands</h4>
 
-        {brands.map((brand) => (
-          <label
-            key={brand}
-            className={styles.checkbox}
-          >
-            <input
-              type="checkbox"
-              checked={selectedBrands.includes(brand)}
-              onChange={() =>
-                handleBrand(brand)
-              }
-            />
+        {brandsList.length > 0 ? (
+          brandsList.map((brand) => (
+            <label
+              key={brand._id}
+              className={styles.checkbox}
+            >
+              <input
+                type="checkbox"
+                checked={selectedBrands.includes(
+                  brand.name
+                )}
+                onChange={() =>
+                  handleBrand(brand.name)
+                }
+              />
 
-            <span>{brand}</span>
-
-          </label>
-        ))}
-
+              <span>{brand.name}</span>
+            </label>
+          ))
+        ) : (
+          <p>No Brands</p>
+        )}
       </div>
 
       {/* Price */}
 
       <div className={styles.filterSection}>
-
         <h4>Price Range</h4>
 
         <label className={styles.radio}>
@@ -152,13 +165,11 @@ export default function FilterSidebar({
           <input type="radio" name="price" />
           <span>Above ₹10,000</span>
         </label>
-
       </div>
 
       {/* Rating */}
 
       <div className={styles.filterSection}>
-
         <h4>Rating</h4>
 
         <label className={styles.radio}>
@@ -175,13 +186,11 @@ export default function FilterSidebar({
           <input type="radio" name="rating" />
           ⭐⭐⭐☆☆
         </label>
-
       </div>
 
-      {/* Stock */}
+      {/* Availability */}
 
       <div className={styles.filterSection}>
-
         <h4>Availability</h4>
 
         <label className={styles.checkbox}>
@@ -193,9 +202,7 @@ export default function FilterSidebar({
           <input type="checkbox" />
           <span>Out of Stock</span>
         </label>
-
       </div>
-
     </aside>
   );
 }
