@@ -11,67 +11,88 @@ import styles from "./ProductsPage.module.css";
 export default function ProductsPage() {
   const searchParams = useSearchParams();
 
-  // Get category from URL
-  // Example: /products?category=Electronics
   const initialCategory = searchParams.get("category") || "";
 
   const [productsData, setProductsData] = useState([]);
   const [loading, setLoading] = useState(true);
 
+  const [selectedCategories, setSelectedCategories] = useState([]);
+  const [selectedBrands, setSelectedBrands] = useState([]);
+
+  const [sortBy, setSortBy] = useState("popular");
+  const [search, setSearch] = useState("");
+
   useEffect(() => {
-    fetch("http://localhost:5000/api/products")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.data && json.data.products) {
+    const fetchProducts = async () => {
+      try {
+        const res = await fetch("http://localhost:5000/api/products");
+        const json = await res.json();
+
+        if (json.data?.products) {
           const mapped = json.data.products.map((p) => {
             const hasDiscount =
-              p.discountPrice && p.discountPrice > 0 && p.discountPrice < p.price;
-            const price = hasDiscount ? p.discountPrice : p.price;
-            const oldPrice = hasDiscount ? p.price : null;
-            const discount = hasDiscount
-              ? Math.round(((p.price - p.discountPrice) / p.price) * 100)
-              : null;
+              p.discountPrice &&
+              p.discountPrice > 0 &&
+              p.discountPrice < p.price;
+
             return {
               id: p._id,
+
               name: p.name,
-              // IMPORTANT: this fallback used to always return "Accessories"
-              // whenever category wasn't a populated object, which silently
-              // broke filtering for every other category. Make sure your
-              // backend populates `category` (e.g. .populate("category"))
-              // so p.category is an object with a `name` field.
+
               category:
-                typeof p.category === "object" && p.category?.name
-                  ? p.category.name
-                  : typeof p.category === "string"
-                  ? p.category
-                  : "Uncategorized",
-              image: p.images?.[0]?.url || "/images/headphone.png",
-              price: price,
-              oldPrice: oldPrice,
-              discount: discount,
+                typeof p.category === "object"
+                  ? p.category?.name
+                  : p.category || "Uncategorized",
+
+              brand:
+                typeof p.brand === "object"
+                  ? p.brand?.name
+                  : p.brand || "",
+
+              image:
+                p.images?.length > 0
+                  ? p.images[0].url
+                  : "/images/headphone.png",
+
+              price: hasDiscount ? p.discountPrice : p.price,
+
+              oldPrice: hasDiscount ? p.price : null,
+
+              discount: hasDiscount
+                ? Math.round(
+                  ((p.price - p.discountPrice) / p.price) * 100
+                )
+                : null,
+
               rating: p.ratingsAverage || 5,
+
               reviews: p.ratingsCount || 0,
             };
           });
+
           setProductsData(mapped);
         }
-      })
-      .catch((err) => {
-        console.warn("Failed to fetch products, using static mock fallback:", err.message);
-        // Fallback to local import
-        import("@/data/products").then((mod) => {
+      } catch (err) {
+        console.warn(
+          "Failed to fetch products:",
+          err.message
+        );
+
+        try {
+          const mod = await import("@/data/products");
           setProductsData(mod.default);
-        });
-      })
-      .finally(() => {
+        } catch (e) {
+          console.error(e);
+        }
+      } finally {
         setLoading(false);
-      });
+      }
+    };
+
+    fetchProducts();
   }, []);
 
-  const [selectedCategories, setSelectedCategories] = useState([]);
-
-  // Sync the ?category= URL param into the filter state whenever it changes
-  // (e.g. clicking a category link in Hero while already on /products)
   useEffect(() => {
     if (initialCategory) {
       setSelectedCategories([initialCategory]);
@@ -79,12 +100,6 @@ export default function ProductsPage() {
       setSelectedCategories([]);
     }
   }, [initialCategory]);
-
-  const [selectedBrands, setSelectedBrands] = useState([]);
-
-  const [sortBy, setSortBy] = useState("popular");
-
-  const [search, setSearch] = useState("");
 
   const filteredProducts = useMemo(() => {
     let data = [...productsData];
@@ -96,14 +111,18 @@ export default function ProductsPage() {
       );
     }
 
-    // Category
+    // Category Filter
     if (selectedCategories.length > 0) {
-      data = data.filter((item) => selectedCategories.includes(item.category));
+      data = data.filter((item) =>
+        selectedCategories.includes(item.category)
+      );
     }
 
-    // Brand
+    // Brand Filter
     if (selectedBrands.length > 0) {
-      data = data.filter((item) => selectedBrands.includes(item.brand));
+      data = data.filter((item) =>
+        selectedBrands.includes(item.brand)
+      );
     }
 
     // Sorting
@@ -121,7 +140,9 @@ export default function ProductsPage() {
         break;
 
       case "newest":
-        data.sort((a, b) => b.id - a.id);
+        data.sort((a, b) =>
+          String(b.id).localeCompare(String(a.id))
+        );
         break;
 
       default:
@@ -129,20 +150,23 @@ export default function ProductsPage() {
     }
 
     return data;
-  }, [productsData, search, selectedCategories, selectedBrands, sortBy]);
+  }, [
+    productsData,
+    search,
+    selectedCategories,
+    selectedBrands,
+    sortBy,
+  ]);
 
   return (
     <main className={styles.page}>
-      {/* Breadcrumb */}
-
-      <div className={styles.breadcrumb}>Home / Products</div>
-
-      {/* Top Bar */}
+      <div className={styles.breadcrumb}>
+        Home / Products
+      </div>
 
       <div className={styles.topBar}>
         <div>
           <h1>All Products</h1>
-
           <p>Showing {filteredProducts.length} Products</p>
         </div>
 
@@ -151,24 +175,31 @@ export default function ProductsPage() {
             type="text"
             placeholder="Search products..."
             value={search}
-            onChange={(e) => setSearch(e.target.value)}
+            onChange={(e) =>
+              setSearch(e.target.value)
+            }
           />
 
-          <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+          <select
+            value={sortBy}
+            onChange={(e) =>
+              setSortBy(e.target.value)
+            }
+          >
             <option value="popular">Popular</option>
-
             <option value="newest">Newest</option>
-
-            <option value="priceLow">Price Low → High</option>
-
-            <option value="priceHigh">Price High → Low</option>
-
-            <option value="rating">Highest Rated</option>
+            <option value="priceLow">
+              Price Low → High
+            </option>
+            <option value="priceHigh">
+              Price High → Low
+            </option>
+            <option value="rating">
+              Highest Rated
+            </option>
           </select>
         </div>
       </div>
-
-      {/* Main Layout */}
 
       <div className={styles.layout}>
         <FilterSidebar
@@ -182,17 +213,24 @@ export default function ProductsPage() {
           {loading ? (
             <div className={styles.empty}>
               <h2>Loading products...</h2>
-              <p>Fetching the latest catalog from our backend.</p>
+              <p>
+                Fetching the latest catalog from our
+                backend.
+              </p>
             </div>
           ) : filteredProducts.length > 0 ? (
             filteredProducts.map((product) => (
-              <ProductCard key={product.id} product={product} />
+              <ProductCard
+                key={product.id}
+                product={product}
+              />
             ))
           ) : (
             <div className={styles.empty}>
               <h2>No Products Found</h2>
-
-              <p>Try changing your search or filters.</p>
+              <p>
+                Try changing your search or filters.
+              </p>
             </div>
           )}
         </div>

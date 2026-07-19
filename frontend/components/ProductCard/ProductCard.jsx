@@ -1,14 +1,55 @@
+"use client";
+
+import { useState } from "react";
 import Link from "next/link";
+import axios from "axios";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import styles from "./ProductCard.module.css";
 
 export default function ProductCard({ product }) {
+  const [imageSrc, setImageSrc] = useState(
+    product.image || "/images/headphone.png"
+  );
+
+  const [loading, setLoading] = useState(false);
+
+  const handleAddToCart = async () => {
+    try {
+      const userId = localStorage.getItem("userId");
+
+      if (!userId) {
+        alert("Please login first.");
+        return;
+      }
+
+      setLoading(true);
+
+      const { data } = await axios.post(
+        "http://localhost:5000/api/cart/add",
+        {
+          userId,
+          productId: product.id,
+          quantity: 1,
+        }
+      );
+
+      alert(data.message || "Product added to cart successfully.");
+    } catch (error) {
+      console.error("Add To Cart Error:", error);
+
+      alert(
+        error.response?.data?.message ||
+          "Unable to add product to cart."
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className={styles.card}>
-
       <div className={styles.imageContainer}>
-
-        {product.discount && (
+        {product.discount > 0 && (
           <span className={styles.discount}>
             -{product.discount}%
           </span>
@@ -20,18 +61,18 @@ export default function ProductCard({ product }) {
 
         <Link href={`/products/${product.id}`}>
           <img
-            src={product.image}
+            src={imageSrc}
             alt={product.name}
             className={styles.image}
+            loading="lazy"
+            onError={() => setImageSrc("/images/headphone.png")}
           />
         </Link>
-
       </div>
 
       <div className={styles.content}>
-
         <p className={styles.category}>
-          {product.category}
+          {product.category || "Uncategorized"}
         </p>
 
         <Link href={`/products/${product.id}`}>
@@ -41,21 +82,18 @@ export default function ProductCard({ product }) {
         </Link>
 
         <div className={styles.rating}>
-
           <Star
             size={15}
             fill="#D98A2B"
             color="#D98A2B"
           />
 
-          <span>{product.rating}</span>
+          <span>{product.rating || 0}</span>
 
-          <small>({product.reviews})</small>
-
+          <small>({product.reviews || 0})</small>
         </div>
 
         <div className={styles.priceRow}>
-
           <span className={styles.price}>
             ₹{product.price}
           </span>
@@ -65,19 +103,18 @@ export default function ProductCard({ product }) {
               ₹{product.oldPrice}
             </span>
           )}
-
         </div>
 
-        <button className={styles.cartButton}>
-
+        <button
+          className={styles.cartButton}
+          onClick={handleAddToCart}
+          disabled={loading}
+        >
           <ShoppingCart size={18} />
 
-          Add to Cart
-
+          {loading ? "Adding..." : "Add to Cart"}
         </button>
-
       </div>
-
     </div>
   );
 }
