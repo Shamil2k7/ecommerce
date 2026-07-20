@@ -1,12 +1,11 @@
-import crypto from "crypto";
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
 
 const resetPassword = async (req, res) => {
-  const { token, password } = req.body;
+  const { email, token, password } = req.body;
 
-  if (!token || !password) {
-    return res.status(400).json({ success: false, message: "Token and password are required" });
+  if (!email || !token || !password) {
+    return res.status(400).json({ success: false, message: "Email, token, and password are required" });
   }
 
   if (password.length < 8) {
@@ -14,24 +13,19 @@ const resetPassword = async (req, res) => {
   }
 
   try {
-    // Hash the incoming token to match what's stored in the DB
-    const hashedToken = crypto
-      .createHash("sha256")
-      .update(token)
-      .digest("hex");
-
     const user = await User.findOne({
-      resetPasswordToken: hashedToken,
-      resetPasswordExpires: { $gt: Date.now() },
+      email: email.toLowerCase(),
+      resetPasswordToken: token,
+      resetPasswordExpire: { $gt: Date.now() },
     });
 
     if (!user) {
-      return res.status(400).json({ success: false, message: "Invalid or expired token" });
+      return res.status(400).json({ success: false, message: "Invalid or expired verification session" });
     }
 
     user.password = password;
     user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    user.resetPasswordExpire = undefined;
 
     await user.save();
 

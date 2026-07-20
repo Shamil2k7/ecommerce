@@ -27,6 +27,23 @@ overflow:hidden;
   justify-content: center;
 }
 
+.backHome {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-soft);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  align-self: flex-start;
+  transition: color 0.2s ease;
+}
+
+.backHome:hover {
+  color: var(--primary);
+}
+
 .imageSection {
   flex: 0.9;
   position: relative;

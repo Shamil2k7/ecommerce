@@ -98,7 +98,7 @@ export default function CustomersPage() {
       <div className={styles.header}>
         <div>
           <h1>Customers</h1>
-          <p>Manage all registered customers from MongoDB database</p>
+          <p>Manage all registered customers</p>
         </div>
       </div>
 
@@ -164,7 +164,6 @@ export default function CustomersPage() {
                 <th>Phone</th>
                 <th>Role</th>
                 <th>Joined Date</th>
-                <th>Status</th>
                 <th>Actions</th>
               </tr>
             </thead>
@@ -238,12 +237,6 @@ export default function CustomersPage() {
                     </td>
 
                     <td>{formattedDate}</td>
-
-                    <td>
-                      <span className={item.isBlocked ? styles.inactive : styles.active}>
-                        {item.isBlocked ? "Blocked" : "Active"}
-                      </span>
-                    </td>
 
                     <td>
                       <div className={styles.actions}>
