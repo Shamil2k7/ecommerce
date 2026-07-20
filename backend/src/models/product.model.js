@@ -1,5 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 
+/* ---------- Variant ---------- */
+
 const variantSchema = new Schema(
   {
     size: {
@@ -27,33 +29,56 @@ const variantSchema = new Schema(
   { _id: false }
 );
 
+/* ---------- Review ---------- */
+
+const reviewSchema = new Schema(
+  {
+    user: {
+      type: Schema.Types.ObjectId,
+      ref: "User",
+    },
+
+    rating: {
+      type: Number,
+      min: 1,
+      max: 5,
+    },
+
+    comment: String,
+  },
+  {
+    timestamps: true,
+  }
+);
+
+/* ---------- Product ---------- */
+
 const productSchema = new Schema(
   {
+    // Basic
+
     name: {
       type: String,
-      required: [true, "Product name is required"],
+      required: true,
       trim: true,
-      index: true,
     },
 
     slug: {
       type: String,
       required: [true, "Product slug is required"],
       unique: true,
-      lowercase: true,
-      index: true,
+      required: true,
     },
 
     description: {
       type: String,
-      required: [true, "Product description is required"],
-      trim: true,
+      required: true,
     },
 
     category: {
       type: Schema.Types.ObjectId,
       ref: "Category",
-      required: [true, "Category is required"],
+      required: true,
     },
 
     brand: {
@@ -64,8 +89,7 @@ const productSchema = new Schema(
 
     price: {
       type: Number,
-      required: [true, "Price is required"],
-      min: 0,
+      required: true,
     },
 
     discountPrice: {
@@ -76,9 +100,7 @@ const productSchema = new Schema(
 
     sku: {
       type: String,
-      unique: true,
-      sparse: true,
-      trim: true,
+      default: "INR",
     },
 
     stock: {
@@ -132,28 +154,43 @@ const productSchema = new Schema(
       default: false,
     },
 
+    isTrending: {
+      type: Boolean,
+      default: false,
+    },
+
+    isBestSeller: {
+      type: Boolean,
+      default: false,
+    },
+
+    isNewArrival: {
+      type: Boolean,
+      default: false,
+    },
+
     isActive: {
       type: Boolean,
       default: true,
     },
+
+    // Vendor
+
+    vendor: {
+      type: Schema.Types.ObjectId,
+      ref: "Vendor",
+    },
+
+    // Admin
+
+    adminNote: String,
   },
   {
     timestamps: true,
   }
 );
 
-productSchema.pre("validate", function () {
-  if (this.name && !this.slug) {
-    this.slug =
-      this.name
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/(^-|-$)/g, "") +
-      "-" +
-      Date.now().toString(36);
-  }
-});
+// Search Index
 
 productSchema.index({
   name: "text",
@@ -167,6 +204,4 @@ productSchema.index({
   price: 1,
 });
 
-const Product = mongoose.model("Product", productSchema);
-
-export default Product;
+export default mongoose.model("Product", productSchema);
