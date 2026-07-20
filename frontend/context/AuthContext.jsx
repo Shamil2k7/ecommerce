@@ -142,14 +142,37 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const resetPassword = async (token, password) => {
+  const verifyOtp = async (email, otp) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/verify-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, otp }),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        return { success: true, message: data.message, token: data.token };
+      } else {
+        return { success: false, message: data.message || "Invalid or expired OTP" };
+      }
+    } catch (error) {
+      return { success: false, message: error.message || "An error occurred" };
+    }
+  };
+
+  const resetPassword = async (email, token, password) => {
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ token, password }),
+        body: JSON.stringify({ email, token, password }),
         credentials: "include",
       });
 
@@ -222,6 +245,7 @@ export function AuthProvider({ children }) {
         login,
         logout,
         forgotPassword,
+        verifyOtp,
         resetPassword,
         changePassword,
         googleLogin,

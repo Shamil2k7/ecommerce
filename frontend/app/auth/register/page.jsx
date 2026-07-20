@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import {
@@ -11,33 +11,22 @@ import {
   Eye,
   EyeOff,
   Loader2,
+  ArrowLeft,
+  ChevronDown,
 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
 import styles from "./Register.module.css";
 
-const countries = [
-  { code: "+91", name: "India", flag: "🇮🇳" },
-  { code: "+1", name: "United States", flag: "🇺🇸" },
-  { code: "+44", name: "United Kingdom", flag: "🇬🇧" },
-  { code: "+971", name: "United Arab Emirates", flag: "🇦🇪" },
-  { code: "+1", name: "Canada", flag: "🇨🇦" },
-  { code: "+61", name: "Australia", flag: "🇦🇺" },
-  { code: "+65", name: "Singapore", flag: "🇸🇬" },
-  { code: "+49", name: "Germany", flag: "🇩🇪" },
-  { code: "+33", name: "France", flag: "🇫🇷" },
-  { code: "+966", name: "Saudi Arabia", flag: "🇸🇦" },
-];
-
 export default function RegisterPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
+  const [countryCode, setCountryCode] = useState("+91");
   const [phone, setPhone] = useState("");
-  const [selectedCountry, setSelectedCountry] = useState(countries[0]);
-  const [dropdownOpen, setDropdownOpen] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [termsAccepted, setTermsAccepted] = useState(false);
+  const [dropdownOpen, setDropdownOpen] = useState(false);
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
@@ -45,56 +34,93 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
+  // Validation Error States
+  const [nameError, setNameError] = useState("");
+  const [emailError, setEmailError] = useState("");
+  const [phoneError, setPhoneError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+  const [confirmPasswordError, setConfirmPasswordError] = useState("");
+  const [termsError, setTermsError] = useState("");
+
   const { register } = useAuth();
   const router = useRouter();
 
-  // Close dropdown on outside click
-  useEffect(() => {
-    const handleOutsideClick = (e) => {
-      if (dropdownOpen && !e.target.closest(`.${styles.countrySelector}`)) {
-        setDropdownOpen(false);
-      }
-    };
-    document.addEventListener("mousedown", handleOutsideClick);
-    return () => document.removeEventListener("mousedown", handleOutsideClick);
-  }, [dropdownOpen]);
+  const countries = [
+    { name: "India", code: "+91" },
+    { name: "United States", code: "+1" },
+    { name: "United Kingdom", code: "+44" },
+    { name: "Australia", code: "+61" },
+    { name: "United Arab Emirates", code: "+971" },
+    { name: "South Korea", code: "+82" },
+    { name: "Japan", code: "+81" },
+    { name: "Germany", code: "+49" },
+    { name: "France", code: "+33" }
+  ];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
     setSuccessMsg("");
+    setNameError("");
+    setEmailError("");
+    setPhoneError("");
+    setPasswordError("");
+    setConfirmPasswordError("");
+    setTermsError("");
 
-    if (!fullName || !email || !phone || !password) {
-      setErrorMsg("Please fill in all fields");
-      return;
+    let isValid = true;
+
+    if (!fullName.trim()) {
+      setNameError("Full name is required");
+      isValid = false;
+    }
+
+    if (!email) {
+      setEmailError("Email address is required");
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      isValid = false;
     }
 
     const digitsOnly = phone.replace(/\D/g, "");
-    if (digitsOnly.length < 7 || digitsOnly.length > 12) {
-      setErrorMsg(`Please enter a valid phone number for ${selectedCountry.name} (7-12 digits)`);
-      return;
+    if (!digitsOnly) {
+      setPhoneError("Phone number is required");
+      isValid = false;
+    } else if (digitsOnly.length < 10 || digitsOnly.length > 15) {
+      setPhoneError("Please enter a valid phone number (10-15 digits)");
+      isValid = false;
     }
 
-    if (password !== confirmPassword) {
-      setErrorMsg("Passwords do not match");
-      return;
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    } else if (password.length < 8) {
+      setPasswordError("Password must be at least 8 characters long");
+      isValid = false;
+    } else if (!/(?=.*[A-Za-z])(?=.*\d)/.test(password)) {
+      setPasswordError("Password must contain both letters and numbers");
+      isValid = false;
     }
 
-    if (password.length < 8) {
-      setErrorMsg("Password must be at least 8 characters long");
-      return;
+    if (!confirmPassword) {
+      setConfirmPasswordError("Please confirm your password");
+      isValid = false;
+    } else if (password !== confirmPassword) {
+      setConfirmPasswordError("Passwords do not match");
+      isValid = false;
     }
 
     if (!termsAccepted) {
-      setErrorMsg("You must accept the Terms & Conditions");
-      return;
+      setTermsError("You must accept the Terms & Conditions");
+      isValid = false;
     }
 
-    // Store complete phone number with selected country code
-    const fullPhone = selectedCountry.code + digitsOnly;
+    if (!isValid) return;
 
     setLoading(true);
-    const result = await register(fullName, email, fullPhone, password);
+    const fullPhoneNumber = countryCode + digitsOnly;
+    const result = await register(fullName, email, fullPhoneNumber, password);
     setLoading(false);
 
     if (result.success) {
@@ -112,9 +138,14 @@ export default function RegisterPage() {
     <section className={styles.container}>
       <div className={styles.card}>
         <div className={styles.formSection}>
+          <Link href="/" className={styles.backHome}>
+            <ArrowLeft size={16} />
+            <span>Back to Home</span>
+          </Link>
+
           <div className={styles.header}>
             <h1>Create Account</h1>
-            <p>Register to start shopping with ShopAura.</p>
+            <p>Register to start shopping</p>
           </div>
 
           {errorMsg && (
@@ -145,7 +176,7 @@ export default function RegisterPage() {
             </div>
           )}
 
-          <form className={styles.form} onSubmit={handleSubmit}>
+          <form className={styles.form} onSubmit={handleSubmit} noValidate>
             <div className={styles.field}>
               <div className={styles.inputBox}>
                 <User size={18} />
@@ -154,11 +185,19 @@ export default function RegisterPage() {
                   id="fullName"
                   placeholder=" "
                   value={fullName}
-                  onChange={(e) => setFullName(e.target.value)}
+                  onChange={(e) => {
+                    setFullName(e.target.value);
+                    if (nameError) setNameError("");
+                  }}
                   required
                 />
                 <label htmlFor="fullName" className={styles.floatingLabel}>Full Name</label>
               </div>
+              {nameError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {nameError}
+                </span>
+              )}
             </div>
 
             <div className={styles.field}>
@@ -169,63 +208,72 @@ export default function RegisterPage() {
                   id="email"
                   placeholder=" "
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (emailError) setEmailError("");
+                  }}
                   required
                 />
                 <label htmlFor="email" className={styles.floatingLabel}>Email Address</label>
               </div>
+              {emailError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {emailError}
+                </span>
+              )}
             </div>
 
             <div className={styles.field}>
               <div className={styles.inputBox}>
                 <Phone size={18} />
-                
-                <div className={styles.countrySelector}>
-                  <button
-                    type="button"
-                    className={styles.countryBtn}
+
+                <div className={styles.countryDropdownContainer}>
+                  <div
+                    className={styles.selectedDisplay}
                     onClick={() => setDropdownOpen(!dropdownOpen)}
                   >
-                    <span>{selectedCountry.flag} {selectedCountry.code}</span>
-                    <span className={styles.dropdownArrow}>▼</span>
-                  </button>
-                  
+                    <span>{countryCode}</span>
+                    <ChevronDown size={14} />
+                  </div>
+
                   {dropdownOpen && (
-                    <div className={styles.countryDropdown}>
+                    <div className={styles.dropdownOptions}>
                       {countries.map((c) => (
                         <div
-                          key={c.code + c.name}
-                          className={styles.countryItem}
+                          key={c.name}
+                          className={styles.optionItem}
                           onClick={() => {
-                            setSelectedCountry(c);
+                            setCountryCode(c.code);
                             setDropdownOpen(false);
                           }}
                         >
-                          <span className={styles.dropdownFlag}>{c.flag}</span>
-                          <span className={styles.dropdownName}>{c.name}</span>
-                          <span className={styles.dropdownCode}>{c.code}</span>
+                          {c.name} ({c.code})
                         </div>
                       ))}
                     </div>
                   )}
                 </div>
 
-                <span className={styles.divider}>|</span>
-
                 <input
                   type="tel"
                   id="phone"
                   placeholder=" "
-                  className={styles.phoneInputVal}
                   value={phone}
                   onChange={(e) => {
                     const value = e.target.value.replace(/\D/g, "");
                     setPhone(value);
+                    if (phoneError) setPhoneError("");
                   }}
                   required
+                  style={{ paddingLeft: "8px" }}
                 />
-                <label htmlFor="phone" className={styles.floatingLabelPhone}>Phone Number</label>
+                <label htmlFor="phone" className={styles.mobileFloatingLabel}>Phone Number</label>
               </div>
+              {phoneError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {phoneError}
+                </span>
+              )}
             </div>
 
             <div className={styles.field}>
@@ -237,7 +285,10 @@ export default function RegisterPage() {
                   id="password"
                   placeholder=" "
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (passwordError) setPasswordError("");
+                  }}
                   required
                 />
                 <label htmlFor="password" className={styles.floatingLabel}>Password</label>
@@ -255,6 +306,11 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+              {passwordError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {passwordError}
+                </span>
+              )}
             </div>
 
             <div className={styles.field}>
@@ -266,7 +322,10 @@ export default function RegisterPage() {
                   id="confirmPassword"
                   placeholder=" "
                   value={confirmPassword}
-                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  onChange={(e) => {
+                    setConfirmPassword(e.target.value);
+                    if (confirmPasswordError) setConfirmPasswordError("");
+                  }}
                   required
                 />
                 <label htmlFor="confirmPassword" className={styles.floatingLabel}>Confirm Password</label>
@@ -284,16 +343,31 @@ export default function RegisterPage() {
                   )}
                 </button>
               </div>
+              {confirmPasswordError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {confirmPasswordError}
+                </span>
+              )}
             </div>
 
-            <label className={styles.checkbox}>
-              <input 
-                type="checkbox" 
-                checked={termsAccepted} 
-                onChange={(e) => setTermsAccepted(e.target.checked)}
-              />
-              I agree to the Terms & Conditions and Privacy Policy.
-            </label>
+            <div style={{ marginBottom: "16px", display: "flex", flexDirection: "column" }}>
+              <label className={styles.checkbox}>
+                <input
+                  type="checkbox"
+                  checked={termsAccepted}
+                  onChange={(e) => {
+                    setTermsAccepted(e.target.checked);
+                    if (termsError) setTermsError("");
+                  }}
+                />
+                I agree to the Terms & Conditions and Privacy Policy.
+              </label>
+              {termsError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {termsError}
+                </span>
+              )}
+            </div>
 
             <button
               type="submit"
@@ -331,9 +405,9 @@ export default function RegisterPage() {
         </div>
 
         <div className={styles.imageSection}>
-          <img 
-            src="https://i.pinimg.com/1200x/22/b5/60/22b5604eca105ae195aa809dc734d071.jpg" 
-            alt="ShopAura SignUp" 
+          <img
+            src="https://i.pinimg.com/1200x/22/b5/60/22b5604eca105ae195aa809dc734d071.jpg"
+            alt="ShopAura SignUp"
             className={styles.sideImage}
           />
         </div>

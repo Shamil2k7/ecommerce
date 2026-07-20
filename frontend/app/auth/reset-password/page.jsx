@@ -18,6 +18,7 @@ function ResetPasswordForm() {
 
   const searchParams = useSearchParams();
   const token = searchParams.get("token");
+  const email = searchParams.get("email");
   const { resetPassword } = useAuth();
   const router = useRouter();
 
@@ -26,8 +27,8 @@ function ResetPasswordForm() {
     setErrorMsg("");
     setSuccessMsg("");
 
-    if (!token) {
-      setErrorMsg("Password reset token is missing. Please request a new link.");
+    if (!token || !email) {
+      setErrorMsg("Password reset credentials are missing. Please request a new OTP code.");
       return;
     }
 
@@ -47,17 +48,17 @@ function ResetPasswordForm() {
     }
 
     setLoading(true);
-    const result = await resetPassword(token, password);
+    const result = await resetPassword(email, token, password);
     setLoading(false);
 
     if (result.success) {
-      setSuccessMsg("Password reset successful! Logging you in...");
+      setSuccessMsg("Password reset successful! Redirecting to login...");
       setTimeout(() => {
-        router.push("/");
+        router.push("/auth/login");
         router.refresh();
       }, 1500);
     } else {
-      setErrorMsg(result.message || "Failed to reset password. The link may have expired.");
+      setErrorMsg(result.message || "Failed to reset password. The OTP code may have expired.");
     }
   };
 
@@ -97,9 +98,9 @@ function ResetPasswordForm() {
         </div>
       )}
 
-      {!token ? (
+      {!token || !email ? (
         <div style={{ margin: "20px 0", textAlign: "center", color: "#ef4444" }}>
-          <p>No valid reset token found in URL.</p>
+          <p>No valid reset credentials found in URL.</p>
           <Link href="/auth/forgot-password" style={{ color: "#4f46e5", textDecoration: "underline", fontWeight: "bold" }}>
             Request new reset link
           </Link>

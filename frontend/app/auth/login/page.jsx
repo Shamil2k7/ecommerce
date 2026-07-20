@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { Eye, EyeOff, Mail, Lock, Loader2 } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, Loader2, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import GoogleLoginButton from "@/components/GoogleLoginButton";
 import styles from "./Login.module.css";
@@ -16,6 +16,9 @@ export default function LoginPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
+  const [emailError, setEmailError] = useState("");
+  const [passwordError, setPasswordError] = useState("");
+
   const { login } = useAuth();
   const router = useRouter();
 
@@ -23,11 +26,25 @@ export default function LoginPage() {
     e.preventDefault();
     setErrorMsg("");
     setSuccessMsg("");
+    setEmailError("");
+    setPasswordError("");
 
-    if (!email || !password) {
-      setErrorMsg("Please fill in all fields");
-      return;
+    let isValid = true;
+
+    if (!email) {
+      setEmailError("Email is required");
+      isValid = false;
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      setEmailError("Please enter a valid email address");
+      isValid = false;
     }
+
+    if (!password) {
+      setPasswordError("Password is required");
+      isValid = false;
+    }
+
+    if (!isValid) return;
 
     setLoading(true);
     const result = await login(email, password);
@@ -48,6 +65,11 @@ export default function LoginPage() {
     <section className={styles.container}>
       <div className={styles.card}>
         <div className={styles.formSection}>
+          <Link href="/" className={styles.backHome}>
+            <ArrowLeft size={16} />
+            <span>Back to Home</span>
+          </Link>
+
           <div className={styles.header}>
             <h1>Welcome Back</h1>
             <p>Login to continue shopping.</p>
@@ -81,7 +103,7 @@ export default function LoginPage() {
             </div>
           )}
 
-          <form className={styles.form} onSubmit={handleSubmit}>
+          <form className={styles.form} onSubmit={handleSubmit} noValidate>
             <div className={styles.field}>
               <div className={styles.inputBox}>
                 <Mail size={18} />
@@ -91,11 +113,19 @@ export default function LoginPage() {
                   id="email"
                   placeholder=" "
                   value={email}
-                  onChange={(e) => setEmail(e.target.value)}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                    if (emailError) setEmailError("");
+                  }}
                   required
                 />
                 <label htmlFor="email" className={styles.floatingLabel}>Email Address</label>
               </div>
+              {emailError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {emailError}
+                </span>
+              )}
             </div>
 
             <div className={styles.field}>
@@ -107,7 +137,10 @@ export default function LoginPage() {
                   id="password"
                   placeholder=" "
                   value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  onChange={(e) => {
+                    setPassword(e.target.value);
+                    if (passwordError) setPasswordError("");
+                  }}
                   required
                 />
                 <label htmlFor="password" className={styles.floatingLabel}>Password</label>
@@ -125,6 +158,11 @@ export default function LoginPage() {
                   )}
                 </button>
               </div>
+              {passwordError && (
+                <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                  {passwordError}
+                </span>
+              )}
             </div>
 
             <div className={styles.options}>

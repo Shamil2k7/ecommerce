@@ -10,50 +10,48 @@ const forgotPassword = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
+
     if (!user) {
-      return res.status(404).json({ success: false, message: "User with this email does not exist" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    const resetToken = crypto.randomBytes(20).toString("hex");
+    const token = crypto.randomBytes(32).toString("hex");
 
-    // Store a hashed version of the token in the DB — the plain token goes to the user via email
-    user.resetPasswordToken = crypto.createHash("sha256").update(resetToken).digest("hex");
-    user.resetPasswordExpires = Date.now() + 3600000; // 1 hour
+    user.resetPasswordToken = token;
+    user.resetPasswordExpire = Date.now() + 15 * 60 * 1000;
 
     await user.save({ validateBeforeSave: false });
 
-    const resetUrl = `${process.env.FRONTEND_URL || "http://localhost:3000"}/auth/reset-password?token=${resetToken}`;
-    const message = `Please click on the link to reset your password: \n\n ${resetUrl}`;
+    const frontendUrl = process.env.FRONTEND_URL || "http://localhost:3000";
+    const resetURL = `${frontendUrl}/auth/reset-password?token=${token}&email=${encodeURIComponent(user.email)}`;
 
-    try {
-      await sendEmail({
-        email: user.email,
-        subject: "ShopAura - Password Reset Request",
-        message,
-        html: `
-          <h3>Reset Your Password</h3>
-          <p>Click on the link below to choose a new password. The link is valid for 1 hour.</p>
-          <a href="${resetUrl}" target="_blank">Reset Password Link</a>
-        `,
-      });
+    await sendEmail(
+      user.email,
+      "Reset Your Password",
+      `
+        <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+          <h2>Password Reset Request</h2>
+          <p>Click the link below to reset your password:</p>
+          <a href="${resetURL}" style="background-color: #4f46e5; color: #ffffff; text-decoration: none; padding: 12px 24px; font-weight: bold; border-radius: 6px; display: inline-block; margin: 15px 0;">
+            Reset Password
+          </a>
+          <p>This link expires in 15 minutes.</p>
+        </div>
+      `
+    );
 
-      return res.status(200).json({
-        success: true,
-        message: "Email sent successfully",
-        token: process.env.NODE_ENV === "development" ? resetToken : undefined,
-      });
-    } catch (error) {
-      user.resetPasswordToken = undefined;
-      user.resetPasswordExpires = undefined;
-      await user.save({ validateBeforeSave: false });
-
-      return res.status(500).json({ success: false, message: "Could not send email: " + error.message });
-    }
+    res.json({
+      success: true,
+      message: "Password reset email sent",
+      token: process.env.NODE_ENV === "development" ? token : undefined,
+    });
   } catch (error) {
     return res.status(500).json({ success: false, message: error.message });
   }
 };
 
 export default forgotPassword;
-
