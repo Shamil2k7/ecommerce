@@ -10,6 +10,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+
 }
 
 .staff img {
@@ -17,6 +18,22 @@
   height: 48px;
   border-radius: 50%;
   object-fit: cover;
+  flex-shrink: 0;
+}
+
+
+.staffInfo {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+}
+
+
+.staffName {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .staffCell {
@@ -103,30 +120,18 @@
 
 .table table {
   width: 100%;
+  min-width: 1100px;
   border-collapse: collapse;
-  table-layout: fixed;
+  table-layout: auto;
 }
-
-/* .table th {
-  background: #faf8f6;
-  padding: 18px;
-  text-align: left;
-  border-bottom: 1px solid var(--line);
-}
-
-.table td {
-  padding: 18px;
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-} */
 
 .table th,
 .table td {
   padding: 18px;
   border-bottom: 1px solid var(--line);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
+  overflow: visible;
+  text-overflow: unset;
 }
 
 .table tbody tr:hover {
@@ -189,19 +194,15 @@
 }
 
 
-.table th:nth-child(1),
-.table td:nth-child(1) {
-  width: 300px;
-}
-
 .table th:nth-child(2),
 .table td:nth-child(2) {
   width: 260px;
+  word-break: break-word;
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-  width: 180px;
+  width: 170px;
 }
 
 .table th:nth-child(4),
@@ -211,12 +212,12 @@
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-  width: 150px;
+  width: 170px;
 }
 
 .table th:nth-child(6),
 .table td:nth-child(6) {
-  width: 130px;
+  width: 120px;
 }
 
 .table th:nth-child(7),

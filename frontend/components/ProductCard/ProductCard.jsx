@@ -2,11 +2,12 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import axios from "axios";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import styles from "./ProductCard.module.css";
+import { useCart } from "../../context/CartContext";
 
 export default function ProductCard({ product }) {
+  const { addToCart } = useCart();
   const [imageSrc, setImageSrc] = useState(
     product.image || "/images/headphone.png"
   );
@@ -15,32 +16,13 @@ export default function ProductCard({ product }) {
 
   const handleAddToCart = async () => {
     try {
-      const userId = localStorage.getItem("userId");
-
-      if (!userId) {
-        alert("Please login first.");
-        return;
-      }
-
       setLoading(true);
-
-      const { data } = await axios.post(
-        "http://localhost:5000/api/cart/add",
-        {
-          userId,
-          productId: product.id,
-          quantity: 1,
-        }
-      );
-
-      alert(data.message || "Product added to cart successfully.");
+      await addToCart({
+        productId: product.id,
+        quantity: 1,
+      });
     } catch (error) {
       console.error("Add To Cart Error:", error);
-
-      alert(
-        error.response?.data?.message ||
-          "Unable to add product to cart."
-      );
     } finally {
       setLoading(false);
     }

@@ -42,7 +42,7 @@ export const CartProvider = ({ children }) => {
     );
 
     if (data) {
-      setCart(data);
+      setCart(data.cart || data);
     }
   }, [user]);
 
@@ -67,8 +67,8 @@ export const CartProvider = ({ children }) => {
     );
 
     if (data) {
-      setCart(data);
-      alert("Product added to cart");
+      setCart(data.cart || data);
+      alert(data.message || "Product added to cart");
     }
   };
 
@@ -94,7 +94,7 @@ export const CartProvider = ({ children }) => {
     );
 
     if (data) {
-      setCart(data);
+      setCart(data.cart || data);
     }
   };
 
@@ -114,8 +114,8 @@ export const CartProvider = ({ children }) => {
     );
 
     if (data) {
-      setCart(data);
-      alert("Item removed");
+      setCart(data.cart || data);
+      alert(data.message || "Item removed");
     }
   };
 
@@ -129,8 +129,8 @@ export const CartProvider = ({ children }) => {
     );
 
     if (data) {
-      setCart(data);
-      alert("Cart cleared");
+      setCart(data.cart || data);
+      alert(data.message || "Cart cleared");
     }
   };
 
@@ -159,7 +159,7 @@ export const CartProvider = ({ children }) => {
 
     const data = await executeRequest(
       () =>
-        cartService.removeCoupon({
+        cartService.applyCoupon({
           userId: user._id,
           code: "",
         }),
@@ -167,8 +167,8 @@ export const CartProvider = ({ children }) => {
     );
 
     if (data) {
-      setCart(data.cart);
-      alert("Coupon removed");
+      setCart(data.cart || data);
+      alert(data.message || "Coupon removed");
     }
   };
 

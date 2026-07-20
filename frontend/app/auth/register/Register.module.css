@@ -27,6 +27,23 @@ overflow:hidden;
   justify-content: center;
 }
 
+.backHome {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--text-soft);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  margin-bottom: 20px;
+  align-self: flex-start;
+  transition: color 0.2s ease;
+}
+
+.backHome:hover {
+  color: var(--primary);
+}
+
 .imageSection {
   flex: 0.9;
   position: relative;
@@ -93,6 +110,80 @@ padding-top: 12px;
 color: var(--text);
 }
 
+.countryDropdownContainer {
+  position: relative;
+  width: 65px;
+  height: 100%;
+  display: flex;
+  align-items: center;
+}
+
+.selectedDisplay {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-right: 1px solid var(--line);
+  padding-right: 8px;
+  cursor: pointer;
+  user-select: none;
+  font-size: 14px;
+  color: var(--text);
+  gap: 4px;
+}
+
+.dropdownOptions {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: -40px;
+  width: 240px;
+  max-height: 200px;
+  overflow-y: auto;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  z-index: 50;
+  display: flex;
+  flex-direction: column;
+  padding: 6px 0;
+}
+
+.optionItem {
+  padding: 10px 14px;
+  font-size: 14px;
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s ease;
+  text-align: left;
+}
+
+.optionItem:hover {
+  background: var(--bg);
+  color: var(--primary);
+}
+
+.mobileFloatingLabel {
+  position: absolute;
+  left: 120px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+  font-size: 13.5px;
+  font-weight: 500;
+  pointer-events: none;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  transform-origin: left top;
+}
+
+.inputBox input:focus ~ .mobileFloatingLabel,
+.inputBox input:not(:placeholder-shown) ~ .mobileFloatingLabel {
+  top: 10px;
+  transform: translateY(-50%) scale(0.8);
+  color: var(--primary);
+}
+
 .floatingLabel {
   position: absolute;
   left: 45px;
@@ -106,28 +197,8 @@ color: var(--text);
   transform-origin: left top;
 }
 
-.floatingLabelPhone {
-  position: absolute;
-  left: 140px;
-  top: 50%;
-  transform: translateY(-50%);
-  color: var(--text-soft);
-  font-size: 13.5px;
-  font-weight: 500;
-  pointer-events: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: left top;
-}
-
 .inputBox input:focus ~ .floatingLabel,
 .inputBox input:not(:placeholder-shown) ~ .floatingLabel {
-  top: 10px;
-  transform: translateY(-50%) scale(0.8);
-  color: var(--primary);
-}
-
-.inputBox input:focus ~ .floatingLabelPhone,
-.inputBox input:not(:placeholder-shown) ~ .floatingLabelPhone {
   top: 10px;
   transform: translateY(-50%) scale(0.8);
   color: var(--primary);
@@ -195,23 +266,21 @@ font-weight:600;
 }
 
 /* Mobile Layout */
-@media (max-width: 600px) {
+@media (max-width: 768px) {
   .card {
     flex-direction: column-reverse;
-    max-width: 500px;
-    margin: 0 auto;
   }
   
   .imageSection {
     flex: none;
     width: 100%;
-    height: 240px;
+    height: 200px;
     min-height: auto;
   }
 
   .sideImage {
     position: relative;
-    height: 240px;
+    height: 200px;
   }
 
   .formSection {
@@ -222,8 +291,12 @@ font-weight:600;
 }
 
 @media (max-width: 480px) {
+  .container {
+    padding: 20px 10px;
+  }
+
   .header h1 {
-    font-size: 28px;
+    font-size: 24px;
   }
 
   .inputBox {
@@ -233,98 +306,17 @@ font-weight:600;
   .registerBtn {
     height: 46px;
   }
+
+  .formSection {
+    padding: 24px 14px;
+  }
 }
 
 @media (max-width: 360px) {
   .formSection {
-    padding: 25px 15px;
+    padding: 20px 10px;
   }
   .header h1 {
-    font-size: 26px;
+    font-size: 22px;
   }
-}
-
-.countrySelector {
-  position: relative;
-  height: 100%;
-  display: flex;
-  align-items: center;
-}
-
-.countryBtn {
-  background: none;
-  border: none;
-  color: var(--text);
-  font-size: 15px;
-  font-weight: 500;
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
-  padding: 0 4px;
-  height: 100%;
-  font-family: inherit;
-}
-
-.dropdownArrow {
-  font-size: 8px;
-  color: var(--text-soft);
-}
-
-.countryDropdown {
-  position: absolute;
-  top: 100%;
-  left: -40px;
-  margin-top: 8px;
-  background-color: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius-md);
-  box-shadow: var(--shadow-md);
-  z-index: 100;
-  width: 250px;
-  max-height: 200px;
-  overflow-y: auto;
-}
-
-.countryItem {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 14px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  color: var(--text);
-  font-size: 14px;
-}
-
-.countryItem:hover {
-  background-color: var(--bg);
-}
-
-.dropdownFlag {
-  font-size: 18px;
-}
-
-.dropdownName {
-  flex: 1;
-  text-align: left;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.dropdownCode {
-  color: var(--text-soft);
-  font-weight: 500;
-}
-
-.divider {
-  color: var(--line);
-  margin: 0 4px;
-  font-size: 16px;
-  font-weight: 300;
-}
-
-.phoneInputVal {
-  padding-left: 2px !important;
 }
