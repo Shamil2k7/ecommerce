@@ -9,13 +9,11 @@ import Image from "next/image";
 
 export default function Navbar() {
   const API = process.env.NEXT_PUBLIC_API_URL;
-  console.log(API,'navbaaaarr');
-  console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
 
   const [menuOpen, setMenuOpen] = useState(false);
 
   const [settings, setSettings] = useState({
-    storeName: "ShopAura",
+    storeName: "",
     tagline: "",
     logo: "",
     favicon: "",
@@ -30,7 +28,6 @@ export default function Navbar() {
   const fetchSettings = async () => {
     try {
       const res = await fetch(`${API}/api/settings`);
-      console.log('hhhhhhhhhhhhhhhhhh')
       const data = await res.json();
 
       if (data.success) {
