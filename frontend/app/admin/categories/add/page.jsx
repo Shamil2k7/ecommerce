@@ -6,86 +6,117 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./AddCategory.module.css";
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
+
 export default function AddCategoryPage() {
   const router = useRouter();
 
-  // Form states
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
-  const [parentCategory, setParentCategory] = useState("");
   const [description, setDescription] = useState("");
-  const [isActive, setIsActive] = useState("Active");
-  const [imageFile, setImageFile] = useState(null);
-  const [preview, setPreview] = useState(null);
+  const [parentCategory, setParentCategory] = useState("");
+  const [isActive, setIsActive] = useState(true);
 
-  // Parent Categories options
+  const [imageFile, setImageFile] = useState(null);
+  const [preview, setPreview] = useState("");
+
   const [categories, setCategories] = useState([]);
+  const [loadingCategories, setLoadingCategories] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
+  // ================= Fetch Parent Categories =================
+
   useEffect(() => {
-    // Fetch categories to populate dropdown
-    fetch("http://localhost:5000/api/categories")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.data) {
-          setCategories(json.data);
+    const fetchCategories = async () => {
+      try {
+        const res = await fetch(`${API_URL}/api/categories`);
+
+        const data = await res.json();
+
+        if (res.ok) {
+          setCategories(data.data || data);
         }
-      })
-      .catch((err) => console.error("Error fetching parent categories:", err));
+      } catch (err) {
+        console.error("Failed to load categories:", err);
+      } finally {
+        setLoadingCategories(false);
+      }
+    };
+
+    fetchCategories();
   }, []);
 
-  const handleNameChange = (val) => {
-    setName(val);
-    const generatedSlug = val
+  // ================= Generate Slug =================
+
+  const handleNameChange = (value) => {
+    setName(value);
+
+    const generatedSlug = value
       .toLowerCase()
       .trim()
       .replace(/[^a-z0-9]+/g, "-")
       .replace(/(^-|-$)/g, "");
+
     setSlug(generatedSlug);
   };
 
+  // ================= Image Preview =================
+
   const handleImage = (e) => {
     const file = e.target.files[0];
-    if (file) {
-      setImageFile(file);
-      setPreview(URL.createObjectURL(file));
-    }
+
+    if (!file) return;
+
+    setImageFile(file);
+    setPreview(URL.createObjectURL(file));
   };
+
+  // ================= Submit =================
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name) {
-      alert("Category Name is required.");
+
+    if (!name.trim()) {
+      alert("Category name is required.");
       return;
     }
 
     setSubmitting(true);
+
     try {
       const formData = new FormData();
+
       formData.append("name", name);
-      if (description) formData.append("description", description);
-      if (parentCategory) formData.append("parentCategory", parentCategory);
-      formData.append("isActive", isActive === "Active" ? "true" : "false");
+      formData.append("slug", slug);
+      formData.append("description", description);
+      formData.append("isActive", isActive);
+
+      if (parentCategory) {
+        formData.append("parentCategory", parentCategory);
+      }
 
       if (imageFile) {
         formData.append("image", imageFile);
       }
 
-      const res = await fetch("http://localhost:5000/api/categories", {
+      const res = await fetch(`${API_URL}/api/categories`, {
         method: "POST",
         body: formData,
       });
 
-      const json = await res.json();
-      if (res.ok) {
-        alert("Category created successfully!");
-        router.push("/admin/categories");
-      } else {
-        alert(`Failed to save category: ${json.message || "Unknown error"}`);
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Unable to create category");
       }
-    } catch (err) {
-      console.error(err);
-      alert("Error saving category.");
+
+      alert("Category created successfully!");
+
+      router.push("/admin/categories");
+    } catch (error) {
+      console.error(error);
+
+      alert(error.message);
     } finally {
       setSubmitting(false);
     }
@@ -95,79 +126,116 @@ export default function AddCategoryPage() {
     <section className={styles.container}>
       <div className={styles.header}>
         <div>
-          <Link href="/admin/categories" className={styles.back}>
+          <Link
+            href="/admin/categories"
+            className={styles.back}
+          >
             <ArrowLeft size={18} />
             Back
           </Link>
 
           <h1>Add Category</h1>
-          <p>Create a new product category</p>
+
+          <p>Create a new category</p>
         </div>
       </div>
 
-      <form className={styles.form} onSubmit={handleSubmit}>
+      <form
+        className={styles.form}
+        onSubmit={handleSubmit}
+      >
         <div className={styles.grid}>
-          {/* Left */}
-          <div className={styles.left}>
+
+          {/* LEFT */}
+
+          <div>
+
             <div className={styles.card}>
+
               <h3>Category Details</h3>
 
               <div className={styles.field}>
                 <label>Category Name *</label>
+
                 <input
                   type="text"
-                  required
-                  placeholder="Enter category name"
                   value={name}
-                  onChange={(e) => handleNameChange(e.target.value)}
+                  placeholder="Category name"
+                  onChange={(e) =>
+                    handleNameChange(e.target.value)
+                  }
                 />
               </div>
 
               <div className={styles.field}>
                 <label>Slug</label>
+
                 <input
                   type="text"
-                  placeholder="category-slug"
                   value={slug}
-                  onChange={(e) => setSlug(e.target.value)}
+                  onChange={(e) =>
+                    setSlug(e.target.value)
+                  }
                 />
               </div>
 
               <div className={styles.field}>
                 <label>Parent Category</label>
+
                 <select
                   value={parentCategory}
-                  onChange={(e) => setParentCategory(e.target.value)}
+                  onChange={(e) =>
+                    setParentCategory(e.target.value)
+                  }
                 >
-                  <option value="">None</option>
-                  {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
-                    </option>
-                  ))}
+                  <option value="">
+                    None (Top Level)
+                  </option>
+
+                  {!loadingCategories &&
+                    categories.map((category) => (
+                      <option
+                        key={category._id}
+                        value={category._id}
+                      >
+                        {category.name}
+                      </option>
+                    ))}
                 </select>
               </div>
 
               <div className={styles.field}>
                 <label>Description</label>
+
                 <textarea
-                  rows="5"
-                  placeholder="Category description..."
+                  rows={5}
                   value={description}
-                  onChange={(e) => setDescription(e.target.value)}
-                ></textarea>
+                  placeholder="Description..."
+                  onChange={(e) =>
+                    setDescription(e.target.value)
+                  }
+                />
               </div>
+
             </div>
+
           </div>
 
-          {/* Right */}
-          <div className={styles.right}>
+          {/* RIGHT */}
+
+          <div>
+
             <div className={styles.card}>
+
               <h3>Category Image</h3>
 
               <label className={styles.uploadBox}>
+
                 {preview ? (
-                  <img src={preview} alt="Preview" />
+                  <img
+                    src={preview}
+                    alt="Preview"
+                  />
                 ) : (
                   <>
                     <Upload size={35} />
@@ -181,25 +249,37 @@ export default function AddCategoryPage() {
                   accept="image/*"
                   onChange={handleImage}
                 />
+
               </label>
+
             </div>
 
             <div className={styles.card}>
+
               <h3>Status</h3>
+
               <select
                 value={isActive}
-                onChange={(e) => setIsActive(e.target.value)}
+                onChange={(e) =>
+                  setIsActive(
+                    e.target.value === "true"
+                  )
+                }
               >
-                <option value="Active">Active</option>
-                <option value="Inactive">Inactive</option>
+                <option value={true}>Active</option>
+                <option value={false}>Inactive</option>
               </select>
+
             </div>
 
             <div className={styles.buttons}>
+
               <button
                 type="button"
                 className={styles.cancelBtn}
-                onClick={() => router.push("/admin/categories")}
+                onClick={() =>
+                  router.push("/admin/categories")
+                }
               >
                 Cancel
               </button>
@@ -209,10 +289,15 @@ export default function AddCategoryPage() {
                 className={styles.saveBtn}
                 disabled={submitting}
               >
-                {submitting ? "Saving..." : "Save Category"}
+                {submitting
+                  ? "Saving..."
+                  : "Save Category"}
               </button>
+
             </div>
+
           </div>
+
         </div>
       </form>
     </section>

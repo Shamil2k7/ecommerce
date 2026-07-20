@@ -21,25 +21,27 @@ const productSchema = new Schema(
     },
     slug: {
       type: String,
-      required: true,
+      required: [true, "Product slug is required"],
       unique: true,
       lowercase: true,
       index: true,
     },
     description: {
       type: String,
+        required: [true, "Product description is required"],
       required: [true, "Product description is required"],
       trim: true,
     },
     category: {
       type: Schema.Types.ObjectId,
+      required: [true, "Product category is required"],
       ref: "Category",
       required: [true, "Category is required"],
     },
     brand: {
   type: mongoose.Schema.Types.ObjectId,
   ref: "Brand",
-  required: true,
+  required: [true, "Product brand is required"],
 },
     price: {
       type: Number,
@@ -59,7 +61,7 @@ const productSchema = new Schema(
     },
     stock: {
       type: Number,
-      required: true,
+      required: [true, "Product stock is required"],
       min: 0,
       default: 0,
     },
@@ -68,6 +70,7 @@ const productSchema = new Schema(
         url: { type: String, required: true },
         public_id: { type: String, default: "" },
         isPrimary: { type: Boolean, default: false },
+        required: [true, "Product image URL is required"],
       },
     ],
     variants: [variantSchema],

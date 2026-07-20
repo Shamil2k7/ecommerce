@@ -9,7 +9,7 @@ import Image from "next/image";
 
 export default function Navbar() {
   const API = process.env.NEXT_PUBLIC_API_URL;
-  console.log(API,'navbaaaarr');
+  console.log(API, 'navbaaaarr');
   console.log("NEXT_PUBLIC_API_URL:", process.env.NEXT_PUBLIC_API_URL);
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -89,7 +89,10 @@ export default function Navbar() {
           <div className={styles.searchRow}>
             <div className={styles.search}>
               <IoSearchOutline className={styles.searchIcon} />
-              <input type="text" placeholder="Search for Products" />
+              <input
+                type="text"
+                placeholder="Search for Products"
+              />
             </div>
 
             <Link
