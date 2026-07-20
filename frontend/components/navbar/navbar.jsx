@@ -86,23 +86,31 @@ export default function Navbar() {
             </button>
           </div>
 
-          <div className={styles.searchRow}>
-            <div className={styles.search}>
-              <IoSearchOutline className={styles.searchIcon} />
-              <input
-                type="text"
-                placeholder="Search for Products"
-              />
-            </div>
+       <div className={styles.searchRow}>
+  <div className={styles.search}>
+    <IoSearchOutline className={styles.searchIcon} />
+    <input type="text" placeholder="Search for Products" />
+  </div>
 
-            <Link
-              href="/wishlist"
-              className={styles.mobileWishlist}
-              onClick={closeMenu}
-            >
-              <CiHeart />
-            </Link>
-          </div>
+  <div className={styles.mobileIcons}>
+    <Link
+      href="/wishlist"
+      className={styles.mobileWishlist}
+      onClick={closeMenu}
+    >
+      <CiHeart />
+    </Link>
+
+    <Link
+      href="/cart"
+      className={styles.mobileCart}
+      onClick={closeMenu}
+    >
+      <IoCartOutline />
+      <span className={styles.badge}>0</span>
+    </Link>
+  </div>
+</div>
 
           <nav className={styles.nav}>
             <Link href="/">Home</Link>
