@@ -96,78 +96,75 @@ const handleDelete = async (id) => {
 
       <div className={styles.table}>
         <table>
-          <thead>
-            <tr>
-              <th>Code</th>
-              <th>Type</th>
-              <th>Discount</th>
-              <th>Minimum Order</th>
-              <th>Maximum Discount</th>
-              <th>Usage Limit</th>
-              <th>Expiry</th>
-              <th>Status</th>
-              <th>Actions</th>
-            </tr>
-          </thead>
+<thead>
+  <tr>
+    <th>Code</th>
+    <th>Discount</th>
+    <th>Minimum Order</th>
+    <th>Maximum Discount</th>
+    <th>Usage Limit</th>
+    <th>Expiry</th>
+    <th>Status</th>
+    <th>Actions</th>
+  </tr>
+</thead>
 
-          <tbody>
-            {filteredCoupons.length > 0 ? (
-              filteredCoupons.map((item) => (
-                <tr key={item._id}>
-                  <td>
-                    <span className={styles.code}>
-                      {item.code}
-                    </span>
-                  </td>
+  <tbody>
+  {filteredCoupons.length > 0 ? (
+    filteredCoupons.map((item) => (
+      <tr key={item._id}>
+        <td>
+          <span className={styles.code}>
+            {item.code}
+          </span>
+        </td>
 
-                  <td>Percentage</td>
+        <td>{item.discount}%</td>
 
-                  <td>{item.discount}%</td>
+        <td>₹{item.minimumOrderAmount}</td>
 
-                  <td>₹{item.minimumOrderAmount}</td>
+        <td>₹{item.maximumDiscount}</td>
 
-                  <td>₹{item.maximumDiscount}</td>
+        <td>{item.usageLimit}</td>
 
-                  <td>{item.usageLimit}</td>
+        <td>
+          {new Date(item.expirydate).toLocaleDateString("en-GB")}
+        </td>
 
-                  <td>
-                    {new Date(item.expirydate).toLocaleDateString("en-GB")}
-                  </td>
+        <td>
+          <span
+            className={
+              item.status === "Active"
+                ? styles.active
+                : styles.expired
+            }
+          >
+            {item.status}
+          </span>
+        </td>
 
-                  <td>
-                    <span
-                      className={
-                        item.status === "Active"
-                          ? styles.active
-                          : styles.expired
-                      }
-                    >
-                      {item.status}
-                    </span>
-                  </td>
+        <td>
+          <div className={styles.actions}>
+            <Link
+              href={`/admin/coupons/edit/${item._id}`}
+              className={styles.actionBtn}
+            >
+              <Pencil size={18} />
+            </Link>
 
-                  <td>
-                    <div className={styles.actions}>
-                      <Link
-                        href={`/admin/coupons/edit/${item._id}`}
-                        className={styles.actionBtn}
-                      >
-                        <Pencil size={18} />
-                      </Link>
-
-                      <button onClick={() => handleDelete(item._id)}>
-                        <Trash2 size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan="9">No Coupons Found</td>
-              </tr>
-            )}
-          </tbody>
+            <button onClick={() => handleDelete(item._id)}>
+              <Trash2 size={18} />
+            </button>
+          </div>
+        </td>
+      </tr>
+    ))
+  ) : (
+    <tr>
+      <td colSpan="8">No Coupons Found</td>
+    </tr>
+  )}
+</tbody>
         </table>
       </div>
     </section>
