@@ -15,6 +15,7 @@ export default function AddCategoryPage() {
   const [slug, setSlug] = useState("");
   const [description, setDescription] = useState("");
   const [parentCategory, setParentCategory] = useState("");
+  const [isChild, setIsChild] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
   const [imageFile, setImageFile] = useState(null);
@@ -78,6 +79,11 @@ export default function AddCategoryPage() {
 
     if (!name.trim()) {
       alert("Category name is required.");
+      return;
+    }
+
+    if (isChild && !parentCategory) {
+      alert("Please select a parent category for the subcategory.");
       return;
     }
 
@@ -180,29 +186,62 @@ export default function AddCategoryPage() {
               </div>
 
               <div className={styles.field}>
-                <label>Parent Category</label>
-
-                <select
-                  value={parentCategory}
-                  onChange={(e) =>
-                    setParentCategory(e.target.value)
-                  }
-                >
-                  <option value="">
-                    None (Top Level)
-                  </option>
-
-                  {!loadingCategories &&
-                    categories.map((category) => (
-                      <option
-                        key={category._id}
-                        value={category._id}
-                      >
-                        {category.name}
-                      </option>
-                    ))}
-                </select>
+                <label>Category Type</label>
+                <div className={styles.radioGroup} style={{ display: "flex", gap: "20px", marginTop: "8px", marginBottom: "8px" }}>
+                  <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                    <input
+                      type="radio"
+                      name="categoryType"
+                      value="parent"
+                      checked={!isChild}
+                      onChange={() => {
+                        setIsChild(false);
+                        setParentCategory("");
+                      }}
+                    />
+                    <span>Parent Category (Top-Level)</span>
+                  </label>
+                  <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                    <input
+                      type="radio"
+                      name="categoryType"
+                      value="child"
+                      checked={isChild}
+                      onChange={() => setIsChild(true)}
+                    />
+                    <span>Child Category (Subcategory)</span>
+                  </label>
+                </div>
               </div>
+
+              {isChild && (
+                <div className={styles.field}>
+                  <label>Select Parent Category</label>
+
+                  <select
+                    value={parentCategory}
+                    onChange={(e) =>
+                      setParentCategory(e.target.value)
+                    }
+                  >
+                    <option value="">
+                      -- Choose Parent Category --
+                    </option>
+
+                    {!loadingCategories &&
+                      categories
+                        .filter((category) => !category.parentCategory)
+                        .map((category) => (
+                          <option
+                            key={category._id}
+                            value={category._id}
+                          >
+                            {category.name}
+                          </option>
+                        ))}
+                  </select>
+                </div>
+              )}
 
               <div className={styles.field}>
                 <label>Description</label>

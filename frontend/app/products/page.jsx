@@ -15,6 +15,7 @@ export default function ProductsPage() {
 
   const [productsData, setProductsData] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [categoriesList, setCategoriesList] = useState([]);
 
   const [selectedCategories, setSelectedCategories] = useState([]);
   const [selectedBrands, setSelectedBrands] = useState([]);
@@ -23,6 +24,13 @@ export default function ProductsPage() {
   const [search, setSearch] = useState("");
 
   useEffect(() => {
+    fetch("http://localhost:5000/api/categories")
+      .then((res) => res.json())
+      .then((json) => {
+        setCategoriesList(json.data || []);
+      })
+      .catch((err) => console.error("Failed to fetch categories:", err));
+
     const fetchProducts = async () => {
       try {
         const res = await fetch("http://localhost:5000/api/products");
@@ -101,6 +109,30 @@ export default function ProductsPage() {
     }
   }, [initialCategory]);
 
+  const expandedSelectedCategories = useMemo(() => {
+    if (selectedCategories.length === 0) return [];
+    const result = new Set();
+    selectedCategories.forEach((catName) => {
+      result.add(catName);
+
+      // Find if this is a parent category
+      const parentCat = categoriesList.find(
+        (c) => c.name === catName && !c.parentCategory
+      );
+      if (parentCat) {
+        // Find all child categories of this parent category
+        const children = categoriesList.filter((c) => {
+          const pId = typeof c.parentCategory === "object" && c.parentCategory
+            ? c.parentCategory._id
+            : c.parentCategory;
+          return pId === parentCat._id;
+        });
+        children.forEach((child) => result.add(child.name));
+      }
+    });
+    return Array.from(result);
+  }, [selectedCategories, categoriesList]);
+
   const filteredProducts = useMemo(() => {
     let data = [...productsData];
 
@@ -112,9 +144,9 @@ export default function ProductsPage() {
     }
 
     // Category Filter
-    if (selectedCategories.length > 0) {
+    if (expandedSelectedCategories.length > 0) {
       data = data.filter((item) =>
-        selectedCategories.includes(item.category)
+        expandedSelectedCategories.includes(item.category)
       );
     }
 
@@ -203,6 +235,7 @@ export default function ProductsPage() {
 
       <div className={styles.layout}>
         <FilterSidebar
+          categoriesList={categoriesList}
           selectedCategories={selectedCategories}
           setSelectedCategories={setSelectedCategories}
           selectedBrands={selectedBrands}

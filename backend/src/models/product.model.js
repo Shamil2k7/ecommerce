@@ -2,11 +2,27 @@ import mongoose, { Schema } from "mongoose";
 
 const variantSchema = new Schema(
   {
-    size: { type: String, trim: true },
-    color: { type: String, trim: true },
-    sku: { type: String, trim: true },
-    price: { type: Number, min: 0 },
-    stock: { type: Number, min: 0, default: 0 },
+    size: {
+      type: String,
+      trim: true,
+    },
+    color: {
+      type: String,
+      trim: true,
+    },
+    sku: {
+      type: String,
+      trim: true,
+    },
+    price: {
+      type: Number,
+      min: 0,
+    },
+    stock: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
   },
   { _id: false }
 );
@@ -19,6 +35,7 @@ const productSchema = new Schema(
       trim: true,
       index: true,
     },
+
     slug: {
       type: String,
       required: [true, "Product slug is required"],
@@ -26,61 +43,103 @@ const productSchema = new Schema(
       lowercase: true,
       index: true,
     },
+
     description: {
       type: String,
-        required: [true, "Product description is required"],
       required: [true, "Product description is required"],
       trim: true,
     },
+
     category: {
       type: Schema.Types.ObjectId,
-      required: [true, "Product category is required"],
       ref: "Category",
       required: [true, "Category is required"],
     },
+
     brand: {
-  type: mongoose.Schema.Types.ObjectId,
-  ref: "Brand",
-  required: [true, "Product brand is required"],
-},
+      type: Schema.Types.ObjectId,
+      ref: "Brand",
+      required: [true, "Brand is required"],
+    },
+
     price: {
       type: Number,
       required: [true, "Price is required"],
       min: 0,
     },
+
     discountPrice: {
       type: Number,
-      min: 0,
       default: 0,
+      min: 0,
     },
+
     sku: {
       type: String,
       unique: true,
       sparse: true,
       trim: true,
     },
+
     stock: {
       type: Number,
-      required: [true, "Product stock is required"],
-      min: 0,
+      required: [true, "Stock is required"],
       default: 0,
+      min: 0,
     },
+
     images: [
       {
-        url: { type: String, required: true },
-        public_id: { type: String, default: "" },
-        isPrimary: { type: Boolean, default: false },
-        required: [true, "Product image URL is required"],
+        url: {
+          type: String,
+          required: [true, "Image URL is required"],
+        },
+        public_id: {
+          type: String,
+          default: "",
+        },
+        isPrimary: {
+          type: Boolean,
+          default: false,
+        },
       },
     ],
+
     variants: [variantSchema],
-    tags: [{ type: String, trim: true, lowercase: true }],
-    ratingsAverage: { type: Number, default: 0, min: 0, max: 5 },
-    ratingsCount: { type: Number, default: 0 },
-    isFeatured: { type: Boolean, default: false },
-    isActive: { type: Boolean, default: true },
+
+    tags: [
+      {
+        type: String,
+        trim: true,
+        lowercase: true,
+      },
+    ],
+
+    ratingsAverage: {
+      type: Number,
+      default: 0,
+      min: 0,
+      max: 5,
+    },
+
+    ratingsCount: {
+      type: Number,
+      default: 0,
+    },
+
+    isFeatured: {
+      type: Boolean,
+      default: false,
+    },
+
+    isActive: {
+      type: Boolean,
+      default: true,
+    },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+  }
 );
 
 productSchema.pre("validate", function () {
@@ -96,10 +155,18 @@ productSchema.pre("validate", function () {
   }
 });
 
-// Text index powers the search controller ($text search on name/description/tags)
-productSchema.index({ name: "text", description: "text", tags: "text" });
-// Compound index to speed up common filter combinations
-productSchema.index({ category: 1, brand: 1, price: 1 });
+productSchema.index({
+  name: "text",
+  description: "text",
+  tags: "text",
+});
+
+productSchema.index({
+  category: 1,
+  brand: 1,
+  price: 1,
+});
 
 const Product = mongoose.model("Product", productSchema);
+
 export default Product;
