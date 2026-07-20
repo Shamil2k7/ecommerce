@@ -265,6 +265,7 @@ export const clearCart = async (req, res) => {
 
 
 // Apply Coupon 
+// Apply Coupon 
 
 export const applyCoupon = async (req, res) => {
   try {
@@ -274,10 +275,13 @@ export const applyCoupon = async (req, res) => {
 
     if (!cart || cart.products.length === 0) {
       return res.status(400).json({
+        success: false,
         message: "Cart is empty.",
       });
     }
 
+
+    // Remove Coupon
     if (!code) {
       cart.couponApplied = null;
 
@@ -290,41 +294,113 @@ export const applyCoupon = async (req, res) => {
       });
     }
 
+
+    // Find Coupon
     const coupon = await Coupon.findOne({
       code: code.toUpperCase(),
     });
 
+
     if (!coupon) {
       return res.status(404).json({
+        success: false,
         message: "Invalid coupon.",
       });
     }
 
+
+    // Check Coupon Status
     if (coupon.status !== "Active") {
       return res.status(400).json({
+        success: false,
         message: "Coupon is inactive.",
       });
     }
 
+
+    // Check Expiry Date
     if (new Date(coupon.expirydate) < new Date()) {
       return res.status(400).json({
+        success: false,
         message: "Coupon has expired.",
       });
     }
 
+
+    // Check Usage Limit
+    if (
+      coupon.usageLimit > 0 &&
+      coupon.usedCount >= coupon.usageLimit
+    ) {
+      coupon.status = "Inactive";
+      await coupon.save();
+
+      return res.status(400).json({
+        success: false,
+        message: "Coupon usage limit reached.",
+      });
+    }
+
+
+    // Apply Coupon
     cart.couponApplied = coupon._id;
 
+
+    // Increase Coupon Usage Count
+    coupon.usedCount = (coupon.usedCount || 0) + 1;
+
+
+    // Auto Disable Coupon When Limit Reached
+    if (
+      coupon.usageLimit > 0 &&
+      coupon.usedCount >= coupon.usageLimit
+    ) {
+      coupon.status = "Inactive";
+    }
+
+
+    await coupon.save();
+
+
+    // Remaining Coupon Balance
+    let remainingCount = null;
+
+    if (coupon.usageLimit > 0) {
+      remainingCount =
+        coupon.usageLimit - coupon.usedCount;
+    }
+
+
+    if (remainingCount < 0) {
+      remainingCount = 0;
+    }
+
+
+    // Update Cart Total
     await updateCartTotals(cart);
 
-    res.status(200).json({
+
+    return res.status(200).json({
       success: true,
       message: "Coupon applied successfully.",
+      coupon: {
+        code: coupon.code,
+        usedCount: coupon.usedCount,
+        totalLimit: coupon.usageLimit,
+        remainingCount,
+        status: coupon.status,
+      },
       cart,
     });
+
+
   } catch (error) {
-    console.log(error);
-    res.status(500).json({
+    console.log("APPLY COUPON ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
       message: "Unable to apply coupon.",
+      error: error.message,
     });
   }
 };
