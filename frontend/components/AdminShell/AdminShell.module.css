@@ -1,0 +1,85 @@
+.wrapper {
+  display: flex;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+/* ================= SIDEBAR SLOT ================= */
+
+.sidebar {
+  flex-shrink: 0;
+}
+
+/* ================= MAIN ================= */
+
+.main {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.content {
+  flex: 1;
+  padding: 24px;
+}
+
+/* ================= MOBILE OVERLAY ================= */
+
+.overlay {
+  display: none;
+}
+
+/* ================= RESPONSIVE ================= */
+
+@media (max-width: 1024px) {
+  .content {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .content {
+    padding: 18px;
+  }
+}
+
+@media (max-width: 480px) {
+  .wrapper {
+    display: block;
+  }
+
+  .sidebar {
+    width: 0;
+  }
+
+  .main {
+    width: 100%;
+  }
+
+  .content {
+    padding: 14px;
+  }
+
+  .overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.45);
+    z-index: 998;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    pointer-events: auto;
+  }
+}

@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-
 import {
   BanknoteArrowDown,
   ShieldHalf,
@@ -22,105 +21,48 @@ import {
 import styles from "./AdminSidebar.module.css";
 
 const menuItems = [
-  {
-    title: "Dashboard",
-    href: "/admin/dashboard",
-    icon: LayoutDashboard,
-  },
-  {
-    title: "Products",
-    href: "/admin/products",
-    icon: Package,
-  },
-  {
-    title: "Categories",
-    href: "/admin/categories",
-    icon: Shapes,
-  },
-  {
-    title: "Orders",
-    href: "/admin/orders",
-    icon: ShoppingCart,
-  },
-{
-    title: "Refunds",
-    href: "/admin/refunds",
-    icon: BanknoteArrowDown,
-  },
-  
-  
-  {
-    title: "Brands",
-    href: "/admin/brands",
-    icon: ShieldHalf,
-  },
-  {
-    title: "Customers",
-    href: "/admin/customers",
-    icon: Users,
-  },
-  {
-    title: "Staff",
-    href: "/admin/staff",
-    icon: Users,
-  },
-  {
-    title: "Coupons",
-    href: "/admin/coupons",
-    icon: TicketPercent,
-  },
-  {
-    title: "Banners",
-    href: "/admin/banners",
-    icon: Image,
-  },
-  {
-    title: "Reviews",
-    href: "/admin/reviews",
-    icon: Star,
-  },
-  {
-    title: "Settings",
-    href: "/admin/settings",
-    icon: Settings,
-  },
- 
+  { title: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+  { title: "Products", href: "/admin/products", icon: Package },
+  { title: "Categories", href: "/admin/categories", icon: Shapes },
+  { title: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { title: "Refunds", href: "/admin/refunds", icon: BanknoteArrowDown },
+  { title: "Brands", href: "/admin/brands", icon: ShieldHalf },
+  { title: "Customers", href: "/admin/customers", icon: Users },
+  { title: "Staff", href: "/admin/staff", icon: Users },
+  { title: "Coupons", href: "/admin/coupons", icon: TicketPercent },
+  { title: "Banners", href: "/admin/banners", icon: Image },
+  { title: "Reviews", href: "/admin/reviews", icon: Star },
+  { title: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
   const pathname = usePathname();
 
   return (
-    <aside className={styles.sidebar}>
+    <aside
+      className={`${styles.sidebar} ${sidebarOpen ? styles.open : ""}`}
+    >
       {/* Logo */}
-
       <div className={styles.logo}>
-        <div className={styles.logoIcon}>S</div>
-
         <div>
-          <h2>ShopAura</h2>
           <p>Admin Panel</p>
         </div>
       </div>
 
       {/* Navigation */}
-
       <nav className={styles.nav}>
         {menuItems.map((item) => {
           const Icon = item.icon;
-
           const active = pathname === item.href;
 
           return (
             <Link
               key={item.href}
               href={item.href}
-              className={`${styles.link} ${
-                active ? styles.active : ""
-              }`}
+              className={`${styles.link} ${active ? styles.active : ""}`}
+              onClick={() => setSidebarOpen(false)}
             >
               <Icon size={20} />
-
               <span>{item.title}</span>
             </Link>
           );
@@ -128,11 +70,9 @@ export default function AdminSidebar() {
       </nav>
 
       {/* Bottom */}
-
       <div className={styles.bottom}>
         <button className={styles.logout}>
           <LogOut size={20} />
-
           <span>Logout</span>
         </button>
       </div>
