@@ -21,13 +21,13 @@
   flex-shrink: 0;
 }
 
-.staffInfo {
+
 .staffInfo {
   display: flex;
   gap: 12px;
   min-width: 0;
 }
-}
+
 
 .staffName {
   font-weight: 600;
@@ -122,38 +122,16 @@
   width: 100%;
   min-width: 1100px;
   border-collapse: collapse;
-<<<<<<< HEAD
   table-layout: auto;
-=======
-  table-layout: fixed;
->>>>>>> f05a09a5345a40400e1a108fbd5f08876abbbf3d
 }
-
-/* .table th {
-  background: #faf8f6;
-  padding: 18px;
-  text-align: left;
-  border-bottom: 1px solid var(--line);
-}
-
-.table td {
-  padding: 18px;
-  border-bottom: 1px solid var(--line);
-  white-space: nowrap;
-<<<<<<< HEAD
-  overflow: visible;
-  text-overflow: unset;
-=======
-} */
 
 .table th,
 .table td {
   padding: 18px;
   border-bottom: 1px solid var(--line);
-  overflow: hidden;
-  text-overflow: ellipsis;
   white-space: nowrap;
->>>>>>> f05a09a5345a40400e1a108fbd5f08876abbbf3d
+  overflow: visible;
+  text-overflow: unset;
 }
 
 .table tbody tr:hover {
@@ -215,34 +193,16 @@
   color: white;
 }
 
-<<<<<<< HEAD
-.table th:nth-child(1),
-.table td:nth-child(1) {
-  width: 260px;
-=======
-
-.table th:nth-child(1),
-.table td:nth-child(1) {
-  width: 300px;
->>>>>>> f05a09a5345a40400e1a108fbd5f08876abbbf3d
-}
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
   width: 260px;
-<<<<<<< HEAD
   word-break: break-word;
-=======
->>>>>>> f05a09a5345a40400e1a108fbd5f08876abbbf3d
 }
 
 .table th:nth-child(3),
 .table td:nth-child(3) {
-<<<<<<< HEAD
   width: 170px;
-=======
-  width: 180px;
->>>>>>> f05a09a5345a40400e1a108fbd5f08876abbbf3d
 }
 
 .table th:nth-child(4),
@@ -252,20 +212,12 @@
 
 .table th:nth-child(5),
 .table td:nth-child(5) {
-<<<<<<< HEAD
   width: 170px;
-=======
-  width: 150px;
->>>>>>> f05a09a5345a40400e1a108fbd5f08876abbbf3d
 }
 
 .table th:nth-child(6),
 .table td:nth-child(6) {
-<<<<<<< HEAD
   width: 120px;
-=======
-  width: 130px;
->>>>>>> f05a09a5345a40400e1a108fbd5f08876abbbf3d
 }
 
 .table th:nth-child(7),
