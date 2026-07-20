@@ -6,6 +6,8 @@ import { useAuth } from "@/context/AuthContext";
 import styles from "./Profile.module.css";
 import { User, Mail, Phone, Shield, Calendar, LogOut, Loader2, MapPin, Plus, Package, Map, Settings, X, Trash2, Edit } from "lucide-react";
 
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth`;
+
 export default function ProfilePage() {
   const { user, loading, logout, checkAuth } = useAuth();
   const router = useRouter();
@@ -46,26 +48,29 @@ export default function ProfilePage() {
 
   useEffect(() => {
     if (user?._id) {
-      const savedName = localStorage.getItem(`profile_name_${user._id}`);
-      const savedPhone = localStorage.getItem(`profile_phone_${user._id}`);
-      const savedImage = localStorage.getItem(`profileImage_${user._id}`);
-      const savedAddresses = localStorage.getItem(`addresses_${user._id}`);
+      setProfileName(user.fullName || "");
+      setProfilePhone(user.phone || "");
+      setProfileImage(user.profileImage || "");
 
-      setProfileName(savedName || user.fullName || "");
-      setProfilePhone(savedPhone || user.phone || "");
-      setProfileImage(savedImage || "");
-
-      if (savedAddresses) {
-        setAddresses(JSON.parse(savedAddresses));
-      } else {
-        const legacyAddress = localStorage.getItem(`address_${user._id}`);
-        if (legacyAddress) {
-          const initAddresses = [{ id: Date.now().toString(), label: "Home", text: legacyAddress }];
-          setAddresses(initAddresses);
-          localStorage.setItem(`addresses_${user._id}`, JSON.stringify(initAddresses));
-          localStorage.removeItem(`address_${user._id}`);
+      const fetchAddresses = async () => {
+        try {
+          const response = await fetch(`${API_BASE_URL}/addresses`, {
+            method: "GET",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            credentials: "include",
+          });
+          const data = await response.json();
+          if (data.success) {
+            setAddresses(data.addresses || []);
+          }
+        } catch (error) {
+          console.error("Error fetching addresses:", error);
         }
-      }
+      };
+
+      fetchAddresses();
     }
   }, [user]);
 
@@ -84,12 +89,25 @@ export default function ProfilePage() {
     const file = e.target.files[0];
     if (file) {
       const reader = new FileReader();
-      reader.onloadend = () => {
+      reader.onloadend = async () => {
         const base64String = reader.result;
-        setProfileImage(base64String);
-        if (user?._id) {
-          localStorage.setItem(`profileImage_${user._id}`, base64String);
-          triggerToast("Profile image updated successfully!");
+        try {
+          const response = await fetch(`${API_BASE_URL}/profile`, {
+            method: "PUT",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ profileImage: base64String }),
+            credentials: "include",
+          });
+          const data = await response.json();
+          if (data.success) {
+            setProfileImage(base64String);
+            triggerToast("Profile image updated successfully!");
+            checkAuth();
+          }
+        } catch (error) {
+          console.error("Error updating image:", error);
         }
       };
       reader.readAsDataURL(file);
@@ -102,47 +120,72 @@ export default function ProfilePage() {
     setIsEditModalOpen(true);
   };
 
-  const handleSaveProfile = (e) => {
+  const handleSaveProfile = async (e) => {
     e.preventDefault();
     if (!editName.trim()) return;
 
-    setProfileName(editName);
-    setProfilePhone(editPhone);
-
-    if (user?._id) {
-      localStorage.setItem(`profile_name_${user._id}`, editName);
-      localStorage.setItem(`profile_phone_${user._id}`, editPhone);
-      triggerToast("Profile updated successfully!");
+    try {
+      const response = await fetch(`${API_BASE_URL}/profile`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ fullName: editName, phone: editPhone }),
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        setProfileName(editName);
+        setProfilePhone(editPhone);
+        triggerToast("Profile updated successfully!");
+        checkAuth();
+      }
+    } catch (error) {
+      console.error("Error updating profile:", error);
     }
     setIsEditModalOpen(false);
   };
 
-  const handleSaveAddress = (e) => {
+  const handleSaveAddress = async (e) => {
     e.preventDefault();
     if (!addressText.trim()) return;
 
-    if (editingAddressId) {
-      const updated = addresses.map((addr) =>
-        addr.id === editingAddressId ? { ...addr, label: addressLabel, text: addressText } : addr
-      );
-      setAddresses(updated);
-      if (user?._id) {
-        localStorage.setItem(`addresses_${user._id}`, JSON.stringify(updated));
-        triggerToast("Address saved successfully!");
+    try {
+      if (editingAddressId) {
+        const response = await fetch(`${API_BASE_URL}/addresses/${editingAddressId}`, {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ label: addressLabel, text: addressText }),
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (data.success) {
+          const updated = addresses.map((addr) =>
+            addr._id === editingAddressId ? data.address : addr
+          );
+          setAddresses(updated);
+          triggerToast("Address saved successfully!");
+        }
+        setEditingAddressId(null);
+      } else {
+        const response = await fetch(`${API_BASE_URL}/addresses`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ label: addressLabel, text: addressText }),
+          credentials: "include",
+        });
+        const data = await response.json();
+        if (data.success) {
+          setAddresses([...addresses, data.address]);
+          triggerToast("Address saved successfully!");
+        }
       }
-      setEditingAddressId(null);
-    } else {
-      const newAddress = {
-        id: Date.now().toString(),
-        label: addressLabel,
-        text: addressText
-      };
-      const updated = [...addresses, newAddress];
-      setAddresses(updated);
-      if (user?._id) {
-        localStorage.setItem(`addresses_${user._id}`, JSON.stringify(updated));
-        triggerToast("Address saved successfully!");
-      }
+    } catch (error) {
+      console.error("Error saving address:", error);
     }
 
     setAddressText("");
@@ -150,18 +193,30 @@ export default function ProfilePage() {
   };
 
   const handleEditAddressClick = (addr) => {
-    setEditingAddressId(addr.id);
+    setEditingAddressId(addr._id);
     setAddressLabel(addr.label);
     setAddressText(addr.text);
   };
 
-  const handleDeleteAddress = (id, label) => {
-    const updated = addresses.filter((addr) => addr.id !== id);
-    setAddresses(updated);
-    if (user?._id) {
-      localStorage.setItem(`addresses_${user._id}`, JSON.stringify(updated));
-      triggerToast(`${label} Address deleted!`);
+  const handleDeleteAddress = async (id, label) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/addresses/${id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+      });
+      const data = await response.json();
+      if (data.success) {
+        const updated = addresses.filter((addr) => addr._id !== id);
+        setAddresses(updated);
+        triggerToast(`${label} Address deleted!`);
+      }
+    } catch (error) {
+      console.error("Error deleting address:", error);
     }
+
     if (editingAddressId === id) {
       setEditingAddressId(null);
       setAddressText("");
@@ -327,7 +382,7 @@ export default function ProfilePage() {
               </div>
             ) : (
               addresses.map((addr) => (
-                <div key={addr.id} className={styles.detailRow}>
+                <div key={addr._id} className={styles.detailRow}>
                   <div className={styles.labelInfo}>
                     <MapPin size={18} />
                     <span>{addr.label} Address</span>
@@ -406,7 +461,7 @@ export default function ProfilePage() {
                 ) : (
                   <div className={styles.addressListScroll}>
                     {addresses.map((addr) => (
-                      <div key={addr.id} className={styles.savedAddressItem}>
+                      <div key={addr._id} className={styles.savedAddressItem}>
                         <div className={styles.addrHeaderInfo}>
                           <span className={styles.addrBadge}>{addr.label}</span>
                           <div className={styles.addrItemActions}>
@@ -418,7 +473,7 @@ export default function ProfilePage() {
                               <Edit size={14} />
                             </button>
                             <button
-                              onClick={() => handleDeleteAddress(addr.id, addr.label)}
+                              onClick={() => handleDeleteAddress(addr._id, addr.label)}
                               className={styles.deleteAddrBtn}
                               title="Delete Address"
                             >
