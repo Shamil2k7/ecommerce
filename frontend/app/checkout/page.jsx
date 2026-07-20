@@ -1,10 +1,27 @@
 "use client";
 
 import { useState } from "react";
+import { useCart } from "../../context/CartContext";
 import styles from "./Checkout.module.css";
+import Link from "next/link";
 
 export default function CheckoutPage() {
   const [payment, setPayment] = useState("Cash on Delivery");
+  const { cart } = useCart();
+
+  if (!cart || !cart.products || cart.products.length === 0) {
+    return (
+      <section className={styles.container}>
+        <div className={styles.header}>
+          <h1>Checkout</h1>
+          <p>Your cart is empty.</p>
+          <Link href="/shop" style={{ marginTop: "20px", display: "inline-block", padding: "10px 20px", background: "var(--primary)", color: "white", borderRadius: "5px", textDecoration: "none" }}>
+            Go to Shop
+          </Link>
+        </div>
+      </section>
+    );
+  }
 
   return (
     <section className={styles.container}>
@@ -59,41 +76,38 @@ export default function CheckoutPage() {
         <div className={styles.summary}>
           <h2>Order Summary</h2>
 
-          <div className={styles.product}>
-            <span>iPhone 15 × 1</span>
-            <span>₹79,999</span>
-          </div>
-
-          <div className={styles.product}>
-            <span>AirPods × 1</span>
-            <span>₹19,999</span>
-          </div>
+          {cart.products.map((product) => (
+            <div key={`${product.productId}-${product.color}-${product.size}`} className={styles.product}>
+              <span>{product.name} × {product.quantity}</span>
+              <span>₹{product.price?.toLocaleString()}</span>
+            </div>
+          ))}
 
           <hr />
 
           <div className={styles.row}>
             <span>Subtotal</span>
-            <span>₹99,998</span>
+            <span>₹{cart.subtotal?.toLocaleString()}</span>
           </div>
 
           <div className={styles.row}>
             <span>Discount</span>
-            <span>-₹2,000</span>
+            <span>-₹{cart.discount?.toLocaleString() || 0}</span>
           </div>
 
           <div className={styles.row}>
             <span>Tax</span>
-            <span>₹1,800</span>
+            <span>₹{cart.tax?.toLocaleString() || 0}</span>
           </div>
 
           <div className={styles.row}>
             <span>Shipping</span>
-            <span>Free</span>
+            <span>{cart.shipping === 0 ? "Free" : `₹${cart.shipping?.toLocaleString()}`}</span>
           </div>
 
           <div className={styles.total}>
             <span>Total</span>
-            <span>₹99,798</span>
+            <span>₹{cart.finalTotal?.toLocaleString()}</span>
           </div>
 
           <button className={styles.button}>
