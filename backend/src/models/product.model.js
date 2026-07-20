@@ -4,18 +4,27 @@ import mongoose, { Schema } from "mongoose";
 
 const variantSchema = new Schema(
   {
-    color: String,
-    size: String,
-    sku: String,
-    price: Number,
-    stock: Number,
-
-    images: [
-      {
-        url: String,
-        public_id: String,
-      },
-    ],
+    size: {
+      type: String,
+      trim: true,
+    },
+    color: {
+      type: String,
+      trim: true,
+    },
+    sku: {
+      type: String,
+      trim: true,
+    },
+    price: {
+      type: Number,
+      min: 0,
+    },
+    stock: {
+      type: Number,
+      min: 0,
+      default: 0,
+    },
   },
   { _id: false }
 );
@@ -56,6 +65,7 @@ const productSchema = new Schema(
 
     slug: {
       type: String,
+      required: [true, "Product slug is required"],
       unique: true,
       required: true,
     },
@@ -64,15 +74,6 @@ const productSchema = new Schema(
       type: String,
       required: true,
     },
-
-    shortDescription: String,
-
-    sku: {
-      type: String,
-      unique: true,
-    },
-
-    barcode: String,
 
     category: {
       type: Schema.Types.ObjectId,
@@ -83,14 +84,7 @@ const productSchema = new Schema(
     brand: {
       type: Schema.Types.ObjectId,
       ref: "Brand",
-      required: true,
-    },
-
-    // Pricing
-
-    costPrice: {
-      type: Number,
-      default: 0,
+      required: [true, "Brand is required"],
     },
 
     price: {
@@ -101,71 +95,31 @@ const productSchema = new Schema(
     discountPrice: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
-    tax: {
-      type: Number,
-      default: 0,
-    },
-
-    currency: {
+    sku: {
       type: String,
       default: "INR",
     },
 
-    // Inventory
-
     stock: {
       type: Number,
+      required: [true, "Stock is required"],
       default: 0,
+      min: 0,
     },
-
-    lowStockAlert: {
-      type: Number,
-      default: 5,
-    },
-
-    trackInventory: {
-      type: Boolean,
-      default: true,
-    },
-
-    // Measurement
-
-    measurement: {
-      type: {
-        type: String,
-        enum: ["weight", "volume", "qty"],
-      },
-
-      value: Number,
-
-      unit: String,
-    },
-
-    // Colors
-
-    colors: [
-      {
-        name: String,
-        code: String,
-      },
-    ],
-
-    // Sizes
-
-    sizes: [String],
-
-    // Variants
-
-    variants: [variantSchema],
-
-    // Images
 
     images: [
       {
-        url: String,
-        public_id: String,
+        url: {
+          type: String,
+          required: [true, "Image URL is required"],
+        },
+        public_id: {
+          type: String,
+          default: "",
+        },
         isPrimary: {
           type: Boolean,
           default: false,
@@ -173,129 +127,27 @@ const productSchema = new Schema(
       },
     ],
 
-    // Video
+    variants: [variantSchema],
 
-    videoUrl: String,
-
-    // Offer
-
-    offer: {
-      enabled: {
-        type: Boolean,
-        default: false,
-      },
-
-      title: String,
-
-      type: {
-        type: String,
-        enum: ["percentage", "flat"],
-      },
-
-      value: Number,
-
-      startDate: Date,
-
-      endDate: Date,
-    },
-
-    // Shipping
-
-    shipping: {
-      freeDelivery: {
-        type: Boolean,
-        default: false,
-      },
-
-      deliveryCharge: {
-        type: Number,
-        default: 0,
-      },
-
-      estimatedDays: {
-        type: String,
-        default: "3-5 Days",
-      },
-
-      cashOnDelivery: {
-        type: Boolean,
-        default: true,
-      },
-
-      expressDelivery: {
-        type: Boolean,
-        default: false,
-      },
-    },
-
-    // Return Policy
-
-    returnPolicy: {
-      returnAvailable: {
-        type: Boolean,
-        default: true,
-      },
-
-      returnDays: {
-        type: Number,
-        default: 7,
-      },
-
-      refundAvailable: {
-        type: Boolean,
-        default: true,
-      },
-
-      replacementAvailable: {
-        type: Boolean,
-        default: true,
-      },
-
-      warranty: String,
-    },
-
-    // Features
-
-    features: [String],
-
-    // Specifications
-
-    specifications: [
+    tags: [
       {
-        key: String,
-        value: String,
+        type: String,
+        trim: true,
+        lowercase: true,
       },
     ],
-
-    // SEO
-
-    seo: {
-      title: String,
-
-      description: String,
-
-      keywords: [String],
-    },
-
-    // Tags
-
-    tags: [String],
-
-    // Rating
 
     ratingsAverage: {
       type: Number,
       default: 0,
+      min: 0,
+      max: 5,
     },
 
     ratingsCount: {
       type: Number,
       default: 0,
     },
-
-    reviews: [reviewSchema],
-
-    // Visibility
 
     isFeatured: {
       type: Boolean,
