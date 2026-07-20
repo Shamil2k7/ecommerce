@@ -61,6 +61,17 @@ export default function CategoryBar() {
     return <Package size={20} />;
   };
 
+  const parentCategories = categories.filter((c) => !c.parentCategory);
+
+  const getChildrenOf = (parentId) => {
+    return categories.filter((c) => {
+      const pId = typeof c.parentCategory === "object" && c.parentCategory
+        ? c.parentCategory._id
+        : c.parentCategory;
+      return pId === parentId;
+    });
+  };
+
   return (
     <section className={styles.categoryBar}>
       <div className={styles.container}>
@@ -79,21 +90,42 @@ export default function CategoryBar() {
             </span>
           </Link>
 
-          {categories.map((category) => (
-            <Link
-              key={category._id}
-              href={`/products?category=${encodeURIComponent(category.name)}`}
-              className={styles.item}
-            >
-              <div className={styles.iconWrapper}>
-                {getIcon(category.name)}
-              </div>
+          {parentCategories.map((parent) => {
+            const children = getChildrenOf(parent._id);
+            const hasChildren = children.length > 0;
 
-              <span className={styles.name}>
-                {category.name}
-              </span>
-            </Link>
-          ))}
+            return (
+              <div key={parent._id} className={styles.itemWrapper}>
+                <Link
+                  href={`/products?category=${encodeURIComponent(parent.name)}`}
+                  className={styles.item}
+                >
+                  <div className={styles.iconWrapper}>
+                    {getIcon(parent.name)}
+                  </div>
+
+                  <span className={styles.name}>
+                    {parent.name}
+                    {hasChildren && <span className={styles.arrow}>▼</span>}
+                  </span>
+                </Link>
+
+                {hasChildren && (
+                  <div className={styles.dropdown}>
+                    {children.map((child) => (
+                      <Link
+                        key={child._id}
+                        href={`/products?category=${encodeURIComponent(child.name)}`}
+                        className={styles.dropdownItem}
+                      >
+                        {child.name}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          })}
 
         </div>
       </div>

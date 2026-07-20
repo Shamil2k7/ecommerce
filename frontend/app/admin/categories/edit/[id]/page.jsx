@@ -14,6 +14,7 @@ export default function EditCategoryPage() {
   const [name, setName] = useState("");
   const [slug, setSlug] = useState("");
   const [parentCategory, setParentCategory] = useState("");
+  const [isChild, setIsChild] = useState(false);
   const [description, setDescription] = useState("");
   const [isActive, setIsActive] = useState("Active");
   const [currentImage, setCurrentImage] = useState("");
@@ -43,7 +44,11 @@ export default function EditCategoryPage() {
           const cat = json.data;
           setName(cat.name || "");
           setSlug(cat.slug || "");
-          setParentCategory(typeof cat.parentCategory === "object" ? cat.parentCategory?._id : cat.parentCategory || "");
+          const pCatId = typeof cat.parentCategory === "object" && cat.parentCategory
+            ? cat.parentCategory._id
+            : cat.parentCategory || "";
+          setParentCategory(pCatId);
+          setIsChild(!!pCatId);
           setDescription(cat.description || "");
           setIsActive(cat.isActive !== false ? "Active" : "Inactive");
           setCurrentImage(cat.image?.url || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500");
@@ -84,6 +89,11 @@ export default function EditCategoryPage() {
     e.preventDefault();
     if (!name) {
       alert("Category Name is required.");
+      return;
+    }
+
+    if (isChild && !parentCategory) {
+      alert("Please select a parent category for the subcategory.");
       return;
     }
 
@@ -171,19 +181,52 @@ export default function EditCategoryPage() {
             </div>
 
             <div className={styles.field}>
-              <label>Parent Category</label>
-              <select
-                value={parentCategory}
-                onChange={(e) => setParentCategory(e.target.value)}
-              >
-                <option value="">None</option>
-                {parentCandidates.map((cat) => (
-                  <option key={cat._id} value={cat._id}>
-                    {cat.name}
-                  </option>
-                ))}
-              </select>
+              <label>Category Type</label>
+              <div className={styles.radioGroup} style={{ display: "flex", gap: "20px", marginTop: "8px", marginBottom: "8px" }}>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                  <input
+                    type="radio"
+                    name="categoryType"
+                    value="parent"
+                    checked={!isChild}
+                    onChange={() => {
+                      setIsChild(false);
+                      setParentCategory("");
+                    }}
+                  />
+                  <span>Parent Category (Top-Level)</span>
+                </label>
+                <label style={{ display: "flex", alignItems: "center", gap: "8px", cursor: "pointer" }}>
+                  <input
+                    type="radio"
+                    name="categoryType"
+                    value="child"
+                    checked={isChild}
+                    onChange={() => setIsChild(true)}
+                  />
+                  <span>Child Category (Subcategory)</span>
+                </label>
+              </div>
             </div>
+
+            {isChild && (
+              <div className={styles.field}>
+                <label>Select Parent Category</label>
+                <select
+                  value={parentCategory}
+                  onChange={(e) => setParentCategory(e.target.value)}
+                >
+                  <option value="">-- Choose Parent Category --</option>
+                  {parentCandidates
+                    .filter((cat) => !cat.parentCategory) // only show categories that are parent categories
+                    .map((cat) => (
+                      <option key={cat._id} value={cat._id}>
+                        {cat.name}
+                      </option>
+                    ))}
+                </select>
+              </div>
+            )}
 
             <div className={styles.field}>
               <label>Description</label>
