@@ -24,8 +24,10 @@ import cartRoutes from "./src/routes/cart.routes.js";
 const app = express();
 
 //CORS
-app.use(cors({origin:process.env.FRONTEND_URL, 
-  credentials:true})
+app.use(cors({
+  origin: process.env.FRONTEND_URL,
+  credentials: true
+})
 );
 
 //MIDDLEWARES

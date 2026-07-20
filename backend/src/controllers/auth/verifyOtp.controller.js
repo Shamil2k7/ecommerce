@@ -23,7 +23,7 @@ const verifyOtp = async (req, res) => {
     }
 
     // Check expiry
-    if (Date.now() > user.resetPasswordExpires) {
+    if (Date.now() > user.resetPasswordExpire) {
       return res.status(400).json({ success: false, message: "Verification code has expired" });
     }
 
