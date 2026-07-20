@@ -182,10 +182,11 @@ export const updateQuantity = async (req, res) => {
 
     await updateCartTotals(cart);
 
-    res.json(cart);
+    res.status(200).json({ success: true, cart });
   } catch (error) {
     console.log(error);
     res.status(500).json({
+      success: false,
       message: "Unable to update quantity.",
     });
   }
@@ -219,10 +220,11 @@ export const removeItem = async (req, res) => {
 
     await updateCartTotals(cart);
 
-    res.json(cart);
+    res.status(200).json({ success: true, cart });
   } catch (error) {
     console.log(error);
     res.status(500).json({
+      success: false,
       message: "Unable to remove item.",
     });
   }
@@ -239,8 +241,9 @@ export const clearCart = async (req, res) => {
     });
 
     if (!cart) {
-      return res.json({
-        products: [],
+      return res.status(200).json({
+        success: true,
+        cart: { products: [] },
       });
     }
 
@@ -249,10 +252,11 @@ export const clearCart = async (req, res) => {
 
     await updateCartTotals(cart);
 
-    res.json(cart);
+    res.status(200).json({ success: true, cart });
   } catch (error) {
     console.log(error);
     res.status(500).json({
+      success: false,
       message: "Unable to clear cart.",
     });
   }
@@ -279,7 +283,8 @@ export const applyCoupon = async (req, res) => {
 
       await updateCartTotals(cart);
 
-      return res.json({
+      return res.status(200).json({
+        success: true,
         message: "Coupon removed.",
         cart,
       });
@@ -311,7 +316,8 @@ export const applyCoupon = async (req, res) => {
 
     await updateCartTotals(cart);
 
-    res.json({
+    res.status(200).json({
+      success: true,
       message: "Coupon applied successfully.",
       cart,
     });
