@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Settings.module.css";
 
-const API = process.env.NEXT_PUBLIC_BACKEND_URL;
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function Page() {
   const [loading, setLoading] = useState(false);

@@ -93,12 +93,9 @@ export const uploadLogo = async (req, res) => {
       });
     }
 
-    const result = await cloudinary.uploader.upload(
-      `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
-      {
-        folder: "settings/logo",
-      }
-    );
+  const result = await cloudinary.uploader.upload(req.file.path, {
+  folder: "settings/logo",
+});
 
     let settings = await Settings.findOne();
 
@@ -138,13 +135,9 @@ export const uploadFavicon = async (req, res) => {
       });
     }
 
-    const result = await cloudinary.uploader.upload(
-      `data:${req.file.mimetype};base64,${req.file.buffer.toString("base64")}`,
-      {
-        folder: "settings/favicon",
-      }
-    );
-
+   const result = await cloudinary.uploader.upload(req.file.path, {
+  folder: "settings/favicon",
+});
     let settings = await Settings.findOne();
 
     if (!settings) {

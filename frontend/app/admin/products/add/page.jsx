@@ -23,20 +23,42 @@ export default function AddProductPage() {
   const [categories, setCategories] = useState([]);
   const [submitting, setSubmitting] = useState(false);
 
-  useEffect(() => {
-    // Fetch categories to populate dropdown
-    fetch("http://localhost:5000/api/categories")
-      .then((res) => res.json())
-      .then((json) => {
-        if (json.data) {
-          setCategories(json.data);
-          if (json.data.length > 0) {
-            setCategory(json.data[0]._id);
-          }
-        }
-      })
-      .catch((err) => console.error("Error fetching categories:", err));
-  }, []);
+  
+  const [brands, setBrands] = useState([]);
+const [selectedBrandId, setSelectedBrandId] = useState("");
+
+useEffect(() => {
+
+  fetch("http://localhost:5000/api/categories")
+    .then(res => res.json())
+    .then(data => setCategories(data.data));
+
+  fetch("http://localhost:5000/api/brands")
+    .then(res => res.json())
+    .then(data => setBrands(data.data));
+
+}, []);
+
+useEffect(() => {
+  const loadData = async () => {
+    try {
+      const [categoryRes, brandRes] = await Promise.all([
+        fetch("http://localhost:5000/api/categories"),
+        fetch("http://localhost:5000/api/brands"),
+      ]);
+
+      const categoryData = await categoryRes.json();
+      const brandData = await brandRes.json();
+
+      setCategories(categoryData.data || []);
+      setBrands(brandData.data || []);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  loadData();
+}, []);
 
   const handleNameChange = (val) => {
     setName(val);
@@ -69,8 +91,12 @@ export default function AddProductPage() {
       formData.append("slug", slug);
       formData.append("category", category);
       formData.append("price", Number(price));
-      formData.append("brand", selectedBrandId);
+    
       
+      if (selectedBrandId) {
+  formData.append("brand", selectedBrandId);
+}
+
       if (salePrice) {
         formData.append("discountPrice", Number(salePrice));
       }
@@ -152,14 +178,21 @@ export default function AddProductPage() {
           </div>
 
           <div className={styles.field}>
-            <label>Brand</label>
-            <input
-              type="text"
-              placeholder="Brand Name (Optional)"
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-            />
-          </div>
+  <label>Brand</label>
+
+  <select
+    value={selectedBrandId}
+    onChange={(e) => setSelectedBrandId(e.target.value)}
+  >
+    <option value="">Select Brand</option>
+
+    {brands.map((item) => (
+      <option key={item._id} value={item._id}>
+        {item.name}
+      </option>
+    ))}
+  </select>
+</div>
 
           <div className={styles.field}>
             <label>Price (₹) *</label>

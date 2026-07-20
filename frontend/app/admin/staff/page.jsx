@@ -101,7 +101,7 @@ export default function StaffPage() {
           <Plus size={18} />
           Add Staff
         </Link>
-        
+
       </div>
 
       <div className={styles.searchBox}>
@@ -134,7 +134,7 @@ export default function StaffPage() {
             {filtered.length > 0 ? (
               filtered.map((item) => (
                 <tr key={item._id}>
-                  <td>
+                  <td className={styles.staffCell}>
                     <div className={styles.staff}>
                       <img
                         src={item.image || "https://via.placeholder.com/60"}
