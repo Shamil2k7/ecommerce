@@ -1,6 +1,6 @@
-/* ===========================
-   HEADER
-=========================== */
+/* =========================================
+   NAVBAR
+========================================= */
 
 .header {
   position: sticky;
@@ -9,22 +9,22 @@
   background: var(--surface);
   border-bottom: 1px solid var(--line);
   box-shadow: var(--shadow-sm);
-  font-family: var(--font-inter), sans-serif;
 }
 
 .container {
   max-width: 1400px;
-  margin: auto;
+  margin: 0 auto;
   height: 72px;
   padding: 0 20px;
+
   display: flex;
   align-items: center;
   gap: 24px;
 }
 
-/* ===========================
+/* =========================================
    LOGO
-=========================== */
+========================================= */
 
 .logo {
   display: flex;
@@ -34,24 +34,24 @@
   flex-shrink: 0;
 }
 
-.logoImage {
+.logoImage,
+.logoMark {
   width: 44px;
   height: 44px;
-  border-radius: 8px;
+  border-radius: 10px;
   object-fit: cover;
 }
 
 .logoMark {
-  width: 44px;
-  height: 44px;
-  border-radius: 8px;
   background: var(--accent);
   color: #fff;
+
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
+
   font-size: 22px;
-  font-weight: bold;
+  font-weight: 700;
 }
 
 .logoText {
@@ -61,21 +61,20 @@
 
 .logoText h2 {
   margin: 0;
-  color: var(--accent);
   font-size: 24px;
-  font-weight: 700;
+  color: var(--accent);
   line-height: 1;
 }
 
 .logoText p {
-  margin-top: 3px;
+  margin-top: 4px;
   font-size: 12px;
   color: var(--text-soft);
 }
 
-/* ===========================
+/* =========================================
    SEARCH
-=========================== */
+========================================= */
 
 .search {
   flex: 1;
@@ -88,10 +87,11 @@
   height: 46px;
   border: 1px solid var(--line);
   border-radius: 8px;
-  padding: 0 18px 0 46px;
-  font-size: 15px;
+  padding: 0 18px 0 48px;
   outline: none;
-  transition: .3s;
+  background: var(--surface);
+  color: var(--text);
+  transition: .25s;
 }
 
 .search input:focus {
@@ -100,32 +100,29 @@
 
 .searchIcon {
   position: absolute;
-  left: 15px;
+  left: 16px;
   top: 50%;
   transform: translateY(-50%);
   font-size: 22px;
   color: var(--text-soft);
 }
 
-/* ===========================
+/* =========================================
    DESKTOP ICONS
-=========================== */
+========================================= */
 
 .icons {
+  margin-left: auto;
+
   display: flex;
   align-items: center;
-  margin-left: auto;
-  gap: 24px;
+  gap: 22px;
 }
 
 .iconItem {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  text-decoration: none;
   color: var(--text);
-  transition: .3s;
+  text-decoration: none;
+  transition: .25s;
 }
 
 .iconItem:hover {
@@ -133,41 +130,37 @@
 }
 
 .iconItem svg {
-  font-size: 28px;
+  font-size: 30px;
 }
 
-.iconItem span {
-  font-size: 13px;
-  font-weight: 500;
-}
-
-/* ===========================
-   CART BADGE
-=========================== */
-
-.cart {
+.cart,
+.mobileCart {
   position: relative;
 }
 
 .badge {
   position: absolute;
   top: -5px;
-  right: -7px;
+  right: -6px;
+
   width: 18px;
   height: 18px;
+
   border-radius: 50%;
   background: var(--accent);
   color: #fff;
+
   display: flex;
   justify-content: center;
   align-items: center;
+
   font-size: 10px;
   font-weight: 600;
 }
 
-/* ===========================
+/* =========================================
    MOBILE ICONS
-=========================== */
+========================================= */
 
 .mobileIcons {
   display: none;
@@ -179,58 +172,104 @@
 .mobileIcons a {
   color: var(--text);
   font-size: 28px;
-  position: relative;
 }
 
-.mobileCart {
-  position: relative;
-}
-
-/* ===========================
+/* =========================================
    MENU BUTTON
-=========================== */
+========================================= */
 
 .menuBtn {
   display: none;
+
   width: 42px;
   height: 42px;
+
   border: none;
   background: transparent;
+
   cursor: pointer;
-  color: var(--accent);
-  font-size: 28px;
-  align-items: center;
+
   justify-content: center;
+  align-items: center;
+
+  color: var(--accent);
+  transition: .25s;
 }
 
-/* ===========================
+.menuBtn svg {
+  font-size: 28px;
+}
+
+.menuBtn:hover {
+  background: var(--secondary-soft);
+  border-radius: 8px;
+}
+
+/* =========================================
    SIDEBAR
-=========================== */
+========================================= */
 
 .sidebar {
   position: fixed;
   top: 0;
   left: -320px;
+
   width: 300px;
+  max-width: 85vw;
   height: 100vh;
+
   background: var(--surface);
-  z-index: 1001;
-  transition: .35s ease;
-  padding: 70px 25px 30px;
+
+  padding: 70px 24px 30px;
+
   display: flex;
   flex-direction: column;
-  box-shadow: var(--shadow-md);
+
+  transition: left .35s ease;
+
+  box-shadow: 0 15px 35px rgba(0,0,0,.15);
+
+  z-index: 1200;
+
+  overflow-y: auto;
 }
 
-.show {
+.sidebar.show {
   left: 0;
 }
+
+/* =========================================
+   OVERLAY
+========================================= */
+
+.overlay {
+  position: fixed;
+  inset: 0;
+
+  background: rgba(0,0,0,.45);
+
+  opacity: 0;
+  visibility: hidden;
+
+  transition: .3s;
+
+  z-index: 1100;
+}
+
+.overlay.show {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* =========================================
+   SIDEBAR LOGO
+========================================= */
 
 .sidebarLogo {
   display: flex;
   align-items: center;
-  gap: 12px;
-  margin-bottom: 30px;
+  gap: 14px;
+  margin-bottom: 28px;
 }
 
 .sidebarLogo h3 {
@@ -239,14 +278,22 @@
   font-size: 22px;
 }
 
+/* =========================================
+   SIDEBAR LINKS
+========================================= */
+
 .sidebar a {
-  padding: 14px 0;
   text-decoration: none;
   color: var(--text);
-  font-size: 16px;
-  font-weight: 500;
+
+  padding: 15px 0;
+
   border-bottom: 1px solid var(--line);
-  transition: .3s;
+
+  font-size: 15px;
+  font-weight: 500;
+
+  transition: .25s;
 }
 
 .sidebar a:hover {
@@ -254,289 +301,250 @@
   padding-left: 8px;
 }
 
-/* ===========================
+/* =========================================
    CLOSE BUTTON
-=========================== */
+========================================= */
 
 .closeBtn {
   position: absolute;
   top: 18px;
   right: 18px;
-  width: 36px;
-  height: 36px;
+
+  width: 38px;
+  height: 38px;
+
   border: none;
   background: var(--secondary-soft);
+
   border-radius: 50%;
+
   cursor: pointer;
+
   display: flex;
-  align-items: center;
   justify-content: center;
+  align-items: center;
 }
 
 .closeBtn svg {
-  font-size: 22px;
+  font-size: 24px;
 }
 
-/* ===========================
-   OVERLAY
-=========================== */
+/* =========================================
+   992px
+========================================= */
 
-.overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.45);
-  opacity: 0;
-  visibility: hidden;
-  transition: .3s;
-  z-index: 1000;
+@media (max-width:992px){
+
+.container{
+display:grid;
+grid-template-columns:auto 1fr auto;
+gap:14px;
+padding:12px 16px;
+height:auto;
 }
 
-.overlay.show {
-  opacity: 1;
-  visibility: visible;
+.menuBtn{
+display:flex;
 }
 
-/* ===========================
-   TABLET
-=========================== */
-
-@media (max-width: 992px) {
-
-  .container {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 12px;
-    height: auto;
-    padding: 12px 16px;
-  }
-
-  .menuBtn {
-    display: flex;
-  }
-
-  .search {
-    grid-column: 1 / -1;
-    order: 2;
-    max-width: 100%;
-    margin-top: 8px;
-  }
-
-  .search input {
-    height: 44px;
-    font-size: 14px;
-  }
-
-  .icons {
-    display: none;
-  }
-
-  .mobileIcons {
-    display: flex;
-  }
-
-  .logoImage,
-  .logoMark {
-    width: 40px;
-    height: 40px;
-  }
-
-  .logoMark {
-    font-size: 20px;
-  }
-
-  .logoText h2 {
-    font-size: 20px;
-  }
-
-  .logoText p {
-    font-size: 11px;
-  }
+.icons{
+display:none;
 }
 
-/* ===========================
-   MOBILE
-=========================== */
-
-@media (max-width:768px) {
-
-  .container {
-    display: grid;
-    grid-template-columns: auto 1fr auto;
-    align-items: center;
-    gap: 10px;
-    padding: 10px 14px;
-  }
-
-  .menuBtn {
-    display: flex;
-  }
-
-  .search {
-    grid-column: 1 / -1;
-    order: 2;
-    margin-top: 6px;
-    width: 100%;
-    max-width: 100%;
-  }
-
-  .search input {
-    height: 42px;
-    font-size: 14px;
-    padding-left: 42px;
-  }
-
-  .searchIcon {
-    left: 14px;
-    font-size: 20px;
-  }
-
-  .icons {
-    display: none;
-  }
-
-  .mobileIcons {
-    display: flex;
-    gap: 16px;
-  }
-
-  .mobileIcons a {
-    font-size: 26px;
-  }
-
-  .logoImage,
-  .logoMark {
-    width: 36px;
-    height: 36px;
-  }
-
-  .logoMark {
-    font-size: 18px;
-  }
-
-  .logoText h2 {
-    font-size: 18px;
-  }
-
-  .logoText p {
-    display: none;
-  }
-
-  .sidebar {
-    width: 280px;
-    left: -280px;
-  }
-
-  .show {
-    left: 0;
-  }
+.mobileIcons{
+display:flex;
 }
 
-/* ===========================
-   SMALL MOBILE
-=========================== */
-
-@media (max-width:480px) {
-
-  .container {
-    padding: 8px 10px;
-    gap: 8px;
-  }
-
-  .menuBtn {
-    width: 36px;
-    height: 36px;
-    font-size: 24px;
-  }
-
-  .logoImage,
-  .logoMark {
-    width: 34px;
-    height: 34px;
-  }
-
-  .logoMark {
-    font-size: 16px;
-  }
-
-  .logoText h2 {
-    font-size: 16px;
-  }
-
-  .search {
-    margin-top: 4px;
-  }
-
-  .search input {
-    height: 38px;
-    font-size: 13px;
-    padding-left: 40px;
-  }
-
-  .searchIcon {
-    font-size: 18px;
-    left: 12px;
-  }
-
-  .mobileIcons {
-    gap: 12px;
-  }
-
-  .mobileIcons a {
-    font-size: 24px;
-  }
-
-  .badge {
-    width: 16px;
-    height: 16px;
-    font-size: 8px;
-    top: -4px;
-    right: -6px;
-  }
-
-  .sidebar {
-    width: 260px;
-    left: -260px;
-    padding: 60px 20px 25px;
-  }
+.search{
+grid-column:1/-1;
+order:2;
+max-width:100%;
+margin-top:8px;
 }
 
-/* ===========================
-   EXTRA SMALL DEVICES
-=========================== */
+.search input{
+height:44px;
+}
 
-@media (max-width:360px) {
+.logoText h2{
+font-size:20px;
+}
 
-  .container {
-    padding: 8px;
-  }
+.logoText p{
+font-size:11px;
+}
 
-  .logoText h2 {
-    font-size: 15px;
-  }
+}
 
-  .search input {
-    height: 36px;
-    font-size: 12px;
-  }
+/* =========================================
+   768px
+========================================= */
 
-  .mobileIcons a {
-    font-size: 22px;
-  }
+@media (max-width:768px){
 
-  .menuBtn {
-    width: 34px;
-    height: 34px;
-    font-size: 22px;
-  }
+.container{
+gap:10px;
+padding:10px 14px;
+}
 
-  .logoImage,
-  .logoMark {
-    width: 30px;
-    height: 30px;
-  }
+.logoImage,
+.logoMark{
+width:38px;
+height:38px;
+}
 
-  .logoMark {
-    font-size: 14px;
-  }
+.logoText h2{
+font-size:18px;
+}
+
+.logoText p{
+display:none;
+}
+
+.search{
+margin-top:6px;
+}
+
+.search input{
+height:42px;
+font-size:14px;
+padding-left:42px;
+}
+
+.searchIcon{
+font-size:20px;
+left:14px;
+}
+
+.mobileIcons{
+gap:16px;
+}
+
+.mobileIcons a{
+font-size:26px;
+}
+
+.sidebar{
+width:280px;
+left:-280px;
+}
+
+.sidebar.show{
+left:0;
+}
+
+}
+
+/* =========================================
+   480px
+========================================= */
+
+@media (max-width:480px){
+
+.container{
+padding:8px 10px;
+}
+
+.menuBtn{
+width:36px;
+height:36px;
+}
+
+.menuBtn svg{
+font-size:24px;
+}
+
+.logoImage,
+.logoMark{
+width:34px;
+height:34px;
+}
+
+.logoText h2{
+font-size:16px;
+}
+
+.search input{
+height:38px;
+font-size:13px;
+}
+
+.searchIcon{
+font-size:18px;
+}
+
+.mobileIcons{
+gap:12px;
+}
+
+.mobileIcons a{
+font-size:24px;
+}
+
+.badge{
+width:16px;
+height:16px;
+font-size:8px;
+}
+
+.sidebar{
+width:260px;
+left:-260px;
+padding:60px 20px;
+}
+
+.sidebar.show{
+left:0;
+}
+
+}
+
+/* =========================================
+   360px
+========================================= */
+
+@media (max-width:360px){
+
+.container{
+padding:8px;
+gap:8px;
+}
+
+.logoImage,
+.logoMark{
+width:30px;
+height:30px;
+}
+
+.logoText h2{
+font-size:15px;
+}
+
+.search input{
+height:36px;
+font-size:12px;
+}
+
+.mobileIcons a{
+font-size:22px;
+}
+
+.menuBtn{
+width:34px;
+height:34px;
+}
+
+.menuBtn svg{
+font-size:22px;
+}
+
+.sidebar{
+width:240px;
+left:-240px;
+}
+
+.sidebar.show{
+left:0;
+}
+
 }
