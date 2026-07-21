@@ -5,10 +5,11 @@ import { useCart } from "../../context/CartContext";
 import styles from "./Checkout.module.css";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
 
 export default function CheckoutPage() {
   const [payment, setPayment] = useState("Cash on Delivery");
-  const { cart } = useCart();
+  const { cart, applyCoupon, removeCoupon } = useCart();
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -103,7 +104,6 @@ export default function CheckoutPage() {
 
       <div className={styles.grid}>
         <div className={styles.mainContent}>
-          {/* Addresses Section */}
           <div className={styles.card}>
             <div className={styles.cardHeader}>
               <h2>Delivery Address</h2>
@@ -177,7 +177,6 @@ export default function CheckoutPage() {
             )}
           </div>
 
-          {/* Payment Method */}
           <div className={styles.card}>
             <h2>Payment Method</h2>
             <div className={styles.paymentMethods}>
@@ -199,68 +198,13 @@ export default function CheckoutPage() {
           </div>
         </div>
 
-        {/* Order Summary Sidebar */}
-        <div className={styles.sidebar}>
-          <div className={styles.summaryCard}>
-            <h2>Order Summary</h2>
-
-            <div className={styles.summaryItems}>
-              {cart.products.map((product) => (
-                <div key={`${product.productId}-${product.color}-${product.size}`} className={styles.productRow}>
-                  <div className={styles.productInfo}>
-                    <span className={styles.productName}>{product.name}</span>
-                    <span className={styles.productMeta}>Qty: {product.quantity}</span>
-                  </div>
-                  <span className={styles.productPrice}>₹{(product.price * product.quantity)?.toLocaleString()}</span>
-                </div>
-              ))}
-            </div>
-
-            <div className={styles.divider} />
-
-            <div className={styles.summaryRow}>
-              <span>Subtotal</span>
-              <span>₹{cart.subtotal?.toLocaleString()}</span>
-            </div>
-            
-            {cart.discount > 0 && (
-              <div className={`${styles.summaryRow} ${styles.discount}`}>
-                <span>Discount</span>
-                <span>-₹{cart.discount?.toLocaleString()}</span>
-              </div>
-            )}
-            
-            {cart.tax > 0 && (
-              <div className={styles.summaryRow}>
-                <span>Tax</span>
-                <span>₹{cart.tax?.toLocaleString()}</span>
-              </div>
-            )}
-            
-            <div className={styles.summaryRow}>
-              <span>Shipping</span>
-              <span>{cart.shipping === 0 ? "Free" : `₹${cart.shipping?.toLocaleString()}`}</span>
-            </div>
-
-            <div className={styles.divider} />
-
-            <div className={styles.totalRow}>
-              <span>Total Amount</span>
-              <span className={styles.totalPrice}>₹{cart.finalTotal?.toLocaleString()}</span>
-            </div>
-
-            <button 
-              className={styles.placeOrderBtn} 
-              onClick={handlePlaceOrder}
-              disabled={!selectedAddress}
-            >
-              {selectedAddress ? `Pay ₹${cart.finalTotal?.toLocaleString()}` : 'Select Address to Continue'}
-            </button>
-            <p className={styles.secureCheckout}>
-              🔒 Secure Checkout
-            </p>
-          </div>
-        </div>
+        <CheckoutSummary 
+          cart={cart}
+          selectedAddress={selectedAddress}
+          handlePlaceOrder={handlePlaceOrder}
+          applyCoupon={applyCoupon}
+          removeCoupon={removeCoupon}
+        />
       </div>
     </section>
   );

@@ -15,8 +15,6 @@ export default function CartPage() {
     updateQuantity,
     removeItem,
     clearCart,
-    applyCoupon,
-    removeCoupon,
   } = useCart();
 
   if (loading && !cart) {
@@ -64,11 +62,7 @@ export default function CartPage() {
           ))}
         </div>
 
-        <CartSummary
-          cart={cart}
-          applyCoupon={applyCoupon}
-          removeCoupon={removeCoupon}
-        />
+        <CartSummary cart={cart} />
       </div>
     </div>
   );
