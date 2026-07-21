@@ -1,5 +1,6 @@
 import { useState } from "react";
 import styles from "./CheckoutSummary.module.css";
+import { FiLock } from "react-icons/fi";
 
 export default function CheckoutSummary({
   cart,
@@ -8,12 +9,14 @@ export default function CheckoutSummary({
   applyCoupon,
   removeCoupon,
 }) {
-  const [couponCode, setCouponCode] = useState('');
+  const [couponCode, setCouponCode] = useState("");
 
   const handleApplyCoupon = (e) => {
     e.preventDefault();
+
     if (couponCode.trim()) {
       applyCoupon(couponCode.trim());
+      setCouponCode("");
     }
   };
 
@@ -31,27 +34,24 @@ export default function CheckoutSummary({
               className={styles.orderItem}
             >
               <div className={styles.orderItemInfo}>
-                <span className={styles.orderItemName}>{product.name}</span>
+                <span className={styles.orderItemName}>
+                  {product.name}
+                </span>
+
                 <span className={styles.orderItemMeta}>
                   Qty: {product.quantity}
+                  {product.color && ` • ${product.color}`}
+                  {product.size && ` • ${product.size}`}
                 </span>
               </div>
 
               <span className={styles.orderItemPrice}>
-                ₹{(product.price * product.quantity)?.toLocaleString()}
+                ₹{(product.price * product.quantity).toLocaleString()}
               </span>
             </div>
           ))}
         </div>
 
-
-
-
-
-
-
-
-        <div className={styles.sectionDivider}></div>
 
         <div className={styles.priceRow}>
           <span>Subtotal</span>
@@ -61,14 +61,14 @@ export default function CheckoutSummary({
         {cart.discount > 0 && (
           <div className={`${styles.priceRow} ${styles.discountRow}`}>
             <span>Discount</span>
-            <span>-₹{cart.discount?.toLocaleString()}</span>
+            <span>-₹{cart.discount.toLocaleString()}</span>
           </div>
         )}
 
         {cart.tax > 0 && (
           <div className={styles.priceRow}>
             <span>Tax</span>
-            <span>₹{cart.tax?.toLocaleString()}</span>
+            <span>₹{cart.tax.toLocaleString()}</span>
           </div>
         )}
 
@@ -81,47 +81,73 @@ export default function CheckoutSummary({
           </span>
         </div>
 
-        <div className={styles.sectionDivider}></div>
-
-
+       
+       
 
         {cart.couponApplied ? (
-          <div className={styles.activeCoupon}>
-            <div>
-              Coupon Applied: <span>{cart.couponApplied.code || 'Yes'}</span>
-              {cart.couponDiscount > 0 && <div className={styles.discountRow}>-₹{cart.couponDiscount.toLocaleString()}</div>}
+          <div className={styles.activeCouponTicket}>
+            <div className={styles.ticketSuccessLeft}>
+              <span className={styles.ticketAppliedLabel}>
+                 COUPON APPLIED
+              </span>
+
+              <h3 className={styles.ticketCouponCode}>
+                {cart.couponApplied.code || "DISCOUNT"}
+              </h3>
+
+              {cart.couponDiscount > 0 && (
+                <p className={styles.ticketSavings}>
+                  You Saved ₹
+                  {cart.couponDiscount.toLocaleString()}
+                </p>
+              )}
             </div>
-            <button className={styles.removeCouponBtn} onClick={removeCoupon}>Remove</button>
+
+            <button
+              type="button"
+              className={styles.removeTicketButton}
+              onClick={removeCoupon}
+            >
+              REMOVE
+            </button>
           </div>
         ) : (
-          <div className={styles.couponContainer}>
-            <span style={{ fontSize: '0.9rem', color: '#666' }}>Have a coupon code?</span>
-            <form className={styles.couponInputGroup} onSubmit={handleApplyCoupon}>
+          <form
+            className={styles.couponTicket}
+            onSubmit={handleApplyCoupon}
+          >
+            <div className={styles.ticketLeft}>
+              <span className={styles.ticketLabel}>
+                SPECIAL COUPON
+              </span>
+
               <input
                 type="text"
-                className={styles.couponInput}
-                placeholder="Enter Code"
+                className={styles.ticketInput}
+                placeholder="Enter Coupon Code"
                 value={couponCode}
                 onChange={(e) => setCouponCode(e.target.value)}
               />
-              <button type="submit" className={styles.couponBtn}>Apply</button>
-            </form>
-          </div>
+            </div>
+
+            <button
+              type="submit"
+              className={styles.ticketButton}
+            >
+              APPLY
+            </button>
+          </form>
         )}
 
 
-
-
-
-
-        <div className={styles.sectionDivider}></div>
-
         <div className={styles.grandTotalRow}>
           <span>Total Amount</span>
+
           <span className={styles.grandTotalPrice}>
             ₹{cart.finalTotal?.toLocaleString()}
           </span>
         </div>
+
 
         <button
           className={styles.checkoutButton}
@@ -133,8 +159,10 @@ export default function CheckoutSummary({
             : "Select Address to Continue"}
         </button>
 
+
         <p className={styles.checkoutSecurity}>
-          🔒 Secure Checkout
+          <FiLock className={styles.securityIcon} />
+          <span>Secure Checkout</span>
         </p>
       </div>
     </aside>
