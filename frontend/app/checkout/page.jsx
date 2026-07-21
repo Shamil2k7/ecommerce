@@ -1,21 +1,92 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useCart } from "../../context/CartContext";
 import styles from "./Checkout.module.css";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 
 export default function CheckoutPage() {
   const [payment, setPayment] = useState("Cash on Delivery");
   const { cart } = useCart();
+  const [addresses, setAddresses] = useState([]);
+  const [selectedAddress, setSelectedAddress] = useState(null);
+  const [showAddForm, setShowAddForm] = useState(false);
+  const [newAddress, setNewAddress] = useState({ label: "Home", text: "" });
+  const [loadingAddresses, setLoadingAddresses] = useState(true);
+  
+  const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth`;
+
+  useEffect(() => {
+    fetchAddresses();
+  }, []);
+
+  const fetchAddresses = async () => {
+    try {
+      setLoadingAddresses(true);
+      const res = await fetch(`${API_BASE_URL}/addresses`, {
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.success && data.addresses) {
+        setAddresses(data.addresses);
+        if (data.addresses.length > 0) {
+          setSelectedAddress(data.addresses[0]._id);
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching addresses:", error);
+    } finally {
+      setLoadingAddresses(false);
+    }
+  };
+
+  const handleAddAddress = async (e) => {
+    e.preventDefault();
+    if (!newAddress.text.trim()) return;
+
+    try {
+      const res = await fetch(`${API_BASE_URL}/addresses`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newAddress),
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAddresses([...addresses, data.address]);
+        setSelectedAddress(data.address._id);
+        setShowAddForm(false);
+        setNewAddress({ label: "Home", text: "" });
+      }
+    } catch (error) {
+      console.error("Error adding address:", error);
+    }
+  };
+
+  const handlePlaceOrder = async () => {
+    if (!selectedAddress) {
+      alert("Please select a delivery address");
+      return;
+    }
+    // Implement order placement later
+    const orderData = {
+      addressId: selectedAddress,
+      paymentMethod: payment,
+      items: cart.products,
+      total: cart.finalTotal
+    };
+    console.log("Placing order:", orderData);
+    alert("Order processing initiated (check console). API integration pending.");
+  };
 
   if (!cart || !cart.products || cart.products.length === 0) {
     return (
       <section className={styles.container}>
-        <div className={styles.header}>
+        <div className={styles.emptyState}>
           <h1>Checkout</h1>
           <p>Your cart is empty.</p>
-          <Link href="/shop" style={{ marginTop: "20px", display: "inline-block", padding: "10px 20px", background: "var(--primary)", color: "white", borderRadius: "5px", textDecoration: "none" }}>
+          <Link href="/products" className={styles.shopButton}>
             Go to Shop
           </Link>
         </div>
@@ -27,92 +98,168 @@ export default function CheckoutPage() {
     <section className={styles.container}>
       <div className={styles.header}>
         <h1>Checkout</h1>
-        <p>Complete your order</p>
+        <p>Complete your order securely</p>
       </div>
 
       <div className={styles.grid}>
-        {/* Billing */}
+        <div className={styles.mainContent}>
+          {/* Addresses Section */}
+          <div className={styles.card}>
+            <div className={styles.cardHeader}>
+              <h2>Delivery Address</h2>
+              {!showAddForm && (
+                <button 
+                  className={styles.addBtn}
+                  onClick={() => setShowAddForm(true)}
+                >
+                  + Add New
+                </button>
+              )}
+            </div>
 
-        <div className={styles.card}>
-          <h2>Billing Details</h2>
+            {loadingAddresses ? (
+              <p className={styles.loadingText}>Loading addresses...</p>
+            ) : (
+              <div className={styles.addressList}>
+                {addresses.map((addr) => (
+                  <div 
+                    key={addr._id} 
+                    className={`${styles.addressItem} ${selectedAddress === addr._id ? styles.selected : ''}`}
+                    onClick={() => setSelectedAddress(addr._id)}
+                  >
+                    <div className={styles.radioWrapper}>
+                      <input 
+                        type="radio" 
+                        checked={selectedAddress === addr._id} 
+                        onChange={() => setSelectedAddress(addr._id)}
+                      />
+                    </div>
+                    <div className={styles.addressDetails}>
+                      <span className={styles.addressLabel}>{addr.label}</span>
+                      <p className={styles.addressText}>{addr.text}</p>
+                    </div>
+                  </div>
+                ))}
+                {!loadingAddresses && addresses.length === 0 && !showAddForm && (
+                  <p className={styles.noAddressText}>No saved addresses found. Please add one.</p>
+                )}
+              </div>
+            )}
 
-          <div className={styles.form}>
-            <input placeholder="Full Name" />
-            <input placeholder="Email Address" />
-            <input placeholder="Phone Number" />
-            <textarea placeholder="Address" rows={4} />
-            <input placeholder="City" />
-            <input placeholder="State" />
-            <input placeholder="Pincode" />
-            <input placeholder="Country" />
-            <input placeholder="Coupons" />
+            {showAddForm && (
+              <form onSubmit={handleAddAddress} className={styles.addressForm}>
+                <div className={styles.formGroup}>
+                  <label>Label</label>
+                  <select 
+                    value={newAddress.label} 
+                    onChange={(e) => setNewAddress({...newAddress, label: e.target.value})}
+                  >
+                    <option value="Home">Home</option>
+                    <option value="Work">Work</option>
+                    <option value="Other">Other</option>
+                  </select>
+                </div>
+                <div className={styles.formGroup}>
+                  <label>Full Address</label>
+                  <textarea 
+                    placeholder="Enter your full street address, city, state, etc." 
+                    rows={4}
+                    value={newAddress.text}
+                    onChange={(e) => setNewAddress({...newAddress, text: e.target.value})}
+                    required
+                  />
+                </div>
+                <div className={styles.formActions}>
+                  <button type="button" onClick={() => setShowAddForm(false)} className={styles.cancelBtn}>Cancel</button>
+                  <button type="submit" className={styles.saveBtn}>Save Address</button>
+                </div>
+              </form>
+            )}
           </div>
 
-          <h2>Payment Method</h2>
-
-          <div className={styles.payment}>
-            {[
-              "Cash on Delivery",
-              "UPI",
-              "Credit Card",
-              "Debit Card",
-              "Net Banking",
-            ].map((item) => (
-              <label key={item}>
-                <input
-                  type="radio"
-                  name="payment"
-                  checked={payment === item}
-                  onChange={() => setPayment(item)}
-                />
-                {item}
-              </label>
-            ))}
+          {/* Payment Method */}
+          <div className={styles.card}>
+            <h2>Payment Method</h2>
+            <div className={styles.paymentMethods}>
+              {["Cash on Delivery", "UPI", "Credit Card", "Debit Card", "Net Banking"].map((item) => (
+                <label 
+                  key={item} 
+                  className={`${styles.paymentItem} ${payment === item ? styles.selectedPayment : ''}`}
+                >
+                  <input
+                    type="radio"
+                    name="payment"
+                    checked={payment === item}
+                    onChange={() => setPayment(item)}
+                  />
+                  <span>{item}</span>
+                </label>
+              ))}
+            </div>
           </div>
         </div>
 
-        {/* Summary */}
+        {/* Order Summary Sidebar */}
+        <div className={styles.sidebar}>
+          <div className={styles.summaryCard}>
+            <h2>Order Summary</h2>
 
-        <div className={styles.summary}>
-          <h2>Order Summary</h2>
-
-          {cart.products.map((product) => (
-            <div key={`${product.productId}-${product.color}-${product.size}`} className={styles.product}>
-              <span>{product.name} × {product.quantity}</span>
-              <span>₹{product.price?.toLocaleString()}</span>
+            <div className={styles.summaryItems}>
+              {cart.products.map((product) => (
+                <div key={`${product.productId}-${product.color}-${product.size}`} className={styles.productRow}>
+                  <div className={styles.productInfo}>
+                    <span className={styles.productName}>{product.name}</span>
+                    <span className={styles.productMeta}>Qty: {product.quantity}</span>
+                  </div>
+                  <span className={styles.productPrice}>₹{(product.price * product.quantity)?.toLocaleString()}</span>
+                </div>
+              ))}
             </div>
-          ))}
 
-          <hr />
+            <div className={styles.divider} />
 
-          <div className={styles.row}>
-            <span>Subtotal</span>
-            <span>₹{cart.subtotal?.toLocaleString()}</span>
+            <div className={styles.summaryRow}>
+              <span>Subtotal</span>
+              <span>₹{cart.subtotal?.toLocaleString()}</span>
+            </div>
+            
+            {cart.discount > 0 && (
+              <div className={`${styles.summaryRow} ${styles.discount}`}>
+                <span>Discount</span>
+                <span>-₹{cart.discount?.toLocaleString()}</span>
+              </div>
+            )}
+            
+            {cart.tax > 0 && (
+              <div className={styles.summaryRow}>
+                <span>Tax</span>
+                <span>₹{cart.tax?.toLocaleString()}</span>
+              </div>
+            )}
+            
+            <div className={styles.summaryRow}>
+              <span>Shipping</span>
+              <span>{cart.shipping === 0 ? "Free" : `₹${cart.shipping?.toLocaleString()}`}</span>
+            </div>
+
+            <div className={styles.divider} />
+
+            <div className={styles.totalRow}>
+              <span>Total Amount</span>
+              <span className={styles.totalPrice}>₹{cart.finalTotal?.toLocaleString()}</span>
+            </div>
+
+            <button 
+              className={styles.placeOrderBtn} 
+              onClick={handlePlaceOrder}
+              disabled={!selectedAddress}
+            >
+              {selectedAddress ? `Pay ₹${cart.finalTotal?.toLocaleString()}` : 'Select Address to Continue'}
+            </button>
+            <p className={styles.secureCheckout}>
+              🔒 Secure Checkout
+            </p>
           </div>
-
-          <div className={styles.row}>
-            <span>Discount</span>
-            <span>-₹{cart.discount?.toLocaleString() || 0}</span>
-          </div>
-
-          <div className={styles.row}>
-            <span>Tax</span>
-            <span>₹{cart.tax?.toLocaleString() || 0}</span>
-          </div>
-
-          <div className={styles.row}>
-            <span>Shipping</span>
-            <span>{cart.shipping === 0 ? "Free" : `₹${cart.shipping?.toLocaleString()}`}</span>
-          </div>
-
-          <div className={styles.total}>
-            <span>Total</span>
-            <span>₹{cart.finalTotal?.toLocaleString()}</span>
-          </div>
-
-          <button className={styles.button}>
-            Place Order
-          </button>
         </div>
       </div>
     </section>
