@@ -19,20 +19,20 @@ const CartSummary = ({ cart, applyCoupon, removeCoupon }) => {
       
       <div className={styles.summaryRow}>
         <span>Subtotal ({cart.products.reduce((acc, item) => acc + item.quantity, 0)} items)</span>
-        <span>${cart.subtotal.toFixed(2)}</span>
+        <span>₹{cart.subtotal.toFixed(2)}</span>
       </div>
       
       {cart.discount > 0 && (
         <div className={styles.summaryRow}>
           <span>Product Discounts</span>
-          <span className={styles.discountText}>-${cart.discount.toFixed(2)}</span>
+          <span className={styles.discountText}>-₹{cart.discount.toFixed(2)}</span>
         </div>
       )}
       
       {cart.offerDiscount > 0 && (
         <div className={styles.summaryRow}>
           <span>Offer Discount</span>
-          <span className={styles.discountText}>-${cart.offerDiscount.toFixed(2)}</span>
+          <span className={styles.discountText}>-₹{cart.offerDiscount.toFixed(2)}</span>
         </div>
       )}
 
@@ -72,7 +72,7 @@ const CartSummary = ({ cart, applyCoupon, removeCoupon }) => {
 
       <div className={`${styles.summaryRow} ${styles.total}`}>
         <span>Total</span>
-        <span>${cart.finalTotal.toFixed(2)}</span>
+        <span>₹{cart.finalTotal.toFixed(2)}</span>
       </div>
 
       <button 
