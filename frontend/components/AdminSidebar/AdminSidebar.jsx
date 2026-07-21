@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -16,6 +17,8 @@ import {
   Star,
   Settings,
   LogOut,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
 
 import styles from "./AdminSidebar.module.css";
@@ -30,7 +33,22 @@ const menuItems = [
   { title: "Customers", href: "/admin/customers", icon: Users },
   { title: "Staff", href: "/admin/staff", icon: Users },
   { title: "Coupons", href: "/admin/coupons", icon: TicketPercent },
-  { title: "Banners", href: "/admin/banners", icon: Image },
+
+  {
+    title: "Banners",
+    icon: Image,
+    children: [
+      {
+        title: "All Banners",
+        href: "/admin/banners",
+      },
+      {
+        title: "Hero Sections",
+        href: "/admin/HeroSection",
+      },
+    ],
+  },
+
   { title: "Reviews", href: "/admin/reviews", icon: Star },
   { title: "Settings", href: "/admin/settings", icon: Settings },
 ];
@@ -38,21 +56,65 @@ const menuItems = [
 export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
   const pathname = usePathname();
 
+  const [bannerOpen, setBannerOpen] = useState(
+    pathname.startsWith("/admin/banners") ||
+    pathname.startsWith("/admin/HeroSection")
+  );
+
+
   return (
-    <aside
-      className={`${styles.sidebar} ${sidebarOpen ? styles.open : ""}`}
-    >
-      {/* Logo */}
+    <aside className={`${styles.sidebar} ${sidebarOpen ? styles.open : ""}`}>
       <div className={styles.logo}>
-        <div>
-          <p>Admin Panel</p>
-        </div>
+        <p>Admin Panel</p>
       </div>
 
-      {/* Navigation */}
       <nav className={styles.nav}>
         {menuItems.map((item) => {
           const Icon = item.icon;
+
+          if (item.children) {
+            const parentActive =
+              pathname.startsWith("/admin/banners") ||
+              pathname.startsWith("/admin/HeroSection")
+            return (
+              <div key={item.title}>
+                <button
+                  type="button"
+                  className={`${styles.dropdownBtn} ${parentActive ? styles.activeDropdown : ""
+                    }`}
+                  onClick={() => setBannerOpen(!bannerOpen)}
+                >
+                  <div className={styles.dropdownLeft}>
+                    <Icon size={20} />
+                    <span>{item.title}</span>
+                  </div>
+
+                  {bannerOpen ? (
+                    <ChevronDown size={18} />
+                  ) : (
+                    <ChevronRight size={18} />
+                  )}
+                </button>
+
+                {bannerOpen && (
+                  <div className={styles.subMenu}>
+                    {item.children.map((child) => (
+                      <Link
+                        key={child.href}
+                        href={child.href}
+                        className={`${styles.subLink} ${pathname === child.href ? styles.active : ""
+                          }`}
+                        onClick={() => setSidebarOpen(false)}
+                      >
+                        {child.title}
+                      </Link>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
           const active = pathname === item.href;
 
           return (
@@ -69,7 +131,6 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
         })}
       </nav>
 
-      {/* Bottom */}
       <div className={styles.bottom}>
         <button className={styles.logout}>
           <LogOut size={20} />
