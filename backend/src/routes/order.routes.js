@@ -4,6 +4,9 @@ import { approveRefund, createOrder, deleteOrder, getAllOrders, getOrderCounts, 
 
 
 
+import protect from "../middlewares/auth.middleware.js";
+import { isAdmin } from "../middlewares/role.middleware.js";
+
 const router = express.Router();
 
 // Create Order
@@ -11,19 +14,19 @@ const router = express.Router();
 export default router;
 
 // Orders
-router.post("/create", createOrder);
-router.get("/", getAllOrders);
-router.get("/counts", getOrderCounts);
-router.get("/:id", getSingleOrder);
-router.put("/:id", updateOrderStatus);
-router.put("/:id/payment", updatePaymentStatus);
-router.delete("/:id", deleteOrder);
+router.post("/create", protect, createOrder);
+router.get("/", protect, isAdmin, getAllOrders);
+router.get("/counts", protect, isAdmin, getOrderCounts);
+router.get("/:id", protect, getSingleOrder);
+router.put("/:id", protect, isAdmin, updateOrderStatus);
+router.put("/:id/payment", protect, isAdmin, updatePaymentStatus);
+router.delete("/:id", protect, isAdmin, deleteOrder);
 
 // Refund
-router.get("/refunds", getRefundRequests);
+router.get("/refunds", protect, isAdmin, getRefundRequests);
 
-router.put("/:id/request-refund", requestRefund);
+router.put("/:id/request-refund", protect, requestRefund);
 
-router.put("/:id/approve-refund", approveRefund);
+router.put("/:id/approve-refund", protect, isAdmin, approveRefund);
 
-router.put("/:id/reject-refund", rejectRefund);
+router.put("/:id/reject-refund", protect, isAdmin, rejectRefund);

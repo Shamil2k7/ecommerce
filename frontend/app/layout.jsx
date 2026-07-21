@@ -29,8 +29,8 @@ export default function RootLayout({ children }) {
             </LayoutWrapper>
           </CartProvider>
         </AuthProvider>
-        <Script 
-          src="https://accounts.google.com/gsi/client" 
+        <Script
+          src="https://accounts.google.com/gsi/client"
           strategy="beforeInteractive"
         />
       </body>

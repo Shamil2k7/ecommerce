@@ -15,7 +15,6 @@ export default function ProfilePage() {
   // Profile data states
   const [profileName, setProfileName] = useState("");
   const [profilePhone, setProfilePhone] = useState("");
-  const [profileImage, setProfileImage] = useState("");
   const [addresses, setAddresses] = useState([]);
 
   // Modals visibility
@@ -40,12 +39,14 @@ export default function ProfilePage() {
     }, 2500);
   };
 
+  // Redirect to login if user session is invalid
   useEffect(() => {
     if (!loading && !user) {
       router.push("/auth/login");
     }
   }, [user, loading, router]);
 
+  // Sync profile details and address history from local storage
   useEffect(() => {
     if (user?._id) {
       setProfileName(user.fullName || "");
@@ -247,35 +248,20 @@ export default function ProfilePage() {
 
   const formattedDate = user.createdAt
     ? new Date(user.createdAt).toLocaleDateString(undefined, {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    })
     : "";
 
   return (
     <section className={styles.container}>
       <div className={styles.profileGrid}>
-        
-        {/* Left Side Info & Menu */}
+
         <div className={styles.leftCard}>
           <div className={styles.imageContainer}>
             <div className={styles.avatarWrapper}>
-              {profileImage ? (
-                <img src={profileImage} alt="Profile" className={styles.profileImg} />
-              ) : (
-                <div className={styles.initialsAvatar}>{getInitials(profileName)}</div>
-              )}
-              <label htmlFor="profile-image-upload" className={styles.uploadBadge} title="Change Profile Picture">
-                <Plus size={16} />
-                <input
-                  type="file"
-                  id="profile-image-upload"
-                  accept="image/*"
-                  onChange={handleImageChange}
-                  style={{ display: "none" }}
-                />
-              </label>
+              <div className={styles.initialsAvatar}>{getInitials(profileName)}</div>
             </div>
             <h3 className={styles.userName}>{profileName}</h3>
             <p className={styles.userEmail}>{user.email}</p>
@@ -304,7 +290,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        {/* Right Side details list */}
+        
         <div className={styles.rightCard}>
           <div className={styles.cardHeader}>
             <h2 className={styles.sectionTitle}>Profile Details</h2>
@@ -313,7 +299,7 @@ export default function ProfilePage() {
               <span>Edit Profile</span>
             </button>
           </div>
-          
+
           <div className={styles.detailsList}>
             {profileName && (
               <div className={styles.detailRow}>
@@ -371,7 +357,7 @@ export default function ProfilePage() {
               <div className={styles.detailRow}>
                 <div className={styles.labelInfo}>
                   <MapPin size={18} />
-                  <span>Delivery Address</span>
+                  <span>Delivery Addresses</span>
                 </div>
                 <div className={styles.emptyAddressContainer}>
                   <span className={styles.noAddressText}>No address added yet</span>
@@ -396,7 +382,7 @@ export default function ProfilePage() {
 
       </div>
 
-      {/* Edit Profile Info Modal */}
+      
       {isEditModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -439,20 +425,19 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Add / Edit Address Modal */}
       {isAddressModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modalLarge}>
             <div className={styles.modalHeader}>
               <h3>Manage Delivery Addresses</h3>
-              <button 
-                onClick={() => { setIsAddressModalOpen(false); setEditingAddressId(null); setAddressText(""); }} 
+              <button
+                onClick={() => { setIsAddressModalOpen(false); setEditingAddressId(null); setAddressText(""); }}
                 className={styles.closeBtn}
               >
                 <X size={20} />
               </button>
             </div>
-            
+
             <div className={styles.addressModalContent}>
               <div className={styles.addressSection}>
                 <h4 className={styles.subModalTitle}>Saved Addresses</h4>
@@ -519,9 +504,9 @@ export default function ProfilePage() {
                     <span>{editingAddressId ? "Update Address" : "Add Address"}</span>
                   </button>
                   {editingAddressId && (
-                    <button 
-                      type="button" 
-                      onClick={() => { setEditingAddressId(null); setAddressText(""); setAddressLabel("Home"); }} 
+                    <button
+                      type="button"
+                      onClick={() => { setEditingAddressId(null); setAddressText(""); setAddressLabel("Home"); }}
                       className={styles.cancelEditAddrBtn}
                     >
                       Cancel Edit
@@ -534,7 +519,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-      {/* Floating feedback toast */}
+    
       {toastMessage && (
         <div className={styles.toastContainer}>
           <div className={styles.toast}>

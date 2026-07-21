@@ -28,6 +28,13 @@ export const createOrder = async (req, res) => {
       });
     }
 
+    if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+
     const product = await Product.findById(productId);
 
     if (!product) {
@@ -203,6 +210,13 @@ export const getSingleOrder = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Order not found",
+      });
+    }
+
+    if (req.user.role !== "admin" && order.userId?._id.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
       });
     }
 
@@ -475,6 +489,13 @@ export const requestRefund = async (req, res) => {
       return res.status(404).json({
         success: false,
         message: "Order not found",
+      });
+    }
+
+    if (req.user.role !== "admin" && order.userId.toString() !== req.user._id.toString()) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
       });
     }
 
