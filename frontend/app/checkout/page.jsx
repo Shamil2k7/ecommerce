@@ -97,10 +97,10 @@ export default function CheckoutPage() {
 
   return (
     <section className={styles.container}>
-      <div className={styles.header}>
+      {/* <div className={styles.header}>
         <h1>Checkout</h1>
         <p>Complete your order securely</p>
-      </div>
+      </div> */}
 
       <div className={styles.grid}>
         <div className={styles.mainContent}>
