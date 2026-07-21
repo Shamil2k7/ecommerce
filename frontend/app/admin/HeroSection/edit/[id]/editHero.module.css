@@ -13,7 +13,7 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: #0f766e;
+  color: #000;
   font-weight: 600;
   margin-bottom: 15px;
 }
@@ -65,7 +65,7 @@
 
 .input:focus,
 .select:focus {
-  border-color: #0f766e;
+  border-color:#000;
   box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
 }
 
@@ -85,7 +85,7 @@
 }
 
 .uploadBox:hover {
-  border-color: #0f766e;
+  border-color: #000;
   background: #f0fdfa;
 }
 
@@ -133,7 +133,7 @@
 .saveBtn {
   padding: 12px 24px;
   border: none;
-  background: #0f766e;
+  background:#000;
   color: #fff;
   border-radius: 8px;
   cursor: pointer;
@@ -142,7 +142,7 @@
 }
 
 .saveBtn:hover:not(:disabled) {
-  background: #115e59;
+  background: #000;
 }
 
 .saveBtn:disabled {
