@@ -1,21 +1,13 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { useRouter } from 'next/navigation';
 import styles from './CartSummary.module.css';
 
-const CartSummary = ({ cart, applyCoupon, removeCoupon }) => {
+const CartSummary = ({ cart }) => {
   const router = useRouter();
-  const [couponCode, setCouponCode] = useState('');
-
-  const handleApplyCoupon = (e) => {
-    e.preventDefault();
-    if (couponCode.trim()) {
-      applyCoupon(couponCode.trim());
-    }
-  };
 
   return (
     <div className={styles.cartSummaryContainer}>
-      <h3 className={styles.summaryTitle}>Order Summary</h3>
+      <h3 className={styles.summaryTitle}>Price Details</h3>
       
       <div className={styles.summaryRow}>
         <span>Subtotal ({cart.products.reduce((acc, item) => acc + item.quantity, 0)} items)</span>
@@ -33,30 +25,6 @@ const CartSummary = ({ cart, applyCoupon, removeCoupon }) => {
         <div className={styles.summaryRow}>
           <span>Offer Discount</span>
           <span className={styles.discountText}>-₹{cart.offerDiscount.toFixed(2)}</span>
-        </div>
-      )}
-
-      {cart.couponApplied ? (
-        <div className={styles.activeCoupon}>
-          <div>
-            Coupon Applied: <span>{cart.couponApplied.code || 'Yes'}</span>
-            {cart.couponDiscount > 0 && <div className={styles.discountText}>-${cart.couponDiscount.toFixed(2)}</div>}
-          </div>
-          <button className={styles.removeCouponBtn} onClick={removeCoupon}>Remove</button>
-        </div>
-      ) : (
-        <div className={styles.couponContainer}>
-          <span style={{fontSize: '0.9rem', color: '#666'}}>Have a coupon code?</span>
-          <form className={styles.couponInputGroup} onSubmit={handleApplyCoupon}>
-            <input 
-              type="text" 
-              className={styles.couponInput} 
-              placeholder="Enter Code" 
-              value={couponCode}
-              onChange={(e) => setCouponCode(e.target.value)}
-            />
-            <button type="submit" className={styles.couponBtn}>Apply</button>
-          </form>
         </div>
       )}
 

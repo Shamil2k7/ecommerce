@@ -1,0 +1,323 @@
+.checkoutSidebar {
+  position: sticky;
+  top: 15px;
+}
+
+.orderSummaryCard {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #f1ece4;
+  padding: 28px;
+}
+
+.orderSummaryCard h2 {
+  font-size: 26px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: #222;
+  margin-bottom: 22px;
+}
+
+.orderSummaryCard h2::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin-top: 10px;
+  border-radius: 20px;
+  background: linear-gradient(
+    to right,
+    #1c1c1c 82%,
+    #ece6dd 82%
+  );
+}
+
+
+.orderItems {
+  max-height: 150px;
+  overflow-y: auto;
+  margin-bottom: 22px;
+  padding-right: 6px;
+}
+
+.orderItems::-webkit-scrollbar {
+  width: 5px;
+}
+
+.orderItems::-webkit-scrollbar-thumb {
+  background: #bbb;
+  border-radius: 10px;
+}
+
+.orderItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 14px 0;
+  border-bottom: 1px dashed #bdbdbd;
+}
+
+.orderItem:last-child {
+  border-bottom: none;
+}
+
+.orderItemInfo {
+  flex: 1;
+}
+
+.orderItemName {
+  display: block;
+  font-size: 15px;
+  font-weight: 600;
+  color: #222;
+  margin-bottom: 4px;
+}
+
+.orderItemMeta {
+  font-size: 13px;
+  color: #777;
+}
+
+.orderItemPrice {
+  font-size: 15px;
+  font-weight: 700;
+  color: #111;
+  white-space: nowrap;
+}
+
+
+.sectionDivider {
+  display: none;
+}
+
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  border-bottom: 1px dashed #999;
+  font-size: 15px;
+  color: #444;
+}
+
+.priceRow:last-of-type {
+  border-bottom: none;
+}
+
+.priceRow span:last-child {
+  font-weight: 600;
+}
+
+
+.discountRow {
+  color: #2e7d32;
+}
+
+.discountRow span:last-child {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+
+.grandTotalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 20px;
+  padding-top: 22px;
+  border-top: 2px dashed #999;
+  border-bottom: none;
+  font-size: 22px;
+  font-weight: 700;
+  color: #111;
+}
+
+.grandTotalPrice {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111;
+}
+
+.checkoutButton {
+  width: 100%;
+  margin-top: 20px;
+  padding: 15px;
+  border: none;
+  border-radius: 8px;
+  background: #27652f;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.checkoutButton:hover:not(:disabled) {
+  background: #104620;
+  transform: translateY(-2px);
+}
+
+.checkoutButton:disabled {
+  background: #d4d4d4;
+  color: #777;
+  cursor: not-allowed;
+}
+
+
+.checkoutSecurity {
+  margin-top: 16px;
+  text-align: center;
+  color: #777;
+  font-size: 14px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 6px;
+}
+
+
+.couponContainer {
+  margin: 22px 0;
+}
+
+.couponContainer span {
+  display: block;
+  margin-bottom: 10px;
+  color: #777;
+  font-size: 14px;
+}
+
+.couponInputGroup {
+  display: flex;
+  gap: 10px;
+}
+
+.couponInput {
+  flex: 1;
+  padding: 12px 14px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  outline: none;
+  font-size: 14px;
+}
+
+.couponInput:focus {
+  border-color: #b71c1c;
+}
+
+.couponBtn {
+  padding: 12px 18px;
+  border: none;
+  border-radius: 8px;
+  background:  #2e7d32;
+  color: #fff;
+  cursor: pointer;
+  transition: .3s;
+}
+
+.couponBtn:hover {
+  background: #1c4e1f;
+}
+
+
+.activeCoupon {
+  margin: 22px 0;
+  background: #f7fff5;
+  border: 1px solid #b8ddb3;
+  border-radius: 10px;
+  padding: 15px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.activeCoupon span {
+  color: #2e7d32;
+  font-weight: 600;
+}
+
+.removeCouponBtn {
+  border: none;
+  background: none;
+  color: #b71c1c;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+
+@media (max-width: 992px) {
+  .checkoutSidebar {
+    position: static;
+    margin-top: 30px;
+  }
+
+  .orderSummaryCard {
+    width: 100%;
+  }
+
+  .orderSummaryCard h2 {
+    font-size: 28px;
+  }
+
+  .grandTotalRow {
+    font-size: 20px;
+  }
+
+  .grandTotalPrice {
+    font-size: 26px;
+  }
+
+  .checkoutButton {
+    font-size: 17px;
+  }
+}
+
+@media (max-width: 480px) {
+  .orderSummaryCard {
+    padding: 18px;
+  }
+
+  .orderSummaryCard h2 {
+    font-size: 22px;
+  }
+
+  .orderItemName {
+    font-size: 14px;
+  }
+
+  .orderItemMeta {
+    font-size: 12px;
+  }
+
+  .orderItemPrice {
+    font-size: 14px;
+  }
+
+  .priceRow {
+    font-size: 14px;
+  }
+
+  .grandTotalRow {
+    font-size: 18px;
+  }
+
+  .grandTotalPrice {
+    font-size: 22px;
+  }
+
+  .checkoutButton {
+    padding: 14px;
+    font-size: 15px;
+    letter-spacing: 1px;
+  }
+
+  .checkoutSecurity {
+    font-size: 13px;
+  }
+}

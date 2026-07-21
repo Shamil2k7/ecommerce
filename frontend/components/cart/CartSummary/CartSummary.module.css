@@ -9,18 +9,15 @@
   border: 1px solid #f1ece4;
 }
 
-/* Heading */
 
 .summaryTitle {
   font-size: 26px;
   font-weight: 600;
-  letter-spacing: 2px;
+  /* letter-spacing: 2px; */
   color: #222;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   margin-bottom: 20px;
 }
-
-/* Shipping Progress */
 
 .summaryTitle::after {
   content: "";
@@ -35,8 +32,6 @@
     #ece6dd 80%
   );
 }
-
-/* Rows */
 
 .summaryRow {
   display: flex;
@@ -57,79 +52,6 @@
   font-weight: 600;
 }
 
-/* Coupon */
-
-.couponContainer {
-  margin: 22px 0;
-}
-
-.couponContainer span {
-  display: block;
-  margin-bottom: 10px;
-  color: #777;
-  font-size: 14px;
-}
-
-.couponInputGroup {
-  display: flex;
-  gap: 10px;
-}
-
-.couponInput {
-  flex: 1;
-  padding: 12px 14px;
-  border: 1px solid #ddd;
-  border-radius: 8px;
-  background: #fff;
-  outline: none;
-  font-size: 14px;
-}
-
-.couponInput:focus {
-  border-color: #b71c1c;
-}
-
-.couponBtn {
-  padding: 12px 18px;
-  border: none;
-  border-radius: 8px;
-  background:  #2e7d32;
-  color: #fff;
-  cursor: pointer;
-  transition: .3s;
-}
-
-.couponBtn:hover {
-  background: #1c4e1f;
-}
-
-/* Applied Coupon */
-
-.activeCoupon {
-  margin: 22px 0;
-  background: #f7fff5;
-  border: 1px solid #b8ddb3;
-  border-radius: 10px;
-  padding: 15px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.activeCoupon span {
-  color: #2e7d32;
-  font-weight: 600;
-}
-
-.removeCouponBtn {
-  border: none;
-  background: none;
-  color: #b71c1c;
-  cursor: pointer;
-  font-weight: 600;
-}
-
-/* Total */
 
 .total {
   margin-top: 20px;
@@ -140,8 +62,6 @@
   font-weight: 700;
   color: #111;
 }
-
-/* Checkout Button */
 
 .checkoutBtn {
   width: 100%;
@@ -169,7 +89,6 @@
   cursor: not-allowed;
 }
 
-/* Mobile */
 
 @media (max-width:900px) {
   .cartSummaryContainer {
