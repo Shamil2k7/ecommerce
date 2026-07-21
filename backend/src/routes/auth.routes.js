@@ -12,6 +12,9 @@ import toggleBlockUser from "../controllers/auth/blockUser.controller.js";
 import protect from "../middlewares/auth.middleware.js";
 import { isAdmin } from "../middlewares/role.middleware.js";
 
+import { getProfile, updateProfile } from "../controllers/auth/profile.controller.js";
+import { getAddresses, addAddress, updateAddress, deleteAddress } from "../controllers/auth/address.controller.js";
+
 const router = express.Router();
 
 router.post("/register", register);
@@ -32,5 +35,15 @@ router.get("/me", protect, (req, res) => {
     user: req.user,
   });
 });
+
+// Profile Management
+router.get("/profile", protect, getProfile);
+router.put("/profile", protect, updateProfile);
+
+// Address Management
+router.get("/addresses", protect, getAddresses);
+router.post("/addresses", protect, addAddress);
+router.put("/addresses/:id", protect, updateAddress);
+router.delete("/addresses/:id", protect, deleteAddress);
 
 export default router;

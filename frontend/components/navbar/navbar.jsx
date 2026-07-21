@@ -1,11 +1,18 @@
 "use client";
-import { useState, useEffect } from "react";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import styles from "./Navbar.module.css";
-import { CgProfile } from "react-icons/cg";
-import { CiHeart } from "react-icons/ci";
-import { IoCartOutline, IoSearchOutline } from "react-icons/io5";
 import Image from "next/image";
+import styles from "./Navbar.module.css";
+
+import {
+  IoMenu,
+  IoClose,
+  IoSearchOutline,
+  IoCartOutline,
+} from "react-icons/io5";
+
+import { CiHeart, CiUser } from "react-icons/ci";
 
 export default function Navbar() {
   const API = process.env.NEXT_PUBLIC_API_URL;
@@ -16,16 +23,13 @@ export default function Navbar() {
     storeName: "",
     tagline: "",
     logo: "",
-    favicon: "",
   });
-
-  const closeMenu = () => setMenuOpen(false);
 
   useEffect(() => {
     fetchSettings();
   }, []);
 
-  const fetchSettings = async () => {
+  async function fetchSettings() {
     try {
       const res = await fetch(`${API}/api/settings`);
       const data = await res.json();
@@ -34,12 +38,10 @@ export default function Navbar() {
         setSettings(data.settings);
       }
     } catch (err) {
-      console.error(err);
+      console.log(err);
     }
-  };
+  }
 
-  // If using Cloudinary URLs, use settings.logo directly.
-  // If using local uploads, prefix with API.
   const logoSrc = settings.logo
     ? settings.logo.startsWith("http")
       ? settings.logo
@@ -48,132 +50,140 @@ export default function Navbar() {
 
   return (
     <>
-      <div className={styles.topbar}>
-        Extra 10% OFF on ICICI Cards • Free Delivery Above ₹999
-      </div>
-
       <header className={styles.header}>
         <div className={styles.container}>
-          <div className={styles.topRow}>
-            <Link href="/" className={styles.logo} onClick={closeMenu}>
-              {logoSrc ? (
-                <Image
-                  src={logoSrc}
-                  alt={settings.storeName}
-                  width={52}
-                  height={52}
-                  className={styles.logoImage}
-                  priority
-                />
-              ) : (
-                <span className={styles.dot}></span>
-              )}
+          {/* Mobile Menu Button */}
+          <button
+            className={styles.menuBtn}
+            onClick={() => setMenuOpen(true)}
+          >
+            <IoMenu />
+          </button>
 
-              <div className={styles.logoText}>
-                <h2>{settings.storeName}</h2>
-                {settings.tagline && <p>{settings.tagline}</p>}
-              </div>
-            </Link>
+          {/* Logo */}
+          <Link href="/" className={styles.logo}>
+            {logoSrc &&
+              <Image
+                src={logoSrc}
+                alt={settings.storeName}
+                width={42}
+                height={42}
+                className={styles.logoImage}
+                priority
+              />
+            }   
 
-            <button
-              className={styles.menuBtn}
-              onClick={() => setMenuOpen(!menuOpen)}
-            >
-              ☰
-            </button>
+            <div className={styles.logoText}>
+              <h2>{settings.storeName}</h2>
+              {settings.tagline && <p>{settings.tagline}</p>}
+            </div>
+          </Link>
+
+          {/* Search */}
+          <div className={styles.search}>
+            <IoSearchOutline className={styles.searchIcon} />
+
+            <input
+              type="text"
+              placeholder="Search for Products..."
+            />
           </div>
 
-       <div className={styles.searchRow}>
-  <div className={styles.search}>
-    <IoSearchOutline className={styles.searchIcon} />
-    <input type="text" placeholder="Search for Products" />
-  </div>
-
-  <div className={styles.mobileIcons}>
-    <Link
-      href="/wishlist"
-      className={styles.mobileWishlist}
-      onClick={closeMenu}
-    >
-      <CiHeart />
-    </Link>
-
-    <Link
-      href="/cart"
-      className={styles.mobileCart}
-      onClick={closeMenu}
-    >
-      <IoCartOutline />
-      <span className={styles.badge}>0</span>
-    </Link>
-  </div>
-</div>
-
-          <nav className={styles.nav}>
-            <Link href="/">Home</Link>
-            <Link href="/products">Products</Link>
-          </nav>
-
+          {/* Desktop Icons */}
           <div className={styles.icons}>
-            <Link href="/profile">
-              <CgProfile />
+            <Link href="/profile" className={styles.iconItem}>
+              <CiUser />
             </Link>
 
+            <Link href="/wishlist" className={styles.iconItem}>
+              <CiHeart />
+            </Link>
+
+            <Link href="/cart" className={styles.iconItem}>
+              <div className={styles.cart}>
+                <IoCartOutline />
+                <span className={styles.badge}>0</span>
+              </div>
+            </Link>
+          </div>
+
+          {/* Mobile Icons */}
+          <div className={styles.mobileIcons}>
             <Link href="/wishlist">
               <CiHeart />
             </Link>
 
-            <Link href="/cart" className={styles.cart}>
+            <Link href="/cart" className={styles.mobileCart}>
               <IoCartOutline />
               <span className={styles.badge}>0</span>
             </Link>
           </div>
         </div>
 
+        {/* Mobile Sidebar */}
         <div
-          className={`${styles.overlay} ${menuOpen ? styles.show : ""}`}
-          onClick={closeMenu}
+          className={`${styles.overlay} ${
+            menuOpen ? styles.show : ""
+          }`}
+          onClick={() => setMenuOpen(false)}
         />
 
-        <div className={`${styles.mobileMenu} ${menuOpen ? styles.show : ""}`}>
-          <button className={styles.closeBtn} onClick={closeMenu}>
-            ✕
+        <aside
+          className={`${styles.sidebar} ${
+            menuOpen ? styles.show : ""
+          }`}
+        >
+          <button
+            className={styles.closeBtn}
+            onClick={() => setMenuOpen(false)}
+          >
+            <IoClose />
           </button>
 
-          <Link href="/" onClick={closeMenu}>
+          <div className={styles.sidebarLogo}>
+            {logoSrc ? (
+              <Image
+                src={logoSrc}
+                alt={settings.storeName}
+                width={50}
+                height={50}
+                className={styles.logoImage}
+              />
+            ) : (
+              <div className={styles.logoMark}>S</div>
+            )}
+
+            <h3>{settings.storeName}</h3>
+          </div>
+
+          <Link href="/" onClick={() => setMenuOpen(false)}>
             Home
           </Link>
 
-          <Link href="/products" onClick={closeMenu}>
+          <Link href="/products" onClick={() => setMenuOpen(false)}>
             Products
           </Link>
 
-          <Link href="/categories" onClick={closeMenu}>
-            Categories
+          <Link href="/profile" onClick={() => setMenuOpen(false)}>
+            My Profile
           </Link>
 
-          <Link href="/contact" onClick={closeMenu}>
-            Contact
-          </Link>
-
-          <hr />
-
-          <Link
-            href="/profile"
-            className={styles.mobileMenuIconLink}
-            onClick={closeMenu}
-          >
-            <CgProfile /> Profile
-          </Link>
-
-          <Link href="/wishlist" onClick={closeMenu}>
+          <Link href="/wishlist" onClick={() => setMenuOpen(false)}>
             Wishlist
           </Link>
 
-          <Link href="/cart" onClick={closeMenu}>
+          <Link href="/cart" onClick={() => setMenuOpen(false)}>
             Cart
           </Link>
-        </div>
+
+          <Link href="/orders" onClick={() => setMenuOpen(false)}>
+            Orders
+          </Link>
+
+          <Link href="/contact" onClick={() => setMenuOpen(false)}>
+            Contact
+          </Link>
+        </aside>
       </header>
     </>
   );
