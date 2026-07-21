@@ -63,6 +63,10 @@ button {
   --text: #2E2926;
   --text-soft: #7A736A;
 
+  --accent: #B23A2E;
+  --accent-hover: #8F2E24;
+  --accent-soft: #FBEAE7;
+
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
@@ -70,22 +74,4 @@ button {
 
   --shadow-sm: 0 2px 8px rgba(0,0,0,.05);
   --shadow-md: 0 10px 30px rgba(0,0,0,.08);
-}
-/* Scrollbar */
-
-::-webkit-scrollbar {
-  width: 10px;
-}
-
-::-webkit-scrollbar-track {
-  background: #f3f4f6;
-}
-
-::-webkit-scrollbar-thumb {
-  background: #999;
-  border-radius: 10px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-  background: #666;
 }
