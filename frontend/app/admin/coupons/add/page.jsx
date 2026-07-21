@@ -116,7 +116,10 @@ export default function AddCouponPage() {
 
       const res = await axios.post(
         `${BASE_URL}/api/marketing/coupons`,
-        coupon
+        coupon,
+        {
+          withCredentials: true,
+        }
       );
 
       alert(res.data.message || "Coupon Added Successfully");
@@ -138,173 +141,173 @@ export default function AddCouponPage() {
 
       alert(
         error.response?.data?.message ||
-          error.response?.data ||
-          "Failed to add coupon"
+        error.response?.data ||
+        "Failed to add coupon"
       );
     }
   };
- return (
-  <section className={styles.container}>
-    <div className={styles.header}>
-      <div>
-        <Link href="/admin/coupons" className={styles.back}>
-          <ArrowLeft size={18} />
-          Back to Coupons
-        </Link>
+  return (
+    <section className={styles.container}>
+      <div className={styles.header}>
+        <div>
+          <Link href="/admin/coupons" className={styles.back}>
+            <ArrowLeft size={18} />
+            Back to Coupons
+          </Link>
 
-        <h1>Add Coupon</h1>
-        <p>Create a new discount coupon</p>
-      </div>
-    </div>
-
-    <form className={styles.grid} onSubmit={handleSubmit}>
-      {/* Left */}
-      <div className={styles.card}>
-        <h3>Coupon Details</h3>
-
-        <div className={styles.field}>
-          <label>Coupon Name</label>
-          <input
-            type="text"
-            name="name"
-            value={coupon.name}
-            onChange={handleChange}
-            placeholder="New User Offer"
-            className={errors.name ? styles.errorInput : ""}
-          />
-          {errors.name && <p className={styles.error}>{errors.name}</p>}
-        </div>
-
-        <div className={styles.field}>
-          <label>Coupon Code</label>
-          <input
-            type="text"
-            name="code"
-            value={coupon.code}
-            onChange={handleChange}
-            placeholder="WELCOME10"
-            className={errors.code ? styles.errorInput : ""}
-          />
-          {errors.code && <p className={styles.error}>{errors.code}</p>}
-        </div>
-
-        <div className={styles.row}>
-          <div className={styles.field}>
-            <label>Discount (%)</label>
-            <input
-              type="number"
-              name="discount"
-              min="1"
-              max="100"
-              value={coupon.discount}
-              onChange={handleChange}
-              placeholder="10"
-              className={errors.discount ? styles.errorInput : ""}
-            />
-            {errors.discount && (
-              <p className={styles.error}>{errors.discount}</p>
-            )}
-          </div>
-
-          <div className={styles.field}>
-            <label>Maximum Discount (₹)</label>
-            <input
-              type="number"
-              name="maximumDiscount"
-              min="0"
-              value={coupon.maximumDiscount}
-              onChange={handleChange}
-              placeholder="500"
-              className={errors.maximumDiscount ? styles.errorInput : ""}
-            />
-            {errors.maximumDiscount && (
-              <p className={styles.error}>{errors.maximumDiscount}</p>
-            )}
-          </div>
-        </div>
-
-        <div className={styles.field}>
-          <label>Minimum Order Amount (₹)</label>
-          <input
-            type="number"
-            name="minimumOrderAmount"
-            min="0"
-            value={coupon.minimumOrderAmount}
-            onChange={handleChange}
-            placeholder="1000"
-            className={errors.minimumOrderAmount ? styles.errorInput : ""}
-          />
-          {errors.minimumOrderAmount && (
-            <p className={styles.error}>
-              {errors.minimumOrderAmount}
-            </p>
-          )}
+          <h1>Add Coupon</h1>
+          <p>Create a new discount coupon</p>
         </div>
       </div>
 
-      {/* Right */}
-      <div>
+      <form className={styles.grid} onSubmit={handleSubmit}>
+        {/* Left */}
         <div className={styles.card}>
-          <h3>Coupon Settings</h3>
+          <h3>Coupon Details</h3>
 
           <div className={styles.field}>
-            <label>Expiry Date</label>
+            <label>Coupon Name</label>
             <input
-              type="date"
-              name="expirydate"
-              value={coupon.expirydate}
+              type="text"
+              name="name"
+              value={coupon.name}
               onChange={handleChange}
-              className={errors.expirydate ? styles.errorInput : ""}
+              placeholder="New User Offer"
+              className={errors.name ? styles.errorInput : ""}
             />
-            {errors.expirydate && (
-              <p className={styles.error}>{errors.expirydate}</p>
-            )}
+            {errors.name && <p className={styles.error}>{errors.name}</p>}
           </div>
 
           <div className={styles.field}>
-            <label>Usage Limit</label>
+            <label>Coupon Code</label>
+            <input
+              type="text"
+              name="code"
+              value={coupon.code}
+              onChange={handleChange}
+              placeholder="WELCOME10"
+              className={errors.code ? styles.errorInput : ""}
+            />
+            {errors.code && <p className={styles.error}>{errors.code}</p>}
+          </div>
+
+          <div className={styles.row}>
+            <div className={styles.field}>
+              <label>Discount (%)</label>
+              <input
+                type="number"
+                name="discount"
+                min="1"
+                max="100"
+                value={coupon.discount}
+                onChange={handleChange}
+                placeholder="10"
+                className={errors.discount ? styles.errorInput : ""}
+              />
+              {errors.discount && (
+                <p className={styles.error}>{errors.discount}</p>
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label>Maximum Discount (₹)</label>
+              <input
+                type="number"
+                name="maximumDiscount"
+                min="0"
+                value={coupon.maximumDiscount}
+                onChange={handleChange}
+                placeholder="500"
+                className={errors.maximumDiscount ? styles.errorInput : ""}
+              />
+              {errors.maximumDiscount && (
+                <p className={styles.error}>{errors.maximumDiscount}</p>
+              )}
+            </div>
+          </div>
+
+          <div className={styles.field}>
+            <label>Minimum Order Amount (₹)</label>
             <input
               type="number"
-              name="usageLimit"
-              min="1"
-              value={coupon.usageLimit}
+              name="minimumOrderAmount"
+              min="0"
+              value={coupon.minimumOrderAmount}
               onChange={handleChange}
-              placeholder="100"
-              className={errors.usageLimit ? styles.errorInput : ""}
+              placeholder="1000"
+              className={errors.minimumOrderAmount ? styles.errorInput : ""}
             />
-            {errors.usageLimit && (
-              <p className={styles.error}>{errors.usageLimit}</p>
+            {errors.minimumOrderAmount && (
+              <p className={styles.error}>
+                {errors.minimumOrderAmount}
+              </p>
             )}
           </div>
+        </div>
 
-          <div className={styles.field}>
-            <label>Status</label>
-            <select
-              name="status"
-              value={coupon.status}
-              onChange={handleChange}
+        {/* Right */}
+        <div>
+          <div className={styles.card}>
+            <h3>Coupon Settings</h3>
+
+            <div className={styles.field}>
+              <label>Expiry Date</label>
+              <input
+                type="date"
+                name="expirydate"
+                value={coupon.expirydate}
+                onChange={handleChange}
+                className={errors.expirydate ? styles.errorInput : ""}
+              />
+              {errors.expirydate && (
+                <p className={styles.error}>{errors.expirydate}</p>
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label>Usage Limit</label>
+              <input
+                type="number"
+                name="usageLimit"
+                min="1"
+                value={coupon.usageLimit}
+                onChange={handleChange}
+                placeholder="100"
+                className={errors.usageLimit ? styles.errorInput : ""}
+              />
+              {errors.usageLimit && (
+                <p className={styles.error}>{errors.usageLimit}</p>
+              )}
+            </div>
+
+            <div className={styles.field}>
+              <label>Status</label>
+              <select
+                name="status"
+                value={coupon.status}
+                onChange={handleChange}
+              >
+                <option value="Active">Active</option>
+                <option value="Inactive">Inactive</option>
+              </select>
+            </div>
+          </div>
+
+          <div className={styles.actions}>
+            <button
+              type="button"
+              className={styles.cancelBtn}
+              onClick={() => router.push("/admin/coupons")}
             >
-              <option value="Active">Active</option>
-              <option value="Inactive">Inactive</option>
-            </select>
+              Cancel
+            </button>
+
+            <button type="submit" className={styles.saveBtn}>
+              Save Coupon
+            </button>
           </div>
         </div>
-
-        <div className={styles.actions}>
-          <button
-            type="button"
-            className={styles.cancelBtn}
-            onClick={() => router.push("/admin/coupons")}
-          >
-            Cancel
-          </button>
-
-          <button type="submit" className={styles.saveBtn}>
-            Save Coupon
-          </button>
-        </div>
-      </div>
-    </form>
-  </section>
-);
+      </form>
+    </section>
+  );
 }
