@@ -1,52 +1,88 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import styles from "./Hero.module.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-
-const slides = [
-  {
-    image:
-      "https://images-static.nykaa.com/uploads/9ff20482-b3a3-47a0-a77e-20a21ebed482.gif",
-    link: "/products",
-  },
-  {
-    image:
-      "https://images.meesho.com/images/marketing/1767796583251.webp",
-    link: "/products",
-  },
-  {
-    image:
-      "https://images-static.nykaa.com/uploads/f17ab271-823f-4999-8366-d59d55e9330b.jpg?tr=cm-pad_resize,w-1800",
-    link: "/products",
-  },
-  {
-    image:
-      "https://images-static.nykaa.com/uploads/08816e89-4d70-4993-afbf-e4bf87dec38c.jpg?tr=cm-pad_resize,w-1800",
-    link: "/products",
-  },
-];
-
 const AUTO_SLIDE = 4000;
-
 export default function Hero() {
+  const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
+  const [loading, setLoading] = useState(true);
+  const API = process.env.NEXT_PUBLIC_API_URL;
+  // Fetch Hero Sections
+  const fetchHeroSections = async () => {
+
+    try {
+      const res = await fetch(
+        `${API}/api/marketing/hero-sections`
+      );
+      const data = await res.json();
+      const activeHeroSections = data.heroSections.filter(
+        (item) => item.status === "Active"
+      );
+      setSlides(activeHeroSections);
+
+    } catch (error) {
+      console.log(
+        "Hero Section Fetch Error:",
+        error
+      );
+    } finally {
+      setLoading(false);
+    }
+  };
+  useEffect(() => {
+    fetchHeroSections();
+  }, []);
+  // Next slide
 
   const nextSlide = () => {
-    setCurrent((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
+
+    setCurrent((prev) =>
+      prev === slides.length - 1
+        ? 0
+        : prev + 1
+    );
+
   };
+  // Previous slide
 
   const prevSlide = () => {
-    setCurrent((prev) => (prev === 0 ? slides.length - 1 : prev - 1));
+
+    setCurrent((prev) =>
+      prev === 0
+        ? slides.length - 1
+        : prev - 1
+    );
+
   };
+  // Auto slider
 
   useEffect(() => {
-    const timer = setInterval(nextSlide, AUTO_SLIDE);
-    return () => clearInterval(timer);
-  }, [current]);
 
+    if (slides.length <= 1)
+      return;
+    const timer = setInterval(
+      nextSlide,
+      AUTO_SLIDE
+    );
+    return () => clearInterval(timer);
+  }, [slides]);
+  if (loading) {
+
+    return (
+      <section className={styles.hero}>
+        Loading...
+      </section>
+    );
+
+  }
+  if (slides.length === 0) {
+
+    return null;
+
+  }
   return (
     <section className={styles.hero}>
       <div className={styles.carouselWrapper}>
@@ -56,45 +92,57 @@ export default function Hero() {
         >
           <ChevronLeft size={26} />
         </button>
-
         <div className={styles.sliderWindow}>
+
           <div
             className={styles.sliderTrack}
             style={{
-              transform: `translateX(-${current * 100}%)`,
+              transform:
+                `translateX(-${current * 100}%)`
             }}
           >
-            {slides.map((slide, index) => (
-              <div className={styles.slide} key={index}>
-                <Link href={slide.link}>
-                  <img
-                    src={slide.image}
-                    alt={`Banner ${index + 1}`}
-                    className={styles.bannerImage}
-                  />
-                </Link>
-              </div>
-            ))}
+            {
+              slides.map((slide) => (
+                <div
+                  className={styles.slide}
+                  key={slide._id}
+                >
+                  <Link href="/products">
+                    <img
+                      src={slide.image}
+                      alt="Hero Banner"
+                      className={styles.bannerImage}
+                    />
+                  </Link>
+                </div>
+              ))
+            }
           </div>
         </div>
-
         <button
           className={`${styles.arrow} ${styles.rightArrow}`}
           onClick={nextSlide}
         >
           <ChevronRight size={26} />
         </button>
-
         <div className={styles.dots}>
-          {slides.map((_, index) => (
-            <button
-              key={index}
-              onClick={() => setCurrent(index)}
-              className={`${styles.dot} ${
-                current === index ? styles.active : ""
-              }`}
-            />
-          ))}
+          {
+            slides.map((_, index) => (
+              <button
+                key={index}
+                onClick={() =>
+                  setCurrent(index)
+                }
+                className={
+                  `${styles.dot}
+                  ${current === index
+                    ? styles.active
+                    : ""
+                  }`
+                }
+              />
+            ))
+          }
         </div>
       </div>
     </section>

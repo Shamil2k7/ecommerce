@@ -13,6 +13,13 @@ export const createHeroSection = async (req, res) => {
       status,
     } = req.body;
 
+    if (!image) {
+      return res.status(400).json({
+        success: false,
+        message: "Hero image is required",
+      });
+    }
+
     const result = await cloudinary.uploader.upload(image);
 
     const hero = await HeroSection.create({
@@ -44,7 +51,28 @@ export const getHeroSections = async (req, res) => {
       displayOrder: 1,
     });
 
-    res.json({
+    res.status(200).json({
+      success: true,
+      heroSections,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// Get Active Hero Sections (For User Website)
+export const getActiveHeroSections = async (req, res) => {
+  try {
+    const heroSections = await HeroSection.find({
+      status: "Active",
+    }).sort({
+      displayOrder: 1,
+    });
+
+    res.status(200).json({
       success: true,
       heroSections,
     });
@@ -68,7 +96,7 @@ export const getHeroSectionById = async (req, res) => {
       });
     }
 
-    res.json({
+    res.status(200).json({
       success: true,
       hero,
     });
@@ -96,7 +124,6 @@ export const updateHeroSection = async (req, res) => {
 
     if (req.body.image && req.body.image.startsWith("data:image")) {
       const result = await cloudinary.uploader.upload(req.body.image);
-
       image = result.secure_url;
     }
 
@@ -109,9 +136,9 @@ export const updateHeroSection = async (req, res) => {
 
     await hero.save();
 
-    res.json({
+    res.status(200).json({
       success: true,
-      message: "Hero Section Updated",
+      message: "Hero Section Updated Successfully",
       hero,
     });
   } catch (error) {
@@ -136,7 +163,7 @@ export const deleteHeroSection = async (req, res) => {
 
     await hero.deleteOne();
 
-    res.json({
+    res.status(200).json({
       success: true,
       message: "Hero Section Deleted Successfully",
     });
