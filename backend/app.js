@@ -42,14 +42,12 @@ app.use(
     credentials: true,
   })
 );
-app.use(express.json());
 app.use(cookieParser());
 
 app.use("/api/auth", authRoutes);
 app.use("/api/marketing", couponRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api", productRoutes);
-app.use("/api/staff", staffRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/cart", cartRoutes);

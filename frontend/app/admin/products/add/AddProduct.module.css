@@ -605,8 +605,8 @@
   transition: .25s;
 }
 .section{
-  /* transition: .3s; */
-  padding: 28px 100px;
+ /* background:black; */
+ margin-top: 10px;
 }
 .primary:hover,
 .addBtn:hover {

@@ -11,25 +11,13 @@ export default function AddProductPage() {
 
   // ===========================
   // Basic Information
-  // ===========================
-
-  const [name, setName] = useState("");
-  const [slug, setSlug] = useState("");
-  const [description, setDescription] = useState("");
-  const [shortDescription, setShortDescription] = useState("");
-
+  const [subcategory, setSubcategory] = useState("");
   const [category, setCategory] = useState("");
-  const [brand, setBrand] = useState("");
-
-  const [categories, setCategories] = useState([]);
-  const [brands, setBrands] = useState([]);
 
   // ===========================
   // Pricing
   // ===========================
 
-  const [price, setPrice] = useState("");
-  const [discountPrice, setDiscountPrice] = useState("");
   const [costPrice, setCostPrice] = useState("");
   const [tax, setTax] = useState("");
 
@@ -37,8 +25,7 @@ export default function AddProductPage() {
   // Inventory
   // ===========================
 
-  const [stock, setStock] = useState("");
-  const [sku, setSku] = useState("");
+
   const [barcode, setBarcode] = useState("");
 
   // ===========================
@@ -87,6 +74,28 @@ export default function AddProductPage() {
     },
   ]);
 
+  const [name, setName] = useState("");
+  const [slug, setSlug] = useState("");
+
+  const [description, setDescription] = useState("");
+  const [shortDescription, setShortDescription] = useState("");
+
+  const [brand, setBrand] = useState("");
+
+  const [price, setPrice] = useState("");
+  const [discountPrice, setDiscountPrice] = useState("");
+
+  const [stock, setStock] = useState("");
+  const [sku, setSku] = useState("");
+
+  const [categories, setCategories] = useState([]);
+  const [subcategories, setSubcategories] = useState([]);
+  const [brands, setBrands] = useState([]);
+
+  const [imageFiles, setImageFiles] = useState([]);
+
+  const [loading, setLoading] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   // ===========================
   // Offer
   // ===========================
@@ -143,7 +152,6 @@ export default function AddProductPage() {
   const [isNewArrival, setIsNewArrival] = useState(false);
   const [isActive, setIsActive] = useState(true);
 
-  const [loading, setLoading] = useState(false);
 
   // ===========================
   // Load Categories & Brands
@@ -163,16 +171,14 @@ export default function AddProductPage() {
         setCategories(categoryData.data || []);
         setBrands(brandData.data || []);
       } catch (err) {
-        console.error("Load Data Error:", err);
+        console.log(err);
       }
     };
 
     loadData();
   }, []);
 
-  // ===========================
-  // Auto Generate Slug
-  // ===========================
+ 
 
   useEffect(() => {
     if (!name) return;
@@ -381,6 +387,7 @@ export default function AddProductPage() {
       formData.append("shortDescription", shortDescription);
 
       formData.append("category", category);
+      formData.append("subcategory", subcategory);
       formData.append("brand", brand);
 
       // ===========================
@@ -467,11 +474,11 @@ export default function AddProductPage() {
       // Status
       // ===========================
 
-      formData.append("isFeatured", isFeatured);
-      formData.append("isTrending", isTrending);
-      formData.append("isBestSeller", isBestSeller);
-      formData.append("isNewArrival", isNewArrival);
-      formData.append("isActive", isActive);
+      // formData.append("isFeatured", isFeatured);
+      // formData.append("isTrending", isTrending);
+      // formData.append("isBestSeller", isBestSeller);
+      // formData.append("isNewArrival", isNewArrival);
+      // formData.append("isActive", isActive);
 
       // ===========================
       // Images
@@ -481,20 +488,25 @@ export default function AddProductPage() {
         formData.append("images", image);
       });
 
-      const response = await fetch(
-        `${API}/api/products`,
-        {
-          method: "POST",
-          body: formData,
-        }
-      );
+      const response = await fetch(`${API}/api/products`, {
+        method: "POST",
+        body: formData,
+      });
 
-      const data = await response.json();
+      const contentType = response.headers.get("content-type");
+
+      let data;
+
+      if (contentType && contentType.includes("application/json")) {
+        data = await response.json();
+      } else {
+        const text = await response.text();
+        console.error(text);
+        throw new Error("Server returned HTML instead of JSON");
+      }
 
       if (!response.ok) {
-        throw new Error(
-          data.message || "Failed to create product."
-        );
+        throw new Error(data.message || "Failed to create product.");
       }
 
       alert("✅ Product Created Successfully");
@@ -512,827 +524,824 @@ export default function AddProductPage() {
 
   return (
     <div>
+      <form onSubmit={handleSubmit}>
+        <div className={styles.section}>
+          <h2>Basic Information</h2>
 
-      <div className={styles.section}>
-        <h2>Basic Information</h2>
+          <div className={styles.grid}>
 
-        <div className={styles.grid}>
+            <div className={styles.field}>
+              <label>Product Name *</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                placeholder="Apple iPhone 16 Pro"
+                required
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label>Product Name *</label>
-            <input
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="Apple iPhone 16 Pro"
-              required
-            />
+            <div className={styles.field}>
+              <label>Slug</label>
+              <input
+                type="text"
+                value={slug}
+                onChange={(e) => setSlug(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>Category *</label>
+
+              <select
+                value={category}
+                onChange={(e) => {
+                  setCategory(e.target.value);
+                  setSubcategory("");
+                }}
+                required
+              >
+                <option value="">Select Category</option>
+
+                {categories.map((cat) => (
+                  <option key={cat._id} value={cat._id}>
+                    {cat.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+            <div className={styles.field}>
+              <label>Brand *</label>
+
+              <select
+                value={brand}
+                onChange={(e) => setBrand(e.target.value)}
+                required
+              >
+                <option value="">Select Brand</option>
+
+                {brands.map((item) => (
+                  <option key={item._id} value={item._id}>
+                    {item.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+
           </div>
-
-          <div className={styles.field}>
-            <label>Slug</label>
-            <input
-              type="text"
-              value={slug}
-              onChange={(e) => setSlug(e.target.value)}
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label>Category *</label>
-
-            <select
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              required
-            >
-              <option value="">Select Category</option>
-
-              {categories.map((cat) => (
-                <option
-                  key={cat._id}
-                  value={cat._id}
-                >
-                  {cat.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
-          <div className={styles.field}>
-            <label>Brand *</label>
-
-            <select
-              value={brand}
-              onChange={(e) => setBrand(e.target.value)}
-              required
-            >
-              <option value="">Select Brand</option>
-
-              {brands.map((item) => (
-                <option
-                  key={item._id}
-                  value={item._id}
-                >
-                  {item.name}
-                </option>
-              ))}
-            </select>
-          </div>
-
         </div>
-      </div>
 
-      {/* ===========================
+        {/* ===========================
     DESCRIPTION
 =========================== */}
 
-      <div className={styles.section}>
+        <div className={styles.section}>
 
-        <h2>Description</h2>
+          <h2>Description</h2>
 
-        <div className={styles.field}>
-          <label>Short Description</label>
+          <div className={styles.field}>
+            <label>Short Description</label>
 
-          <textarea
-            rows={3}
-            placeholder="Short description..."
-            value={shortDescription}
-            onChange={(e) =>
-              setShortDescription(e.target.value)
-            }
-          />
+            <textarea
+              rows={3}
+              placeholder="Short description..."
+              value={shortDescription}
+              onChange={(e) =>
+                setShortDescription(e.target.value)
+              }
+            />
+          </div>
+
+          <div className={styles.field}>
+            <label>Full Description *</label>
+
+            <textarea
+              rows={8}
+              placeholder="Write complete product description..."
+              value={description}
+              onChange={(e) =>
+                setDescription(e.target.value)
+              }
+              required
+            />
+          </div>
+
         </div>
 
-        <div className={styles.field}>
-          <label>Full Description *</label>
-
-          <textarea
-            rows={8}
-            placeholder="Write complete product description..."
-            value={description}
-            onChange={(e) =>
-              setDescription(e.target.value)
-            }
-            required
-          />
-        </div>
-
-      </div>
-
-      {/* ===========================
+        {/* ===========================
     PRICING
 =========================== */}
 
-      <div className={styles.section}>
+        <div className={styles.section}>
 
-        <h2>Pricing</h2>
+          <h2>Pricing</h2>
 
-        <div className={styles.grid}>
+          <div className={styles.grid}>
 
-          <div className={styles.field}>
-            <label>Price *</label>
+            <div className={styles.field}>
+              <label>Price *</label>
 
-            <input
-              type="number"
-              value={price}
-              placeholder="0"
-              onChange={(e) => setPrice(e.target.value)}
-              required
-            />
-          </div>
+              <input
+                type="number"
+                value={price}
+                placeholder="0"
+                onChange={(e) => setPrice(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label>Discount Price</label>
+            <div className={styles.field}>
+              <label>Discount Price</label>
 
-            <input
-              type="number"
-              value={discountPrice}
-              placeholder="0"
-              onChange={(e) => setDiscountPrice(e.target.value)}
-            />
-          </div>
+              <input
+                type="number"
+                value={discountPrice}
+                placeholder="0"
+                onChange={(e) => setDiscountPrice(e.target.value)}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label>Cost Price</label>
+            <div className={styles.field}>
+              <label>Cost Price</label>
 
-            <input
-              type="number"
-              value={costPrice}
-              placeholder="0"
-              onChange={(e) => setCostPrice(e.target.value)}
-            />
-          </div>
+              <input
+                type="number"
+                value={costPrice}
+                placeholder="0"
+                onChange={(e) => setCostPrice(e.target.value)}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label>Tax (%)</label>
+            <div className={styles.field}>
+              <label>Tax (%)</label>
 
-            <input
-              type="number"
-              value={tax}
-              placeholder="18"
-              onChange={(e) => setTax(e.target.value)}
-            />
+              <input
+                type="number"
+                value={tax}
+                placeholder="18"
+                onChange={(e) => setTax(e.target.value)}
+              />
+            </div>
+
           </div>
 
         </div>
 
-      </div>
-
-      {/* ===========================
+        {/* ===========================
     INVENTORY
 =========================== */}
 
-      <div className={styles.section}>
+        <div className={styles.section}>
 
-        <h2>Inventory</h2>
+          <h2>Inventory</h2>
 
-        <div className={styles.grid}>
+          <div className={styles.grid}>
 
-          <div className={styles.field}>
-            <label>Stock *</label>
+            <div className={styles.field}>
+              <label>Stock *</label>
 
-            <input
-              type="number"
-              value={stock}
-              placeholder="0"
-              onChange={(e) => setStock(e.target.value)}
-              required
-            />
-          </div>
+              <input
+                type="number"
+                value={stock}
+                placeholder="0"
+                onChange={(e) => setStock(e.target.value)}
+                required
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label>SKU</label>
+            <div className={styles.field}>
+              <label>SKU</label>
 
-            <input
-              type="text"
-              value={sku}
-              placeholder="SKU-12345"
-              onChange={(e) => setSku(e.target.value)}
-            />
-          </div>
+              <input
+                type="text"
+                value={sku}
+                placeholder="SKU-12345"
+                onChange={(e) => setSku(e.target.value)}
+              />
+            </div>
 
-          <div className={styles.field}>
-            <label>Barcode</label>
+            <div className={styles.field}>
+              <label>Barcode</label>
 
-            <input
-              type="text"
-              value={barcode}
-              placeholder="Barcode"
-              onChange={(e) => setBarcode(e.target.value)}
-            />
+              <input
+                type="text"
+                value={barcode}
+                placeholder="Barcode"
+                onChange={(e) => setBarcode(e.target.value)}
+              />
+            </div>
+
           </div>
 
         </div>
 
-      </div>
-
-      {/* ===========================
+        {/* ===========================
     MEASUREMENT
 =========================== */}
 
-      <div className={styles.section}>
+        <div className={styles.section}>
 
-        <h2>Measurement</h2>
+          <h2>Measurement</h2>
 
-        <div className={styles.grid}>
+          <div className={styles.grid}>
 
-          <div className={styles.field}>
+            <div className={styles.field}>
 
-            <label>Measurement Type</label>
+              <label>Measurement Type</label>
 
-            <select
-              value={measurementType}
-              onChange={(e) => setMeasurementType(e.target.value)}
-            >
+              <select
+                value={measurementType}
+                onChange={(e) => setMeasurementType(e.target.value)}
+              >
 
-              <option value="">Select</option>
+                <option value="">Select</option>
 
-              <option value="weight">Weight</option>
+                <option value="weight">Weight</option>
 
-              <option value="volume">Volume</option>
+                <option value="volume">Volume</option>
 
-              <option value="qty">Quantity</option>
+                <option value="qty">Quantity</option>
 
-            </select>
+              </select>
 
-          </div>
+            </div>
 
-          <div className={styles.field}>
+            <div className={styles.field}>
 
-            <label>Value</label>
+              <label>Value</label>
 
-            <input
-              type="number"
-              value={measurementValue}
-              placeholder="500"
-              onChange={(e) => setMeasurementValue(e.target.value)}
-            />
+              <input
+                type="number"
+                value={measurementValue}
+                placeholder="500"
+                onChange={(e) => setMeasurementValue(e.target.value)}
+              />
 
-          </div>
+            </div>
 
-          <div className={styles.field}>
+            <div className={styles.field}>
 
-            <label>Unit</label>
+              <label>Unit</label>
 
-            <select
-              value={measurementUnit}
-              onChange={(e) => setMeasurementUnit(e.target.value)}
-            >
+              <select
+                value={measurementUnit}
+                onChange={(e) => setMeasurementUnit(e.target.value)}
+              >
 
-              <option value="">Select Unit</option>
+                <option value="">Select Unit</option>
 
-              <option value="g">Gram (g)</option>
+                <option value="g">Gram (g)</option>
 
-              <option value="kg">Kilogram (kg)</option>
+                <option value="kg">Kilogram (kg)</option>
 
-              <option value="ml">Millilitre (ml)</option>
+                <option value="ml">Millilitre (ml)</option>
 
-              <option value="l">Litre (L)</option>
+                <option value="l">Litre (L)</option>
 
-              <option value="pcs">Pieces</option>
+                <option value="pcs">Pieces</option>
 
-              <option value="box">Box</option>
+                <option value="box">Box</option>
 
-              <option value="packet">Packet</option>
+                <option value="packet">Packet</option>
 
-              <option value="bottle">Bottle</option>
+                <option value="bottle">Bottle</option>
 
-            </select>
+              </select>
+
+            </div>
 
           </div>
 
         </div>
 
-      </div>
-
-      {/* ===========================
+        {/* ===========================
     IMAGE UPLOAD
 =========================== */}
 
-      <div className={styles.section}>
+        <div className={styles.section}>
 
-        <h2>Product Images</h2>
+          <h2>Product Images</h2>
 
-        <div className={styles.field}>
+          <div className={styles.field}>
 
-          <input
-            type="file"
-            multiple
-            accept="image/*"
-            onChange={handleImageChange}
-          />
-
-        </div>
-
-        {images.length > 0 && (
-
-          <div className={styles.imageCount}>
-
-            Selected Images : {images.length}
+            <input
+              type="file"
+              multiple
+              accept="image/*"
+              onChange={handleImageChange}
+            />
 
           </div>
 
-        )}
+          {images.length > 0 && (
 
-      </div>
-      {/* ===========================
+            <div className={styles.imageCount}>
+
+              Selected Images : {images.length}
+
+            </div>
+
+          )}
+
+        </div>
+        {/* ===========================
       COLORS
 =========================== */}
 
-      <div className={styles.section}>
+        <div className={styles.section}>
 
-        <h2>Product Colors</h2>
+          <h2>Product Colors</h2>
 
-        <div className={styles.row}>
-
-          <input
-            type="text"
-            placeholder="Enter color (Red)"
-            value={colorInput}
-            onChange={(e) => setColorInput(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className={styles.addBtn}
-            onClick={addColor}
-          >
-            + Add
-          </button>
-
-        </div>
-
-        <div className={styles.tags}>
-
-          {colors.map((color, index) => (
-
-            <div
-              key={index}
-              className={styles.tag}
-            >
-              {color}
-
-              <button
-                type="button"
-                onClick={() => removeColor(index)}
-              >
-                ✕
-              </button>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-
-      {/* ===========================
-      SIZES
-=========================== */}
-
-      <div className={styles.section}>
-
-        <h2>Available Sizes</h2>
-
-        <div className={styles.row}>
-
-          <input
-            type="text"
-            placeholder="XL / Large / 42"
-            value={sizeInput}
-            onChange={(e) => setSizeInput(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className={styles.addBtn}
-            onClick={addSize}
-          >
-            + Add
-          </button>
-
-        </div>
-
-        <div className={styles.tags}>
-
-          {sizes.map((size, index) => (
-
-            <div
-              key={index}
-              className={styles.tag}
-            >
-              {size}
-
-              <button
-                type="button"
-                onClick={() => removeSize(index)}
-              >
-                ✕
-              </button>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-
-      {/* ===========================
-      FEATURES
-=========================== */}
-
-      <div className={styles.section}>
-
-        <h2>Product Features</h2>
-
-        <div className={styles.row}>
-
-          <input
-            type="text"
-            placeholder="Fast Charging"
-            value={featureInput}
-            onChange={(e) => setFeatureInput(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className={styles.addBtn}
-            onClick={addFeature}
-          >
-            + Add
-          </button>
-
-        </div>
-
-        <div className={styles.tags}>
-
-          {features.map((feature, index) => (
-
-            <div
-              key={index}
-              className={styles.tag}
-            >
-              {feature}
-
-              <button
-                type="button"
-                onClick={() => removeFeature(index)}
-              >
-                ✕
-              </button>
-
-            </div>
-
-          ))}
-
-        </div>
-
-      </div>
-
-      {/* ===========================
-      SPECIFICATIONS
-=========================== */}
-
-      <div className={styles.section}>
-
-        <h2>Specifications</h2>
-
-        {specifications.map((spec, index) => (
-
-          <div
-            key={index}
-            className={styles.specificationRow}
-          >
+          <div className={styles.row}>
 
             <input
               type="text"
-              placeholder="Key"
-              value={spec.key}
-              onChange={(e) =>
-                updateSpecification(
-                  index,
-                  "key",
-                  e.target.value
-                )
-              }
-            />
-
-            <input
-              type="text"
-              placeholder="Value"
-              value={spec.value}
-              onChange={(e) =>
-                updateSpecification(
-                  index,
-                  "value",
-                  e.target.value
-                )
-              }
+              placeholder="Enter color (Red)"
+              value={colorInput}
+              onChange={(e) => setColorInput(e.target.value)}
             />
 
             <button
               type="button"
-              className={styles.removeBtn}
-              onClick={() =>
-                removeSpecification(index)
-              }
+              className={styles.addBtn}
+              onClick={addColor}
             >
-              Remove
+              + Add
             </button>
 
           </div>
 
-        ))}
+          <div className={styles.tags}>
 
-        <button
-          type="button"
-          className={styles.addBtn}
-          onClick={addSpecification}
-        >
-          + Add Specification
-        </button>
+            {colors.map((color, index) => (
 
-      </div>
+              <div
+                key={index}
+                className={styles.tag}
+              >
+                {color}
 
-      {/* ===========================
-      TAGS
-=========================== */}
+                <button
+                  type="button"
+                  onClick={() => removeColor(index)}
+                >
+                  ✕
+                </button>
 
-      <div className={styles.section}>
+              </div>
 
-        <h2>Product Tags</h2>
+            ))}
 
-        <div className={styles.row}>
-
-          <input
-            type="text"
-            placeholder="electronics"
-            value={tagInput}
-            onChange={(e) => setTagInput(e.target.value)}
-          />
-
-          <button
-            type="button"
-            className={styles.addBtn}
-            onClick={addTag}
-          >
-            + Add
-          </button>
+          </div>
 
         </div>
 
-        <div className={styles.tags}>
+        {/* ===========================
+      SIZES
+=========================== */}
 
-          {tags.map((tag, index) => (
+        <div className={styles.section}>
+
+          <h2>Available Sizes</h2>
+
+          <div className={styles.row}>
+
+            <input
+              type="text"
+              placeholder="XL / Large / 42"
+              value={sizeInput}
+              onChange={(e) => setSizeInput(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className={styles.addBtn}
+              onClick={addSize}
+            >
+              + Add
+            </button>
+
+          </div>
+
+          <div className={styles.tags}>
+
+            {sizes.map((size, index) => (
+
+              <div
+                key={index}
+                className={styles.tag}
+              >
+                {size}
+
+                <button
+                  type="button"
+                  onClick={() => removeSize(index)}
+                >
+                  ✕
+                </button>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* ===========================
+      FEATURES
+=========================== */}
+
+        <div className={styles.section}>
+
+          <h2>Product Features</h2>
+
+          <div className={styles.row}>
+
+            <input
+              type="text"
+              placeholder="Fast Charging"
+              value={featureInput}
+              onChange={(e) => setFeatureInput(e.target.value)}
+            />
+
+            <button
+              type="button"
+              className={styles.addBtn}
+              onClick={addFeature}
+            >
+              + Add
+            </button>
+
+          </div>
+
+          <div className={styles.tags}>
+
+            {features.map((feature, index) => (
+
+              <div
+                key={index}
+                className={styles.tag}
+              >
+                {feature}
+
+                <button
+                  type="button"
+                  onClick={() => removeFeature(index)}
+                >
+                  ✕
+                </button>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+
+        {/* ===========================
+      SPECIFICATIONS
+=========================== */}
+
+        <div className={styles.section}>
+
+          <h2>Specifications</h2>
+
+          {specifications.map((spec, index) => (
 
             <div
               key={index}
-              className={styles.tag}
+              className={styles.specificationRow}
             >
-              {tag}
+
+              <input
+                type="text"
+                placeholder="Key"
+                value={spec.key}
+                onChange={(e) =>
+                  updateSpecification(
+                    index,
+                    "key",
+                    e.target.value
+                  )
+                }
+              />
+
+              <input
+                type="text"
+                placeholder="Value"
+                value={spec.value}
+                onChange={(e) =>
+                  updateSpecification(
+                    index,
+                    "value",
+                    e.target.value
+                  )
+                }
+              />
 
               <button
                 type="button"
-                onClick={() => removeTag(index)}
+                className={styles.removeBtn}
+                onClick={() =>
+                  removeSpecification(index)
+                }
               >
-                ✕
+                Remove
               </button>
 
             </div>
 
           ))}
 
-        </div>
-
-      </div>
-      {/* ===========================
-        OFFER SETTINGS
-=========================== */}
-
-      <div className={styles.section}>
-        <h2>🎁 Offer Settings</h2>
-
-        <label className={styles.switchRow}>
-          <input
-            type="checkbox"
-            checked={offerEnabled}
-            onChange={(e) => setOfferEnabled(e.target.checked)}
-          />
-          Enable Offer
-        </label>
-
-        {offerEnabled && (
-          <div className={styles.grid}>
-
-            <div className={styles.field}>
-              <label>Offer Title</label>
-              <input
-                type="text"
-                value={offerTitle}
-                onChange={(e) => setOfferTitle(e.target.value)}
-                placeholder="Summer Sale"
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label>Offer Type</label>
-
-              <select
-                value={offerType}
-                onChange={(e) => setOfferType(e.target.value)}
-              >
-                <option value="percentage">Percentage</option>
-                <option value="fixed">Fixed Amount</option>
-              </select>
-            </div>
-
-            <div className={styles.field}>
-              <label>Offer Value</label>
-
-              <input
-                type="number"
-                value={offerValue}
-                onChange={(e) => setOfferValue(e.target.value)}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label>Start Date</label>
-
-              <input
-                type="date"
-                value={offerStartDate}
-                onChange={(e) => setOfferStartDate(e.target.value)}
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label>End Date</label>
-
-              <input
-                type="date"
-                value={offerEndDate}
-                onChange={(e) => setOfferEndDate(e.target.value)}
-              />
-            </div>
-
-          </div>
-        )}
-      </div>
-
-      {/* ===========================
-        SHIPPING
-=========================== */}
-
-      <div className={styles.section}>
-
-        <h2>🚚 Shipping</h2>
-
-        <div className={styles.grid}>
-
-          <label className={styles.switchRow}>
-            <input
-              type="checkbox"
-              checked={freeDelivery}
-              onChange={(e) => setFreeDelivery(e.target.checked)}
-            />
-            Free Delivery
-          </label>
-
-          <label className={styles.switchRow}>
-            <input
-              type="checkbox"
-              checked={cashOnDelivery}
-              onChange={(e) => setCashOnDelivery(e.target.checked)}
-            />
-            Cash On Delivery
-          </label>
-
-          <label className={styles.switchRow}>
-            <input
-              type="checkbox"
-              checked={expressDelivery}
-              onChange={(e) => setExpressDelivery(e.target.checked)}
-            />
-            Express Delivery
-          </label>
-
-          <div className={styles.field}>
-            <label>Delivery Charge</label>
-
-            <input
-              type="number"
-              value={deliveryCharge}
-              onChange={(e) => setDeliveryCharge(e.target.value)}
-              placeholder="0"
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label>Estimated Delivery (Days)</label>
-
-            <input
-              type="number"
-              value={estimatedDays}
-              onChange={(e) => setEstimatedDays(e.target.value)}
-              placeholder="3"
-            />
-          </div>
+          <button
+            type="button"
+            className={styles.addBtn}
+            onClick={addSpecification}
+          >
+            + Add Specification
+          </button>
 
         </div>
 
-      </div>
-
-      {/* ===========================
-      RETURN & REFUND
+        {/* ===========================
+      TAGS
 =========================== */}
 
-      <div className={styles.section}>
+        <div className={styles.section}>
 
-        <h2>🔄 Return & Refund</h2>
+          <h2>Product Tags</h2>
 
-        <div className={styles.grid}>
-
-          <label className={styles.switchRow}>
-            <input
-              type="checkbox"
-              checked={returnAvailable}
-              onChange={(e) => setReturnAvailable(e.target.checked)}
-            />
-            Return Available
-          </label>
-
-          <label className={styles.switchRow}>
-            <input
-              type="checkbox"
-              checked={refundAvailable}
-              onChange={(e) => setRefundAvailable(e.target.checked)}
-            />
-            Refund Available
-          </label>
-
-          <label className={styles.switchRow}>
-            <input
-              type="checkbox"
-              checked={replacementAvailable}
-              onChange={(e) => setReplacementAvailable(e.target.checked)}
-            />
-            Replacement Available
-          </label>
-
-          <div className={styles.field}>
-            <label>Return Days</label>
-
-            <input
-              type="number"
-              value={returnDays}
-              onChange={(e) => setReturnDays(e.target.value)}
-            />
-          </div>
-
-          <div className={styles.field}>
-            <label>Warranty</label>
+          <div className={styles.row}>
 
             <input
               type="text"
-              placeholder="1 Year"
-              value={warranty}
-              onChange={(e) => setWarranty(e.target.value)}
+              placeholder="electronics"
+              value={tagInput}
+              onChange={(e) => setTagInput(e.target.value)}
             />
+
+            <button
+              type="button"
+              className={styles.addBtn}
+              onClick={addTag}
+            >
+              + Add
+            </button>
+
+          </div>
+
+          <div className={styles.tags}>
+
+            {tags.map((tag, index) => (
+
+              <div
+                key={index}
+                className={styles.tag}
+              >
+                {tag}
+
+                <button
+                  type="button"
+                  onClick={() => removeTag(index)}
+                >
+                  ✕
+                </button>
+
+              </div>
+
+            ))}
+
+          </div>
+
+        </div>
+        {/* ===========================
+        OFFER SETTINGS
+=========================== */}
+
+        <div className={styles.section}>
+          <h2>🎁 Offer Settings</h2>
+
+          <label className={styles.switchRow}>
+            <input
+              type="checkbox"
+              checked={offerEnabled}
+              onChange={(e) => setOfferEnabled(e.target.checked)}
+            />
+            Enable Offer
+          </label>
+
+          {offerEnabled && (
+            <div className={styles.grid}>
+
+              <div className={styles.field}>
+                <label>Offer Title</label>
+                <input
+                  type="text"
+                  value={offerTitle}
+                  onChange={(e) => setOfferTitle(e.target.value)}
+                  placeholder="Summer Sale"
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label>Offer Type</label>
+
+                <select
+                  value={offerType}
+                  onChange={(e) => setOfferType(e.target.value)}
+                >
+                  <option value="percentage">Percentage</option>
+                  <option value="fixed">Fixed Amount</option>
+                </select>
+              </div>
+
+              <div className={styles.field}>
+                <label>Offer Value</label>
+
+                <input
+                  type="number"
+                  value={offerValue}
+                  onChange={(e) => setOfferValue(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label>Start Date</label>
+
+                <input
+                  type="date"
+                  value={offerStartDate}
+                  onChange={(e) => setOfferStartDate(e.target.value)}
+                />
+              </div>
+
+              <div className={styles.field}>
+                <label>End Date</label>
+
+                <input
+                  type="date"
+                  value={offerEndDate}
+                  onChange={(e) => setOfferEndDate(e.target.value)}
+                />
+              </div>
+
+            </div>
+          )}
+        </div>
+
+        {/* ===========================
+        SHIPPING
+=========================== */}
+
+        <div className={styles.section}>
+
+          <h2>🚚 Shipping</h2>
+
+          <div className={styles.grid}>
+
+            <label className={styles.switchRow}>
+              <input
+                type="checkbox"
+                checked={freeDelivery}
+                onChange={(e) => setFreeDelivery(e.target.checked)}
+              />
+              Free Delivery
+            </label>
+
+            <label className={styles.switchRow}>
+              <input
+                type="checkbox"
+                checked={cashOnDelivery}
+                onChange={(e) => setCashOnDelivery(e.target.checked)}
+              />
+              Cash On Delivery
+            </label>
+
+            <label className={styles.switchRow}>
+              <input
+                type="checkbox"
+                checked={expressDelivery}
+                onChange={(e) => setExpressDelivery(e.target.checked)}
+              />
+              Express Delivery
+            </label>
+
+            <div className={styles.field}>
+              <label>Delivery Charge</label>
+
+              <input
+                type="number"
+                value={deliveryCharge}
+                onChange={(e) => setDeliveryCharge(e.target.value)}
+                placeholder="0"
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>Estimated Delivery (Days)</label>
+
+              <input
+                type="number"
+                value={estimatedDays}
+                onChange={(e) => setEstimatedDays(e.target.value)}
+                placeholder="3"
+              />
+            </div>
+
           </div>
 
         </div>
 
-      </div>
+        {/* ===========================
+      RETURN & REFUND
+=========================== */}
+
+        <div className={styles.section}>
+
+          <h2>🔄 Return & Refund</h2>
+
+          <div className={styles.grid}>
+
+            <label className={styles.switchRow}>
+              <input
+                type="checkbox"
+                checked={returnAvailable}
+                onChange={(e) => setReturnAvailable(e.target.checked)}
+              />
+              Return Available
+            </label>
+
+            <label className={styles.switchRow}>
+              <input
+                type="checkbox"
+                checked={refundAvailable}
+                onChange={(e) => setRefundAvailable(e.target.checked)}
+              />
+              Refund Available
+            </label>
+
+            <label className={styles.switchRow}>
+              <input
+                type="checkbox"
+                checked={replacementAvailable}
+                onChange={(e) => setReplacementAvailable(e.target.checked)}
+              />
+              Replacement Available
+            </label>
+
+            <div className={styles.field}>
+              <label>Return Days</label>
+
+              <input
+                type="number"
+                value={returnDays}
+                onChange={(e) => setReturnDays(e.target.value)}
+              />
+            </div>
+
+            <div className={styles.field}>
+              <label>Warranty</label>
+
+              <input
+                type="text"
+                placeholder="1 Year"
+                value={warranty}
+                onChange={(e) => setWarranty(e.target.value)}
+              />
+            </div>
+
+          </div>
+
+        </div>
 
 
 
-      {/* ===========================
+        {/* ===========================
           ACTION BUTTONS
 =========================== */}
 
-      <div className={styles.actions}>
+        <div className={styles.actions}>
 
-        <button
-          type="button"
-          className={styles.secondary}
-          onClick={() => router.push("/admin/products")}
-        >
-          Cancel
-        </button>
+          <button
+            type="button"
+            className={styles.secondary}
+            onClick={() => router.push("/admin/products")}
+          >
+            Cancel
+          </button>
 
-        <button
-          type="submit"
-          className={styles.primary}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save Product"}
-        </button>
+          <button
+            type="submit"
+            className={styles.primary}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Product"}
+          </button>
 
-      </div>
+        </div>
+      </form>
     </div>
   )
 }
