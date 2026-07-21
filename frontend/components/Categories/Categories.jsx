@@ -3,13 +3,19 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
+
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+
+import "swiper/css";
+import "swiper/css/navigation";
+
 import styles from "./Categories.module.css";
 
 export default function Categories() {
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [categories, setCategories] = useState([]);
-  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetchCategories();
@@ -28,44 +34,85 @@ export default function Categories() {
       }
     } catch (err) {
       console.log(err);
-    } finally {
-      setLoading(false);
     }
   };
-
-  if (loading) {
-    return null;
-  }
 
   return (
     <section className={styles.categories}>
       <div className={styles.container}>
-        <div className={styles.heading}>
-          <h2>Shop By Category</h2>
+        <div className={styles.header}>
+          <h2>Collection List</h2>
 
-          <Link href="/categories">View All →</Link>
+          <div className={styles.nav}>
+            <button className="category-prev">←</button>
+            <button className="category-next">→</button>
+          </div>
         </div>
 
-        <div className={styles.grid}>
+        <Swiper
+          modules={[Navigation]}
+          navigation={{
+            prevEl: ".category-prev",
+            nextEl: ".category-next",
+          }}
+          slidesPerView={6}
+          spaceBetween={12}
+          loop={categories.length > 6}
+          grabCursor={true}
+          centeredSlides={false}
+          watchOverflow={true}
+          breakpoints={{
+            1400: {
+              slidesPerView: 8,
+              spaceBetween: 6,
+            },
+            1200: {
+              slidesPerView: 7,
+              spaceBetween: 6,
+            },
+            992: {
+              slidesPerView: 6,
+              spaceBetween: 4,
+            },
+            768: {
+              slidesPerView: 5,
+              spaceBetween: 4,
+            },
+            576: {
+              slidesPerView: 4,
+              spaceBetween: 4,
+            },
+            360: {
+              slidesPerView: 3,
+              spaceBetween: 4,
+            },
+            0: {
+              slidesPerView: 2.6,
+              spaceBetween: 2,
+            },
+          }}
+        >
           {categories.map((category) => (
-            <Link
-              href={`/products?category=${category.slug}`}
-              key={category._id}
-              className={styles.card}
-            >
-              <Image
-                src={category.image?.url || "/placeholder-category.jpg"}
-                alt={category.name}
-                fill
-                className={styles.image}
-              />
+            <SwiperSlide key={category._id}>
+              <Link
+                href={`/products?category=${category.slug}`}
+                className={styles.card}
+              >
+                <div className={styles.imageBox}>
+                  <Image
+                    src={category.image?.url || "/placeholder-category.jpg"}
+                    alt={category.name}
+                    fill
+                    sizes="(max-width: 360px) 56px, (max-width: 480px) 66px, (max-width: 768px) 82px, (max-width: 992px) 100px, (max-width: 1200px) 115px, 130px"
+                    className={styles.image}
+                  />
+                </div>
 
-              <div className={styles.overlay}></div>
-
-              <h3>{category.name}</h3>
-            </Link>
+                <h3>{category.name}</h3>
+              </Link>
+            </SwiperSlide>
           ))}
-        </div>
+        </Swiper>
       </div>
     </section>
   );

@@ -1,12 +1,16 @@
 .bannerSection {
   width: 100%;
-  padding: 20px 5%;
+  padding: 0;
   background: var(--bg);
+}
+
+.carouselWrapper {
+  position: relative;
+  width: 100%;
 }
 
 .slider {
   width: 100%;
-  border-radius: 18px;
   overflow: hidden;
 }
 
@@ -15,24 +19,38 @@
   height: 450px;
   object-fit: cover;
   display: block;
-  border-radius: 18px;
 }
 
-/* Swiper Navigation */
+/* Custom Arrows */
 
-.bannerSection :global(.swiper-button-prev),
-.bannerSection :global(.swiper-button-next) {
-  color: #ffffff;
-  background: rgba(0, 0, 0, 0.35);
-  width: 45px;
-  height: 45px;
+.arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 10;
+  width: 46px;
+  height: 46px;
   border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.85);
+  color: var(--text);
+  box-shadow: var(--shadow-sm);
+  transition: .25s;
 }
 
-.bannerSection :global(.swiper-button-prev::after),
-.bannerSection :global(.swiper-button-next::after) {
-  font-size: 18px;
-  font-weight: bold;
+.arrow:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.leftArrow {
+  left: 20px;
+}
+
+.rightArrow {
+  right: 20px;
 }
 
 /* Swiper Pagination */
@@ -43,7 +61,7 @@
 }
 
 .bannerSection :global(.swiper-pagination-bullet-active) {
-  background: #ffc220;
+  background: var(--accent);
   opacity: 1;
 }
 
@@ -54,17 +72,26 @@
 }
 
 @media (max-width: 768px) {
-  .bannerSection {
-    padding: 15px;
-  }
-
   .bannerImage {
     height: 220px;
-    border-radius: 12px;
   }
 
-  .bannerSection :global(.swiper-button-prev),
-  .bannerSection :global(.swiper-button-next) {
+  .arrow {
+    width: 38px;
+    height: 38px;
+  }
+
+  .leftArrow {
+    left: 10px;
+  }
+
+  .rightArrow {
+    right: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .arrow {
     display: none;
   }
 }
