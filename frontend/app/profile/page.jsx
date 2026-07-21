@@ -51,7 +51,7 @@ export default function ProfilePage() {
     if (user?._id) {
       setProfileName(user.fullName || "");
       setProfilePhone(user.phone || "");
-      setProfileImage(user.profileImage || "");
+
 
       const fetchAddresses = async () => {
         try {
