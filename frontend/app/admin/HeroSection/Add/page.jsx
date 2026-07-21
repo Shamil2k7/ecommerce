@@ -125,73 +125,66 @@ export default function AddHeroSection() {
 
     // Validation
     const validate = () => {
-
         const newErrors = {};
 
-
-        if (!hero.brand.trim())
+        if (!hero.brand.trim()) {
             newErrors.brand = "Brand is required";
+        }
 
+        if (!hero.image) {
+            newErrors.image = "Hero image is required";
+        }
 
-        if (!hero.offer.trim())
-            newErrors.offer = "Offer is required";
-
-
-        if (!hero.subOffer.trim())
-            newErrors.subOffer = "Sub Offer is required";
-
-
-        if (!hero.image)
-            newErrors.image = "Hero Image is required";
-
-
-        if (hero.displayOrder < 1)
+        if (hero.displayOrder < 1) {
             newErrors.displayOrder =
                 "Display Order must be greater than 0";
-
+        }
 
         setErrors(newErrors);
 
-
         return Object.keys(newErrors).length === 0;
-    };
-
-
-
-    // Submit
+    };// Submit
     const handleSubmit = async () => {
-
         if (!validate()) return;
 
-
         try {
-
             setLoading(true);
 
+            console.log("API:", process.env.NEXT_PUBLIC_API_URL);
+            console.log("DATA:", hero);
 
-            const res = await axios.post(
+            const response = await axios.post(
                 `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/hero-sections`,
-                hero
+                {
+                    brand: hero.brand,
+                    image: hero.image,
+                    displayOrder: hero.displayOrder,
+                    status: hero.status,
+                },
+                {
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                }
             );
 
+            console.log(response.data);
 
-            alert(res.data.message);
-
+            alert(response.data.message);
 
             router.push("/admin/HeroSection");
+        } catch (err) {
+            console.log("FULL ERROR");
+            console.log(err);
 
-
-        } catch (error) {
-
-            alert(
-                error.response?.data?.message ||
-                "Failed to create Hero Section"
-            );
-
+            if (err.response) {
+                console.log(err.response.data);
+                alert(JSON.stringify(err.response.data));
+            } else {
+                alert(err.message);
+            }
         } finally {
-
             setLoading(false);
-
         }
     };
     return (

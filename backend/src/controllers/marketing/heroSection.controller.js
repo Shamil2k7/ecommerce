@@ -6,12 +6,17 @@ export const createHeroSection = async (req, res) => {
   try {
     const {
       brand,
-      offer,
-      subOffer,
       image,
       displayOrder,
       status,
     } = req.body;
+
+    if (!brand) {
+      return res.status(400).json({
+        success: false,
+        message: "Brand is required",
+      });
+    }
 
     if (!image) {
       return res.status(400).json({
@@ -24,8 +29,6 @@ export const createHeroSection = async (req, res) => {
 
     const hero = await HeroSection.create({
       brand,
-      offer,
-      subOffer,
       image: result.secure_url,
       displayOrder,
       status,
@@ -37,6 +40,8 @@ export const createHeroSection = async (req, res) => {
       hero,
     });
   } catch (error) {
+    console.log(error);
+
     res.status(500).json({
       success: false,
       message: error.message,
@@ -63,7 +68,7 @@ export const getHeroSections = async (req, res) => {
   }
 };
 
-// Get Active Hero Sections (For User Website)
+// Get Active Hero Sections
 export const getActiveHeroSections = async (req, res) => {
   try {
     const heroSections = await HeroSection.find({
@@ -84,7 +89,7 @@ export const getActiveHeroSections = async (req, res) => {
   }
 };
 
-// Get Hero Section By ID
+// Get Hero By ID
 export const getHeroSectionById = async (req, res) => {
   try {
     const hero = await HeroSection.findById(req.params.id);
@@ -122,14 +127,18 @@ export const updateHeroSection = async (req, res) => {
 
     let image = hero.image;
 
-    if (req.body.image && req.body.image.startsWith("data:image")) {
-      const result = await cloudinary.uploader.upload(req.body.image);
+    if (
+      req.body.image &&
+      req.body.image.startsWith("data:image")
+    ) {
+      const result = await cloudinary.uploader.upload(
+        req.body.image
+      );
+
       image = result.secure_url;
     }
 
     hero.brand = req.body.brand;
-    hero.offer = req.body.offer;
-    hero.subOffer = req.body.subOffer;
     hero.image = image;
     hero.displayOrder = req.body.displayOrder;
     hero.status = req.body.status;

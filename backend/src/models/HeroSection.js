@@ -8,18 +8,6 @@ const heroSectionSchema = new mongoose.Schema(
       trim: true,
     },
 
-    offer: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
-    subOffer: {
-      type: String,
-      required: true,
-      trim: true,
-    },
-
     image: {
       type: String,
       required: true,
