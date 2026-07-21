@@ -298,7 +298,7 @@ export default function AddHeroSection() {
             type="button"
             className={styles.cancelBtn}
             onClick={() =>
-              router.push("/admin/hero-sections")
+              router.push("/admin/HeroSection")
             }
           >
             Cancel
