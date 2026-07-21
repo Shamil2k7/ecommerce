@@ -38,7 +38,10 @@ export default function EditCouponPage() {
   const fetchCoupon = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`,
+        {
+          withCredentials: true,
+        }
       );
 
       setCoupon({
@@ -129,7 +132,10 @@ export default function EditCouponPage() {
     try {
       await axios.put(
         `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`,
-        coupon
+        coupon,
+        {
+  withCredentials: true,
+}
       );
 
       alert("Coupon Updated Successfully");
