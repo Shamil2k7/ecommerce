@@ -96,8 +96,8 @@ export default function HeroSectionsPage() {
             <tr>
               <th>Image</th>
               <th>Brand</th>
-              <th>Offer</th>
-              <th>Sub Offer</th>
+              {/* <th>Offer</th>
+              <th>Sub Offer</th> */}
               <th>Display Order</th>
               <th>Status</th>
               <th>Actions</th>
@@ -118,9 +118,9 @@ export default function HeroSectionsPage() {
 
                   <td>{hero.brand}</td>
 
-                  <td>{hero.offer}</td>
+                  {/* <td>{hero.offer}</td>
 
-                  <td>{hero.subOffer}</td>
+                  <td>{hero.subOffer}</td> */}
 
                   <td>{hero.displayOrder}</td>
 

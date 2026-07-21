@@ -231,7 +231,7 @@ export default function AddHeroSection() {
                         </p>}
 
                 </div>
-                <div className={styles.formGroup}>
+                {/* <div className={styles.formGroup}>
                     <label>Offer</label>
 
                     <input
@@ -248,8 +248,8 @@ export default function AddHeroSection() {
                             {errors.offer}
                         </p>}
 
-                </div>
-                <div className={styles.formGroup}>
+                </div> */}
+                {/* <div className={styles.formGroup}>
                     <label>Sub Offer</label>
 
                     <input
@@ -264,7 +264,7 @@ export default function AddHeroSection() {
                         <p className={styles.error}>
                             {errors.subOffer}
                         </p>}
-                </div>
+                </div> */}
                 <div className={styles.formGroup}>
                     <label>Hero Image</label>
                     <label className={styles.uploadBox}>
