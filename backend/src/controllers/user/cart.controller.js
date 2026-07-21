@@ -56,7 +56,15 @@ const updateCartTotals = async (cart) => {
 
 export const getCart = async (req, res) => {
   try {
-    const cart = await getCartByUser(req.params.userId);
+    const { userId } = req.params;
+    if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+
+    const cart = await getCartByUser(userId);
 
     await updateCartTotals(cart);
 
@@ -91,6 +99,13 @@ export const addToCart = async (req, res) => {
       return res.status(400).json({
         success: false,
         message: "User ID and Product ID are required.",
+      });
+    }
+
+    if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
       });
     }
 
@@ -156,6 +171,13 @@ export const updateQuantity = async (req, res) => {
   try {
     const { userId, productId, color, size, quantity } = req.body;
 
+    if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+
     const cart = await Cart.findOne({ userId });
 
     if (!cart) {
@@ -201,6 +223,13 @@ export const removeItem = async (req, res) => {
     const { userId, productId } = req.params;
     const { color, size } = req.query;
 
+    if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+
     const cart = await Cart.findOne({ userId });
 
     if (!cart) {
@@ -236,8 +265,16 @@ export const removeItem = async (req, res) => {
 
 export const clearCart = async (req, res) => {
   try {
+    const { userId } = req.params;
+    if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
+
     const cart = await Cart.findOne({
-      userId: req.params.userId,
+      userId,
     });
 
     if (!cart) {
@@ -270,6 +307,13 @@ export const clearCart = async (req, res) => {
 export const applyCoupon = async (req, res) => {
   try {
     const { userId, code } = req.body;
+
+    if (req.user.role !== "admin" && req.user._id.toString() !== userId) {
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
+    }
 
     const cart = await Cart.findOne({ userId });
 

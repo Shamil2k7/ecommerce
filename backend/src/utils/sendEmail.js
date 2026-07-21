@@ -11,13 +11,13 @@ const sendEmail = async (to, subject, html) => {
     port: 587,
     secure: false,
     auth: {
-      user: process.env.EMAIL_USER,
+      user: process.env.EMAIL_USER, 
       pass: process.env.EMAIL_PASSWORD,
     },
   });
 
   await transporter.sendMail({
-    from: `"ShopAura" <${process.env.EMAIL_USER}>`,
+    from: `"ecommerce" <${process.env.EMAIL_USER}>`, 
     to,
     subject,
     html,

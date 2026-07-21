@@ -14,36 +14,36 @@ export default function GoogleLoginButton() {
   const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "938827461023-dummyclientid.apps.googleusercontent.com";
 
   useEffect(() => {
-    let checkInterval;
+    let interval;
 
-    // Check if the Google API script has loaded
-    const checkGoogleScript = () => {
-      if (window.google && window.google.accounts) {
+    // Wait for the Google client script to load
+    const checkScript = () => {
+      if (window.google?.accounts) {
         setGoogleLoaded(true);
-        clearInterval(checkInterval);
+        clearInterval(interval);
       }
     };
 
-    checkGoogleScript();
-    checkInterval = setInterval(checkGoogleScript, 500);
+    checkScript();
+    interval = setInterval(checkScript, 500);
 
-    return () => clearInterval(checkInterval);
+    return () => clearInterval(interval);
   }, []);
 
-  // Run once the Google script is ready
   useEffect(() => {
-    if (!googleLoaded) return;
-    initializeGoogleButton();
+    if (googleLoaded) {
+      initializeButton();
+    }
   }, [googleLoaded]);
 
-  const initializeGoogleButton = () => {
+  // Initializing the Google Sign-In button
+  const initializeButton = () => {
     try {
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: handleCredentialResponse,
       });
 
-      // Render Google's sign-in button
       window.google.accounts.id.renderButton(
         document.getElementById("google-signin-btn-container"),
         {
@@ -55,10 +55,11 @@ export default function GoogleLoginButton() {
         }
       );
     } catch (err) {
-      console.error("Error rendering Google Sign-In button:", err);
+      console.error("Google button initialization failed:", err);
     }
   };
 
+  // Handling the Google oauth token response
   const handleCredentialResponse = async (response) => {
     if (!response.credential) return;
 
@@ -68,22 +69,21 @@ export default function GoogleLoginButton() {
     try {
       const result = await googleLogin(response.credential);
       if (result.success) {
-        // Reload to update auth state across the app
         window.location.reload();
       } else {
-        setAuthError(result.message || "Google authentication failed");
+        setAuthError(result.message || "Authentication failed");
       }
     } catch (error) {
-      setAuthError("An unexpected error occurred during sign in");
+      setAuthError("An error occurred during Google sign in");
     } finally {
       setLoading(false);
     }
   };
 
+  // Displaying fallback handler when script is unavailable
   const handleFallbackClick = () => {
-    // Google script didn't load — show a message
     alert(
-      "Google Sign-In is currently in placeholder mode.\n\nTo enable production authentication:\n1. Create a Google Client ID in Google Cloud Console.\n2. Add it to NEXT_PUBLIC_GOOGLE_CLIENT_ID environment variable.\n3. Make sure the accounts.google.com/gsi script is loaded successfully."
+      "Google Sign-In is unavailable. Ensure NEXT_PUBLIC_GOOGLE_CLIENT_ID is set in your .env file."
     );
   };
 
@@ -94,19 +94,17 @@ export default function GoogleLoginButton() {
       {loading && (
         <div className={styles.spinnerWrapper}>
           <Loader2 className={styles.spin} size={20} />
-          <span>Connecting with Google...</span>
+          <span>Connecting...</span>
         </div>
       )}
 
-      {/* Google renders its button inside this div */}
-      <div 
-        id="google-signin-btn-container" 
+      <div
+        id="google-signin-btn-container"
         className={styles.googleContainer}
         style={{ display: googleLoaded && !loading ? "block" : "none" }}
       />
 
-      {/* Shown while the Google script is still loading */}
-      {(!googleLoaded && !loading) && (
+      {!googleLoaded && !loading && (
         <button
           type="button"
           onClick={handleFallbackClick}

@@ -15,7 +15,7 @@ const login = async (req, res) => {
       return res.status(401).json({ success: false, message: "Invalid email or password" });
     }
 
-    if (user.isBlocked) {
+    if (user.isBlocked) {  
       return res.status(403).json({ success: false, message: "Your account is blocked" });
     }
 
