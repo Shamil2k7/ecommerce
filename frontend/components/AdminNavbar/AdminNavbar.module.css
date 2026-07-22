@@ -26,6 +26,7 @@
 }
 
 .menuBtn {
+  display: none;
   width: 44px;
   height: 44px;
   border: none;
@@ -33,11 +34,8 @@
   border-radius: 50%;
   cursor: pointer;
   flex-shrink: 0;
-
-  display: flex;
   justify-content: center;
   align-items: center;
-
   transition: 0.3s;
 }
 
@@ -379,6 +377,10 @@
     padding: 0 14px;
   }
 
+  .menuBtn {
+    display: flex;
+  }
+
   .searchBox {
     display: none;
   }
@@ -396,7 +398,6 @@
   }
 
   .menuBtn,
-  .iconBtn,
   .mobileSearchBtn {
     width: 40px;
     height: 40px;
@@ -417,7 +418,6 @@
     right: -5px;
   }
 }
-
 /* ================= 480px ================= */
 
 @media (max-width: 480px) {

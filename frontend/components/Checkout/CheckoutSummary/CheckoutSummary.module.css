@@ -1,0 +1,568 @@
+.checkoutSidebar {
+  position: sticky;
+  top: 20px;
+}
+
+.orderSummaryCard {
+  width: 100%;
+  background: #ffffff;
+  border: 1px solid #ececec;
+  padding: 28px;
+}
+
+
+.orderSummaryCard h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #222;
+  margin-bottom: 24px;
+  letter-spacing: .3px;
+}
+
+.orderSummaryCard h2::after {
+  content: "";
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin-top: 12px;
+  border-radius: 20px;
+  background: linear-gradient(
+    to right,
+    #111 80%,
+    #ececec 80%
+  );
+}
+
+.orderItems {
+  max-height: 130px;
+  overflow-y: auto;
+  padding-right: 6px;
+  margin-bottom: 24px;
+}
+
+.orderItems::-webkit-scrollbar {
+  width: 6px;
+}
+
+.orderItems::-webkit-scrollbar-track {
+  background: #f3f3f3;
+  border-radius: 20px;
+}
+
+.orderItems::-webkit-scrollbar-thumb {
+  background: #bcbcbc;
+  border-radius: 20px;
+}
+
+.orderItems::-webkit-scrollbar-thumb:hover {
+  background: #999;
+}
+
+
+.orderItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 0;
+  border-bottom: 1px dashed #d9d9d9;
+}
+
+.orderItem:last-child {
+  border-bottom: none;
+}
+
+
+.orderItemInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.orderItemName {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: #222;
+  line-height: 1.4;
+  margin-bottom: 6px;
+}
+
+.orderItemMeta {
+  display: inline-block;
+  font-size: 13px;
+  color: #777;
+}
+
+.orderItemPrice {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111;
+  white-space: nowrap;
+}
+
+
+.sectionDivider {
+  width: 100%;
+  height: 1px;
+  background: #ececec;
+  margin: 24px 0;
+}
+
+
+.priceRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px 0;
+  font-size: 15px;
+  color: #444;
+  border-bottom: 1px dashed #d8d8d8;
+}
+
+.priceRow:last-of-type {
+  border-bottom: none;
+}
+
+.priceRow span:first-child {
+  font-weight: 500;
+}
+
+.priceRow span:last-child {
+  font-weight: 600;
+  color: #111;
+}
+
+
+.discountRow {
+  color: #2e7d32;
+}
+
+.discountRow span:last-child {
+  color: #2e7d32;
+  font-weight: 700;
+}
+
+.couponTicket {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  margin: 24px 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #ffd95a 0%, #ffbf00 100%);
+  /* box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08); */
+}
+
+
+.couponTicket::before,
+.couponTicket::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.couponTicket::before {
+  left: -14px;
+}
+
+.couponTicket::after {
+  right: -14px;
+}
+
+.ticketLeft {
+  flex: 1;
+  padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.ticketLabel {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  color: #444;
+  margin-bottom: 12px;
+  text-transform: uppercase;
+}
+
+.ticketInput {
+  width: 100%;
+  border: none;
+  outline: none;
+  background: rgba(255, 255, 255, 0.45);
+  padding: 14px 16px;
+  border-radius: 8px;
+  font-size: 15px;
+  color: #222;
+  transition: .3s;
+}
+
+.ticketInput::placeholder {
+  color: rgba(0, 0, 0, .55);
+}
+
+.ticketInput:focus {
+  background: rgba(255, 255, 255, .75);
+}
+
+
+.ticketButton {
+  width: 120px;
+  border: none;
+  background: #111;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: .3s;
+}
+
+.ticketButton:hover {
+  background: #000;
+}
+
+
+.ticketButton::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  border-left: 2px dashed rgba(255, 255, 255, .6);
+}
+
+
+.activeCouponTicket {
+  position: relative;
+  display: flex;
+  align-items: stretch;
+  margin: 24px 0;
+  overflow: hidden;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #43a047, #2e7d32);
+  color: #fff;
+  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+}
+
+.activeCouponTicket::before,
+.activeCouponTicket::after {
+  content: "";
+  position: absolute;
+  width: 28px;
+  height: 28px;
+  background: #fff;
+  border-radius: 50%;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.activeCouponTicket::before {
+  left: -14px;
+}
+
+.activeCouponTicket::after {
+  right: -14px;
+}
+
+.ticketSuccessLeft {
+  flex: 1;
+  padding: 20px;
+}
+
+.ticketAppliedLabel {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 3px;
+  margin-bottom: 10px;
+  opacity: .9;
+  text-transform: uppercase;
+}
+
+.ticketCouponCode {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 2px;
+}
+
+.ticketSavings {
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgba(255, 255, 255, .92);
+}
+
+.removeTicketButton {
+  width: 120px;
+  border: none;
+  background: rgba(0, 0, 0, .18);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  cursor: pointer;
+  position: relative;
+  transition: .3s;
+}
+
+.removeTicketButton:hover {
+  background: rgba(0, 0, 0, .35);
+}
+
+.removeTicketButton::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 12px;
+  bottom: 12px;
+  border-left: 2px dashed rgba(255, 255, 255, .55);
+}
+
+
+.grandTotalRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 28px;
+  padding-top: 22px;
+  border-top: 2px dashed #cfcfcf;
+}
+
+.grandTotalRow span:first-child {
+  font-size: 18px;
+  font-weight: 700;
+  color: #222;
+}
+
+.grandTotalPrice {
+  font-size: 30px;
+  font-weight: 800;
+  color: #111;
+}
+
+.checkoutButton {
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px;
+  border: none;
+  border-radius: 10px;
+  background: #2e7d32;
+  color: #fff;
+  font-size: 15px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all .3s ease;
+}
+
+.checkoutButton:hover:not(:disabled) {
+  background: #1b5e20;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(46, 125, 50, .25);
+}
+
+.checkoutButton:active:not(:disabled) {
+  transform: scale(.98);
+}
+
+.checkoutButton:disabled {
+  background: #d6d6d6;
+  color: #777;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+
+.checkoutSecurity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-top: 18px;
+  font-size: 14px;
+  color: #777;
+}
+
+.securityIcon {
+  font-size: 18px;
+  color: #2e7d32;
+}
+
+
+@media (max-width: 992px) {
+
+  .checkoutSidebar {
+    position: static;
+    margin-top: 30px;
+  }
+
+  .orderSummaryCard {
+    padding: 24px;
+  }
+
+  .orderSummaryCard h2 {
+    font-size: 26px;
+  }
+
+  .grandTotalPrice {
+    font-size: 26px;
+  }
+
+  .couponTicket,
+  .activeCouponTicket {
+    flex-direction: column;
+  }
+
+  .ticketButton,
+  .removeTicketButton {
+    width: 100%;
+    height: 56px;
+  }
+
+  .ticketButton::before,
+  .removeTicketButton::before {
+    left: 15px;
+    right: 15px;
+    top: 0;
+    bottom: auto;
+    border-left: none;
+    border-top: 2px dashed rgba(255,255,255,.6);
+  }
+}
+
+@media (max-width: 768px) {
+
+  .orderSummaryCard {
+    padding: 20px;
+  }
+
+  .orderSummaryCard h2 {
+    font-size: 24px;
+  }
+
+  .orderItems {
+    max-height: 180px;
+  }
+
+  .orderItem {
+    gap: 12px;
+  }
+
+  .orderItemName {
+    font-size: 15px;
+  }
+
+  .orderItemMeta {
+    font-size: 12px;
+  }
+
+  .orderItemPrice {
+    font-size: 15px;
+  }
+
+  .priceRow {
+    font-size: 14px;
+    padding: 13px 0;
+  }
+
+  .grandTotalRow span:first-child {
+    font-size: 17px;
+  }
+
+  .grandTotalPrice {
+    font-size: 24px;
+  }
+
+  .ticketLeft,
+  .ticketSuccessLeft {
+    padding: 18px;
+  }
+
+  .ticketCouponCode {
+    font-size: 22px;
+  }
+
+  .checkoutButton {
+    padding: 15px;
+    font-size: 14px;
+  }
+}
+
+
+@media (max-width: 480px) {
+
+  .orderSummaryCard {
+    padding: 16px;
+    border-radius: 10px;
+  }
+
+  .orderSummaryCard h2 {
+    font-size: 22px;
+  }
+
+  .orderItemName {
+    font-size: 14px;
+  }
+
+  .orderItemMeta {
+    font-size: 11px;
+  }
+
+  .orderItemPrice {
+    font-size: 14px;
+  }
+
+  .ticketLabel,
+  .ticketAppliedLabel {
+    font-size: 10px;
+    letter-spacing: 2px;
+  }
+
+  .ticketInput {
+    padding: 12px;
+    font-size: 14px;
+  }
+
+  .ticketCouponCode {
+    font-size: 18px;
+  }
+
+  .ticketSavings {
+    font-size: 13px;
+  }
+
+  .ticketButton,
+  .removeTicketButton {
+    font-size: 14px;
+    letter-spacing: 1px;
+  }
+
+  .grandTotalPrice {
+    font-size: 22px;
+  }
+
+  .checkoutButton {
+    font-size: 14px;
+    padding: 14px;
+    letter-spacing: 1px;
+  }
+
+  .checkoutSecurity {
+    font-size: 13px;
+  }
+
+  .securityIcon {
+    font-size: 16px;
+  }
+}
