@@ -115,12 +115,11 @@ export default function ProductDetailsPage() {
   return (
     <section className={styles.productPage}>
       <div className={styles.container}>
-        <div className={styles.productWrapper}>
-          {/* =========================
-              Product Images
-          ========================== */}
+        {/* =========================
+            Product Images
+        ========================== */}
 
-          <div className={styles.left}>
+        <div className={styles.left}>
 
           <div className={styles.mainImageBox}>
             <img
@@ -304,7 +303,6 @@ export default function ProductDetailsPage() {
           )}
 
         </div>
-        </div>
         {/* ==========================
             Description
         =========================== */}
@@ -418,40 +416,7 @@ export default function ProductDetailsPage() {
             Related Products
         =========================== */}
 
-        {relatedProducts.length > 0 && (
-          <div className={styles.relatedSection}>
-            <h2>Related Products</h2>
-            <div className={styles.relatedGrid}>
-              {relatedProducts.map((item) => {
-                const imageUrl = item.images?.[0]?.url || "/images/no-image.png";
-                return (
-                  <div
-                    key={item._id}
-                    className={styles.relatedCard}
-                    onClick={() => router.push(`/products/${item._id}`)}
-                  >
-                    <img src={imageUrl} alt={item.name} />
-                    <h4>{item.name}</h4>
-                    <p>
-                      {item.discountPrice > 0 ? (
-                        <>
-                          <span style={{ marginRight: "10px" }}>
-                            ₹{item.discountPrice.toLocaleString()}
-                          </span>
-                          <span style={{ textDecoration: "line-through", color: "#999", fontSize: "14px", fontWeight: "normal" }}>
-                            ₹{item.price.toLocaleString()}
-                          </span>
-                        </>
-                      ) : (
-                        `₹${item.price.toLocaleString()}`
-                      )}
-                    </p>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+       
 
       </div>
     </section>
