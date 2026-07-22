@@ -36,24 +36,26 @@ export default function CouponsPage() {
 
   // Delete coupon
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this coupon?"
+  const confirmDelete = window.confirm(
+    "Are you sure you want to delete this coupon?"
+  );
+
+  if (!confirmDelete) return;
+
+  try {
+    await axios.delete(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`,
+      {
+        withCredentials: true,
+      }
     );
 
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`
-      );
-
-      fetchCoupons();
-
-    } catch (error) {
-      console.log(error.response?.data || error.message);
-    }
-  };
-
+    fetchCoupons();
+  } catch (error) {
+    console.log(error.response?.data || error.message);
+    alert(error.response?.data?.message || "Delete failed");
+  }
+};
 
   // Search
   const filteredCoupons = coupons.filter((item) =>
