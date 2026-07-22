@@ -204,11 +204,11 @@ export default function ProductsPage() {
 
                   <td>{typeof product.category === "object" ? product.category?.name : product.category || "Uncategorized"}</td>
 
-                  {/* <td>
+                  <td>
                     {typeof product.brand === "object"
                       ? product.brand.name
                       : product.brand || "-"}
-                  </td> */}
+                  </td>
 
                   <td>
                     ₹{product.price.toLocaleString()}

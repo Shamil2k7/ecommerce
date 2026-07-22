@@ -30,10 +30,10 @@ export default function RootLayout({ children }) {
             </LayoutWrapper>
           </CartProvider>
         </AuthProvider>
-        <Script
+        {/* <Script
           src="https://accounts.google.com/gsi/client"
           strategy="beforeInteractive"
-        />
+        /> */}
       </body>
     </html>
   );
