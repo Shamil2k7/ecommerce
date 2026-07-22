@@ -54,7 +54,6 @@ app.use("/api/marketing", couponRoutes);
 app.use("/api/marketing/hero-sections", heroSectionRoutes);
 app.use("/api/orders", orderRoutes);
 app.use("/api", productRoutes);
-app.use("/api/staff", staffRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/cart", cartRoutes);
 
