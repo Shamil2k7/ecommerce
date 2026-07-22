@@ -4,10 +4,6 @@ import { useState, useRef, useEffect } from "react";
 import {
   Menu,
   Search,
-  Bell,
-  MessageSquare,
-  Moon,
-  Sun,
   User,
   Settings,
   LogOut,
@@ -18,26 +14,10 @@ import {
 import styles from "./AdminNavbar.module.css";
 
 export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
-  const [darkMode, setDarkMode] = useState(false);
   const [profileOpen, setProfileOpen] = useState(false);
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const profileRef = useRef(null);
-
-  // Apply dark mode to the document
-  useEffect(() => {
-    const stored = localStorage.getItem("theme");
-    const isDark = stored === "dark";
-    setDarkMode(isDark);
-    document.documentElement.classList.toggle("dark", isDark);
-  }, []);
-
-  const toggleDarkMode = () => {
-    const next = !darkMode;
-    setDarkMode(next);
-    document.documentElement.classList.toggle("dark", next);
-    localStorage.setItem("theme", next ? "dark" : "light");
-  };
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -90,24 +70,7 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
       </div>
 
       {/* Right */}
-      <div className={styles.right}>
-        <button
-          className={styles.iconBtn}
-          onClick={toggleDarkMode}
-          aria-label="Toggle dark mode"
-        >
-          {darkMode ? <Sun size={20} /> : <Moon size={20} />}
-        </button>
-
-        <button className={styles.iconBtn} aria-label="Notifications">
-          <Bell size={20} />
-          <span className={styles.badge}>3</span>
-        </button>
-
-        <button className={styles.iconBtn} aria-label="Messages">
-          <MessageSquare size={20} />
-          <span className={styles.badge}>5</span>
-        </button>
+    <div className={styles.right}>
 
         {/* Profile */}
         <div className={styles.profile} ref={profileRef}>
@@ -133,7 +96,9 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
           </button>
 
           {/* Dropdown */}
-          <div className={`${styles.dropdown} ${profileOpen ? styles.show : ""}`}>
+          <div
+            className={`${styles.dropdown} ${profileOpen ? styles.show : ""}`}
+          >
             <button onClick={() => setProfileOpen(false)}>
               <User size={18} />
               Profile
@@ -163,7 +128,11 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
       >
         <div className={styles.mobileSearchBox}>
           <Search size={18} />
-          <input type="text" placeholder="Search..." autoFocus={mobileSearchOpen} />
+          <input
+            type="text"
+            placeholder="Search..."
+            autoFocus={mobileSearchOpen}
+          />
         </div>
         <button
           className={styles.mobileSearchClose}
