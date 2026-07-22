@@ -91,7 +91,7 @@ export default function EditCategoryPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name) {
+    if (!name || !name.trim()) {
       alert("Category Name is required.");
       return;
     }
