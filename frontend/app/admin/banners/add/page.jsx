@@ -91,7 +91,9 @@ export default function AddBanner() {
 
       const res = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/banners`,
-        banner
+        banner, {
+        withCredentials: true,
+      }
       );
 
       alert(res.data.message || "Banner Added Successfully");
