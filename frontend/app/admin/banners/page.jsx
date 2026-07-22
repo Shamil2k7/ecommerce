@@ -29,7 +29,9 @@ export default function BannerPage() {
     if (!window.confirm("Delete this banner?")) return;
 
     try {
-      await axios.delete(`${API}/api/marketing/banners/${id}`);
+      await axios.delete(`${API}/api/marketing/banners/${id}`, {
+        withCredentials: true,
+      });
       getBanners();
     } catch (error) {
       console.error("Delete Banner Error:", error);

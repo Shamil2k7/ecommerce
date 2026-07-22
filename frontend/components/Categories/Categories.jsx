@@ -30,7 +30,10 @@ export default function Categories() {
       const data = await res.json();
 
       if (data.success) {
-        setCategories(data.data || []);
+        const parentCategories = (data.data || []).filter(
+          (category) => !category.parentCategory
+        );
+        setCategories(parentCategories);
       }
     } catch (err) {
       console.log(err);
