@@ -211,13 +211,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-        <div className={styles.imageSection}>
-          <img 
-            src="https://i.pinimg.com/1200x/89/70/0a/89700ac2584feaede2c609d5340acbaa.jpg" 
-            alt="ShopAura SignIn" 
-            className={styles.sideImage}
-          />
-        </div>
+    
       </div>
     </section>
   );

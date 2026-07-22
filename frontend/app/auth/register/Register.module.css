@@ -1,121 +1,136 @@
-.container{
-min-height:100vh;
-display:flex;
-justify-content:center;
-align-items:center;
-padding:40px 20px;
-background:var(--bg);
+.container {
+  min-height: 100dvh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px 16px;
+  background: var(--bg);
 }
 
-.card{
-width:100%;
-max-width:1000px;
-background:var(--surface);
-border:1px solid var(--line);
-border-radius:var(--radius-lg);
-box-shadow:var(--shadow-md);
-display:flex;
-flex-direction:row;
-overflow:hidden;
+.card {
+  width: 100%;
+  max-width: 520px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  overflow: hidden;
 }
 
 .formSection {
-  flex: 1.1;
-  padding: 30px 40px;
+  padding: 30px;
   display: flex;
   flex-direction: column;
-  justify-content: center;
 }
 
 .backHome {
   display: inline-flex;
   align-items: center;
   gap: 6px;
+  width: fit-content;
+  margin-bottom: 20px;
   color: var(--text-soft);
   text-decoration: none;
   font-size: 14px;
   font-weight: 500;
-  margin-bottom: 20px;
-  align-self: flex-start;
-  transition: color 0.2s ease;
+  transition: .2s;
 }
 
 .backHome:hover {
   color: var(--primary);
 }
 
-.imageSection {
-  flex: 0.9;
+.header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+
+.header h1 {
+  font-size: 30px;
+  color: var(--text);
+  margin: 0;
+}
+
+.header p {
+  margin-top: 6px;
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+}
+
+.inputBox {
   position: relative;
-  min-height: 520px;
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  height: 50px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  transition: .2s;
 }
 
-.sideImage {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
+.inputBox:focus-within {
+  border-color: var(--primary);
+}
+
+.inputBox svg {
+  color: var(--text-soft);
+  flex-shrink: 0;
+}
+
+.inputBox input {
+  flex: 1;
   height: 100%;
-  object-fit: cover;
+  border: none;
+  outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 14px;
+  padding-top: 12px;
 }
 
-.header{
-text-align:center;
-margin-bottom:12px;
+/* Floating Label */
+
+.floatingLabel {
+  position: absolute;
+  left: 44px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-soft);
+  font-size: 13px;
+  pointer-events: none;
+  transition: .2s;
+  background: var(--bg);
+  padding: 0 4px;
 }
 
-.header h1{
-font-size:26px;
-color:var(--text);
+.inputBox input:focus ~ .floatingLabel,
+.inputBox input:not(:placeholder-shown) ~ .floatingLabel {
+  top: 10px;
+  transform: translateY(-50%) scale(.85);
+  color: var(--primary);
 }
 
-.header p{
-margin-top:4px;
-color:var(--text-soft);
-font-size:14px;
-}
-
-.form{
-display:flex;
-flex-direction:column;
-gap:12px;
-}
-
-.field{
-display:flex;
-flex-direction:column;
-}
-
-.inputBox{
-height:46px;
-display:flex;
-align-items:center;
-gap:12px;
-padding:0 16px;
-border:1px solid var(--line);
-border-radius:var(--radius-md);
-background:var(--bg);
-position: relative;
-}
-
-.inputBox input{
-flex:1;
-border:none;
-outline:none;
-background:transparent;
-font-size:14px;
-height: 100%;
-padding-top: 12px;
-color: var(--text);
-}
+/* Phone */
 
 .countryDropdownContainer {
-  position: relative;
-  width: 65px;
+  width: 70px;
   height: 100%;
   display: flex;
   align-items: center;
+  position: relative;
 }
 
 .selectedDisplay {
@@ -127,36 +142,27 @@ color: var(--text);
   border-right: 1px solid var(--line);
   padding-right: 8px;
   cursor: pointer;
-  user-select: none;
   font-size: 14px;
-  color: var(--text);
-  gap: 4px;
 }
 
 .dropdownOptions {
   position: absolute;
-  top: calc(100% + 4px);
-  left: -40px;
-  width: 240px;
-  max-height: 200px;
+  top: calc(100% + 6px);
+  left: -20px;
+  width: 230px;
+  max-height: 220px;
   overflow-y: auto;
   background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   box-shadow: var(--shadow-lg);
-  z-index: 50;
-  display: flex;
-  flex-direction: column;
-  padding: 6px 0;
+  z-index: 100;
 }
 
 .optionItem {
   padding: 10px 14px;
-  font-size: 14px;
-  color: var(--text);
   cursor: pointer;
-  transition: background 0.15s ease;
-  text-align: left;
+  transition: .2s;
 }
 
 .optionItem:hover {
@@ -166,133 +172,161 @@ color: var(--text);
 
 .mobileFloatingLabel {
   position: absolute;
-  left: 120px;
+  left: 112px;
   top: 50%;
   transform: translateY(-50%);
   color: var(--text-soft);
-  font-size: 13.5px;
-  font-weight: 500;
+  font-size: 13px;
   pointer-events: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: left top;
+  transition: .2s;
+  background: var(--bg);
+  padding: 0 4px;
 }
 
 .inputBox input:focus ~ .mobileFloatingLabel,
 .inputBox input:not(:placeholder-shown) ~ .mobileFloatingLabel {
   top: 10px;
-  transform: translateY(-50%) scale(0.8);
+  transform: translateY(-50%) scale(.85);
   color: var(--primary);
 }
 
-.floatingLabel {
-  position: absolute;
-  left: 45px;
-  top: 50%;
-  transform: translateY(-50%);
+.inputBox button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  background: transparent;
   color: var(--text-soft);
-  font-size: 13.5px;
-  font-weight: 500;
-  pointer-events: none;
-  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-  transform-origin: left top;
+  cursor: pointer;
 }
 
-.inputBox input:focus ~ .floatingLabel,
-.inputBox input:not(:placeholder-shown) ~ .floatingLabel {
-  top: 10px;
-  transform: translateY(-50%) scale(0.8);
+.checkbox {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  font-size: 14px;
+  color: var(--text-soft);
+  line-height: 1.5;
+}
+
+.checkbox input {
+  margin-top: 3px;
+  accent-color: var(--primary);
+}
+
+.registerBtn {
+  width: 100%;
+  height: 48px;
+  border: none;
+  border-radius: var(--radius-md);
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: .25s;
+}
+
+.registerBtn:hover {
+  background: var(--primary-hover);
+}
+
+.footer {
+  margin-top: 18px;
+  text-align: center;
+  color: var(--text-soft);
+  font-size: 14px;
+}
+
+.footer a {
+  margin-left: 6px;
   color: var(--primary);
+  font-weight: 600;
+  text-decoration: none;
 }
 
-.inputBox button{
-display:flex;
-align-items:center;
-justify-content:center;
-background:none;
-color:var(--text-soft);
+.footer a:hover {
+  text-decoration: underline;
 }
 
-.checkbox{
-display:flex;
-align-items:flex-start;
-gap:10px;
-font-size:14px;
-color:var(--text-soft);
-line-height:1.5;
-}
+/* Tablet */
 
-.checkbox input{
-margin-top:3px;
-accent-color:var(--primary);
-}
+@media (max-width:768px) {
 
-.registerBtn{
-height:44px;
-background:var(--primary);
-color:white;
-border-radius:var(--radius-md);
-font-size:15px;
-font-weight:600;
-transition:.3s;
-}
-
-.registerBtn:hover{
-background:var(--primary-hover);
-}
-
-.footer{
-margin-top:15px;
-text-align:center;
-color:var(--text-soft);
-}
-
-.footer a{
-margin-left:6px;
-color:var(--primary);
-font-weight:600;
-}
-
-/* Tablet Layout */
-@media (max-width: 1024px) {
-  .card {
-    max-width: 90%;
-  }
-  .formSection {
-    padding: 35px;
-  }
-  .imageSection {
-    min-height: 500px;
-  }
-}
-
-/* Mobile Layout */
-@media (max-width: 768px) {
-  .card {
-    flex-direction: column-reverse;
-  }
-  
-  .imageSection {
-    flex: none;
-    width: 100%;
-    height: 200px;
-    min-height: auto;
-  }
-
-  .sideImage {
-    position: relative;
-    height: 200px;
-  }
-
-  .formSection {
-    flex: none;
-    width: 100%;
-    padding: 30px 20px;
-  }
-}
-
-@media (max-width: 480px) {
   .container {
-    padding: 20px 10px;
+    padding: 20px 16px;
+  }
+
+  .card {
+    max-width: 100%;
+  }
+
+  .formSection {
+    padding: 24px;
+  }
+
+}
+
+/* Mobile */
+
+@media (max-width:480px) {
+
+  .container {
+    padding: 12px;
+  }
+
+  .formSection {
+    padding: 20px 16px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .header p {
+    font-size: 13px;
+  }
+
+  .inputBox {
+    height: 48px;
+    padding: 0 14px;
+  }
+
+  .inputBox svg {
+    width: 17px;
+    height: 17px;
+  }
+
+  .floatingLabel {
+    left: 40px;
+    font-size: 12px;
+  }
+
+  .mobileFloatingLabel {
+    left: 100px;
+    font-size: 12px;
+  }
+
+  .countryDropdownContainer {
+    width: 60px;
+  }
+
+  .selectedDisplay {
+    font-size: 13px;
+  }
+
+  .registerBtn {
+    height: 46px;
+  }
+
+}
+
+/* Extra Small */
+
+@media (max-width:360px) {
+
+  .formSection {
+    padding: 18px 14px;
   }
 
   .header h1 {
@@ -300,23 +334,15 @@ font-weight:600;
   }
 
   .inputBox {
-    height: 48px;
-  }
-
-  .registerBtn {
     height: 46px;
   }
 
-  .formSection {
-    padding: 24px 14px;
+  .floatingLabel {
+    left: 38px;
   }
-}
 
-@media (max-width: 360px) {
-  .formSection {
-    padding: 20px 10px;
+  .mobileFloatingLabel {
+    left: 94px;
   }
-  .header h1 {
-    font-size: 22px;
-  }
+
 }
