@@ -13,7 +13,6 @@ import {
   uploadProductImages,
   deleteProductImage,
 } from "../controllers/product/product.controller.js";
-// import { getSubCategoriesByCategory } from "../controllers/product/subcategory.controller.js";
 
 
 /* ===========================
