@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { Suspense, useMemo, useState, useEffect } from "react";
 import { useSearchParams } from "next/navigation";
 
 import ProductCard from "@/components/ProductCard/ProductCard";
@@ -8,7 +8,7 @@ import FilterSidebar from "@/components/FilterSidebar/FilterSidebar";
 
 import styles from "./ProductsPage.module.css";
 
-export default function ProductsPage() {
+function ProductsContent() {
   const searchParams = useSearchParams();
 
   const initialCategory = searchParams.get("category") || "";
@@ -269,5 +269,23 @@ export default function ProductsPage() {
         </div>
       </div>
     </main>
+  );
+}
+
+export default function ProductsPage() {
+  return (
+    <Suspense fallback={
+      <main className={styles.page}>
+        <div className={styles.breadcrumb}>Home / Products</div>
+        <div className={styles.topBar}>
+          <div>
+            <h1>All Products</h1>
+            <p>Loading Products...</p>
+          </div>
+        </div>
+      </main>
+    }>
+      <ProductsContent />
+    </Suspense>
   );
 }

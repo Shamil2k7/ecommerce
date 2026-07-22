@@ -51,7 +51,11 @@ export default function EditCategoryPage() {
           setIsChild(!!pCatId);
           setDescription(cat.description || "");
           setIsActive(cat.isActive !== false ? "Active" : "Inactive");
-          setCurrentImage(cat.image?.url || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500");
+          setCurrentImage(
+            cat.image?.url
+              ? (cat.image.url.startsWith("http") ? cat.image.url : `http://localhost:5000${cat.image.url}`)
+              : "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
+          );
         }
       })
       .catch((err) => console.error("Error loading category:", err))
