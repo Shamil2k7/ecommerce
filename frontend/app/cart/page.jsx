@@ -39,7 +39,6 @@ export default function CartPage() {
           </p>
         </div>
 
-        {/* Uncomment if needed */}
         {/*
         <button
           onClick={clearCart}
