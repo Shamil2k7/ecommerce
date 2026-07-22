@@ -20,6 +20,7 @@ export default function RootLayout({ children }) {
     <html
       lang="en"
       className={inter.variable}
+      data-scroll-behavior="smooth"
     >
       <body>
         <AuthProvider>
