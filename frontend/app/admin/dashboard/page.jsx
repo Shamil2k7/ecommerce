@@ -13,61 +13,27 @@ import styles from "./Dashboard.module.css";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
-const recentOrders = [
-  {
-    id: "#1001",
-    customer: "John Doe",
-    total: "₹2,499",
-    status: "Delivered",
-  },
-  {
-    id: "#1002",
-    customer: "Sarah",
-    total: "₹5,799",
-    status: "Pending",
-  },
-  {
-    id: "#1003",
-    customer: "Michael",
-    total: "₹899",
-    status: "Shipped",
-  },
-  {
-    id: "#1004",
-    customer: "Emma",
-    total: "₹1,299",
-    status: "Cancelled",
-  },
-];
-
-const topProducts = [
-  {
-    name: "iPhone 16 Pro",
-    sold: 120,
-    stock: 32,
-  },
-  {
-    name: "Nike Air Max",
-    sold: 95,
-    stock: 18,
-  },
-  {
-    name: "Sony Headphones",
-    sold: 72,
-    stock: 9,
-  },
-  {
-    name: "Gaming Mouse",
-    sold: 51,
-    stock: 40,
-  },
-];
-
 export default function DashboardPage() {
   const [users, setUsers] = useState([]);
+  const [orders, setOrders] = useState([]);
+  const [orderCounts, setOrderCounts] = useState({
+    totalOrders: 0,
+    totalRevenue: 0,
+    pendingOrders: 0,
+    processingOrders: 0,
+    shippedOrders: 0,
+    deliveredOrders: 0,
+    cancelledOrders: 0,
+  });
+  const [products, setProducts] = useState([]);
+  const [lowStock, setLowStock] = useState([]);
 
   useEffect(() => {
     getUsers();
+    getOrders();
+    getOrderCounts();
+    getProducts();
+    getLowStockProducts();
   }, []);
 
   const getUsers = async () => {
@@ -77,6 +43,53 @@ export default function DashboardPage() {
       });
 
       setUsers(res.data.users);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getOrders = async () => {
+    try {
+      const res = await axios.get(`${API}/api/orders`, {
+        withCredentials: true,
+      });
+
+      setOrders(res.data.orders);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getOrderCounts = async () => {
+    try {
+      const res = await axios.get(`${API}/api/orders/counts`, {
+        withCredentials: true,
+      });
+
+      setOrderCounts(res.data);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  const getProducts = async () => {
+    try {
+      const res = await axios.get(`${API}/api/products`, {
+        withCredentials: true,
+      });
+
+      setProducts(res.data.data.products);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const getLowStockProducts = async () => {
+    try {
+      const res = await axios.get(`${API}/api/products/inventory/low-stock`, {
+        withCredentials: true,
+      });
+
+      setLowStock(res.data.data);
     } catch (error) {
       console.log(error);
     }
@@ -103,8 +116,8 @@ export default function DashboardPage() {
 
           <div>
             <h3>Revenue</h3>
-            <h2>₹2,45,800</h2>
-            <span>+18% this month</span>
+            <h2>₹{orderCounts.totalRevenue.toLocaleString()}</h2>
+            <span>Total Revenue</span>
           </div>
         </div>
 
@@ -115,8 +128,8 @@ export default function DashboardPage() {
 
           <div>
             <h3>Orders</h3>
-            <h2>1,258</h2>
-            <span>42 Today</span>
+            <h2>{orderCounts.totalOrders}</h2>
+            <span>{orderCounts.pendingOrders} Pending</span>
           </div>
         </div>
 
@@ -127,8 +140,8 @@ export default function DashboardPage() {
 
           <div>
             <h3>Products</h3>
-            <h2>356</h2>
-            <span>18 Low Stock</span>
+            <h2>{products.length}</h2>
+            <span>{lowStock.length} Low Stock</span>
           </div>
         </div>
 
@@ -166,25 +179,16 @@ export default function DashboardPage() {
           </div>
 
           <div className={styles.stockList}>
-            <div>
-              <span>Gaming Keyboard</span>
-              <strong>4 Left</strong>
-            </div>
-
-            <div>
-              <span>Apple Watch</span>
-              <strong>2 Left</strong>
-            </div>
-
-            <div>
-              <span>Bluetooth Speaker</span>
-              <strong>6 Left</strong>
-            </div>
-
-            <div>
-              <span>Office Chair</span>
-              <strong>3 Left</strong>
-            </div>
+            {lowStock.length === 0 ? (
+              <p>No low stock products</p>
+            ) : (
+              lowStock.map((item) => (
+                <div key={item._id}>
+                  <span>{item.name}</span>
+                  <strong>{item.stock} Left</strong>
+                </div>
+              ))
+            )}
           </div>
         </div>
       </div>
@@ -210,13 +214,16 @@ export default function DashboardPage() {
             </thead>
 
             <tbody>
-              {recentOrders.map((order) => (
-                <tr key={order.id}>
-                  <td>{order.id}</td>
-                  <td>{order.customer}</td>
-                  <td>{order.total}</td>
+              {orders.slice(0, 5).map((order) => (
+                <tr key={order._id}>
+                  <td>#{order.orderNumber}</td>
+
+                  <td>{order.userId?.fullName}</td>
+
+                  <td>₹{order.totalAmount}</td>
+
                   <td>
-                    <span className={styles.status}>{order.status}</span>
+                    <span className={styles.status}>{order.orderStatus}</span>
                   </td>
                 </tr>
               ))}
@@ -241,11 +248,11 @@ export default function DashboardPage() {
             </thead>
 
             <tbody>
-              {topProducts.map((item) => (
-                <tr key={item.name}>
+              {products.slice(0, 5).map((item) => (
+                <tr key={item._id}>
                   <td>{item.name}</td>
-                  <td>{item.sold}</td>
-                  <td>{item.stock}</td>
+                  <td>{item.sold ?? 0}</td>
+                  <td>{item.stock ?? 0}</td>
                 </tr>
               ))}
             </tbody>
