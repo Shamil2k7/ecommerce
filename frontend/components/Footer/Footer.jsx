@@ -180,12 +180,7 @@ export default function Footer() {
           {settings?.storeName || "ShopAura"}
         </div>
 
-        <div className={styles.payment}>
-          <img src="/payments/visa.svg" alt="Visa" />
-          <img src="/payments/mastercard.svg" alt="MasterCard" />
-          <img src="/payments/rupay.svg" alt="RuPay" />
-          <img src="/payments/paypal.svg" alt="PayPal" />
-        </div>
+      
       </div>
     </footer>
   );
