@@ -22,7 +22,7 @@ import orderRoutes from "./src/routes/order.routes.js";
 import staffRoutes from "./src/routes/staff.routes.js";
 import settingsRoutes from "./src/routes/settingsRoutes.js";
 import cartRoutes from "./src/routes/cart.routes.js";
-
+import policyRoutes from "./src/routes/policy.routes.js";
 const app = express();
 
 // Database
@@ -57,6 +57,7 @@ app.use("/api", productRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/staff", staffRoutes);
+app.use("/api/policies", policyRoutes);
 // Home Route
 app.get("/", (req, res) => {
   res.send("A simple Node App is running on this server");
