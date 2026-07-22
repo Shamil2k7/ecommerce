@@ -742,12 +742,12 @@
   transition: all .3s ease;
 }
 
-button:disabled {
-  opacity: .6;
+.saveBtn:disabled {
+  opacity: 0.6;
   cursor: not-allowed;
 }
 
-img {
+.modal img {
   display: block;
   max-width: 100%;
 }
