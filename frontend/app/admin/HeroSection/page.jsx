@@ -3,13 +3,11 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import styles from "./HeroSection.module.css";
 
 export default function HeroSectionsPage() {
   const [heroSections, setHeroSections] = useState([]);
-  const [filteredHeroes, setFilteredHeroes] = useState([]);
-  const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
   const API = process.env.NEXT_PUBLIC_API_URL;
@@ -18,17 +16,6 @@ export default function HeroSectionsPage() {
     fetchHeroSections();
   }, []);
 
-  useEffect(() => {
-    const filtered = heroSections.filter(
-      (hero) =>
-        hero.brand.toLowerCase().includes(search.toLowerCase()) ||
-        hero.offer.toLowerCase().includes(search.toLowerCase()) ||
-        hero.subOffer.toLowerCase().includes(search.toLowerCase())
-    );
-
-    setFilteredHeroes(filtered);
-  }, [search, heroSections]);
-
   const fetchHeroSections = async () => {
     try {
       const res = await axios.get(
@@ -36,7 +23,6 @@ export default function HeroSectionsPage() {
       );
 
       setHeroSections(res.data.heroSections || []);
-      setFilteredHeroes(res.data.heroSections || []);
     } catch (err) {
       console.log(err);
       alert("Failed to load Hero Sections");
@@ -69,17 +55,6 @@ export default function HeroSectionsPage() {
         <h1>Hero Sections</h1>
 
         <div className={styles.actions}>
-          <div className={styles.searchBox}>
-            <Search size={18} />
-
-            <input
-              type="text"
-              placeholder="Search Hero Sections..."
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
-            />
-          </div>
-
           <Link
             href="/admin/HeroSection/add"
             className={styles.addBtn}
@@ -96,8 +71,6 @@ export default function HeroSectionsPage() {
             <tr>
               <th>Image</th>
               <th>Brand</th>
-              {/* <th>Offer</th>
-              <th>Sub Offer</th> */}
               <th>Display Order</th>
               <th>Status</th>
               <th>Actions</th>
@@ -105,8 +78,8 @@ export default function HeroSectionsPage() {
           </thead>
 
           <tbody>
-            {filteredHeroes.length > 0 ? (
-              filteredHeroes.map((hero) => (
+            {heroSections.length > 0 ? (
+              heroSections.map((hero) => (
                 <tr key={hero._id}>
                   <td>
                     <img
@@ -117,10 +90,6 @@ export default function HeroSectionsPage() {
                   </td>
 
                   <td>{hero.brand}</td>
-
-                  {/* <td>{hero.offer}</td>
-
-                  <td>{hero.subOffer}</td> */}
 
                   <td>{hero.displayOrder}</td>
 
@@ -157,7 +126,7 @@ export default function HeroSectionsPage() {
               ))
             ) : (
               <tr>
-                <td colSpan="7" style={{ textAlign: "center" }}>
+                <td colSpan="5" style={{ textAlign: "center" }}>
                   No Hero Sections Found
                 </td>
               </tr>

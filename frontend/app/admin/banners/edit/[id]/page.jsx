@@ -46,7 +46,7 @@ export default function EditBannerPage() {
     }
   };
 
-  // ================= IMAGE CHANGE =================
+  // handle image 
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -66,6 +66,7 @@ export default function EditBannerPage() {
   };
 
  
+// handle update 
 
   const handleUpdate = async () => {
     try {
@@ -90,7 +91,7 @@ export default function EditBannerPage() {
     }
   };
 
-  // ================= DELETE =================
+  // delete
 
   const handleDelete = async () => {
     if (!window.confirm("Delete this banner?")) return;

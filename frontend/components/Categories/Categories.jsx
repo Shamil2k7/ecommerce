@@ -5,10 +5,12 @@ import Link from "next/link";
 import Image from "next/image";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Autoplay } from "swiper/modules";
 
 import "swiper/css";
 import "swiper/css/navigation";
+
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import styles from "./Categories.module.css";
 
@@ -36,34 +38,43 @@ export default function Categories() {
         setCategories(parentCategories);
       }
     } catch (err) {
-      console.log(err);
+      console.error(err);
     }
   };
 
   return (
     <section className={styles.categories}>
       <div className={styles.container}>
+        {/* Header */}
         <div className={styles.header}>
-          <h2>Collection List</h2>
-
           <div className={styles.nav}>
-            <button className="category-prev">←</button>
-            <button className="category-next">→</button>
+            <button className="category-prev" aria-label="Previous">
+              <ChevronLeft size={20} />
+            </button>
+
+            <button className="category-next" aria-label="Next">
+              <ChevronRight size={20} />
+            </button>
           </div>
         </div>
 
+        {/* Swiper */}
         <Swiper
-          modules={[Navigation]}
+          modules={[Navigation, Autoplay]}
           navigation={{
             prevEl: ".category-prev",
             nextEl: ".category-next",
           }}
-          slidesPerView={6}
-          spaceBetween={12}
+          autoplay={{
+            delay: 25,
+            disableOnInteraction: false,
+            pauseOnMouseEnter: true,
+          }}
+          speed={800}
           loop={categories.length > 6}
           grabCursor={true}
-          centeredSlides={false}
-          watchOverflow={true}
+          slidesPerView={6}
+          spaceBetween={12}
           breakpoints={{
             1400: {
               slidesPerView: 8,
@@ -75,23 +86,23 @@ export default function Categories() {
             },
             992: {
               slidesPerView: 6,
-              spaceBetween: 4,
+              spaceBetween: 8,
             },
             768: {
               slidesPerView: 5,
-              spaceBetween: 4,
+              spaceBetween: 8,
             },
             576: {
               slidesPerView: 4,
-              spaceBetween: 4,
+              spaceBetween: 8,
             },
             360: {
               slidesPerView: 3,
-              spaceBetween: 4,
+              spaceBetween: 8,
             },
             0: {
               slidesPerView: 2.6,
-              spaceBetween: 2,
+              spaceBetween: 8,
             },
           }}
         >
@@ -110,8 +121,8 @@ export default function Categories() {
                     }
                     alt={category.name}
                     fill
-                    sizes="(max-width: 360px) 56px, (max-width: 480px) 66px, (max-width: 768px) 82px, (max-width: 992px) 100px, (max-width: 1200px) 115px, 130px"
                     className={styles.image}
+                    sizes="(max-width:768px) 80px, 120px"
                   />
                 </div>
 
