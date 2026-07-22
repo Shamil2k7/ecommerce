@@ -58,11 +58,11 @@ export default function AddHeroSection() {
         img.onload = () => {
 
             // Condition 3: Image dimensions
-            if (img.width < 1200 || img.height < 400) {
+            if (img.width < 1600 || img.height < 500) {
                 setErrors((prev) => ({
                     ...prev,
                     image:
-                        "Banner image should be minimum 1200x400 pixels",
+                        "Banner image should be minimum 1600x500 pixels",
                 }));
 
                 return;
