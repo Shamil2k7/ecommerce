@@ -83,10 +83,10 @@ export default function Footer() {
           <h4>POLICIES</h4>
 
           <ul>
-            <li><Link href="/privacy">Privacy Policy</Link></li>
-            <li><Link href="/terms">Terms & Conditions</Link></li>
-            <li><Link href="/refund">Refund Policy</Link></li>
-            <li><Link href="/cookies">Cookie Policy</Link></li>
+            <li><Link href="/policies#privacy">Privacy Policy</Link></li>
+            <li><Link href="/policies#terms">Terms & Conditions</Link></li>
+            <li><Link href="/policies#refund">Refund Policy</Link></li>
+            <li><Link href="/policies#cookies">Cookie Policy</Link></li>
           </ul>
         </div>
 

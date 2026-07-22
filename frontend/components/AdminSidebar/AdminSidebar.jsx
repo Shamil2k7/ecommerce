@@ -19,6 +19,7 @@ import {
   LogOut,
   ChevronDown,
   ChevronRight,
+  HeartHandshake
 } from "lucide-react";
 
 import styles from "./AdminSidebar.module.css";
@@ -49,7 +50,8 @@ const menuItems = [
     ],
   },
 
-  { title: "Reviews", href: "/admin/reviews", icon: Star },
+  { title: "Reviews", href: "/admin/reviews", icon: Star }, 
+  { title: "Policies", href: "/admin/policies", icon: HeartHandshake },
   { title: "Settings", href: "/admin/settings", icon: Settings },
 ];
 
