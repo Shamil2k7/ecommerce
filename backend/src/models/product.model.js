@@ -8,55 +8,92 @@ const variantSchema = new Schema(
       type: String,
       trim: true,
     },
+
     color: {
       type: String,
       trim: true,
     },
+
     sku: {
       type: String,
       trim: true,
+      unique: false,
     },
+
     price: {
       type: Number,
       min: 0,
     },
+
     stock: {
       type: Number,
-      min: 0,
       default: 0,
+      min: 0,
     },
   },
   { _id: false }
 );
 
-/* ---------- Review ---------- */
+/* ===========================
+   Review Schema
+=========================== */
 
 const reviewSchema = new Schema(
   {
     user: {
       type: Schema.Types.ObjectId,
       ref: "User",
+      required: true,
     },
 
     rating: {
       type: Number,
+      required: true,
       min: 1,
       max: 5,
     },
 
-    comment: String,
+    comment: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-/* ---------- Product ---------- */
+/* ===========================
+   Image Schema
+=========================== */
+
+const imageSchema = new Schema(
+  {
+    url: {
+      type: String,
+      required: true,
+    },
+
+    public_id: {
+      type: String,
+      required: true,
+    },
+
+    isPrimary: {
+      type: Boolean,
+      default: false,
+    },
+  },
+  { _id: false }
+);
+
+/* ===========================
+   Product Schema
+=========================== */
 
 const productSchema = new Schema(
   {
-    // Basic
-
+    // Basic Details
     name: {
       type: String,
       required: true,
@@ -65,14 +102,16 @@ const productSchema = new Schema(
 
     slug: {
       type: String,
-      required: [true, "Product slug is required"],
-      unique: true,
       required: true,
+      unique: true,
+      lowercase: true,
+      trim: true,
     },
 
     description: {
       type: String,
       required: true,
+      trim: true,
     },
 
     category: {
@@ -84,12 +123,14 @@ const productSchema = new Schema(
     brand: {
       type: Schema.Types.ObjectId,
       ref: "Brand",
-      required: [true, "Brand is required"],
+      required: true,
     },
 
+    // Pricing
     price: {
       type: Number,
       required: true,
+      min: 0,
     },
 
     discountPrice: {
@@ -98,37 +139,28 @@ const productSchema = new Schema(
       min: 0,
     },
 
+    // Inventory
     sku: {
       type: String,
-      default: "INR",
+      required: true,
+      unique: true,
+      trim: true,
     },
 
     stock: {
       type: Number,
-      required: [true, "Stock is required"],
+      required: true,
       default: 0,
       min: 0,
     },
 
-    images: [
-      {
-        url: {
-          type: String,
-          required: [true, "Image URL is required"],
-        },
-        public_id: {
-          type: String,
-          default: "",
-        },
-        isPrimary: {
-          type: Boolean,
-          default: false,
-        },
-      },
-    ],
+    // Images
+    images: [imageSchema],
 
+    // Variants
     variants: [variantSchema],
 
+    // Tags
     tags: [
       {
         type: String,
@@ -136,6 +168,9 @@ const productSchema = new Schema(
         lowercase: true,
       },
     ],
+
+    // Reviews
+    reviews: [reviewSchema],
 
     ratingsAverage: {
       type: Number,
@@ -149,6 +184,7 @@ const productSchema = new Schema(
       default: 0,
     },
 
+    // Product Flags
     isFeatured: {
       type: Boolean,
       default: false,
@@ -175,22 +211,26 @@ const productSchema = new Schema(
     },
 
     // Vendor
-
     vendor: {
       type: Schema.Types.ObjectId,
       ref: "Vendor",
+      default: null,
     },
 
     // Admin
-
-    adminNote: String,
+    adminNote: {
+      type: String,
+      trim: true,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// Search Index
+/* ===========================
+   Indexes
+=========================== */
 
 productSchema.index({
   name: "text",
@@ -201,7 +241,17 @@ productSchema.index({
 productSchema.index({
   category: 1,
   brand: 1,
+});
+
+productSchema.index({
   price: 1,
+});
+
+productSchema.index({
+  isFeatured: 1,
+  isTrending: 1,
+  isBestSeller: 1,
+  isNewArrival: 1,
 });
 
 export default mongoose.model("Product", productSchema);
