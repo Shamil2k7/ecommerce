@@ -56,7 +56,7 @@ app.use("/api/orders", orderRoutes);
 app.use("/api", productRoutes);
 app.use("/api/settings", settingsRoutes);
 app.use("/api/cart", cartRoutes);
-
+app.use("/api/staff", staffRoutes);
 // Home Route
 app.get("/", (req, res) => {
   res.send("A simple Node App is running on this server");
