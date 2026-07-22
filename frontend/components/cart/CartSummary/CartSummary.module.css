@@ -1,21 +1,19 @@
 .cartSummaryContainer {
-  width: 380px;
+  width: 100%;
+  max-width: 380px;
   background: #ffffff;
-  /* border-radius: 18px; */
   padding: 28px;
-  /* box-shadow: 0 10px 35px rgba(0, 0, 0, 0.08); */
   position: sticky;
   top: 95px;
   border: 1px solid #f1ece4;
-}
+  box-sizing: border-box;
 
+}
 
 .summaryTitle {
   font-size: 26px;
   font-weight: 600;
-  /* letter-spacing: 2px; */
   color: #222;
-  /* text-transform: uppercase; */
   margin-bottom: 20px;
 }
 
@@ -37,10 +35,17 @@
   display: flex;
   justify-content: space-between;
   align-items: center;
+  gap: 12px;
   padding: 15px 0;
   font-size: 15px;
   color: #444;
   border-bottom: 1px dashed #999;
+}
+
+.summaryRow span:last-child {
+  font-weight: 600;
+  text-align: right;
+  white-space: nowrap;
 }
 
 .summaryRow:last-of-type {
@@ -51,7 +56,6 @@
   color: #2e7d32;
   font-weight: 600;
 }
-
 
 .total {
   margin-top: 20px;
@@ -65,22 +69,22 @@
 
 .checkoutBtn {
   width: 100%;
-  margin-top: 10px;
+  margin-top: 15px;
   padding: 15px;
   border: none;
   border-radius: 8px;
-  background: #27652f;
+  background: #000;
   color: #fff;
   font-size: 15px;
   font-weight: 600;
   letter-spacing: 2px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .checkoutBtn:hover {
-  background: #104620;
+  background: #181818;
   transform: translateY(-2px);
 }
 
@@ -89,19 +93,71 @@
   cursor: not-allowed;
 }
 
-
-@media (max-width:900px) {
+@media (max-width: 992px) {
   .cartSummaryContainer {
-    width: 100%;
+    max-width: 100%;
     position: static;
-    margin-top: 20px;
+    margin-top: 24px;
+    padding: 24px;
   }
 
   .summaryTitle {
-    font-size: 28px;
+    font-size: 24px;
+  }
+
+  .total {
+    font-size: 20px;
+  }
+}
+
+@media (max-width: 768px) {
+  .cartSummaryContainer {
+    padding: 20px;
+  }
+
+  .summaryTitle {
+    font-size: 22px;
+    margin-bottom: 16px;
+  }
+
+  .summaryRow {
+    font-size: 14px;
+    padding: 12px 0;
+  }
+
+  .total {
+    font-size: 18px;
   }
 
   .checkoutBtn {
-    font-size: 18px;
+    font-size: 14px;
+    padding: 14px;
+    letter-spacing: 1px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .cartSummaryContainer {
+    padding: 16px;
+    border-radius: 12px;
+  }
+
+  .summaryTitle {
+    font-size: 20px;
+  }
+
+  .summaryRow {
+    font-size: 13px;
+    gap: 8px;
+  }
+
+  .total {
+    font-size: 17px;
+  }
+
+  .checkoutBtn {
+    padding: 13px;
+    font-size: 13px;
   }
 }

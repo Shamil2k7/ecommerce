@@ -55,7 +55,6 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
         </div>
       </div>
 
-      {/* Right Section */}
       <div className={styles.itemDetails}>
         <h3 className={styles.itemName}>{item.name}</h3>
 
