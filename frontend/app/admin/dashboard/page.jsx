@@ -1,3 +1,4 @@
+"use client";
 import {
   IndianRupee,
   ShoppingCart,
@@ -6,8 +7,11 @@ import {
   TrendingUp,
   AlertTriangle,
 } from "lucide-react";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 import styles from "./Dashboard.module.css";
+
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 const recentOrders = [
   {
@@ -60,6 +64,24 @@ const topProducts = [
 ];
 
 export default function DashboardPage() {
+  const [users, setUsers] = useState([]);
+
+  useEffect(() => {
+    getUsers();
+  }, []);
+
+  const getUsers = async () => {
+    try {
+      const res = await axios.get(`${API}/api/auth/users`, {
+        withCredentials: true,
+      });
+
+      setUsers(res.data.users);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <section className={styles.dashboard}>
       {/* Heading */}
@@ -117,8 +139,8 @@ export default function DashboardPage() {
 
           <div>
             <h3>Customers</h3>
-            <h2>5,481</h2>
-            <span>+245 New</span>
+            <h2>{users.length}</h2>
+            <span>Total Registered Users</span>
           </div>
         </div>
       </div>
@@ -133,9 +155,7 @@ export default function DashboardPage() {
             <TrendingUp size={22} />
           </div>
 
-          <div className={styles.chartPlaceholder}>
-            Chart Area
-          </div>
+          <div className={styles.chartPlaceholder}>Chart Area</div>
         </div>
 
         <div className={styles.chartCard}>
@@ -196,9 +216,7 @@ export default function DashboardPage() {
                   <td>{order.customer}</td>
                   <td>{order.total}</td>
                   <td>
-                    <span className={styles.status}>
-                      {order.status}
-                    </span>
+                    <span className={styles.status}>{order.status}</span>
                   </td>
                 </tr>
               ))}
