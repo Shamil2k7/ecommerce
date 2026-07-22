@@ -136,7 +136,11 @@ export default function CategoriesPage() {
 
                                         <td>
                                             <img
-                                                src={item.image?.url || "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"}
+                                                src={
+                                                    item.image?.url
+                                                        ? (item.image.url.startsWith("http") ? item.image.url : `http://localhost:5000${item.image.url}`)
+                                                        : "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
+                                                }
                                                 alt={item.name}
                                                 className={styles.image}
                                             />

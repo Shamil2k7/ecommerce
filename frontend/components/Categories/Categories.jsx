@@ -100,7 +100,11 @@ export default function Categories() {
               >
                 <div className={styles.imageBox}>
                   <Image
-                    src={category.image?.url || "/placeholder-category.jpg"}
+                    src={
+                      category.image?.url
+                        ? (category.image.url.startsWith("http") ? category.image.url : `${API}${category.image.url}`)
+                        : "/placeholder-category.jpg"
+                    }
                     alt={category.name}
                     fill
                     sizes="(max-width: 360px) 56px, (max-width: 480px) 66px, (max-width: 768px) 82px, (max-width: 992px) 100px, (max-width: 1200px) 115px, 130px"

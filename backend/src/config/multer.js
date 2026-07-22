@@ -36,20 +36,24 @@ const diskStorage = multer.diskStorage({
 const cloudinaryStorage = new CloudinaryStorage({
   cloudinary,
 
-  params: async (req, file) => ({
-    folder: "ecommerce/products",
+  params: async (req, file) => {
+    let folder = "ecommerce/products";
+    let prefix = "product";
 
-    allowed_formats: [
-      "jpg",
-      "jpeg",
-      "png",
-      "webp",
-    ],
+    if (file.fieldname === "logo") {
+      folder = "ecommerce/brands";
+      prefix = "brand";
+    } else if (file.fieldname === "image") {
+      folder = "ecommerce/categories";
+      prefix = "category";
+    }
 
-    public_id: `product-${Date.now()}-${Math.round(
-      Math.random() * 1e9
-    )}`,
-  }),
+    return {
+      folder,
+      allowed_formats: ["jpg", "jpeg", "png", "webp"],
+      public_id: `${prefix}-${Date.now()}-${Math.round(Math.random() * 1e9)}`,
+    };
+  },
 });
 
 // ==========================

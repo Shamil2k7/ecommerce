@@ -10,16 +10,28 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 // @desc Create Product
 // @route POST /api/products
 export const createProduct = asyncHandler(async (req, res) => {
-  const { category, brand } = req.body;
+  const { name, description, category, brand, price, stock } = req.body;
+
+  if (!name || !name.trim()) {
+    throw new ApiError(400, "Product name is required");
+  }
+  if (!description || !description.trim()) {
+    throw new ApiError(400, "Description is required");
+  }
+  if (!category) {
+    throw new ApiError(400, "Category is required");
+  }
 
   const categoryExists = await Category.findById(category);
   if (!categoryExists) {
     throw new ApiError(404, "Category not found");
   }
 
-  const brandExists = await Brand.findById(brand);
-  if (!brandExists) {
-    throw new ApiError(404, "Brand not found");
+  if (brand) {
+    const brandExists = await Brand.findById(brand);
+    if (!brandExists) {
+      throw new ApiError(404, "Brand not found");
+    }
   }
 
   const images =
@@ -29,12 +41,18 @@ export const createProduct = asyncHandler(async (req, res) => {
       isPrimary: index === 0,
     })) || [];
 
-  const product = await Product.create({
+  const productData = {
     ...req.body,
     category,
-    brand,
     images,
-  });
+  };
+  if (brand) {
+    productData.brand = brand;
+  } else {
+    delete productData.brand;
+  }
+
+  const product = await Product.create(productData);
 
   return res
     .status(201)
@@ -129,10 +147,12 @@ export const deleteProduct = asyncHandler(async (req, res) => {
   }
 
   // Delete images from Cloudinary
-  if (product.images.length > 0) {
+  if (product.images && product.images.length > 0) {
     for (const img of product.images) {
       try {
-        await cloudinary.uploader.destroy(img.public_id);
+        if (img.public_id) {
+          await cloudinary.uploader.destroy(img.public_id);
+        }
       } catch (err) {
         console.log("Cloudinary Delete Error:", err.message);
       }
@@ -205,7 +225,9 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
   }
 
   // Delete image from Cloudinary
-  await cloudinary.uploader.destroy(image.public_id);
+  if (image.public_id) {
+    await cloudinary.uploader.destroy(image.public_id);
+  }
 
   product.images = product.images.filter(
     (img) => img.public_id !== imageId

@@ -1,4 +1,5 @@
 import Category from "../../models/category.model.js";
+import cloudinary from "../../config/cloudinary.js";
 import ApiError from "../../utils/ApiError.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -12,7 +13,7 @@ export const createCategory = asyncHandler(async (req, res) => {
   if (existing) throw new ApiError(409, "Category with this name already exists");
 
   const image = req.file
-    ? { url: `/uploads/products/${req.file.filename}`, public_id: req.file.filename }
+    ? { url: req.file.path, public_id: req.file.filename }
     : undefined;
 
   const category = await Category.create({
@@ -56,20 +57,29 @@ export const getCategoryById = asyncHandler(async (req, res) => {
 // @route PATCH /api/categories/:id
 export const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  const category = await Category.findById(id);
+  if (!category) throw new ApiError(404, "Category not found");
+
   const updates = { ...req.body };
 
   if (req.file) {
-    updates.image = { url: `/uploads/products/${req.file.filename}`, public_id: req.file.filename };
+    if (category.image?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(category.image.public_id);
+      } catch (err) {
+        console.log("Cloudinary Delete Error:", err.message);
+      }
+    }
+    updates.image = { url: req.file.path, public_id: req.file.filename };
   }
 
-  const category = await Category.findByIdAndUpdate(id, updates, {
+  const updatedCategory = await Category.findByIdAndUpdate(id, updates, {
     new: true,
     runValidators: true,
   });
 
-  if (!category) throw new ApiError(404, "Category not found");
-
-  return res.status(200).json(new ApiResponse(200, category, "Category updated successfully"));
+  return res.status(200).json(new ApiResponse(200, updatedCategory, "Category updated successfully"));
 });
 
 // @desc Delete category
@@ -77,13 +87,36 @@ export const updateCategory = asyncHandler(async (req, res) => {
 export const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
-  const childCount = await Category.countDocuments({ parentCategory: id });
-  if (childCount > 0) {
-    throw new ApiError(400, "Cannot delete a category that has subcategories");
+  const category = await Category.findById(id);
+  if (!category) {
+    throw new ApiError(404, "Category not found");
   }
 
-  const category = await Category.findByIdAndDelete(id);
-  if (!category) throw new ApiError(404, "Category not found");
+  // Delete all child categories & their images from Cloudinary
+  const children = await Category.find({ parentCategory: id });
+  for (const child of children) {
+    if (child.image?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(child.image.public_id);
+      } catch (err) {
+        console.log("Cloudinary Delete Error:", err.message);
+      }
+    }
+  }
+  await Category.deleteMany({ parentCategory: id });
 
-  return res.status(200).json(new ApiResponse(200, {}, "Category deleted successfully"));
+  // Delete parent category image from Cloudinary
+  if (category.image?.public_id) {
+    try {
+      await cloudinary.uploader.destroy(category.image.public_id);
+    } catch (err) {
+      console.log("Cloudinary Delete Error:", err.message);
+    }
+  }
+
+  await category.deleteOne();
+
+  return res.status(200).json(
+    new ApiResponse(200, {}, "Category deleted successfully")
+  );
 });

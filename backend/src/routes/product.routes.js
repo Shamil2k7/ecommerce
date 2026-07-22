@@ -36,47 +36,33 @@ import {
   bulkUpdateStock,
 } from "../controllers/product/inventory.controller.js";
 
-import {
-  createProductValidation,
-  updateProductValidation,
-  productIdValidation,
-  productQueryValidation,
-} from "../validations/product.validation.js";
-
-import {
-  createCategoryValidation,
-  updateCategoryValidation,
-  categoryIdValidation,
-} from "../validations/category.validation.js";
-
 const router = Router();
 
 /* ---------- Search & Filters (declared before "/:id" routes to avoid conflicts) ---------- */
-router.get("/products/search", productQueryValidation, searchProducts);
+router.get("/products/search", searchProducts);
 router.get("/products/filters", getFilterOptions);
 
 /* ---------- Inventory ---------- */
 router.get("/products/inventory/low-stock", getLowStockProducts);
 router.patch("/products/inventory/bulk", bulkUpdateStock);
-router.patch("/products/:id/stock", productIdValidation, setStock);
-router.patch("/products/:id/stock/adjust", productIdValidation, adjustStock);
+router.patch("/products/:id/stock", setStock);
+router.patch("/products/:id/stock/adjust", adjustStock);
 
 /* ---------- Products CRUD ---------- */
 router
   .route("/products")
   .get(getAllProducts)
-  .post(upload.array("images", 6), createProductValidation, createProduct);
+  .post(upload.array("images", 6), createProduct);
 
 router
   .route("/products/:id")
-  .get(productIdValidation, getProductById)
-  .patch(updateProductValidation, updateProduct)
-  .delete(productIdValidation, deleteProduct);
+  .get(getProductById)
+  .patch(updateProduct)
+  .delete(deleteProduct);
 
 /* ---------- Product Images ---------- */
 router.post(
   "/products/:id/images",
-  productIdValidation,
   upload.array("images", 6),
   uploadProductImages
 );
@@ -86,13 +72,13 @@ router.delete("/products/:id/images/:imageId", deleteProductImage);
 router
   .route("/categories")
   .get(getAllCategories)
-  .post(upload.single("image"), createCategoryValidation, createCategory);
+  .post(upload.single("image"), createCategory);
 
 router
   .route("/categories/:id")
-  .get(categoryIdValidation, getCategoryById)
-  .patch(upload.single("image"), updateCategoryValidation, updateCategory)
-  .delete(categoryIdValidation, deleteCategory);
+  .get(getCategoryById)
+  .patch(upload.single("image"), updateCategory)
+  .delete(deleteCategory);
 
 /* ---------- Brands CRUD ---------- */
 router
