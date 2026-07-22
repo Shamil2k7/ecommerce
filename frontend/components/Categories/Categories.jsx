@@ -32,10 +32,7 @@ export default function Categories() {
       const data = await res.json();
 
       if (data.success) {
-        const parentCategories = (data.data || []).filter(
-          (category) => !category.parentCategory
-        );
-        setCategories(parentCategories);
+        setCategories(data.data || []);
       }
     } catch (err) {
       console.error(err);
@@ -66,11 +63,11 @@ export default function Categories() {
             nextEl: ".category-next",
           }}
           autoplay={{
-            delay: 25,
+            delay: 1,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
-          speed={800}
+          speed={900}
           loop={categories.length > 6}
           grabCursor={true}
           slidesPerView={6}
@@ -114,11 +111,7 @@ export default function Categories() {
               >
                 <div className={styles.imageBox}>
                   <Image
-                    src={
-                      category.image?.url
-                        ? (category.image.url.startsWith("http") ? category.image.url : `${API}${category.image.url}`)
-                        : "/placeholder-category.jpg"
-                    }
+                    src={category.image?.url || "/placeholder-category.jpg"}
                     alt={category.name}
                     fill
                     className={styles.image}
