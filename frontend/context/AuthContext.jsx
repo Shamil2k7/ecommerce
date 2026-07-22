@@ -28,6 +28,7 @@ export function AuthProvider({ children }) {
 
       if (response.ok && data.success) {
         setUser(data.user);
+
       } else {
         setUser(null);
       }
@@ -82,7 +83,7 @@ export function AuthProvider({ children }) {
 
       if (response.ok && data.success) {
         setUser(data.user);
-        return { success: true, message: data.message };
+        return { success: true, message: data.message, user: data.user };
       } else {
         return { success: false, message: data.message || "Login failed" };
       }
@@ -227,7 +228,7 @@ export function AuthProvider({ children }) {
 
       if (response.ok && data.success) {
         setUser(data.user);
-        return { success: true, message: data.message };
+        return { success: true, message: data.message , user: data.user};
       } else {
         return { success: false, message: data.message || "Google authentication failed" };
       }
