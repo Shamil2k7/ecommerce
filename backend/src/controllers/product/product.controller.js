@@ -114,6 +114,36 @@ export const getProductById = asyncHandler(async (req, res) => {
     );
 });
 
+export const getTopRatedProducts = async (req, res) => {
+  try {
+    const limit = Number(req.query.limit) || 10;
+
+    const products = await Product.find({
+      isActive: true,
+      ratingsCount: { $gt: 0 },
+    })
+      .populate("category", "name")
+      .populate("brand", "name")
+      .sort({
+        ratingsAverage: -1,
+        ratingsCount: -1,
+      })
+      .limit(limit);
+
+    res.status(200).json({
+      success: true,
+      count: products.length,
+      products,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
 // @desc Update Product
 // @route PATCH /api/products/:id
 export const updateProduct = asyncHandler(async (req, res) => {

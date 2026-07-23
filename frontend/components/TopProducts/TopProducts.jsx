@@ -1,8 +1,35 @@
+"use client";
 import styles from "./TopProducts.module.css";
 import ProductCard from "../ProductCard/ProductCard";
-import products from "@/data/products";
+import { useEffect, useState } from "react";
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function TopProducts() {
+  const [topRatedProducts, setTopRatedProducts] = useState([]);
+
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    fetchTopRatedProducts();
+  }, []);
+
+  const fetchTopRatedProducts = async () => {
+    try {
+      setLoading(true);
+
+      const res = await fetch(`${API}/api/products/top-rated`);
+
+      const data = await res.json();
+
+      if (data.success) {
+        setTopRatedProducts(data.products);
+      }
+    } catch (error) {
+      console.error("Error fetching top rated products:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <section className={styles.section}>
 
@@ -20,7 +47,7 @@ export default function TopProducts() {
       </div>
 
       <div className={styles.grid}>
-        {products.map((product) => (
+        {topRatedProducts.map((product) => (
           <ProductCard
             key={product.id}
             product={product}
