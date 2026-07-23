@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import Category from "../../models/category.model.js";
 import cloudinary from "../../config/cloudinary.js";
 import ApiError from "../../utils/ApiError.js";
@@ -8,6 +9,14 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 // @route POST /api/categories
 export const createCategory = asyncHandler(async (req, res) => {
   const { name, description, parentCategory } = req.body;
+
+  if (!name || typeof name !== "string" || !name.trim()) {
+    throw new ApiError(400, "Category name is required");
+  }
+
+  if (parentCategory && parentCategory !== "null" && parentCategory !== "" && !mongoose.Types.ObjectId.isValid(parentCategory)) {
+    throw new ApiError(400, "Invalid parent category id");
+  }
 
   const existing = await Category.findOne({ name: name.trim() });
   if (existing) throw new ApiError(409, "Category with this name already exists");
@@ -46,6 +55,11 @@ export const getAllCategories = asyncHandler(async (req, res) => {
 // @route GET /api/categories/:id
 export const getCategoryById = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid category id");
+  }
+
   const category = await Category.findById(id).populate("parentCategory", "name slug");
 
   if (!category) throw new ApiError(404, "Category not found");
@@ -58,8 +72,20 @@ export const getCategoryById = asyncHandler(async (req, res) => {
 export const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid category id");
+  }
+
   const category = await Category.findById(id);
   if (!category) throw new ApiError(404, "Category not found");
+
+  const { name, parentCategory } = req.body;
+  if (name !== undefined && (typeof name !== "string" || !name.trim())) {
+    throw new ApiError(400, "Category name cannot be empty");
+  }
+  if (parentCategory && parentCategory !== "null" && parentCategory !== "" && !mongoose.Types.ObjectId.isValid(parentCategory)) {
+    throw new ApiError(400, "Invalid parent category id");
+  }
 
   const updates = { ...req.body };
 
@@ -86,6 +112,10 @@ export const updateCategory = asyncHandler(async (req, res) => {
 // @route DELETE /api/categories/:id
 export const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
+
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new ApiError(400, "Invalid category id");
+  }
 
   const category = await Category.findById(id);
   if (!category) {

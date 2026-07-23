@@ -36,12 +36,6 @@ import {
   bulkUpdateStock,
 } from "../controllers/product/inventory.controller.js";
 
-import {
-  createCategoryValidation,
-  updateCategoryValidation,
-  categoryIdValidation,
-} from "../validations/category.validation.js";
-
 const router = Router();
 
 /* =====================================================
@@ -89,26 +83,17 @@ router.route("/categories")
   .get(getAllCategories)
   .post(
     upload.single("image"),
-    createCategoryValidation,
     createCategory
   );
 
 router
   .route("/categories/:id")
-  .get(
-    categoryIdValidation,
-    getCategoryById
-  )
+  .get(getCategoryById)
   .patch(
     upload.single("image"),
-    categoryIdValidation,
-    updateCategoryValidation,
     updateCategory
   )
-  .delete(
-    categoryIdValidation,
-    deleteCategory
-  );
+  .delete(deleteCategory);
 
 /* =====================================================
                     BRANDS
