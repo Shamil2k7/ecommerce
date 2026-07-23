@@ -8,6 +8,7 @@ import {
   Truck,
   CheckCircle,
   XCircle,
+  Trash2,
 } from "lucide-react";
 
 import styles from "./Orders.module.css";
@@ -23,7 +24,31 @@ export default function OrdersPage() {
   useEffect(() => {
     getOrders();
   }, []);
+  const deleteOrder = async (id) => {
+    try {
+      const token = localStorage.getItem("token");
 
+      const res =  await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${id}`,
+       {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
+      }
+      );
+
+      if (res.data.success) {
+        alert("Order deleted successfully");
+
+        // Remove deleted order from state
+        setOrders((prev) => prev.filter((order) => order._id !== id));
+      }
+    } catch (error) {
+      console.error(error);
+      alert(error.response?.data?.message || "Failed to delete order");
+    }
+  };
   const getOrders = async () => {
     try {
       setLoading(true);
@@ -70,9 +95,9 @@ export default function OrdersPage() {
           prev.map((item) =>
             item._id === id
               ? {
-                  ...item,
-                  orderStatus: status,
-                }
+                ...item,
+                orderStatus: status,
+              }
               : item
           )
         );
@@ -166,13 +191,12 @@ export default function OrdersPage() {
                   <td>
                     <span
                       className={`${styles.payment}
-                      ${
-                        order.paymentStatus === "Paid"
+                      ${order.paymentStatus === "Paid"
                           ? styles.paid
                           : order.paymentStatus === "Pending"
-                          ? styles.pending
-                          : styles.failed
-                      }`}
+                            ? styles.pending
+                            : styles.failed
+                        }`}
                     >
                       {order.paymentStatus}
                     </span>
@@ -181,15 +205,14 @@ export default function OrdersPage() {
                   <td>
                     <span
                       className={`${styles.status}
-                      ${
-                        order.orderStatus === "Delivered"
+                      ${order.orderStatus === "Delivered"
                           ? styles.delivered
                           : order.orderStatus === "Processing"
-                          ? styles.processing
-                          : order.orderStatus === "Shipped"
-                          ? styles.shipped
-                          : styles.cancelled
-                      }`}
+                            ? styles.processing
+                            : order.orderStatus === "Shipped"
+                              ? styles.shipped
+                              : styles.cancelled
+                        }`}
                     >
                       {order.orderStatus}
                     </span>
@@ -231,6 +254,12 @@ export default function OrdersPage() {
                         }}
                       >
                         <XCircle size={18} />
+                      </button>
+                      <button
+                        onClick={() => deleteOrder(order._id)}
+                        className="delete-btn"
+                      >
+                        <Trash2 size={18} />
                       </button>
                     </div>
                   </td>

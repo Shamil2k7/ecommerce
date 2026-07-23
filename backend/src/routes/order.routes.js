@@ -26,7 +26,7 @@ router.get("/counts", protect, isAdmin, getOrderCounts);
 router.get("/:id", protect, getSingleOrder);
 router.put("/:id", protect, isAdmin, updateOrderStatus);
 router.put("/:id/payment", protect, isAdmin, updatePaymentStatus);
-router.delete("/:id", protect, isAdmin, deleteOrder);
+router.delete("/:id", protect,  deleteOrder);
 
 // Refund
 router.get("/refunds", protect, isAdmin, getRefundRequests);
