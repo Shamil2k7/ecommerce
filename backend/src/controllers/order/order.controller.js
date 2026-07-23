@@ -1,6 +1,8 @@
 import Order from "../../models/Order.js";
 import Product from "../../models/product.model.js";
 import sendEmail from "../../utils/sendEmail.js";
+import Cart from "../../models/Cart.js";
+import Coupon from "../../models/Coupon.js";
 /* ============================
    Create Order
 ============================ */
@@ -50,17 +52,21 @@ export const createOrder = async (req, res) => {
         message: "Insufficient stock",
       });
     }
-
     const price =
       product.discountPrice > 0
         ? product.discountPrice
         : product.price;
 
+    // Get Cart First
+    const cart = await Cart.findOne({ userId });
+
     const subTotal = price * quantity;
 
     const tax = Number((subTotal * 0.18).toFixed(2));
 
-    const discount = 0;
+    const discount = cart
+      ? Number(cart.couponDiscount || 0)
+      : 0;
 
     const totalAmount = subTotal + tax - discount;
 
@@ -72,32 +78,148 @@ export const createOrder = async (req, res) => {
     const orderNumber = lastOrder
       ? lastOrder.orderNumber + 1
       : 1001;
+
+    console.log("Cart:", cart);
+
+    // Check Coupon Before Creating Order
+    let coupon = null;
+
+    if (cart && cart.couponApplied) {
+      coupon = await Coupon.findById(cart.couponApplied);
+
+      console.log("Coupon:", coupon);
+
+      if (!coupon) {
+        return res.status(404).json({
+          success: false,
+          message: "Coupon not found",
+        });
+      }
+
+      console.log("Used By:", coupon.usedBy);
+      console.log("Current User:", userId);
+
+      const alreadyUsed = coupon.usedBy.some(
+        (id) => id.toString() === userId.toString()
+      );
+
+      console.log("Already Used:", alreadyUsed);
+
+      if (alreadyUsed) {
+        return res.status(400).json({
+          success: false,
+          message: "You have already used this coupon",
+        });
+      }
+    }
+
+    // Create Order
+    // Create Order
     const order = await Order.create({
-      productId,
       userId,
       orderNumber,
-      quantity,
+
+      products: [
+        {
+          productId: product._id,
+          name: product.name,
+          image: product.image || "",
+          color: "",
+          size: "",
+          price,
+          quantity,
+          subtotal: subTotal,
+        },
+      ],
+
       paymentMethod,
+
+      couponApplied: cart?.couponApplied || null,
+
       subTotal,
       discount,
       tax,
+      shipping: 0,
       totalAmount,
+
       shippingAddress,
     });
 
-    //new added
-    await order.populate("userId", "name email phone");
-    await order.populate("productId", "name");
+    // Populate Order Data
+    await order.populate("userId", "fullName email phone");
+    await order.populate("products.productId", "name");
 
-
-
+    // Update Product Stock
     product.stock -= quantity;
-    if (!product.sku) {
-      product.sku = "SKU-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
-    }
     await product.save();
 
-    // ⭐ ADDED - Send email to admin
+
+
+    // Update Coupon After Successful Order
+    if (cart && cart.couponApplied) {
+
+      coupon = await Coupon.findById(cart.couponApplied);
+
+      console.log("Coupon:", coupon);
+
+      if (!coupon) {
+        return res.status(404).json({
+          success: false,
+          message: "Coupon not found",
+        });
+      }
+
+
+      // Check coupon status
+      if (coupon.status !== "Active") {
+        return res.status(400).json({
+          success: false,
+          message: "Coupon is inactive",
+        });
+      }
+
+
+      // Check coupon expiry
+      if (new Date() > coupon.expirydate) {
+        return res.status(400).json({
+          success: false,
+          message: "Coupon expired",
+        });
+      }
+
+
+      console.log("Used By:", coupon.usedBy);
+      console.log("Current User:", userId);
+
+
+      // Check already used by user
+      const alreadyUsed = Array.isArray(coupon.usedBy)
+        ? coupon.usedBy.some(
+          (id) => id.toString() === userId.toString()
+        )
+        : false;
+
+
+      if (alreadyUsed) {
+        return res.status(400).json({
+          success: false,
+          message: "You have already used this coupon",
+        });
+      }
+
+
+      // Save coupon usage
+      coupon.usedBy.push(userId);
+      coupon.usedCount += 1;
+
+      await coupon.save();
+
+
+      console.log("Coupon usage updated");
+    }
+
+
+    //  ADDED - Send email to admin
     try {
       await sendEmail({
         email: process.env.ADMIN_EMAIL,
@@ -115,7 +237,7 @@ export const createOrder = async (req, res) => {
 
     <h3>👤 Customer Details</h3>
 
-    <p><strong>Name:</strong> ${order.userId.fullName}</p>
+    <p><strong>Name:</strong>${order.userId.fullName}</p>
     <p><strong>Email:</strong> ${order.userId.email}</p>
     <p><strong>Phone:</strong> ${order.userId.phone}</p>
 
@@ -123,8 +245,8 @@ export const createOrder = async (req, res) => {
 
     <h3>📦 Product Details</h3>
 
-    <p><strong>Product:</strong> ${order.productId.name}</p>
-    <p><strong>Quantity:</strong> ${order.quantity}</p>
+<p><strong>Product:</strong> ${order.products[0].name}</p>
+<p><strong>Quantity:</strong> ${order.products[0].quantity}</p>
     <p><strong>Total Amount:</strong> ₹${order.totalAmount}</p>
     <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
     <p><strong>Payment Status:</strong> ${order.paymentStatus}</p>
@@ -177,12 +299,12 @@ export const getAllOrders = async (req, res) => {
   try {
     const orders = await Order.find()
       .populate(
-        "productId",
+        "products.productId",
         "name image price discountPrice brand category"
       )
       .populate(
         "userId",
-        "name email phone"
+        "fullName email phone"
       )
       .sort({ createdAt: -1 });
 
@@ -206,9 +328,8 @@ export const getAllOrders = async (req, res) => {
 export const getSingleOrder = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id)
-      .populate("productId")
-      .populate("userId");
-
+      .populate("products.productId")
+      .populate("userId")
     if (!order) {
       return res.status(404).json({
         success: false,
@@ -460,7 +581,7 @@ export const getRefundRequests = async (req, res) => {
     const orders = await Order.find({
       refundRequested: true,
     })
-      .populate("productId")
+      .populate("products.productId")
       .populate("userId")
       .sort({ createdAt: -1 });
 
