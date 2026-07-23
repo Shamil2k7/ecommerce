@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import styles from "./ProductDetails.module.css";
+import { useCart } from "../../../context/CartContext";
 
 const API =
   process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
@@ -37,6 +38,10 @@ export default function ProductDetailsPage() {
   const [wishlisted, setWishlisted] = useState(false);
 
   const [activeTab, setActiveTab] = useState("details");
+
+  const { addToCart } = useCart();
+  const [isAddingCart, setIsAddingCart] = useState(false);
+  const [isBuying, setIsBuying] = useState(false);
 
   // =============================
   // Get Product
@@ -108,6 +113,30 @@ export default function ProductDetailsPage() {
     if (quantity > 1) {
       setQuantity((prev) => prev - 1);
     }
+  };
+
+  
+
+  const handleAddToCart = async () => {
+    setIsAddingCart(true);
+    await addToCart({
+      productId: product._id,
+      quantity,
+    });
+    setIsAddingCart(false);
+  };
+
+  const handleBuyNow = async () => {
+    setIsBuying(true);
+    await addToCart({
+      productId: product._id,
+      quantity,
+    });
+    setIsBuying(false);
+    
+    const query = new URLSearchParams();
+    query.set("buyNow", product._id);
+    router.push(`/checkout?${query.toString()}`);
   };
 
   // =============================
@@ -290,9 +319,9 @@ export default function ProductDetailsPage() {
               </button>
             </div>
 
-            <button className={styles.cartBtn} type="button">
+            <button className={styles.cartBtn} type="button" onClick={handleAddToCart} disabled={isAddingCart}>
               <CartIcon />
-              Add to Cart
+              {isAddingCart ? "Adding..." : "Add to Cart"}
             </button>
 
             <button
@@ -308,8 +337,8 @@ export default function ProductDetailsPage() {
             </button>
           </div>
 
-          <button className={styles.buyBtn} type="button">
-            Buy Now
+          <button className={styles.buyBtn} type="button" onClick={handleBuyNow} disabled={isBuying}>
+            {isBuying ? "Processing..." : "Buy Now"}
           </button>
 
           {/* Perks */}
