@@ -10,9 +10,8 @@ export default function StaffPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // ==========================
-  // Fetch Staff
-  // ==========================
+  // take all staff from backend 
+
   const fetchStaff = async () => {
     try {
       setLoading(true);
@@ -71,11 +70,11 @@ export default function StaffPage() {
     }
   };
 
-  // ==========================
-  // Search
-  // ==========================
+
+  //  search items (i mean staff) by name
   const filtered = staff.filter((item) =>
-    item.name.toLowerCase().includes(search.toLowerCase())
+    (item.fullName || "")
+      .toLowerCase().includes(search.toLowerCase())
   );
 
   if (loading) {
@@ -123,7 +122,6 @@ export default function StaffPage() {
               <th>Staff</th>
               <th>Email</th>
               <th>Phone</th>
-              <th>Role</th>
               <th>Department</th>
               <th>Status</th>
               <th>Actions</th>
@@ -137,13 +135,13 @@ export default function StaffPage() {
                   <td className={styles.staffCell}>
                     <div className={styles.staff}>
                       <img
-                        src={item.image || "https://via.placeholder.com/60"}
-                        alt={item.name}
+                        src={item.profileImage || "https://via.placeholder.com/60"}
+                        alt={item.fullName || "Staff"}
                       />
 
                       <div className={styles.staffInfo}>
                         <span className={styles.staffName}>
-                          {item.name}
+                          {item.fullName}
                         </span>
                       </div>
                     </div>
@@ -152,8 +150,6 @@ export default function StaffPage() {
                   <td>{item.email}</td>
 
                   <td>{item.phone}</td>
-
-                  <td>{item.role}</td>
 
                   <td>{item.department}</td>
 
@@ -192,7 +188,7 @@ export default function StaffPage() {
             ) : (
               <tr>
                 <td
-                  colSpan="7"
+                  colSpan="6"
                   style={{ textAlign: "center", padding: "30px" }}
                 >
                   No Staff Found

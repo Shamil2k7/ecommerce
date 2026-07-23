@@ -152,6 +152,16 @@
   background: var(--primary-hover);
 }
 
+.trashIcon {
+  color: #2e2926;
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.deleteBtn:hover .trashIcon {
+  color: #ef4444;
+  transform: scale(1.15);
+}
+
 @media (max-width:900px) {
   .grid {
     grid-template-columns: 1fr;
