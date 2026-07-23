@@ -32,10 +32,15 @@ export default function Categories() {
       const data = await res.json();
 
       if (data.success) {
-        setCategories(data.data || []);
+        // Show only parent categories
+        const parentCategories = (data.data || []).filter(
+          (category) => !category.parentCategory && category.isActive
+        );
+
+        setCategories(parentCategories);
       }
     } catch (err) {
-      console.error(err);
+      console.error("Error fetching categories:", err);
     }
   };
 
