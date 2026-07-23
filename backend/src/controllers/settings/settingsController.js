@@ -162,3 +162,79 @@ export const uploadFavicon = async (req, res) => {
     });
   }
 };
+
+// remove Favicon
+
+export const removeFavicon = async (req, res) => {
+  try {
+    let settings = await Settings.findOne();
+
+    if (!settings) {
+      settings = await Settings.create({});
+    }
+
+    if (settings.favicon) {
+      try {
+        const publicId = settings.favicon
+          .split("/")
+          .slice(-2)
+          .join("/")
+          .split(".")[0];
+
+        await cloudinary.uploader.destroy(publicId);
+      } catch (err) {
+        console.log("Cloudinary delete failed:", err.message);
+      }
+
+      settings.favicon = "";
+      await settings.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Favicon removed successfully",
+      settings,
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+// remove Logo
+
+export const removeLogo = async (req, res) => {
+  try {
+    const settings = await Settings.findOne();
+
+    if (!settings) {
+      return res.status(200).json({
+        success: true,
+        message: "Settings not found",
+      });
+    }
+
+    if (settings.logo) {
+      // delete from cloudinary if needed
+
+      settings.logo = "";
+      await settings.save();
+    }
+
+    return res.status(200).json({
+      success: true,
+      message: "Logo removed successfully",
+    });
+  } catch (error) {
+    console.error(error);
+
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
