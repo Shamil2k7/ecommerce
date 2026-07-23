@@ -297,7 +297,7 @@ export default function ProductDetailsPage() {
             </div>
 
             <button className={styles.cartBtn} type="button" onClick={handleAddToCart} disabled={isAddingCart}>
-              <CartIcon />
+              <FiShoppingCart size={18} />
               {isAddingCart ? "Adding..." : "Add to Cart"}
             </button>
 
