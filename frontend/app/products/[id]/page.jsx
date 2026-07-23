@@ -2,11 +2,27 @@
 
 import { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
+import {
+  FiShoppingCart,
+  FiHeart,
+  FiTruck,
+  FiRotateCcw,
+  FiShield,
+  FiCheck,
+  FiClock,
+  FiCreditCard,
+  FiZap,
+  FiRefreshCw,
+  FiRepeat,
+  FiTag,
+  FiMinus,
+  FiPlus,
+} from "react-icons/fi";
+import { FaHeart } from "react-icons/fa";
 import styles from "./ProductDetails.module.css";
 import { useCart } from "../../../context/CartContext";
 
-const API =
-  process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
 const TABS = [
   { key: "details", label: "Details" },
@@ -28,15 +44,10 @@ export default function ProductDetailsPage() {
 
   const [product, setProduct] = useState(null);
   const [relatedProducts, setRelatedProducts] = useState([]);
-
   const [loading, setLoading] = useState(true);
-
   const [mainImage, setMainImage] = useState("");
-
   const [quantity, setQuantity] = useState(1);
-
   const [wishlisted, setWishlisted] = useState(false);
-
   const [activeTab, setActiveTab] = useState("details");
 
   const { addToCart } = useCart();
@@ -46,7 +57,6 @@ export default function ProductDetailsPage() {
   // =============================
   // Get Product
   // =============================
-
   useEffect(() => {
     if (id) {
       getProduct();
@@ -56,9 +66,7 @@ export default function ProductDetailsPage() {
   const getProduct = async () => {
     try {
       setLoading(true);
-
       const res = await fetch(`${API}/api/products/${id}`);
-
       const data = await res.json();
 
       if (data.success) {
@@ -80,20 +88,15 @@ export default function ProductDetailsPage() {
   // =============================
   // Related Products
   // =============================
-
   const getRelatedProducts = async (categoryId) => {
     try {
       const res = await fetch(`${API}/api/products`);
-
       const data = await res.json();
 
       if (data.success) {
         const related = data.data.products.filter(
-          (item) =>
-            item.category?._id === categoryId &&
-            item._id !== id
+          (item) => item.category?._id === categoryId && item._id !== id
         );
-
         setRelatedProducts(related.slice(0, 4));
       }
     } catch (err) {
@@ -101,19 +104,8 @@ export default function ProductDetailsPage() {
     }
   };
 
-  // =============================
-  // Quantity
-  // =============================
-
-  const increaseQty = () => {
-    setQuantity((prev) => prev + 1);
-  };
-
-  const decreaseQty = () => {
-    if (quantity > 1) {
-      setQuantity((prev) => prev - 1);
-    }
-  };
+  const increaseQty = () => setQuantity((prev) => prev + 1);
+  const decreaseQty = () => setQuantity((prev) => (prev > 1 ? prev - 1 : 1));
 
   
 
@@ -140,13 +132,13 @@ export default function ProductDetailsPage() {
   };
 
   // =============================
-  // Loading
+  // Loading & Error States
   // =============================
-
   if (loading) {
     return (
       <div className={styles.loading}>
-        Loading Product...
+        <div className={styles.spinner} />
+        <span>Loading Product...</span>
       </div>
     );
   }
@@ -154,20 +146,22 @@ export default function ProductDetailsPage() {
   if (!product) {
     return (
       <div className={styles.loading}>
-        Product Not Found
+        <h2>Product Not Found</h2>
+        <button
+          type="button"
+          className={styles.backBtn}
+          onClick={() => router.push("/")}
+        >
+          Return to Shop
+        </button>
       </div>
     );
   }
 
   const activeBadges = BADGE_CONFIG.filter((badge) => product[badge.key]);
-
-  const hasOffer =
-    product.offerEnabled &&
-    (product.offerTitle || product.offerValue);
-
+  const hasOffer = product.offerEnabled && (product.offerTitle || product.offerValue);
   const measurement = product.measurement;
-  const hasMeasurement =
-    measurement && (measurement.value || measurement.type);
+  const hasMeasurement = measurement && (measurement.value || measurement.type);
 
   return (
     <section className={styles.productPage}>
@@ -175,7 +169,6 @@ export default function ProductDetailsPage() {
         {/* =========================
             Gallery
         ========================== */}
-
         <div className={styles.galleryRow}>
           <div className={styles.thumbnailContainer}>
             {product.images?.map((image, index) => (
@@ -186,8 +179,9 @@ export default function ProductDetailsPage() {
                   mainImage === image.url ? styles.activeThumb : ""
                 }`}
                 onClick={() => setMainImage(image.url)}
+                aria-label={`View product image ${index + 1}`}
               >
-                <img src={image.url} alt={product.name} />
+                <img src={image.url} alt={`${product.name} preview ${index + 1}`} />
               </button>
             ))}
           </div>
@@ -202,9 +196,8 @@ export default function ProductDetailsPage() {
         </div>
 
         {/* =========================
-            Product Details
+            Product Details Right
         ========================== */}
-
         <div className={styles.right}>
           {activeBadges.length > 0 && (
             <div className={styles.badgeRow}>
@@ -232,40 +225,32 @@ export default function ProductDetailsPage() {
             <span>({product.ratingsCount || 0} reviews)</span>
           </div>
 
-          {/* Price */}
-
+          {/* Price Section */}
           <div className={styles.priceSection}>
             {product.discountPrice > 0 ? (
               <>
                 <h2 className={styles.discountPrice}>
                   ₹{product.discountPrice.toLocaleString()}
                 </h2>
-
                 <span className={styles.oldPrice}>
                   ₹{product.price.toLocaleString()}
                 </span>
-
                 <span className={styles.save}>
                   {Math.round(
-                    ((product.price - product.discountPrice) /
-                      product.price) *
-                      100
+                    ((product.price - product.discountPrice) / product.price) * 100
                   )}
                   % OFF
                 </span>
               </>
             ) : (
-              <h2 className={styles.price}>
-                ₹{product.price.toLocaleString()}
-              </h2>
+              <h2 className={styles.price}>₹{product.price.toLocaleString()}</h2>
             )}
           </div>
 
-          {/* Offer banner */}
-
+          {/* Offer Banner */}
           {hasOffer && (
             <div className={styles.offerBanner}>
-              <OfferIcon />
+              <FiTag size={18} />
               <span>
                 {product.offerTitle || "Special Offer"}
                 {product.offerValue
@@ -274,16 +259,13 @@ export default function ProductDetailsPage() {
                     } off`
                   : ""}
                 {product.offerEndDate
-                  ? ` · ends ${new Date(
-                      product.offerEndDate
-                    ).toLocaleDateString()}`
+                  ? ` · ends ${new Date(product.offerEndDate).toLocaleDateString()}`
                   : ""}
               </span>
             </div>
           )}
 
           {/* Short Description */}
-
           {product.shortDescription && (
             <p className={styles.shortDesc}>{product.shortDescription}</p>
           )}
@@ -291,31 +273,26 @@ export default function ProductDetailsPage() {
           <div className={styles.divider} />
 
           {/* Stock + SKU */}
-
           <div className={styles.metaRow}>
             {product.stock > 10 ? (
               <span className={styles.inStock}>In Stock</span>
             ) : product.stock > 0 ? (
-              <span className={styles.lowStock}>
-                Only {product.stock} left
-              </span>
+              <span className={styles.lowStock}>Only {product.stock} left</span>
             ) : (
               <span className={styles.outStock}>Out of Stock</span>
             )}
-
-            <span className={styles.sku}>SKU · {product.sku}</span>
+            <span className={styles.sku}>SKU · {product.sku || "N/A"}</span>
           </div>
 
-          {/* Quantity + Actions */}
-
+          {/* Quantity + Cart + Wishlist Single Row */}
           <div className={styles.actionRow}>
             <div className={styles.quantityBox}>
               <button type="button" onClick={decreaseQty} aria-label="Decrease quantity">
-                −
+                <FiMinus size={14} />
               </button>
               <span>{quantity}</span>
               <button type="button" onClick={increaseQty} aria-label="Increase quantity">
-                +
+                <FiPlus size={14} />
               </button>
             </div>
 
@@ -333,7 +310,7 @@ export default function ProductDetailsPage() {
               aria-label="Add to wishlist"
               aria-pressed={wishlisted}
             >
-              <HeartIcon filled={wishlisted} />
+              {wishlisted ? <FaHeart size={17} /> : <FiHeart size={17} />}
             </button>
           </div>
 
@@ -341,17 +318,14 @@ export default function ProductDetailsPage() {
             {isBuying ? "Processing..." : "Buy Now"}
           </button>
 
-          {/* Perks */}
-
+          {/* Delivery & Returns Single Row */}
           <div className={styles.perksRow}>
             <div className={styles.perk}>
-              <TruckIcon />
-              <span>
-                {product.freeDelivery ? "Free shipping" : "Fast shipping"}
-              </span>
+              <FiTruck size={15} />
+              <span>{product.freeDelivery ? "Free shipping" : "Fast shipping"}</span>
             </div>
             <div className={styles.perk}>
-              <ReturnIcon />
+              <FiRotateCcw size={15} />
               <span>
                 {product.returnAvailable
                   ? `${product.returnDays || 7}-day returns`
@@ -359,7 +333,7 @@ export default function ProductDetailsPage() {
               </span>
             </div>
             <div className={styles.perk}>
-              <ShieldIcon />
+              <FiShield size={15} />
               <span>Secure payment</span>
             </div>
           </div>
@@ -368,7 +342,6 @@ export default function ProductDetailsPage() {
         {/* ==========================
             Tabs — Details / Specs / Shipping / Reviews
         =========================== */}
-
         <div className={styles.tabsSection}>
           <div className={styles.tabBar} role="tablist">
             {TABS.map((tab) => (
@@ -391,15 +364,14 @@ export default function ProductDetailsPage() {
             {activeTab === "details" && (
               <div className={styles.detailsPanel}>
                 <p>{product.description}</p>
-
                 {product.features?.length > 0 && (
                   <>
                     <h3 className={styles.panelSubhead}>Highlights</h3>
                     <ul className={styles.featureList}>
                       {product.features.map((feature, index) => (
                         <li key={index}>
-                          <CheckIcon />
-                          {feature}
+                          <FiCheck size={16} />
+                          <span>{feature}</span>
                         </li>
                       ))}
                     </ul>
@@ -438,9 +410,7 @@ export default function ProductDetailsPage() {
                   <tr>
                     <td>Discount Price</td>
                     <td>
-                      {product.discountPrice > 0
-                        ? `₹${product.discountPrice}`
-                        : "-"}
+                      {product.discountPrice > 0 ? `₹${product.discountPrice}` : "-"}
                     </td>
                   </tr>
 
@@ -477,7 +447,7 @@ export default function ProductDetailsPage() {
               <div className={styles.shippingPanel}>
                 <div className={styles.shippingGrid}>
                   <div className={styles.shippingItem}>
-                    <TruckIcon />
+                    <FiTruck size={18} />
                     <div>
                       <h4>Delivery</h4>
                       <p>
@@ -491,7 +461,7 @@ export default function ProductDetailsPage() {
                   </div>
 
                   <div className={styles.shippingItem}>
-                    <ClockIcon />
+                    <FiClock size={18} />
                     <div>
                       <h4>Estimated Delivery</h4>
                       <p>
@@ -503,7 +473,7 @@ export default function ProductDetailsPage() {
                   </div>
 
                   <div className={styles.shippingItem}>
-                    <CashIcon />
+                    <FiCreditCard size={18} />
                     <div>
                       <h4>Cash on Delivery</h4>
                       <p>{product.cashOnDelivery ? "Available" : "Not available"}</p>
@@ -511,7 +481,7 @@ export default function ProductDetailsPage() {
                   </div>
 
                   <div className={styles.shippingItem}>
-                    <BoltIcon />
+                    <FiZap size={18} />
                     <div>
                       <h4>Express Delivery</h4>
                       <p>{product.expressDelivery ? "Available" : "Not available"}</p>
@@ -519,7 +489,7 @@ export default function ProductDetailsPage() {
                   </div>
 
                   <div className={styles.shippingItem}>
-                    <ReturnIcon />
+                    <FiRotateCcw size={18} />
                     <div>
                       <h4>Returns</h4>
                       <p>
@@ -531,7 +501,7 @@ export default function ProductDetailsPage() {
                   </div>
 
                   <div className={styles.shippingItem}>
-                    <RefundIcon />
+                    <FiRefreshCw size={18} />
                     <div>
                       <h4>Refund</h4>
                       <p>{product.refundAvailable ? "Available" : "Not available"}</p>
@@ -539,20 +509,16 @@ export default function ProductDetailsPage() {
                   </div>
 
                   <div className={styles.shippingItem}>
-                    <SwapIcon />
+                    <FiRepeat size={18} />
                     <div>
                       <h4>Replacement</h4>
-                      <p>
-                        {product.replacementAvailable
-                          ? "Available"
-                          : "Not available"}
-                      </p>
+                      <p>{product.replacementAvailable ? "Available" : "Not available"}</p>
                     </div>
                   </div>
 
                   {product.warranty && (
                     <div className={styles.shippingItem}>
-                      <ShieldIcon />
+                      <FiShield size={18} />
                       <div>
                         <h4>Warranty</h4>
                         <p>{product.warranty}</p>
@@ -569,7 +535,7 @@ export default function ProductDetailsPage() {
                   product.reviews.map((review) => (
                     <div key={review._id} className={styles.reviewCard}>
                       <div className={styles.reviewHead}>
-                        <h4>{review.user?.name || "User"}</h4>
+                        <h4>{review.user?.name || "Verified Buyer"}</h4>
                         <span className={styles.reviewStars}>
                           {"★".repeat(review.rating)}
                           {"☆".repeat(5 - review.rating)}
@@ -585,127 +551,36 @@ export default function ProductDetailsPage() {
             )}
           </div>
         </div>
+
+        {/* ==========================
+            Related Products Section
+        =========================== */}
+        {relatedProducts.length > 0 && (
+          <div className={styles.relatedSection}>
+            <h3 className={styles.relatedTitle}>Related Products</h3>
+            <div className={styles.relatedGrid}>
+              {relatedProducts.map((relProduct) => (
+                <div
+                  key={relProduct._id}
+                  className={styles.relatedCard}
+                  onClick={() => router.push(`/products/${relProduct._id}`)}
+                >
+                  <div className={styles.relatedImgBox}>
+                    <img
+                      src={relProduct.images?.[0]?.url || "/images/no-image.png"}
+                      alt={relProduct.name}
+                    />
+                  </div>
+                  <div className={styles.relatedInfo}>
+                    <h4>{relProduct.name}</h4>
+                    <p className={styles.relatedPrice}>₹{relProduct.price}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </section>
-  );
-}
-
-/* ================= Inline Icons ================= */
-
-function CartIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="9" cy="21" r="1" />
-      <circle cx="20" cy="21" r="1" />
-      <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
-    </svg>
-  );
-}
-
-function HeartIcon({ filled }) {
-  return (
-    <svg
-      width="18"
-      height="18"
-      viewBox="0 0 24 24"
-      fill={filled ? "currentColor" : "none"}
-      stroke="currentColor"
-      strokeWidth="2"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-    >
-      <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.6l-1-1a5.5 5.5 0 0 0-7.8 7.8l1 1L12 21l7.8-7.6 1-1a5.5 5.5 0 0 0 0-7.8z" />
-    </svg>
-  );
-}
-
-function TruckIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="1" y="6" width="14" height="12" rx="1" />
-      <path d="M15 10h4l3 3v5h-7z" />
-      <circle cx="6" cy="19" r="1.6" />
-      <circle cx="17.5" cy="19" r="1.6" />
-    </svg>
-  );
-}
-
-function ReturnIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M3 12a9 9 0 1 0 3-6.7" />
-      <path d="M3 4v5h5" />
-    </svg>
-  );
-}
-
-function ShieldIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 2 4 5v6c0 5 3.4 8.7 8 11 4.6-2.3 8-6 8-11V5z" />
-      <path d="m9 12 2 2 4-4" />
-    </svg>
-  );
-}
-
-function CheckIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20 6 9 17l-5-5" />
-    </svg>
-  );
-}
-
-function ClockIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <circle cx="12" cy="12" r="9" />
-      <path d="M12 7v5l3 3" />
-    </svg>
-  );
-}
-
-function CashIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <rect x="2" y="6" width="20" height="12" rx="2" />
-      <circle cx="12" cy="12" r="3" />
-    </svg>
-  );
-}
-
-function BoltIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M13 2 3 14h7l-1 8 10-12h-7l1-8z" />
-    </svg>
-  );
-}
-
-function RefundIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M12 8v8" />
-      <path d="M8.5 10.5a3.5 3.5 0 1 1 0 3" />
-      <circle cx="12" cy="12" r="9" />
-    </svg>
-  );
-}
-
-function SwapIcon() {
-  return (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M4 8h13l-3-3" />
-      <path d="M20 16H7l3 3" />
-    </svg>
-  );
-}
-
-function OfferIcon() {
-  return (
-    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M20.6 12.6 12 21.2 2.8 12 3 3l9-.2z" />
-      <circle cx="8" cy="8" r="1.6" />
-    </svg>
   );
 }
