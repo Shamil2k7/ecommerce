@@ -5,19 +5,19 @@
 .wrapper {
   width: 100%;
   min-height: 100vh;
-  padding: 32px;
+  padding: clamp(12px, 3vw, 32px);
   background: #f8f5ef;
   box-sizing: border-box;
 }
 
 .header {
-  margin-bottom: 24px;
+  margin-bottom: clamp(16px, 3vw, 24px);
 }
 
 .settingsTitle {
   margin: 0;
-    font-size:clamp(1.5rem,3vw,2rem);
-    line-height:1.2;
+  font-size: clamp(1.4rem, 4vw, 2rem);
+  line-height: 1.2;
   font-weight: 700;
   color: #222;
 }
@@ -25,7 +25,7 @@
 .settingsDescription {
   margin-top: 6px;
   color: #7a746d;
-font-size:clamp(.85rem,2vw,.95rem);
+  font-size: clamp(0.85rem, 2vw, 0.95rem);
 }
 
 /* ===========================
@@ -35,7 +35,7 @@ font-size:clamp(.85rem,2vw,.95rem);
 .card {
   background: #fff;
   border: 1px solid #e8e2dc;
-  border-radius: 22px;
+  border-radius: clamp(14px, 2vw, 22px);
   overflow: hidden;
 }
 
@@ -43,24 +43,26 @@ font-size:clamp(.85rem,2vw,.95rem);
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
-  padding: 28px 30px;
+  flex-wrap: wrap;
+  gap: 16px;
+  padding: clamp(16px, 3vw, 28px) clamp(16px, 3vw, 30px);
   border-bottom: 1px solid #ece6df;
 }
 
 .cardHeader h2 {
   margin: 0;
- font-size:clamp(1.2rem,2.4vw,1.5rem);
+  font-size: clamp(1.1rem, 2.4vw, 1.5rem);
   color: #222;
 }
 
 .cardHeader p {
   margin-top: 5px;
   color: #817972;
-  font-size: 15px;
+  font-size: clamp(0.85rem, 1.6vw, 0.95rem);
 }
 
 .cardContent {
-  padding: 30px;
+  padding: clamp(16px, 3vw, 30px);
 }
 
 /* ===========================
@@ -71,12 +73,13 @@ font-size:clamp(.85rem,2vw,.95rem);
   border: none;
   background: #1f1a17;
   color: #fff;
-  padding:12px 22px;
-font-size:14px;
+  padding: 12px 22px;
+  font-size: 14px;
   border-radius: 999px;
   cursor: pointer;
   font-weight: 600;
-  transition: .25s;
+  transition: 0.25s;
+  white-space: nowrap;
 }
 
 .saveBtn:hover {
@@ -84,7 +87,7 @@ font-size:14px;
 }
 
 .saveBtn:disabled {
-  opacity: .7;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
@@ -94,21 +97,23 @@ font-size:14px;
 
 .form {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 26px 22px;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: clamp(16px, 3vw, 26px) clamp(14px, 2.5vw, 22px);
 }
 
 .formGroup {
   display: flex;
   flex-direction: column;
+  min-width: 0;
 }
 
 .formGroup label {
-    font-size:clamp(.9rem,1.5vw,.95rem);
+  font-size: clamp(0.85rem, 1.5vw, 0.95rem);
   font-weight: 600;
   color: #222;
   margin-bottom: 10px;
 }
+
 .textarea {
   width: 100%;
   min-height: 120px;
@@ -124,75 +129,68 @@ font-size:14px;
   box-sizing: border-box;
 }
 
+.textarea:focus {
+  background: #fff;
+  border-color: #222;
+}
+
 /* ===========================
    Upload Fields
+   (flex-based row that wraps
+   gracefully at any width,
+   instead of a fixed grid
+   template)
 =========================== */
 
-.formGroup:has(input[type="file"]) {
-  display: grid;
-  grid-template-columns: 72px 1fr;
-  grid-template-areas:
-    "label label"
-    "preview input";
-  gap: 12px 18px;
+.uploadRow {
+  display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  gap: 14px;
 }
 
-.formGroup:has(input[type="file"]) label {
-  grid-area: label;
-  margin-bottom: 0;
+.previewBox {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
 }
 
-.formGroup:has(input[type="file"]) img {
-  grid-area: preview;
-}
-
-.formGroup:has(input[type="file"]) input[type="file"] {
-  grid-area: input;
-}
-
-/* ===========================
-   Preview Images
-=========================== */
-
-.formGroup img {
-  width: 70px;
-  height: 70px;
+.previewBox img {
+  width: clamp(50px, 10vw, 70px);
+  height: clamp(50px, 10vw, 70px);
   object-fit: contain;
   border-radius: 12px;
   border: 1px solid #e5ddd4;
   background: #fff;
   padding: 6px;
-  margin: 0;
-}
-
-/* favicon */
-
-.formGroup:nth-child(2) img {
-  width: 54px;
-  height: 54px;
-}
-
-/* ===========================
-   File Input
-=========================== */
-
-.formGroup input[type="file"] {
-  width: 100%;
-  min-height: 72px;
-  border: 2px dashed #ddd3c7;
-  border-radius: 14px;
-  background: #f8f5ef;
-  padding: 18px;
-  cursor: pointer;
   box-sizing: border-box;
 }
 
-.formGroup input[type="file"]::file-selector-button {
+.faviconBox img {
+  width: clamp(40px, 8vw, 54px);
+  height: clamp(40px, 8vw, 54px);
+}
+
+.fileInput {
+  flex: 1 1 200px;
+  min-width: 180px;
+  min-height: 60px;
+  border: 2px dashed #ddd3c7;
+  border-radius: 14px;
+  background: #f8f5ef;
+  padding: 14px;
+  cursor: pointer;
+  box-sizing: border-box;
+  font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+}
+
+.fileInput::file-selector-button {
   background: #211d1b;
   color: white;
   border: none;
-  padding: 9px 18px;
+  padding: 9px 16px;
   border-radius: 8px;
   cursor: pointer;
   margin-right: 12px;
@@ -202,9 +200,10 @@ font-size:14px;
    Text Inputs
 =========================== */
 
-.formGroup input[type="text"] {
+.formGroup input[type="text"],
+.formGroup input[type="email"] {
   width: 100%;
-  height: 56px;
+  height: 52px;
   border: 1px solid #e5ddd4;
   border-radius: 14px;
   background: #f8f5ef;
@@ -212,32 +211,39 @@ font-size:14px;
   font-size: 15px;
   color: #222;
   outline: none;
-  transition: .25s;
+  transition: 0.25s;
   box-sizing: border-box;
 }
 
-.formGroup input[type="text"]:focus {
+.formGroup input[type="text"]:focus,
+.formGroup input[type="email"]:focus {
   background: #fff;
   border-color: #222;
+}
+
+.removeBtn {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 8px;
+  background: #dc2626;
+  color: #fff;
+  cursor: pointer;
+  font-size: 13px;
+  transition: 0.2s;
+  white-space: nowrap;
+}
+
+.removeBtn:hover {
+  background: #b91c1c;
 }
 
 /* ===========================
    Tablet
 =========================== */
 
-@media (max-width:992px) {
-
-  .wrapper {
-    padding: 24px;
-  }
-
-  .form {
-    grid-template-columns: 1fr;
-  }
-
+@media (max-width: 992px) {
   .cardHeader {
     flex-direction: column;
-    gap: 18px;
     align-items: flex-start;
   }
 
@@ -250,66 +256,17 @@ font-size:14px;
    Mobile
 =========================== */
 
-@media (max-width:768px) {
-
-  .wrapper {
-    padding: 16px;
-  }
-
-  .settingsTitle {
-    font-size: 28px;
-  }
-
-  .settingsDescription {
-    font-size: 14px;
-  }
-
-  .card {
-    border-radius: 18px;
-  }
-
-  .cardHeader,
-  .cardContent {
-    padding: 20px;
-  }
-
-  .cardHeader h2 {
-    font-size: 22px;
-  }
-
+@media (max-width: 768px) {
   .form {
-    gap: 20px;
+    grid-template-columns: 1fr;
   }
 
-  .formGroup:has(input[type="file"]) {
-    grid-template-columns: 60px 1fr;
-    gap: 12px;
+  .uploadRow {
+    width: 100%;
   }
 
-  .formGroup img {
-    width: 58px;
-    height: 58px;
-  }
-
-  .formGroup:nth-child(2) img {
-    width: 48px;
-    height: 48px;
-  }
-
-  .formGroup input[type="file"] {
-    min-height: 60px;
-    padding: 14px;
-    font-size: 14px;
-  }
-
-  .formGroup input[type="file"]::file-selector-button {
-    padding: 8px 14px;
-    font-size: 13px;
-  }
-
-  .formGroup input[type="text"] {
-    height: 50px;
-    font-size: 14px;
+  .fileInput {
+    flex-basis: 100%;
   }
 }
 
@@ -317,38 +274,18 @@ font-size:14px;
    Small Mobile
 =========================== */
 
-@media (max-width:480px) {
-
-  .wrapper {
-    padding: 12px;
-  }
-
-  .settingsTitle {
-    font-size: 24px;
-  }
-
-  .cardHeader,
-  .cardContent {
-    padding: 16px;
-  }
-
-  .formGroup:has(input[type="file"]) {
-    grid-template-columns: 50px 1fr;
-  }
-
-  .formGroup img {
-    width: 45px;
-    height: 45px;
-  }
-
-  .formGroup:nth-child(2) img {
-    width: 40px;
-    height: 40px;
+@media (max-width: 480px) {
+  .previewBox {
+    flex-direction: row;
+    width: 100%;
+    justify-content: space-between;
   }
 
   .saveBtn {
-    width: 100%;
     padding: 13px;
-    font-size: 14px;
+  }
+
+  .removeBtn {
+    padding: 10px 14px;
   }
 }

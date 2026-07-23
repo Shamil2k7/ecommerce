@@ -1,0 +1,183 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+/* ===========================
+          Header
+=========================== */
+
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+  flex-wrap: wrap;
+}
+
+.header h1 {
+  font-size: 30px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 6px;
+}
+
+.header p {
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+/* ===========================
+        Save Button
+=========================== */
+
+.saveBtn {
+  height: 46px;
+  padding: 0 22px;
+  border: none;
+  border-radius: 10px;
+  background: var(--primary);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.saveBtn:hover {
+  opacity: 0.9;
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===========================
+            Card
+=========================== */
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card h2 {
+  font-size: 20px;
+  color: var(--text);
+  margin: 0;
+}
+
+/* ===========================
+          Textarea
+=========================== */
+
+.textarea {
+  width: 100%;
+  min-height: 300px;
+  padding: 16px;
+
+  border: 1px solid var(--line);
+  border-radius: 10px;
+
+  background: var(--bg);
+  color: var(--text);
+
+  resize: vertical;
+
+  font-size: 15px;
+  line-height: 1.7;
+
+  outline: none;
+  transition: 0.25s;
+}
+
+.textarea:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+}
+
+.textarea::placeholder {
+  color: var(--text-soft);
+}
+
+/* ===========================
+        Scrollbar
+=========================== */
+
+.textarea::-webkit-scrollbar {
+  width: 8px;
+}
+
+.textarea::-webkit-scrollbar-thumb {
+  background: #cfcfcf;
+  border-radius: 20px;
+}
+
+/* ===========================
+        Responsive
+=========================== */
+
+@media (max-width: 992px) {
+  .header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .saveBtn {
+    width: 100%;
+  }
+}
+
+@media (max-width: 768px) {
+  .wrapper {
+    gap: 18px;
+  }
+
+  .header h1 {
+    font-size: 26px;
+  }
+
+  .card {
+    padding: 18px;
+  }
+
+  .card h2 {
+    font-size: 18px;
+  }
+
+  .textarea {
+    min-height: 220px;
+    font-size: 14px;
+    padding: 14px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header h1 {
+    font-size: 22px;
+  }
+
+  .header p {
+    font-size: 14px;
+  }
+
+  .saveBtn {
+    height: 44px;
+    font-size: 14px;
+  }
+
+  .card {
+    padding: 15px;
+  }
+
+  .textarea {
+    min-height: 180px;
+  }
+}

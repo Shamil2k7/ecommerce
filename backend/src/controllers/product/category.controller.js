@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import Category from "../../models/category.model.js";
+import cloudinary from "../../config/cloudinary.js";
 import ApiError from "../../utils/ApiError.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
@@ -9,37 +10,24 @@ import { asyncHandler } from "../../utils/asyncHandler.js";
 export const createCategory = asyncHandler(async (req, res) => {
   const { name, description, parentCategory } = req.body;
 
-  if (!name || !name.trim()) {
+  if (!name || typeof name !== "string" || !name.trim()) {
     throw new ApiError(400, "Category name is required");
   }
 
-  const trimmedName = name.trim();
+  if (parentCategory && parentCategory !== "null" && parentCategory !== "" && !mongoose.Types.ObjectId.isValid(parentCategory)) {
+    throw new ApiError(400, "Invalid parent category id");
+  }
 
-  const existing = await Category.findOne({ name: trimmedName });
+  const existing = await Category.findOne({ name: name.trim() });
   if (existing) throw new ApiError(409, "Category with this name already exists");
 
-  if (parentCategory && !mongoose.Types.ObjectId.isValid(parentCategory)) {
-    throw new ApiError(400, "Invalid parent category ID");
-  }
-
-  if (parentCategory) {
-    const parentExists = await Category.findById(parentCategory);
-    if (!parentExists) throw new ApiError(404, "Parent category not found");
-  }
-
-  const slug = trimmedName
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/(^-|-$)/g, "");
-
   const image = req.file
-    ? { url: `/uploads/products/${req.file.filename}`, public_id: req.file.filename }
+    ? { url: req.file.path, public_id: req.file.filename }
     : undefined;
 
   const category = await Category.create({
-    name: trimmedName,
-    slug,
-    description: description ? description.trim() : "",
+    name,
+    description,
     parentCategory: parentCategory || null,
     image,
   });
@@ -53,12 +41,7 @@ export const getAllCategories = asyncHandler(async (req, res) => {
   const { parentCategory, isActive } = req.query;
 
   const filter = {};
-  if (parentCategory) {
-    if (!mongoose.Types.ObjectId.isValid(parentCategory)) {
-      throw new ApiError(400, "Invalid parent category ID");
-    }
-    filter.parentCategory = parentCategory;
-  }
+  if (parentCategory) filter.parentCategory = parentCategory;
   if (isActive !== undefined) filter.isActive = isActive === "true";
 
   const categories = await Category.find(filter)
@@ -74,7 +57,7 @@ export const getCategoryById = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new ApiError(400, "Invalid category ID");
+    throw new ApiError(400, "Invalid category id");
   }
 
   const category = await Category.findById(id).populate("parentCategory", "name slug");
@@ -90,42 +73,39 @@ export const updateCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new ApiError(400, "Invalid category ID");
+    throw new ApiError(400, "Invalid category id");
   }
 
   const category = await Category.findById(id);
   if (!category) throw new ApiError(404, "Category not found");
 
+  const { name, parentCategory } = req.body;
+  if (name !== undefined && (typeof name !== "string" || !name.trim())) {
+    throw new ApiError(400, "Category name cannot be empty");
+  }
+  if (parentCategory && parentCategory !== "null" && parentCategory !== "" && !mongoose.Types.ObjectId.isValid(parentCategory)) {
+    throw new ApiError(400, "Invalid parent category id");
+  }
+
   const updates = { ...req.body };
 
-  if (updates.name && updates.name.trim()) {
-    const trimmedName = updates.name.trim();
-    const existing = await Category.findOne({ name: trimmedName, _id: { $ne: id } });
-    if (existing) throw new ApiError(409, "Category with this name already exists");
-    updates.name = trimmedName;
-    updates.slug = trimmedName
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/(^-|-$)/g, "");
-  }
-
-  if (updates.parentCategory) {
-    if (!mongoose.Types.ObjectId.isValid(updates.parentCategory)) {
-      throw new ApiError(400, "Invalid parent category ID");
-    }
-    if (updates.parentCategory === id) {
-      throw new ApiError(400, "Category cannot be its own parent");
-    }
-  }
-
   if (req.file) {
-    updates.image = { url: `/uploads/products/${req.file.filename}`, public_id: req.file.filename };
+    if (category.image?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(category.image.public_id);
+      } catch (err) {
+        console.log("Cloudinary Delete Error:", err.message);
+      }
+    }
+    updates.image = { url: req.file.path, public_id: req.file.filename };
   }
 
-  Object.assign(category, updates);
-  await category.save();
+  const updatedCategory = await Category.findByIdAndUpdate(id, updates, {
+    new: true,
+    runValidators: true,
+  });
 
-  return res.status(200).json(new ApiResponse(200, category, "Category updated successfully"));
+  return res.status(200).json(new ApiResponse(200, updatedCategory, "Category updated successfully"));
 });
 
 // @desc Delete category
@@ -134,16 +114,39 @@ export const deleteCategory = asyncHandler(async (req, res) => {
   const { id } = req.params;
 
   if (!mongoose.Types.ObjectId.isValid(id)) {
-    throw new ApiError(400, "Invalid category ID");
+    throw new ApiError(400, "Invalid category id");
   }
 
-  const childCount = await Category.countDocuments({ parentCategory: id });
-  if (childCount > 0) {
-    throw new ApiError(400, "Cannot delete a category that has subcategories");
+  const category = await Category.findById(id);
+  if (!category) {
+    throw new ApiError(404, "Category not found");
   }
 
-  const category = await Category.findByIdAndDelete(id);
-  if (!category) throw new ApiError(404, "Category not found");
+  // Delete all child categories & their images from Cloudinary
+  const children = await Category.find({ parentCategory: id });
+  for (const child of children) {
+    if (child.image?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(child.image.public_id);
+      } catch (err) {
+        console.log("Cloudinary Delete Error:", err.message);
+      }
+    }
+  }
+  await Category.deleteMany({ parentCategory: id });
 
-  return res.status(200).json(new ApiResponse(200, {}, "Category deleted successfully"));
+  // Delete parent category image from Cloudinary
+  if (category.image?.public_id) {
+    try {
+      await cloudinary.uploader.destroy(category.image.public_id);
+    } catch (err) {
+      console.log("Cloudinary Delete Error:", err.message);
+    }
+  }
+
+  await category.deleteOne();
+
+  return res.status(200).json(
+    new ApiResponse(200, {}, "Category deleted successfully")
+  );
 });

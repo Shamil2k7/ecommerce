@@ -11,6 +11,7 @@ const cartItemSchema = new mongoose.Schema(
     name: {
       type: String,
       required: true,
+      trim: true,
     },
 
     image: {
@@ -31,11 +32,13 @@ const cartItemSchema = new mongoose.Schema(
     price: {
       type: Number,
       required: true,
+      min: 0,
     },
 
     originalPrice: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     quantity: {
@@ -47,27 +50,33 @@ const cartItemSchema = new mongoose.Schema(
     stock: {
       type: Number,
       required: true,
+      min: 0,
     },
 
-    // ADD THIS
     subtotal: {
       type: Number,
       default: 0,
+      min: 0,
     },
   },
-  { _id: false }
+  {
+    _id: false,
+  }
 );
 
 const cartSchema = new mongoose.Schema(
   {
     userId: {
-      type: String,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
       unique: true,
     },
 
-    products: [cartItemSchema],
+    products: {
+      type: [cartItemSchema],
+      default: [],
+    },
 
     couponApplied: {
       type: mongoose.Schema.Types.ObjectId,
@@ -84,36 +93,43 @@ const cartSchema = new mongoose.Schema(
     subtotal: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     discount: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     couponDiscount: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     offerDiscount: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     shipping: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     tax: {
       type: Number,
       default: 0,
+      min: 0,
     },
 
     finalTotal: {
       type: Number,
       default: 0,
+      min: 0,
     },
   },
   {

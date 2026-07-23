@@ -6,8 +6,7 @@
   --warning-hover:#f7ca00;
   --text:#111;
   --text-light:#565959;
-  --border:#d5d9d9;
-  /* --background:#f3f3f3; */
+  /* --border:#d5d9d9; */
   --white:#fff;
   --success:#067d62;
 
@@ -34,7 +33,6 @@
   color:var(--text-light);
 }
 
-
 .grid{
   display:grid;
   grid-template-columns:1fr 380px;
@@ -47,7 +45,6 @@
   flex-direction:column;
   gap:22px;
 }
-
 
 .card{
   background:#fff;
@@ -68,7 +65,6 @@
   color:#111;
 }
 
-
 .addBtn{
   border:none;
   background:#ffd814;
@@ -79,25 +75,11 @@
   font-size:15px;
   transition:.3s;
 }
+ 
 
 .addBtn:hover{
   background:#f7ca00;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 .loadingText,
 .noAddressText {
@@ -112,8 +94,6 @@
   flex-direction: column;
   gap: 16px;
 }
-
-
 
 .addressItem {
   display: flex;
@@ -136,7 +116,6 @@
   background: #f0fbfb;
 }
 
-
 .radioWrapper {
   display: flex;
   align-items: center;
@@ -150,7 +129,6 @@
   accent-color: #007185;
   cursor: pointer;
 }
-
 
 .addressDetails {
   flex: 1;
@@ -265,16 +243,6 @@
   background: #000;
 }
 
-
-
-
-
-
-
-/* ======================================================
-   PAYMENT SECTION
-====================================================== */
-
 .paymentMethods {
   display: flex;
   flex-direction: column;
@@ -282,9 +250,6 @@
   margin-top: 18px;
 }
 
-/* ======================================================
-   PAYMENT OPTION
-====================================================== */
 
 .paymentItem {
   display: flex;
@@ -303,18 +268,11 @@
   background: #fcfcfc;
 }
 
-/* ======================================================
-   SELECTED PAYMENT
-====================================================== */
 
 .selectedPayment {
   border: 2px solid #007185;
   background: #f0fbfb;
 }
-
-/* ======================================================
-   LEFT CONTENT
-====================================================== */
 
 .paymentItem input[type="radio"] {
   width: 18px;
@@ -332,10 +290,6 @@
   color: #111;
 }
 
-/* ======================================================
-   PAYMENT ICON
-====================================================== */
-
 .paymentIcon {
   width: 42px;
   height: 42px;
@@ -349,18 +303,10 @@
   flex-shrink: 0;
 }
 
-/* ======================================================
-   ACTIVE ICON
-====================================================== */
-
 .selectedPayment .paymentIcon {
   background: #007185;
   color: #fff;
 }
-
-/* ======================================================
-   CHECK MARK
-====================================================== */
 
 .paymentItem::after {
   content: "";
@@ -377,10 +323,6 @@
 .selectedPayment::after {
   transform: rotate(45deg) scale(1);
 }
-
-/* ======================================================
-   PAYMENT DESCRIPTION
-====================================================== */
 
 .paymentInfo {
   display: flex;
@@ -399,10 +341,6 @@
   color: #666;
 }
 
-/* ======================================================
-   PAYMENT NOTICE
-====================================================== */
-
 .paymentNotice {
   margin-top: 20px;
   padding: 16px;
@@ -412,10 +350,6 @@
   font-size: 14px;
   line-height: 1.6;
 }
-
-/* ======================================================
-   PAYMENT RESPONSIVE
-====================================================== */
 
 @media (max-width:768px){
 
@@ -457,17 +391,6 @@
 
 }
 
-
-
-
-
-
-
-
-/* ======================================================
-   EMPTY CART STATE
-====================================================== */
-
 .emptyState {
   background: #fff;
   border: 1px solid #d5d9d9;
@@ -506,14 +429,6 @@
   background: #f7ca00;
 }
 
-
-
-
-
-/* ======================================================
-   SECTION SPACING
-====================================================== */
-
 .card + .card {
   margin-top: 0;
 }
@@ -521,10 +436,6 @@
 .card:last-child {
   margin-bottom: 0;
 }
-
-/* ======================================================
-   TABLET
-====================================================== */
 
 @media (max-width: 992px) {
 
@@ -554,10 +465,6 @@
   }
 
 }
-
-/* ======================================================
-   MOBILE
-====================================================== */
 
 @media (max-width: 768px) {
 
@@ -608,10 +515,6 @@
   }
 
 }
-
-/* ======================================================
-   SMALL MOBILE
-====================================================== */
 
 @media (max-width: 480px) {
 
@@ -683,10 +586,6 @@
   }
 
 }
-
-/* ======================================================
-   LARGE DESKTOP
-====================================================== */
 
 @media (min-width: 1400px) {
 

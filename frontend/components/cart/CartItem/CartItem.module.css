@@ -211,75 +211,131 @@
   transform: scale(1.1);
 }
 
-/* ===========================
-   Tablet
-=========================== */
 
-@media (max-width: 768px) {
-  .cartItem {
-    gap: 15px;
-    padding: 16px;
-  }
 
-  .leftSection {
-    width: 140px;
-  }
 
-  .itemImage {
-    width: 120px;
-    height: 120px;
-  }
 
-  .itemPrice {
-    font-size: 24px;
-  }
 
-  .actionBtn {
-    font-size: 14px;
-    padding: 16px 10px;
-  }
+
+
+
+@media (max-width:600px){
+
+.cartItem{
+    display:flex;
+    gap:14px;
+    align-items:flex-start;
+    position:relative;
+
+    padding:16px;
+    border:1px solid #ececec;
+    border-radius:18px;
+    margin-bottom:16px;
+    background:#fff;
 }
 
-/* ===========================
-   Mobile
-=========================== */
+.leftSection{
+    width:90px;
+    flex-shrink:0;
+}
 
-@media (max-width: 600px) {
-  .cartItem {
-    flex-direction: column;
-  }
+.itemImage{
+    width:82px;
+    height:82px;
+    object-fit:cover;
+    border-radius:12px;
+}
 
-  .leftSection {
-    width: 100%;
-  }
+.quantityControl{
+    margin-top:12px;
+    width:82px;
+    justify-content:space-between;
+}
 
-  .itemImage {
-    width: 220px;
-    height: 220px;
-  }
+.qtyBtn{
+    width:28px;
+    height:28px;
+    font-size:18px;
+}
 
-  .quantityControl {
-    width: 180px;
-    justify-content: space-between;
-  }
+.qtyValue{
+    width:auto;
+    font-size:15px;
+}
 
-  .actionBar {
-    flex-direction: column;
-  }
+.itemDetails{
+    flex:1;
+}
 
-  .actionBtn {
-    width: 100%;
-    justify-content: flex-start;
-    padding: 16px 20px;
-    border-right: none;
-    border-bottom: 1px solid #ededed;
-  }
+.itemName{
+    font-size:15px;
+    line-height:1.4;
+    margin-bottom:6px;
 
-  .actionBtn:last-child {
-    border-bottom: none;
-  }
+    display:-webkit-box;
+    -webkit-line-clamp:2;
+    -webkit-box-orient:vertical;
+    overflow:hidden;
+}
 
-  .actionIcon {
-    font-size: 18px;
-  }
+.itemVariant{
+    gap:6px;
+    margin-bottom:8px;
+}
+
+.itemVariant span{
+    font-size:12px;
+}
+
+.ratingRow{
+    margin-bottom:8px;
+}
+
+.ratingBadge{
+    font-size:11px;
+}
+
+.reviewCount{
+    font-size:12px;
+}
+
+.priceRow{
+    margin-bottom:8px;
+}
+
+.itemPrice{
+    font-size:20px;
+}
+
+.itemOriginalPrice{
+    font-size:14px;
+}
+
+.offer{
+    font-size:12px;
+}
+
+.upiOffer{
+    display:none;
+}
+
+.actionBar{
+    margin-top:12px;
+    border:none;
+    justify-content:flex-start;
+    gap:16px;
+}
+
+.actionBtn{
+    flex:none;
+    border:none;
+    padding:0;
+    background:none;
+    font-size:13px;
+    color:#555;
+}
+
+.actionIcon{
+    font-size:18px;
+}
 }

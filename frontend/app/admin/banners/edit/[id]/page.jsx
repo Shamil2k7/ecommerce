@@ -21,8 +21,6 @@ export default function EditBannerPage() {
 
   const [updating, setUpdating] = useState(false);
 
-  
-
   useEffect(() => {
     if (id) {
       getBanner();
@@ -32,7 +30,10 @@ export default function EditBannerPage() {
   const getBanner = async () => {
     try {
       const res = await axios.get(
-        `${API}/api/marketing/banners/${id}`
+        `${API}/api/marketing/banners/${id}`,
+        {
+          withCredentials: true,
+        }
       );
 
       setBanner({
@@ -42,12 +43,11 @@ export default function EditBannerPage() {
       });
     } catch (error) {
       console.error(error);
-      alert("Failed to load banner");
+      alert(error.response?.data?.message || "Failed to load banner");
     }
   };
 
-  // ================= IMAGE CHANGE =================
-
+  // Handle image
   const handleImage = (e) => {
     const file = e.target.files[0];
 
@@ -65,8 +65,7 @@ export default function EditBannerPage() {
     reader.readAsDataURL(file);
   };
 
- 
-
+  // Update banner
   const handleUpdate = async () => {
     try {
       setUpdating(true);
@@ -77,6 +76,9 @@ export default function EditBannerPage() {
           image: banner.image,
           displayOrder: Number(banner.displayOrder),
           status: banner.status,
+        },
+        {
+          withCredentials: true,
         }
       );
 
@@ -90,14 +92,16 @@ export default function EditBannerPage() {
     }
   };
 
-  // ================= DELETE =================
-
+  // Delete banner
   const handleDelete = async () => {
     if (!window.confirm("Delete this banner?")) return;
 
     try {
       await axios.delete(
-        `${API}/api/marketing/banners/${id}`
+        `${API}/api/marketing/banners/${id}`,
+        {
+          withCredentials: true,
+        }
       );
 
       alert("Banner deleted successfully");
@@ -112,10 +116,7 @@ export default function EditBannerPage() {
     <section className={styles.container}>
       <div className={styles.header}>
         <div>
-          <Link
-            href="/admin/banners"
-            className={styles.back}
-          >
+          <Link href="/admin/banners" className={styles.back}>
             <ArrowLeft size={18} />
             Back to Banners
           </Link>

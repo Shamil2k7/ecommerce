@@ -21,7 +21,8 @@ export default function ProductsPage() {
 
   const [selectedCategory, setSelectedCategory] = useState("All Categories");
   const [selectedBrand, setSelectedBrand] = useState("All Brands");
-
+  const [showModal, setShowModal] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -99,6 +100,15 @@ export default function ProductsPage() {
 
     return matchesSearch && matchesCategory && matchesBrand;
   });
+  const handleView = (product) => {
+    setSelectedProduct(product);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setSelectedProduct(null);
+  };
 
   return (
     <section className={styles.products}>
@@ -204,11 +214,11 @@ export default function ProductsPage() {
 
                   <td>{typeof product.category === "object" ? product.category?.name : product.category || "Uncategorized"}</td>
 
-                  {/* <td>
+                  <td>
                     {typeof product.brand === "object"
                       ? product.brand.name
                       : product.brand || "-"}
-                  </td> */}
+                  </td>
 
                   <td>
                     ₹{product.price.toLocaleString()}
@@ -236,7 +246,10 @@ export default function ProductsPage() {
 
                     <div className={styles.actions}>
 
-                      <button title="View" onClick={() => router.push(`/products?category=${encodeURIComponent(typeof product.category === "object" ? product.category?.name : product.category)}`)}>
+                      <button
+                        title="View"
+                        onClick={() => handleView(product)}
+                      >
                         <Eye size={18} />
                       </button>
 
@@ -286,6 +299,71 @@ export default function ProductsPage() {
         <button>Next</button>
 
       </div>
+      {showModal && selectedProduct && (
+  <div className={styles.modalOverlay}>
+    <div className={styles.modal}>
+
+      <button
+        className={styles.closeBtn}
+        onClick={closeModal}
+      >
+        ×
+      </button>
+
+      <div className={styles.modalContent}>
+
+        <img
+          src={
+            selectedProduct.images?.[0]?.url ||
+            "/images/headphone.png"
+          }
+          alt={selectedProduct.name}
+          className={styles.modalImage}
+        />
+
+        <div className={styles.modalInfo}>
+
+          <h2>{selectedProduct.name}</h2>
+
+          <p>
+            <strong>Category:</strong>{" "}
+            {selectedProduct.category?.name ||
+              selectedProduct.category}
+          </p>
+
+          <p>
+            <strong>Brand:</strong>{" "}
+            {selectedProduct.brand?.name ||
+              selectedProduct.brand ||
+              "-"}
+          </p>
+
+          <p>
+            <strong>Price:</strong> ₹
+            {selectedProduct.price}
+          </p>
+
+          <p>
+            <strong>Stock:</strong>{" "}
+            {selectedProduct.stock}
+          </p>
+
+          <p>
+            <strong>Description:</strong>
+          </p>
+
+          <p>
+            {selectedProduct.description ||
+              "No description"}
+          </p>
+
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+)}
 
     </section>
   );

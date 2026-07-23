@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const orderSchema = new mongoose.Schema(
+const orderItemSchema = new mongoose.Schema(
   {
     productId: {
       type: mongoose.Schema.Types.ObjectId,
@@ -8,6 +8,47 @@ const orderSchema = new mongoose.Schema(
       required: true,
     },
 
+    name: {
+      type: String,
+      required: true,
+    },
+
+    image: {
+      type: String,
+      default: "",
+    },
+
+    color: {
+      type: String,
+      default: "",
+    },
+
+    size: {
+      type: String,
+      default: "",
+    },
+
+    price: {
+      type: Number,
+      required: true,
+    },
+
+    quantity: {
+      type: Number,
+      required: true,
+      min: 1,
+    },
+
+    subtotal: {
+      type: Number,
+      required: true,
+    },
+  },
+  { _id: false }
+);
+
+const orderSchema = new mongoose.Schema(
+  {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
@@ -20,11 +61,10 @@ const orderSchema = new mongoose.Schema(
       unique: true,
     },
 
-    quantity: {
-      type: Number,
+    products: {
+      type: [orderItemSchema],
       required: true,
-      default: 1,
-      min: 1,
+      validate: [(val) => val.length > 0, "Order must contain at least one product"],
     },
 
     paymentMethod: {
@@ -64,6 +104,12 @@ const orderSchema = new mongoose.Schema(
       default: "Pending",
     },
 
+    couponApplied: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Coupon",
+      default: null,
+    },
+
     subTotal: {
       type: Number,
       required: true,
@@ -80,13 +126,14 @@ const orderSchema = new mongoose.Schema(
       default: 0,
     },
 
+    shipping: {
+      type: Number,
+      default: 0,
+    },
+
     totalAmount: {
       type: Number,
       required: true,
-    },
-
-    shipDate: {
-      type: Date,
     },
 
     shippingAddress: {
@@ -125,6 +172,11 @@ const orderSchema = new mongoose.Schema(
         default: "India",
       },
     },
+
+    shipDate: {
+      type: Date,
+    },
+
     refundRequested: {
       type: Boolean,
       default: false,

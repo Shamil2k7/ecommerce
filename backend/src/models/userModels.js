@@ -36,28 +36,32 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
 
+      profileImage: {
+      type: String,
+      default: "",
+    },
 
     department: {
       type: String,
       default: "",
       trim: true,
-
     },
+
     address: {
       type: String,
       default: "",
       trim: true,
     },
+
     status: {
       type: String,
       enum: ["Active", "Inactive"],
       default: "Active",
     },
-    cloudinary_id: {
-      type:String,
-      default:"",
+     cloudinary_id: {
+      type: String,
+      default: "",
     },
-
 
     isVerified: {
       type: Boolean,
@@ -69,10 +73,6 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    profileImage: {
-      type: String,
-      default: "",
-    },
 
     resetPasswordToken: String,
     resetPasswordExpire: Date,

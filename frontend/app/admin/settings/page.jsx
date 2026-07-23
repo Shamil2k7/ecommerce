@@ -123,6 +123,34 @@ export default function Page() {
     }
   };
 
+  const removeLogo = async () => {
+    try {
+      await axios.delete(`${API}/api/settings/logo`);
+
+      setLogo(null);
+      setLogoPreview("");
+
+      fetchSettings();
+    } catch (err) {
+      console.log(err);
+      alert("Failed to remove logo");
+    }
+  };
+
+  const removeFavicon = async () => {
+    try {
+      await axios.delete(`${API}/api/settings/favicon`);
+
+      setFavicon(null);
+      setFaviconPreview("");
+
+      fetchSettings();
+    } catch (err) {
+      console.log(err);
+      alert("Failed to remove favicon");
+    }
+  };
+
   return (
     <div className={styles.wrapper}>
       <div className={styles.header}>
@@ -156,31 +184,55 @@ export default function Page() {
             <div className={styles.formGroup}>
               <label>Logo</label>
 
-              {logoPreview && (
-                <img src={logoPreview} alt="logo" />
-              )}
+              <div className={styles.uploadRow}>
+                {logoPreview && (
+                  <div className={`${styles.previewBox} ${styles.logoBox}`}>
+                    <img src={logoPreview} alt="logo" />
+                    <button
+                      type="button"
+                      className={styles.removeBtn}
+                      onClick={removeLogo}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
 
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleLogo}
-              />
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleLogo}
+                  className={styles.fileInput}
+                />
+              </div>
             </div>
 
             {/* Favicon */}
-            <div className={styles.formGroup}>
+            {/* <div className={styles.formGroup}>
               <label>Favicon</label>
 
-              {faviconPreview && (
-                <img src={faviconPreview} alt="favicon" />
-              )}
+              <div className={styles.uploadRow}>
+                {faviconPreview && (
+                  <div className={`${styles.previewBox} ${styles.faviconBox}`}>
+                    <img src={faviconPreview} alt="favicon" />
+                    <button
+                      type="button"
+                      className={styles.removeBtn}
+                      onClick={removeFavicon}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                )}
 
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFavicon}
-              />
-            </div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFavicon}
+                  className={styles.fileInput}
+                />
+              </div>
+            </div> */}
 
             {/* Store Name */}
             <div className={styles.formGroup}>

@@ -149,7 +149,11 @@
   margin: 24px 0;
   overflow: hidden;
   border-radius: 14px;
-  background: linear-gradient(135deg, #ffd95a 0%, #ffbf00 100%);
+  height: 120px;
+
+  background: linear-gradient(135deg,#90AD72 0%, #90AD72 100%);
+  /* background: linear-gradient(135deg, #ffd95a 0%, #ffbf00 100%); */
+
   /* box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08); */
 }
 
@@ -188,21 +192,24 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: #444;
+  color: #ffffff;
   margin-bottom: 12px;
+  margin-left: 11px;
   text-transform: uppercase;
 }
 
 .ticketInput {
-  width: 100%;
+  width: 95%;
   border: none;
   outline: none;
-  background: rgba(255, 255, 255, 0.45);
+  margin-left: 7px;
+  background: #e1e9d9;
   padding: 14px 16px;
   border-radius: 8px;
   font-size: 15px;
   color: #222;
   transition: .3s;
+
 }
 
 .ticketInput::placeholder {
@@ -218,8 +225,8 @@
   width: 120px;
   border: none;
   background: #111;
-  color: #fff;
-  font-size: 15px;
+  color:#ffffff;
+  font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
@@ -248,10 +255,10 @@
   align-items: stretch;
   margin: 24px 0;
   overflow: hidden;
-  border-radius: 14px;
-  background: linear-gradient(135deg, #43a047, #2e7d32);
-  color: #fff;
-  box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08);
+  border-radius: 14px ;
+  background: linear-gradient(135deg,#9ce37f 0%,#9ce37f 100%);
+  color: #000000;
+  height: 120px;
 }
 
 .activeCouponTicket::before,
@@ -264,6 +271,7 @@
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
+  z-index: 2;
 }
 
 .activeCouponTicket::before {
@@ -277,6 +285,9 @@
 .ticketSuccessLeft {
   flex: 1;
   padding: 20px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .ticketAppliedLabel {
@@ -284,8 +295,8 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
-  margin-bottom: 10px;
-  opacity: .9;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 12px;
   text-transform: uppercase;
 }
 
@@ -294,29 +305,31 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 2px;
+  color: #fff;
 }
 
 .ticketSavings {
   margin-top: 8px;
   font-size: 14px;
-  color: rgba(255, 255, 255, .92);
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .removeTicketButton {
   width: 120px;
   border: none;
-  background: rgba(0, 0, 0, .18);
-  color: #fff;
+  background:#040404;
+  color:#ffffff ;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
   position: relative;
   transition: .3s;
+  border: 2px solid #000000;
 }
 
 .removeTicketButton:hover {
-  background: rgba(0, 0, 0, .35);
+  background:#242525;
 }
 
 .removeTicketButton::before {
@@ -325,9 +338,8 @@
   left: 0;
   top: 12px;
   bottom: 12px;
-  border-left: 2px dashed rgba(255, 255, 255, .55);
+  border-left: 2px dashed #9ce37f;
 }
-
 
 .grandTotalRow {
   display: flex;
@@ -345,8 +357,8 @@
 }
 
 .grandTotalPrice {
-  font-size: 30px;
-  font-weight: 800;
+  font-size: 22px;
+  font-weight: 700;
   color: #111;
 }
 
@@ -356,7 +368,7 @@
   padding: 16px;
   border: none;
   border-radius: 10px;
-  background: #2e7d32;
+  background: #000000;
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -396,7 +408,7 @@
 
 .securityIcon {
   font-size: 18px;
-  color: #2e7d32;
+  color: #777;
 }
 
 
@@ -404,7 +416,7 @@
 
   .checkoutSidebar {
     position: static;
-    margin-top: 30px;
+    margin-top: 5px;
   }
 
   .orderSummaryCard {

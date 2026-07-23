@@ -120,13 +120,13 @@ export default function BrandsPage() {
                 </td>
               </tr>
             ) : filtered.length > 0 ? (
-                              filtered.map((item) => (
+              filtered.map((item) => (
                 <tr key={item._id}>
                   <td>
                     <img
                       src={
                         item.logo?.url
-                          ? `http://localhost:5000${item.logo.url}`
+                          ? (item.logo.url.startsWith("http") ? item.logo.url : `http://localhost:5000${item.logo.url}`)
                           : "https://via.placeholder.com/60x60?text=Logo"
                       }
                       alt={item.name}
@@ -155,15 +155,15 @@ export default function BrandsPage() {
                   <td>
                     <div className={styles.actions}>
                       <button
+                        type="button"
                         title="Edit"
-                        onClick={() =>
-                          router.push(`/admin/brands/edit/${item._id}`)
-                        }
+                        onClick={() => router.push(`/admin/brands/edit/${item._id}`)}
                       >
                         <Pencil size={18} />
                       </button>
 
                       <button
+                        type="button"
                         title="Delete"
                         onClick={() => handleDelete(item._id)}
                       >

@@ -1,5 +1,5 @@
 import express from "express";
-import { approveRefund, createOrder, deleteOrder, getAllOrders, getOrderCounts, getRefundRequests, getSingleOrder, rejectRefund, requestRefund, updateOrderStatus, updatePaymentStatus } from "../controllers/order/order.controller.js";
+import { approveRefund, createOrder, deleteOrder, getAllOrders, getMyOrders, getOrderCounts, getRefundRequests, getSingleOrder, rejectRefund, requestRefund, updateOrderStatus, updatePaymentStatus } from "../controllers/order/order.controller.js";
 
 
 
@@ -14,13 +14,19 @@ const router = express.Router();
 export default router;
 
 // Orders
+
+router.get("/my-orders", protect, getMyOrders);
+
+
+
+
 router.post("/create", protect, createOrder);
 router.get("/", protect, isAdmin, getAllOrders);
 router.get("/counts", protect, isAdmin, getOrderCounts);
 router.get("/:id", protect, getSingleOrder);
 router.put("/:id", protect, isAdmin, updateOrderStatus);
 router.put("/:id/payment", protect, isAdmin, updatePaymentStatus);
-router.delete("/:id", protect, isAdmin, deleteOrder);
+router.delete("/:id", protect,  deleteOrder);
 
 // Refund
 router.get("/refunds", protect, isAdmin, getRefundRequests);

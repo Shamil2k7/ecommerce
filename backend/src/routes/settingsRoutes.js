@@ -1,5 +1,12 @@
 import express from "express";
-import { getSettings, updateSettings, uploadFavicon, uploadLogo } from "../controllers/settings/settingsController.js";
+import {
+  getSettings,
+  updateSettings,
+  uploadLogo,
+  uploadFavicon,
+  removeLogo,
+  removeFavicon,
+} from "../controllers/settings/settingsController.js";
 import upload from "../config/multer.js";
 
 const router = express.Router();
@@ -15,5 +22,8 @@ router.put("/logo", upload.single("logo"), uploadLogo);
 
 // Upload favicon
 router.put("/favicon", upload.single("favicon"), uploadFavicon);
+
+router.delete("/logo", removeLogo);
+router.delete("/favicon", removeFavicon);
 
 export default router;

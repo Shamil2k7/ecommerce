@@ -1,8 +1,11 @@
 import React from "react";
 import { FiHeart, FiTrash2, FiShoppingBag } from "react-icons/fi";
+import { useRouter } from "next/navigation";
 import styles from "./CartItem.module.css";
 
 const CartItem = ({ item, updateQuantity, removeItem }) => {
+  const router = useRouter();
+
   const discount =
     item.originalPrice > item.price
       ? Math.round(
@@ -55,7 +58,6 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
         </div>
       </div>
 
-      {/* Right Section */}
       <div className={styles.itemDetails}>
         <h3 className={styles.itemName}>{item.name}</h3>
 
@@ -109,7 +111,16 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             Remove
           </button>
 
-          <button className={styles.actionBtn}>
+          <button 
+            className={styles.actionBtn}
+            onClick={() => {
+              const query = new URLSearchParams();
+              query.set("buyNow", item.productId);
+              if (item.color) query.set("color", item.color);
+              if (item.size) query.set("size", item.size);
+              router.push(`/checkout?${query.toString()}`);
+            }}
+          >
             <FiShoppingBag className={styles.actionIcon} />
             Buy this now
           </button>
