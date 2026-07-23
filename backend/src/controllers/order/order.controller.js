@@ -1,6 +1,8 @@
 import Order from "../../models/Order.js";
 import Product from "../../models/product.model.js";
 import sendEmail from "../../utils/sendEmail.js";
+import Cart from "../../models/Cart.js";
+import Coupon from "../../models/Coupon.js";
 /* ============================
    Create Order
 ============================ */
@@ -56,13 +58,20 @@ export const createOrder = async (req, res) => {
         ? product.discountPrice
         : product.price;
 
+    // Get user's cart
+    const cart = await Cart.findOne({ userId });
+
+
+
     const subTotal = price * quantity;
 
     const tax = Number((subTotal * 0.18).toFixed(2));
 
-    const discount = 0;
+    // Get coupon discount from cart
+    const discount = cart ? Number(cart.couponDiscount || 0) : 0;
 
-    const totalAmount = subTotal + tax - discount;
+    // Final amount after coupon discount
+    const totalAmount = Math.max(0, subTotal + tax - discount);
 
     // Generate Order Number
     const lastOrder = await Order.findOne().sort({
@@ -72,34 +81,69 @@ export const createOrder = async (req, res) => {
     const orderNumber = lastOrder
       ? lastOrder.orderNumber + 1
       : 1001;
-const order = await Order.create({
-  productId,
-  userId,
-  orderNumber,
-  quantity,
-  paymentMethod,
-  subTotal,
-  discount,
-  tax,
-  totalAmount,
-  shippingAddress,
-});
+    const order = await Order.create({
+      productId,
+      userId,
+      orderNumber,
+      quantity,
+      paymentMethod,
+      subTotal,
+      discount,
+      tax,
+      totalAmount,
+      shippingAddress,
 
-//new added
-await order.populate("userId", "name email phone");
-await order.populate("productId", "name");
+      paymentStatus: "Pending",
+      orderStatus: "Pending",
+    });
+    // Populate Order
+    await order.populate("userId", "fullName email phone");
+    await order.populate("productId", "name");
 
+    // Update Product Stock
+    product.stock -= quantity;
+    await product.save();
 
+    // Save Coupon Usage After Successful Order
+    if (cart && cart.couponApplied) {
+      const coupon = await Coupon.findById(cart.couponApplied);
 
-   product.stock -= quantity;
-await product.save();
+      if (coupon) {
+        if (!coupon.usedBy) {
+          coupon.usedBy = [];
+        }
+        const alreadyUsed = coupon.usedBy.some(
+          (id) => id.toString() === userId.toString()
+        );
 
-// ⭐ ADDED - Send email to admin
-try {
-  await sendEmail({
-    email: process.env.ADMIN_EMAIL,
-    subject: "🛒 New Order Received",
-html: `
+        if (!alreadyUsed) {
+          coupon.usedBy.push(userId);
+
+          coupon.usedCount = (coupon.usedCount || 0) + 1;
+
+          // Disable coupon if usage limit reached
+          if (
+            coupon.usageLimit > 0 &&
+            coupon.usedCount >= coupon.usageLimit
+          ) {
+            coupon.status = "Inactive";
+          }
+
+          await coupon.save();
+        }
+      }
+
+      // Remove coupon from cart after successful order
+      cart.couponApplied = null;
+      cart.couponDiscount = 0;
+      await cart.save();
+    }
+    // ADDED - Send email to admin
+    try {
+      await sendEmail({
+        email: process.env.ADMIN_EMAIL,
+        subject: "🛒 New Order Received",
+        html: `
   <div style="font-family: Arial, sans-serif; padding:20px;">
     <h2 style="color:#16a34a;">🛒 New Order Received</h2>
 
@@ -146,18 +190,18 @@ html: `
     </p>
   </div>
 `
-  });
+      });
 
-  console.log("✅ Admin email sent successfully");
-} catch (err) {
-  console.log("❌ Email Error:", err.message);
-}
+      console.log("✅ Admin email sent successfully");
+    } catch (err) {
+      console.log("❌ Email Error:", err.message);
+    }
 
-res.status(201).json({
-  success: true,
-  message: "Order created successfully",
-  order,
-});
+    res.status(201).json({
+      success: true,
+      message: "Order created successfully",
+      order,
+    });
   } catch (error) {
     res.status(500).json({
       success: false,
@@ -179,7 +223,7 @@ export const getAllOrders = async (req, res) => {
       )
       .populate(
         "userId",
-        "name email phone"
+        "fullName email phone"
       )
       .sort({ createdAt: -1 });
 
