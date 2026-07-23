@@ -1,18 +1,46 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 import styles from "./Checkout.module.css";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
 
-export default function CheckoutPage() {
+function CheckoutContent() {
   const [payment, setPayment] = useState("Cash on Delivery");
-  const { cart, applyCoupon, removeCoupon, clearCart } = useCart();
+  const { cart, applyCoupon, removeCoupon, clearCart, removeItem } = useCart();
   const { user } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
+
+  const buyNowProductId = searchParams.get("buyNow");
+  const buyNowColor = searchParams.get("color");
+  const buyNowSize = searchParams.get("size");
+
+  const checkoutCart = useMemo(() => {
+    if (!cart || !buyNowProductId) return cart;
+    const item = cart.products.find(
+      (p) =>
+        p.productId === buyNowProductId &&
+        (!buyNowColor || p.color === buyNowColor) &&
+        (!buyNowSize || p.size === buyNowSize)
+    );
+    if (!item) return cart;
+
+    const totalPrice = item.originalPrice * item.quantity;
+    const finalPrice = item.price * item.quantity;
+    const totalDiscount = totalPrice - finalPrice;
+
+    return {
+      ...cart,
+      products: [item],
+      totalPrice,
+      totalDiscount,
+      finalPrice,
+    };
+  }, [cart, buyNowProductId, buyNowColor, buyNowSize]);
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
@@ -94,7 +122,7 @@ export default function CheckoutPage() {
 
     try {
       const results = [];
-      for (const item of cart.products) {
+      for (const item of checkoutCart.products) {
         const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/orders/create`, {
           method: "POST",
           headers: {
@@ -120,7 +148,11 @@ export default function CheckoutPage() {
         alert(hasError.message || "Error placing one or more orders.");
       } else {
         alert("Order successfully placed!");
-        await clearCart();
+        if (buyNowProductId) {
+          await removeItem(buyNowProductId, buyNowColor || "", buyNowSize || "");
+        } else {
+          await clearCart();
+        }
         router.push("/orders");
       }
     } catch (error) {
@@ -129,7 +161,7 @@ export default function CheckoutPage() {
     }
   };
 
-  if (!cart || !cart.products || cart.products.length === 0) {
+  if (!checkoutCart || !checkoutCart.products || checkoutCart.products.length === 0) {
     return (
       <section className={styles.container}>
         <div className={styles.emptyState}>
@@ -247,7 +279,7 @@ export default function CheckoutPage() {
         </div>
 
         <CheckoutSummary 
-          cart={cart}
+          cart={checkoutCart}
           selectedAddress={selectedAddress}
           handlePlaceOrder={handlePlaceOrder}
           applyCoupon={applyCoupon}
@@ -255,5 +287,13 @@ export default function CheckoutPage() {
         />
       </div>
     </section>
+  );
+}
+
+export default function CheckoutPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: "50px", textAlign: "center" }}>Loading checkout...</div>}>
+      <CheckoutContent />
+    </Suspense>
   );
 }
