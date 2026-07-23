@@ -142,7 +142,6 @@ const productSchema = new Schema(
     // Inventory
     sku: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
     },
