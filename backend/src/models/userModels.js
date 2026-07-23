@@ -32,9 +32,32 @@ const userSchema = new mongoose.Schema(
 
     role: {
       type: String,
-      enum: ["user", "admin"],
+      enum: ["user", "admin", "staff"],
       default: "user",
     },
+
+
+    department: {
+      type: String,
+      default: "",
+      trim: true,
+
+    },
+    address: {
+      type: String,
+      default: "",
+      trim: true,
+    },
+    status: {
+      type: String,
+      enum: ["Active", "Inactive"],
+      default: "Active",
+    },
+    cloudinary_id: {
+      type:String,
+      default:"",
+    },
+
 
     isVerified: {
       type: Boolean,
