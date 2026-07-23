@@ -1,7 +1,9 @@
 import { Router } from "express";
 import upload from "../config/multer.js";
 
+
 import {
+  getTopRatedProducts,
   createProduct,
   getAllProducts,
   getProductById,
@@ -55,17 +57,22 @@ router.patch("/products/:id/stock/adjust", adjustStock);
 /* =====================================================
                     PRODUCTS
 ===================================================== */
+
+// Top Rated
+router.get("/products/top-rated", getTopRatedProducts);
+
+// All Products + Create
 router
   .route("/products")
   .get(getAllProducts)
   .post(upload.array("images", 10), createProduct);
 
+// Single Product
 router
   .route("/products/:id")
   .get(getProductById)
   .patch(upload.array("images", 10), updateProduct)
   .delete(deleteProduct);
-
 /* =====================================================
                   PRODUCT IMAGES
 ===================================================== */
