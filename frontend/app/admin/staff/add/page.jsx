@@ -16,11 +16,10 @@ export default function AddStaffPage() {
   const [image, setImage] = useState(null);
 
   const [staff, setStaff] = useState({
-    name: "",
+    fullName: "",
     email: "",
     phone: "",
     password: "",
-    role: "Administrator",
     department: "",
     address: "",
     status: "Active",
@@ -51,7 +50,7 @@ export default function AddStaffPage() {
     e.preventDefault();
 
     if (
-      !staff.name ||
+      !staff.fullName ||
       !staff.email ||
       !staff.phone ||
       !staff.password
@@ -65,11 +64,11 @@ export default function AddStaffPage() {
 
       const formData = new FormData();
 
-      formData.append("name", staff.name);
+      formData.append("fullName", staff.fullName);
       formData.append("email", staff.email);
       formData.append("phone", staff.phone);
       formData.append("password", staff.password);
-      formData.append("role", staff.role);
+      formData.append("role", "staff");
       formData.append("department", staff.department);
       formData.append("address", staff.address);
       formData.append("status", staff.status);
@@ -79,27 +78,26 @@ export default function AddStaffPage() {
       }
 
       const response = await fetch(
-  `${process.env.NEXT_PUBLIC_API_URL}/api/staff`,
-  {
-    method: "POST",
-    body: formData,
-  }
-);
+        `${process.env.NEXT_PUBLIC_API_URL}/api/staff`,
+        {
+          method: "POST",
+          body: formData,
+        }
+      );
 
       const data = await response.json();
 
-      if (!response.ok) {  
+      if (!response.ok) {
         throw new Error(data.message);
       }
 
       alert("Staff created successfully.");
 
       setStaff({
-        name: "",
+        fullName: "",
         email: "",
         phone: "",
         password: "",
-        role: "Administrator",
         department: "",
         address: "",
         status: "Active",
@@ -144,9 +142,9 @@ export default function AddStaffPage() {
 
               <input
                 type="text"
-                name="name"
-                placeholder="Enter Your Name"
-                value={staff.name}
+                name="fullName"
+                placeholder="Enter Your Full Name here"
+                value={staff.fullName}
                 onChange={handleChange}
                 required
               />
@@ -189,49 +187,22 @@ export default function AddStaffPage() {
                 placeholder="********"
                 value={staff.password}
                 onChange={handleChange}
+                autoComplete="new-password"
                 required
               />
             </div>
           </div>
 
-          <div className={styles.row}>
-            <div className={styles.field}>
-              <label>Role</label>
+          <div className={styles.field}>
+            <label>Department</label>
 
-              <select
-                name="role"
-                value={staff.role}
-                onChange={handleChange}
-              >
-                <option value="Administrator">
-                  Administrator
-                </option>
-
-                <option value="Manager">
-                  Manager
-                </option>
-
-                <option value="Sales">
-                  Sales
-                </option>
-
-                <option value="Support">
-                  Support
-                </option>
-              </select>
-            </div>
-
-            <div className={styles.field}>
-              <label>Department</label>
-
-              <input
-                type="text"
-                name="department"
-                placeholder="Sales Department"
-                value={staff.department}
-                onChange={handleChange}
-              />
-            </div>
+            <input
+              type="text"
+              name="department"
+              placeholder="Enter Department"
+              value={staff.department}
+              onChange={handleChange}
+            />
           </div>
 
           <div className={styles.field}>
@@ -247,7 +218,7 @@ export default function AddStaffPage() {
           </div>
         </div>
 
-        
+
 
         {/* Right side  all codes  */}
 
