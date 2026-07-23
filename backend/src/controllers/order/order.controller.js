@@ -1,8 +1,6 @@
 import Order from "../../models/Order.js";
 import Product from "../../models/product.model.js";
 import sendEmail from "../../utils/sendEmail.js";
-import Cart from "../../models/Cart.js";
-import Coupon from "../../models/Coupon.js";
 /* ============================
    Create Order
 ============================ */
@@ -58,20 +56,13 @@ export const createOrder = async (req, res) => {
         ? product.discountPrice
         : product.price;
 
-    // Get user's cart
-    const cart = await Cart.findOne({ userId });
-
-
-
     const subTotal = price * quantity;
 
     const tax = Number((subTotal * 0.18).toFixed(2));
 
-    // Get coupon discount from cart
-    const discount = cart ? Number(cart.couponDiscount || 0) : 0;
+    const discount = 0;
 
-    // Final amount after coupon discount
-    const totalAmount = Math.max(0, subTotal + tax - discount);
+    const totalAmount = subTotal + tax - discount;
 
     // Generate Order Number
     const lastOrder = await Order.findOne().sort({
@@ -92,53 +83,21 @@ export const createOrder = async (req, res) => {
       tax,
       totalAmount,
       shippingAddress,
-
-      paymentStatus: "Pending",
-      orderStatus: "Pending",
     });
-    // Populate Order
-    await order.populate("userId", "fullName email phone");
+
+    //new added
+    await order.populate("userId", "name email phone");
     await order.populate("productId", "name");
 
-    // Update Product Stock
+
+
     product.stock -= quantity;
+    if (!product.sku) {
+      product.sku = "SKU-" + Date.now() + "-" + Math.floor(Math.random() * 1000);
+    }
     await product.save();
 
-    // Save Coupon Usage After Successful Order
-    if (cart && cart.couponApplied) {
-      const coupon = await Coupon.findById(cart.couponApplied);
-
-      if (coupon) {
-        if (!coupon.usedBy) {
-          coupon.usedBy = [];
-        }
-        const alreadyUsed = coupon.usedBy.some(
-          (id) => id.toString() === userId.toString()
-        );
-
-        if (!alreadyUsed) {
-          coupon.usedBy.push(userId);
-
-          coupon.usedCount = (coupon.usedCount || 0) + 1;
-
-          // Disable coupon if usage limit reached
-          if (
-            coupon.usageLimit > 0 &&
-            coupon.usedCount >= coupon.usageLimit
-          ) {
-            coupon.status = "Inactive";
-          }
-
-          await coupon.save();
-        }
-      }
-
-      // Remove coupon from cart after successful order
-      cart.couponApplied = null;
-      cart.couponDiscount = 0;
-      await cart.save();
-    }
-    // ADDED - Send email to admin
+    // ⭐ ADDED - Send email to admin
     try {
       await sendEmail({
         email: process.env.ADMIN_EMAIL,
@@ -223,7 +182,7 @@ export const getAllOrders = async (req, res) => {
       )
       .populate(
         "userId",
-        "fullName email phone"
+        "name email phone"
       )
       .sort({ createdAt: -1 });
 

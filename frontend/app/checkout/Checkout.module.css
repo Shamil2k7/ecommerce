@@ -75,11 +75,11 @@
   font-size:15px;
   transition:.3s;
 }
+ 
 
 .addBtn:hover{
   background:#f7ca00;
 }
-
 
 .loadingText,
 .noAddressText {
