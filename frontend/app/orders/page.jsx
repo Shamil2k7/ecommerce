@@ -12,8 +12,11 @@ import {
 } from "lucide-react";
 
 import styles from "./Orders.module.css";
+import axios from "axios";
 
 const API_URL = "http://localhost:5000/api/orders";
+
+
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
@@ -45,86 +48,86 @@ export default function OrdersPage() {
     );
   }, [orders, search]);
 
-  const fetchOrders = async () => {
-    try {
-      setLoading(true);
+const fetchOrders = async () => {
+  try {
+    setLoading(true);
 
-      const token = localStorage.getItem("token");
+    const token = localStorage.getItem("token");
 
-      const res = await fetch(`${API_URL}/my-orders`, {
+    const { data } = await axios.get(
+      `${API_URL}/my-orders`,
+      {
         headers: {
           Authorization: `Bearer ${token}`,
         },
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        setOrders(data.orders);
+        withCredentials: true,
       }
-    } catch (err) {
-      console.log(err);
-    } finally {
-      setLoading(false);
+    );
+
+    if (data.success) {
+      setOrders(data.orders);
     }
-  };
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+  } finally {
+    setLoading(false);
+  }
+};
 
-  const cancelOrder = async (id) => {
-    if (!confirm("Cancel this order?")) return;
+ const cancelOrder = async (id) => {
+  if (!confirm("Cancel this order?")) return;
 
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await fetch(
-        `${API_URL}/${id}/cancel`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      if (data.success) {
-        fetchOrders();
-      } else {
-        alert(data.message);
+    const { data } = await axios.put(
+      `${API_URL}/${id}/cancel`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
       }
-    } catch (err) {
-      console.log(err);
+    );
+
+    if (data.success) {
+      fetchOrders();
+    } else {
+      alert(data.message);
     }
-  };
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+  }
+};
 
-  const requestRefund = async (id) => {
-    if (!confirm("Request refund?")) return;
+ const requestRefund = async (id) => {
+  if (!confirm("Request refund?")) return;
 
-    try {
-      const token = localStorage.getItem("token");
+  try {
+    const token = localStorage.getItem("token");
 
-      const res = await fetch(
-        `${API_URL}/${id}/request-refund`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      const data = await res.json();
-
-      if (data.success) {
-        alert("Refund request submitted");
-        fetchOrders();
-      } else {
-        alert(data.message);
+    const { data } = await axios.put(
+      `${API_URL}/${id}/request-refund`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        withCredentials: true,
       }
-    } catch (err) {
-      console.log(err);
+    );
+
+    if (data.success) {
+      alert("Refund request submitted");
+      fetchOrders();
+    } else {
+      alert(data.message);
     }
-  };
+  } catch (err) {
+    console.error(err.response?.data || err.message);
+  }
+};
 
   if (loading) {
     return (
