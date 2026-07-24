@@ -11,6 +11,7 @@ import {
   deleteProduct,
   uploadProductImages,
   deleteProductImage,
+  addReview,
 } from "../controllers/product/product.controller.js";
 
 import {
@@ -101,7 +102,8 @@ router
     updateCategory
   )
   .delete(deleteCategory);
-
+  
+  router.post("/products/:productId/review",addReview);
 /* =====================================================
                     BRANDS
 ===================================================== */
@@ -117,3 +119,4 @@ router
   .delete(deleteBrand);
 
 export default router;
+
