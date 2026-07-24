@@ -6,6 +6,7 @@ import cloudinary from "../../config/cloudinary.js";
 import ApiError from "../../utils/ApiError.js";
 import ApiResponse from "../../utils/ApiResponse.js";
 import { asyncHandler } from "../../utils/asyncHandler.js";
+import Order from "../../models/Order.js";
 
 // @desc Create Product
 // @route POST /api/products
@@ -273,3 +274,76 @@ export const deleteProductImage = asyncHandler(async (req, res) => {
     )
   );
 });
+
+// controllers/product/review.controller.js
+
+
+
+export const addReview = async (req, res) => {
+  try {
+    const { rating, comment } = req.body;
+    const { productId } = req.params;
+
+    const userId = req.user._id;
+
+    // Check if user purchased this product
+    const order = await Order.findOne({
+      userId,
+      status: "Delivered",
+      "products.product": productId,
+    });
+
+    if (!order) {
+      return res.status(403).json({
+        success: false,
+        message: "You can review only purchased products.",
+      });
+    }
+
+    const product = await Product.findById(productId);
+
+    if (!product) {
+      return res.status(404).json({
+        success: false,
+        message: "Product not found",
+      });
+    }
+
+    // Already reviewed?
+    const alreadyReviewed = product.reviews.find(
+      (r) => r.user.toString() === userId.toString()
+    );
+
+    if (alreadyReviewed) {
+      return res.status(400).json({
+        success: false,
+        message: "You already reviewed this product",
+      });
+    }
+
+    product.reviews.push({
+      user: userId,
+      rating,
+      comment,
+    });
+
+    product.ratingsCount = product.reviews.length;
+
+    product.ratingsAverage =
+      product.reviews.reduce((acc, item) => acc + item.rating, 0) /
+      product.reviews.length;
+
+    await product.save();
+
+    res.json({
+      success: true,
+      message: "Review added successfully",
+    });
+
+  } catch (err) {
+    res.status(500).json({
+      success: false,
+      message: err.message,
+    });
+  }
+};
