@@ -158,6 +158,34 @@
   margin: 0;
 }
 
+.addressActions {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.actionBtn {
+  background: none;
+  border: none;
+  color: #565959;
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: .25s;
+}
+
+.actionBtn:hover {
+  background: #f0f2f2;
+  color: #111;
+}
+
+.deleteBtn:hover {
+  color: #d9534f;
+  background: #fdf2f2;
+}
 
 .addressForm {
   margin-top: 24px;
