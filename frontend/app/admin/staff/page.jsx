@@ -17,7 +17,10 @@ export default function StaffPage() {
       setLoading(true);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/staff`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/staff`,{
+          method: "GET",
+          credentials:"include",
+        }
       );
 
       const data = await response.json();
@@ -53,6 +56,7 @@ export default function StaffPage() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/staff/${id}`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
 
