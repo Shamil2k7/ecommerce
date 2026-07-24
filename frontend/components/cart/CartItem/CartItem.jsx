@@ -13,14 +13,12 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
         )
       : 0;
 
-  // Handle case where productId is populated (object) or unpopulated (string)
   const productId = item.productId?._id || item.productId;
   const ratingsAverage = item.productId?.ratingsAverage || 0;
   const ratingsCount = item.productId?.ratingsCount || 0;
 
   return (
     <div className={styles.cartItem}>
-      {/* Left Section */}
       <div className={styles.leftSection}>
         <img
           src={item.image}
@@ -73,9 +71,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
           </div>
         )}
 
-        <div className={styles.itemVariant} style={{ marginTop: '4px', fontSize: '13px', color: '#666' }}>
-          <span>Stock available: {item.stock}</span>
-        </div>
+       
 
         <div className={styles.ratingRow}>
           <span className={styles.ratingBadge}>{ratingsAverage.toFixed(1)} ★</span>
@@ -98,6 +94,10 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
 
         <div className={styles.upiOffer}>
           ₹{item.price - 50} with UPI Offer
+        </div>
+
+         <div className={styles.itemVariant} style={{ marginTop: '4px', fontSize: '13px', color: '#666' }}>
+          <span>Stock available: {item.stock}</span>
         </div>
 
         <div className={styles.actionBar}>

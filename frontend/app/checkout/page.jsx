@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
 import { toast } from "react-toastify";
+import { FiEdit2, FiTrash2 } from "react-icons/fi";
 
 function CheckoutContent() {
   const [payment, setPayment] = useState("Cash on Delivery");
@@ -24,7 +25,7 @@ function CheckoutContent() {
     if (!cart || !buyNowProductId) return cart;
     const item = cart.products.find(
       (p) =>
-        p.productId === buyNowProductId &&
+        (p.productId?._id || p.productId) === buyNowProductId &&
         (!buyNowColor || p.color === buyNowColor) &&
         (!buyNowSize || p.size === buyNowSize)
     );
@@ -46,6 +47,7 @@ function CheckoutContent() {
   const [selectedAddress, setSelectedAddress] = useState(null);
   const [showAddForm, setShowAddForm] = useState(false);
   const [newAddress, setNewAddress] = useState({ label: "Home", text: "" });
+  const [editingAddressId, setEditingAddressId] = useState(null);
   const [loadingAddresses, setLoadingAddresses] = useState(true);
   
   const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth`;
@@ -75,27 +77,71 @@ function CheckoutContent() {
   };
  
   
-  const handleAddAddress = async (e) => {
+  const submitAddressForm = async (e) => {
     e.preventDefault();
     if (!newAddress.text.trim()) return;
 
     try {
-      const res = await fetch(`${API_BASE_URL}/addresses`, {
-        method: "POST",
+      const url = editingAddressId 
+        ? `${API_BASE_URL}/addresses/${editingAddressId}` 
+        : `${API_BASE_URL}/addresses`;
+      const method = editingAddressId ? "PUT" : "POST";
+
+      const res = await fetch(url, {
+        method,
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newAddress),
         credentials: "include",
       });
       const data = await res.json();
       if (data.success) {
-        setAddresses([...addresses, data.address]);
+        if (editingAddressId) {
+          setAddresses(addresses.map(a => a._id === editingAddressId ? data.address : a));
+        } else {
+          setAddresses([...addresses, data.address]);
+        }
         setSelectedAddress(data.address._id);
         setShowAddForm(false);
         setNewAddress({ label: "Home", text: "" });
+        setEditingAddressId(null);
       }
     } catch (error) {
-      console.error("Error adding address:", error);
+      console.error("Error saving address:", error);
     }
+  };
+
+  const startEditAddress = (e, addr) => {
+    e.stopPropagation();
+    setNewAddress({ label: addr.label, text: addr.text });
+    setEditingAddressId(addr._id);
+    setShowAddForm(true);
+  };
+
+  const handleDeleteAddress = async (e, id) => {
+    e.stopPropagation();
+    const confirmDelete = window.confirm("Are you sure you want to delete this address?");
+    if (!confirmDelete) return;
+    try {
+      const res = await fetch(`${API_BASE_URL}/addresses/${id}`, {
+        method: "DELETE",
+        credentials: "include",
+      });
+      const data = await res.json();
+      if (data.success) {
+        setAddresses(addresses.filter(a => a._id !== id));
+        if (selectedAddress === id) {
+          setSelectedAddress(null);
+        }
+      }
+    } catch (error) {
+      console.error("Error deleting address:", error);
+    }
+  };
+
+  const cancelAddressForm = () => {
+    setShowAddForm(false);
+    setNewAddress({ label: "Home", text: "" });
+    setEditingAddressId(null);
   };
 
   const handlePlaceOrder = async () => {
@@ -135,7 +181,7 @@ function CheckoutContent() {
           },
           credentials: "include",
           body: JSON.stringify({
-            productId: item.productId,
+            productId: item.productId?._id || item.productId,
             userId: user._id,
             quantity: item.quantity,
             paymentMethod: payment,
@@ -221,6 +267,24 @@ function CheckoutContent() {
                     <div className={styles.addressDetails}>
                       <span className={styles.addressLabel}>{addr.label}</span>
                       <p className={styles.addressText}>{addr.text}</p>
+                      <div className={styles.addressActions}>
+                        <button 
+                          type="button"
+                          className={styles.actionBtn} 
+                          onClick={(e) => startEditAddress(e, addr)}
+                          title="Edit Address"
+                        >
+                          <FiEdit2 size={16} />
+                        </button>
+                        <button 
+                          type="button"
+                          className={`${styles.actionBtn} ${styles.deleteBtn}`} 
+                          onClick={(e) => handleDeleteAddress(e, addr._id)}
+                          title="Delete Address"
+                        >
+                          <FiTrash2 size={16} />
+                        </button>
+                      </div>
                     </div>
                   </div>
                 ))}
@@ -231,7 +295,7 @@ function CheckoutContent() {
             )}
 
             {showAddForm && (
-              <form onSubmit={handleAddAddress} className={styles.addressForm}>
+              <form onSubmit={submitAddressForm} className={styles.addressForm}>
                 <div className={styles.formGroup}>
                   <label>Label</label>
                   <select 
@@ -254,8 +318,10 @@ function CheckoutContent() {
                   />
                 </div>
                 <div className={styles.formActions}>
-                  <button type="button" onClick={() => setShowAddForm(false)} className={styles.cancelBtn}>Cancel</button>
-                  <button type="submit" className={styles.saveBtn}>Save Address</button>
+                  <button type="button" onClick={cancelAddressForm} className={styles.cancelBtn}>Cancel</button>
+                  <button type="submit" className={styles.saveBtn}>
+                    {editingAddressId ? "Update Address" : "Save Address"}
+                  </button>
                 </div>
               </form>
             )}
