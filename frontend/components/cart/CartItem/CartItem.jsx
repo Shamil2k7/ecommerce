@@ -13,6 +13,11 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
         )
       : 0;
 
+  // Handle case where productId is populated (object) or unpopulated (string)
+  const productId = item.productId?._id || item.productId;
+  const ratingsAverage = item.productId?.ratingsAverage || 0;
+  const ratingsCount = item.productId?.ratingsCount || 0;
+
   return (
     <div className={styles.cartItem}>
       {/* Left Section */}
@@ -28,7 +33,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             className={styles.qtyBtn}
             onClick={() =>
               updateQuantity(
-                item.productId,
+                productId,
                 item.quantity - 1,
                 item.color,
                 item.size
@@ -45,7 +50,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             className={styles.qtyBtn}
             onClick={() =>
               updateQuantity(
-                item.productId,
+                productId,
                 item.quantity + 1,
                 item.color,
                 item.size
@@ -68,9 +73,13 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
           </div>
         )}
 
+        <div className={styles.itemVariant} style={{ marginTop: '4px', fontSize: '13px', color: '#666' }}>
+          <span>Stock available: {item.stock}</span>
+        </div>
+
         <div className={styles.ratingRow}>
-          <span className={styles.ratingBadge}>4.3 ★</span>
-          <span className={styles.reviewCount}>(120 Reviews)</span>
+          <span className={styles.ratingBadge}>{ratingsAverage.toFixed(1)} ★</span>
+          <span className={styles.reviewCount}>({ratingsCount} Reviews)</span>
         </div>
 
         <div className={styles.priceRow}>
@@ -101,7 +110,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             className={`${styles.actionBtn} ${styles.removeBtn}`}
             onClick={() =>
               removeItem(
-                item.productId,
+                productId,
                 item.color,
                 item.size
               )
@@ -115,7 +124,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             className={styles.actionBtn}
             onClick={() => {
               const query = new URLSearchParams();
-              query.set("buyNow", item.productId);
+              query.set("buyNow", productId);
               if (item.color) query.set("color", item.color);
               if (item.size) query.set("size", item.size);
               router.push(`/checkout?${query.toString()}`);

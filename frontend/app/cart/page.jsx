@@ -51,14 +51,17 @@ export default function CartPage() {
 
       <div className={styles.cartContent}>
         <div className={styles.cartItemsList}>
-          {cart.products.map((item, index) => (
-            <CartItem
-              key={`${item.productId}-${item.color}-${item.size}-${index}`}
-              item={item}
-              updateQuantity={updateQuantity}
-              removeItem={removeItem}
-            />
-          ))}
+          {cart.products.map((item, index) => {
+            const prodId = item.productId?._id || item.productId;
+            return (
+              <CartItem
+                key={`${prodId}-${item.color}-${item.size}-${index}`}
+                item={item}
+                updateQuantity={updateQuantity}
+                removeItem={removeItem}
+              />
+            );
+          })}
         </div>
 
         <CartSummary cart={cart} />

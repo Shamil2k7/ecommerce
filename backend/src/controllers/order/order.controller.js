@@ -123,7 +123,7 @@ export const createOrder = async (req, res) => {
         {
           productId: product._id,
           name: product.name,
-          image: product.image || "",
+          image: "",
           color: "",
           size: "",
           price,
@@ -217,66 +217,6 @@ export const createOrder = async (req, res) => {
 
       console.log("Coupon usage updated");
     }
-
-
-//     //  ADDED - Send email to admin
-//     try {
-//       await sendEmail({
-//         email: process.env.ADMIN_EMAIL,
-//         subject: "🛒 New Order Received",
-//         html: `
-//   <div style="font-family: Arial, sans-serif; padding:20px;">
-//     <h2 style="color:#16a34a;">🛒 New Order Received</h2>
-
-//     <p>
-//       <strong>Order Number:</strong>
-//       ${order.orderNumber}
-//     </p>
-
-//     <hr>
-
-//     <h3>👤 Customer Details</h3>
-
-//     <p><strong>Name:</strong>${order.userId.fullName}</p>
-//     <p><strong>Email:</strong> ${order.userId.email}</p>
-//     <p><strong>Phone:</strong> ${order.userId.phone}</p>
-
-//     <hr>
-
-//     <h3>📦 Product Details</h3>
-
-// <p><strong>Product:</strong> ${order.products[0].name}</p>
-// <p><strong>Quantity:</strong> ${order.products[0].quantity}</p>
-//     <p><strong>Total Amount:</strong> ₹${order.totalAmount}</p>
-//     <p><strong>Payment Method:</strong> ${order.paymentMethod}</p>
-//     <p><strong>Payment Status:</strong> ${order.paymentStatus}</p>
-//     <p><strong>Order Status:</strong> ${order.orderStatus}</p>
-
-//     <hr>
-
-//     <h3>🚚 Shipping Address</h3>
-
-//     <p><strong>Full Name:</strong> ${order.shippingAddress.fullName}</p>
-//     <p><strong>Phone:</strong> ${order.shippingAddress.phone}</p>
-//     <p><strong>Address:</strong> ${order.shippingAddress.address}</p>
-//     <p><strong>City:</strong> ${order.shippingAddress.city}</p>
-//     <p><strong>State:</strong> ${order.shippingAddress.state}</p>
-//     <p><strong>Pincode:</strong> ${order.shippingAddress.pincode}</p>
-//     <p><strong>Country:</strong> ${order.shippingAddress.country}</p>
-
-//     <hr>
-
-//     <p style="color:#16a34a;font-weight:bold;">
-//       A new order has been placed. Please check the admin dashboard.
-//     </p>
-//   </div>
-// `
-//       });
-
-    //   console.log("✅ Admin email sent successfully");
-    // } catch (err) {
-    //   console.log("❌ Email Error:", err.message);
-    // }
 
     res.status(201).json({
       success: true,

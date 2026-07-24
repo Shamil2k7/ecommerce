@@ -108,6 +108,9 @@ function CheckoutContent() {
       return;
     }
 
+    const confirmOrder = window.confirm("Are you sure you want to place this order?");
+    if (!confirmOrder) return;
+
     const addr = addresses.find((a) => a._id === selectedAddress);
     
     const shippingAddress = {
