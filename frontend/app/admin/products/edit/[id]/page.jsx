@@ -12,6 +12,7 @@ export default function EditProductPage() {
 
   // Categories list
   const [categories, setCategories] = useState([]);
+  const [brands, setBrands] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
 
@@ -26,6 +27,7 @@ export default function EditProductPage() {
   const [sku, setSku] = useState("");
   const [description, setDescription] = useState("");
   const [currentImage, setCurrentImage] = useState("");
+  const [currentImageId, setCurrentImageId] = useState("");
   const [newImageFile, setNewImageFile] = useState(null);
 
   useEffect(() => {
@@ -39,6 +41,16 @@ export default function EditProductPage() {
       })
       .catch((err) => console.error("Error fetching categories:", err));
 
+    // 1.5. Fetch brands
+    fetch("http://localhost:5000/api/brands")
+      .then((res) => res.json())
+      .then((json) => {
+        if (json.data) {
+          setBrands(json.data);
+        }
+      })
+      .catch((err) => console.error("Error fetching brands:", err));
+
     // 2. Fetch product by ID
     fetch(`http://localhost:5000/api/products/${id}`)
       .then((res) => res.json())
@@ -48,13 +60,19 @@ export default function EditProductPage() {
           setName(p.name || "");
           setSlug(p.slug || "");
           setCategory(typeof p.category === "object" ? p.category?._id : p.category || "");
-          setBrand(typeof p.brand === "object" ? p.brand?.name || "" : p.brand || "");
+          setBrand(typeof p.brand === "object" ? p.brand?._id : p.brand || "");
           setPrice(p.price || "");
           setSalePrice(p.discountPrice || "");
           setStock(p.stock || 0);
           setSku(p.sku || "");
           setDescription(p.description || "");
-          setCurrentImage(p.images?.[0]?.url || "/images/headphone.png");
+          setCurrentImage(
+            p.images?.[0]?.url || "/images/headphone.png"
+          );
+
+          setCurrentImageId(
+            p.images?.[0]?.public_id || ""
+          );
         }
       })
       .catch((err) => console.error("Error loading product:", err))
@@ -68,6 +86,39 @@ export default function EditProductPage() {
       setCurrentImage(URL.createObjectURL(file));
     }
   };
+
+  const handleDeleteImage = async () => {
+  if (!currentImageId) {
+    alert("No image found.");
+    return;
+  }
+
+  if (!confirm("Delete this image?")) return;
+
+  try {
+    const res = await fetch(
+      `http://localhost:5000/api/products/${id}/images/${currentImageId}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const data = await res.json();
+
+    if (res.ok) {
+      alert(data.message || "Image deleted successfully.");
+
+      setCurrentImage("/images/headphone.png");
+      setCurrentImageId("");
+      setNewImageFile(null);
+    } else {
+      alert(data.message || "Failed to delete image.");
+    }
+  } catch (err) {
+    console.error(err);
+    alert("Error deleting image.");
+  }
+};
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this product?")) return;
@@ -89,8 +140,8 @@ export default function EditProductPage() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!name || !category || !price || !description) {
-      alert("Name, Category, Price, and Description are required.");
+    if (!name || !category || !brand || !price || !description) {
+      alert("Name, Category, Brand, Price, and Description are required.");
       return;
     }
 
@@ -101,6 +152,7 @@ export default function EditProductPage() {
         name,
         slug,
         category,
+        brand,
         price: Number(price),
         discountPrice: salePrice ? Number(salePrice) : 0,
         stock: Number(stock),
@@ -204,12 +256,19 @@ export default function EditProductPage() {
           </div>
 
           <div className={styles.field}>
-            <label>Brand</label>
-            <input
-              type="text"
+            <label>Brand *</label>
+            <select
+              required
               value={brand}
               onChange={(e) => setBrand(e.target.value)}
-            />
+            >
+              <option value="">Select Brand</option>
+              {brands.map((item) => (
+                <option key={item._id} value={item._id}>
+                  {item.name}
+                </option>
+              ))}
+            </select>
           </div>
 
           <div className={styles.field}>
@@ -266,12 +325,36 @@ export default function EditProductPage() {
 
         <div className={styles.field}>
           <label>Current Image</label>
+
           <img
             src={currentImage}
             alt="Product"
             className={styles.preview}
-            style={{ maxWidth: "150px", borderRadius: "8px", marginTop: "10px" }}
+            style={{
+              maxWidth: "150px",
+              borderRadius: "8px",
+              marginTop: "10px",
+              display: "block",
+            }}
           />
+
+          {currentImage !== "/images/headphone.png" && (
+            <button
+              type="button"
+              onClick={handleDeleteImage}
+              style={{
+                marginTop: "12px",
+                background: "#dc2626",
+                color: "#fff",
+                border: "none",
+                padding: "10px 16px",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              Delete Current Image
+            </button>
+          )}
         </div>
 
         <div className={styles.field}>
@@ -290,7 +373,7 @@ export default function EditProductPage() {
             onClick={handleDelete}
           >
             <Trash2 size={18} />
-            Delete
+            Delete Product
           </button>
 
           <button
