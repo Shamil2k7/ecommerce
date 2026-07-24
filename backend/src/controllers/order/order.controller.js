@@ -713,6 +713,7 @@ export const rejectRefund = async (req, res) => {
       message: error.message,
     });
   }
+
 };
 export const getMyOrders = async (req, res) => {
   try {
@@ -720,19 +721,17 @@ export const getMyOrders = async (req, res) => {
       userId: req.user._id,
     })
       .populate("userId", "name email")
-      .populate("productId")
+      .populate("products.productId")
       .sort({ createdAt: -1 });
 
     res.status(200).json({
       success: true,
       orders,
     });
-  } catch (error) {
-    console.error(error);
-
+  } catch (err) {
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: err.message,
     });
   }
 };

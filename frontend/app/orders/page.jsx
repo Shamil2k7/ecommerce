@@ -48,86 +48,83 @@ export default function OrdersPage() {
     );
   }, [orders, search]);
 
-const fetchOrders = async () => {
-  try {
-    setLoading(true);
+  const fetchOrders = async () => {
+    try {
+      setLoading(true);
 
-    const token = localStorage.getItem("token");
+      const token = localStorage.getItem("token");
 
-    const { data } = await axios.get(
-      `${API_URL}/my-orders`,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
+      const { data } = await axios.get(
+        `${API_URL}/my-orders`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        setOrders(data.orders);
       }
-    );
-
-    if (data.success) {
-      setOrders(data.orders);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
+    } finally {
+      setLoading(false);
     }
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-  } finally {
-    setLoading(false);
-  }
-};
+  };
 
- const cancelOrder = async (id) => {
-  if (!confirm("Cancel this order?")) return;
+  const cancelOrder = async (id) => {
+    if (!confirm("Cancel this order?")) return;
 
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const { data } = await axios.put(
-      `${API_URL}/${id}/cancel`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
+      const { data } = await axios.put(
+        `${API_URL}/${id}/cancel`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        fetchOrders();
+      } else {
+        alert(data.message);
       }
-    );
-
-    if (data.success) {
-      fetchOrders();
-    } else {
-      alert(data.message);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
     }
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-  }
-};
+  };
 
- const requestRefund = async (id) => {
-  if (!confirm("Request refund?")) return;
+  const requestRefund = async (id) => {
+    if (!confirm("Request refund?")) return;
 
-  try {
-    const token = localStorage.getItem("token");
+    try {
+      const token = localStorage.getItem("token");
 
-    const { data } = await axios.put(
-      `${API_URL}/${id}/request-refund`,
-      {},
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-        withCredentials: true,
+      const { data } = await axios.put(
+        `${API_URL}/${id}/request-refund`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+          withCredentials: true,
+        }
+      );
+
+      if (data.success) {
+        alert("Refund request submitted");
+        fetchOrders();
+      } else {
+        alert(data.message);
       }
-    );
-
-    if (data.success) {
-      alert("Refund request submitted");
-      fetchOrders();
-    } else {
-      alert(data.message);
+    } catch (err) {
+      console.error(err.response?.data || err.message);
     }
-  } catch (err) {
-    console.error(err.response?.data || err.message);
-  }
-};
+  };
 
   if (loading) {
     return (
@@ -226,21 +223,19 @@ const fetchOrders = async () => {
                 <div className={styles.badges}>
 
                   <span
-                    className={`${styles.status} ${
-                      styles[
-                        order.orderStatus.toLowerCase()
-                      ]
-                    }`}
+                    className={`${styles.status} ${styles[
+                      order.orderStatus.toLowerCase()
+                    ]
+                      }`}
                   >
                     {order.orderStatus}
                   </span>
 
                   <span
-                    className={`${styles.payment} ${
-                      order.paymentStatus === "Paid"
-                        ? styles.paid
-                        : styles.pending
-                    }`}
+                    className={`${styles.payment} ${order.paymentStatus === "Paid"
+                      ? styles.paid
+                      : styles.pending
+                      }`}
                   >
                     {order.paymentStatus}
                   </span>
@@ -262,33 +257,33 @@ const fetchOrders = async () => {
                   {(order.orderStatus ===
                     "Pending" ||
                     order.orderStatus ===
-                      "Processing") && (
-                    <button
-                      className={styles.cancelBtn}
-                      onClick={() =>
-                        cancelOrder(order._id)
-                      }
-                    >
-                      <XCircle size={18} />
-                      Cancel
-                    </button>
-                  )}
+                    "Processing") && (
+                      <button
+                        className={styles.cancelBtn}
+                        onClick={() =>
+                          cancelOrder(order._id)
+                        }
+                      >
+                        <XCircle size={18} />
+                        Cancel
+                      </button>
+                    )}
 
                   {order.orderStatus ===
                     "Delivered" &&
                     order.paymentStatus ===
-                      "Paid" && (
-                    <button
-                      className={styles.refundBtn}
-                      onClick={() =>
-                        requestRefund(order._id)
-                      }
-                    >
-                      <RotateCcw size={18} />
-                      Refund
-                    </button>
-                  )}
-                                  </div>
+                    "Paid" && (
+                      <button
+                        className={styles.refundBtn}
+                        onClick={() =>
+                          requestRefund(order._id)
+                        }
+                      >
+                        <RotateCcw size={18} />
+                        Refund
+                      </button>
+                    )}
+                </div>
 
               </div>
 
@@ -499,32 +494,32 @@ const fetchOrders = async () => {
               {(selectedOrder.orderStatus === "Pending" ||
                 selectedOrder.orderStatus === "Processing") && (
 
-                <button
-                  className={styles.cancelBtn}
-                  onClick={() =>
-                    cancelOrder(selectedOrder._id)
-                  }
-                >
-                  <XCircle size={18} />
-                  Cancel Order
-                </button>
+                  <button
+                    className={styles.cancelBtn}
+                    onClick={() =>
+                      cancelOrder(selectedOrder._id)
+                    }
+                  >
+                    <XCircle size={18} />
+                    Cancel Order
+                  </button>
 
-              )}
+                )}
 
               {selectedOrder.orderStatus === "Delivered" &&
                 selectedOrder.paymentStatus === "Paid" && (
 
-                <button
-                  className={styles.refundBtn}
-                  onClick={() =>
-                    requestRefund(selectedOrder._id)
-                  }
-                >
-                  <RotateCcw size={18} />
-                  Request Refund
-                </button>
+                  <button
+                    className={styles.refundBtn}
+                    onClick={() =>
+                      requestRefund(selectedOrder._id)
+                    }
+                  >
+                    <RotateCcw size={18} />
+                    Request Refund
+                  </button>
 
-              )}
+                )}
 
               <button
                 className={styles.viewBtn}
