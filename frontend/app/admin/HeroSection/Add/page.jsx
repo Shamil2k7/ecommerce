@@ -92,13 +92,10 @@ export default function AddHeroSection() {
                     image: "",
                 }));
             };
-
+        
         };
-
-
         img.src = URL.createObjectURL(file);
     };
-
 
 
     // Input Change
@@ -144,49 +141,46 @@ export default function AddHeroSection() {
 
         return Object.keys(newErrors).length === 0;
     };// Submit
-    const handleSubmit = async () => {
-        if (!validate()) return;
+   // Submit
+const handleSubmit = async () => {
+    if (!validate()) return;
 
-        try {
-            setLoading(true);
+    try {
+        setLoading(true);
 
-            console.log("API:", process.env.NEXT_PUBLIC_API_URL);
-            console.log("DATA:", hero);
+        const API = process.env.NEXT_PUBLIC_API_URL;
 
-            const response = await axios.post(
-                `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/hero-sections`,
-                {
-                    brand: hero.brand,
-                    image: hero.image,
-                    displayOrder: hero.displayOrder,
-                    status: hero.status,
-                },
-                {
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                }
-            );
-
-            console.log(response.data);
-
-            alert(response.data.message);
-
-            router.push("/admin/HeroSection");
-        } catch (err) {
-            console.log("FULL ERROR");
-            console.log(err);
-
-            if (err.response) {
-                console.log(err.response.data);
-                alert(JSON.stringify(err.response.data));
-            } else {
-                alert(err.message);
-            }
-        } finally {
-            setLoading(false);
+        if (!API) {
+            alert("NEXT_PUBLIC_API_URL is not defined.");
+            return;
         }
-    };
+
+        const { data } = await axios.post(
+            `${API}/api/marketing/hero-sections`,
+            {
+                brand: hero.brand.trim(),
+                image: hero.image,
+                displayOrder: Number(hero.displayOrder),
+                status: hero.status,
+            }
+        );
+
+        alert(data.message);
+
+        router.push("/admin/HeroSection");
+
+    } catch (err) {
+        console.error(err);
+
+        alert(
+            err.response?.data?.message ||
+            err.message ||
+            "Failed to create hero section."
+        );
+    } finally {
+        setLoading(false);
+    }
+};
     return (
         <section className={styles.container}>
             <div className={styles.header}>
