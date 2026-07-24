@@ -107,28 +107,36 @@ export default function EditCategoryPage() {
       formData.append("name", name);
       formData.append("slug", slug);
       formData.append("description", description);
-      formData.append("parentCategory", parentCategory || "");
       formData.append("isActive", isActive === "Active" ? "true" : "false");
 
       if (newImageFile) {
         formData.append("image", newImageFile);
       }
-
-      const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
-        method: "PATCH",
-        body: formData,
-      });
-
-      const json = await res.json();
-      if (res.ok) {
-        alert("Category updated successfully!");
-        router.push("/admin/categories");
+      if (parentCategory) {
+        formData.append("parentCategory", parentCategory);
       } else {
-        alert(`Failed to update category: ${json.message || "Unknown error"}`);
+        formData.append("parentCategory", "null");
       }
+
+      const res = await fetch(
+        `http://localhost:5000/api/categories/${id}`,
+        {
+          method: "PATCH",
+          body: formData,
+        }
+      );
+
+      const data = await res.json();
+
+      if (!res.ok) {
+        throw new Error(data.message || "Failed to update category");
+      }
+
+      alert("Category updated successfully!");
+      router.push("/admin/categories");
     } catch (err) {
       console.error(err);
-      alert("Error updating category.");
+      alert(err.message || "Error updating category.");
     } finally {
       setSubmitting(false);
     }
