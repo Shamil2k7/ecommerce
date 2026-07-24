@@ -1,5 +1,5 @@
 import express from "express";
-import { approveRefund, createOrder, deleteOrder, getAllOrders, getMyOrders, getOrderCounts, getRefundRequests, getSingleOrder, rejectRefund, requestRefund, updateOrderStatus, updatePaymentStatus } from "../controllers/order/order.controller.js";
+import { approveRefund, cancelOrder, createOrder, deleteOrder, getAllOrders, getMyOrders, getOrderCounts, getRefundRequests, getSingleOrder, rejectRefund, requestRefund, updateOrderStatus, updatePaymentStatus } from "../controllers/order/order.controller.js";
 
 
 
@@ -18,7 +18,7 @@ export default router;
 router.get("/my-orders", protect, getMyOrders);
 
 
-
+router.put("/:id/cancel", protect, cancelOrder);
 
 router.post("/create", protect, createOrder);
 router.get("/", protect, isAdmin, getAllOrders);
