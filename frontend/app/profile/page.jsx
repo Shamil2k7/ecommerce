@@ -30,14 +30,9 @@ export default function ProfilePage() {
   const [editName, setEditName] = useState("");
   const [editPhone, setEditPhone] = useState("");
 
-  const [toastMessage, setToastMessage] = useState("");
 
-  const triggerToast = (msg) => {
-    setToastMessage(msg);
-    setTimeout(() => {
-      setToastMessage("");
-    }, 2500);
-  };
+
+
 
   // Redirect to login if user session is invalid
   useEffect(() => {
@@ -104,7 +99,6 @@ export default function ProfilePage() {
           const data = await response.json();
           if (data.success) {
             setProfileImage(base64String);
-            triggerToast("Profile image updated successfully!");
             checkAuth();
           }
         } catch (error) {
@@ -138,7 +132,6 @@ export default function ProfilePage() {
       if (data.success) {
         setProfileName(editName);
         setProfilePhone(editPhone);
-        triggerToast("Profile updated successfully!");
         checkAuth();
       }
     } catch (error) {
@@ -167,7 +160,7 @@ export default function ProfilePage() {
             addr._id === editingAddressId ? data.address : addr
           );
           setAddresses(updated);
-          triggerToast("Address saved successfully!");
+          
         }
         setEditingAddressId(null);
       } else {
@@ -182,7 +175,7 @@ export default function ProfilePage() {
         const data = await response.json();
         if (data.success) {
           setAddresses([...addresses, data.address]);
-          triggerToast("Address saved successfully!");
+         
         }
       }
     } catch (error) {
@@ -212,7 +205,7 @@ export default function ProfilePage() {
       if (data.success) {
         const updated = addresses.filter((addr) => addr._id !== id);
         setAddresses(updated);
-        triggerToast(`${label} Address deleted!`);
+       
       }
     } catch (error) {
       console.error("Error deleting address:", error);
@@ -330,7 +323,7 @@ export default function ProfilePage() {
                 <div className={styles.value}>{profilePhone}</div>
               </div>
             )}
-
+{/* 
             {user.role && (
               <div className={styles.detailRow}>
                 <div className={styles.labelInfo}>
@@ -341,7 +334,7 @@ export default function ProfilePage() {
                   <span className={styles.roleBadge}>{user.role}</span>
                 </div>
               </div>
-            )}
+            )} */}
 
             {formattedDate && (
               <div className={styles.detailRow}>
@@ -353,30 +346,17 @@ export default function ProfilePage() {
               </div>
             )}
 
-            {addresses.length === 0 ? (
-              <div className={styles.detailRow}>
-                <div className={styles.labelInfo}>
-                  <MapPin size={18} />
-                  <span>Delivery Addresses</span>
-                </div>
-                <div className={styles.emptyAddressContainer}>
-                  <span className={styles.noAddressText}>No address added yet</span>
-                  <button onClick={() => setIsAddressModalOpen(true)} className={styles.addAddressInlineBtn}>
-                    + Add Address
-                  </button>
-                </div>
-              </div>
-            ) : (
-              addresses.map((addr) => (
-                <div key={addr._id} className={styles.detailRow}>
-                  <div className={styles.labelInfo}>
-                    <MapPin size={18} />
-                    <span>{addr.label} Address</span>
-                  </div>
-                  <div className={styles.value}>{addr.text}</div>
-                </div>
-              ))
-            )}
+         {addresses.length > 0 &&
+  addresses.map((addr) => (
+    <div key={addr._id} className={styles.detailRow}>
+      <div className={styles.labelInfo}>
+        <MapPin size={18} />
+        <span>{addr.label} Address</span>
+      </div>
+      <div className={styles.value}>{addr.text}</div>
+    </div>
+  ))
+}
           </div>
         </div>
 
@@ -520,13 +500,6 @@ export default function ProfilePage() {
       )}
 
     
-      {toastMessage && (
-        <div className={styles.toastContainer}>
-          <div className={styles.toast}>
-            <span>{toastMessage}</span>
-          </div>
-        </div>
-      )}
     </section>
   );
 }
