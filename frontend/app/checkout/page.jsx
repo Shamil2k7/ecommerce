@@ -7,6 +7,7 @@ import styles from "./Checkout.module.css";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
+import { toast } from "react-toastify";
 
 function CheckoutContent() {
   const [payment, setPayment] = useState("Cash on Delivery");

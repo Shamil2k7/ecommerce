@@ -1,6 +1,7 @@
 import { useState } from "react";
 import styles from "./CheckoutSummary.module.css";
 import { FiLock } from "react-icons/fi";
+import { toast } from "react-toastify";
 
 export default function CheckoutSummary({
   cart,
@@ -11,12 +12,39 @@ export default function CheckoutSummary({
 }) {
   const [couponCode, setCouponCode] = useState("");
 
-  const handleApplyCoupon = (e) => {
+  const handleApplyCoupon = async (e) => {
     e.preventDefault();
 
-    if (couponCode.trim()) {
-      applyCoupon(couponCode.trim());
+    const code = couponCode.trim();
+
+    if (!code) {
+      toast.error("Please enter a coupon code");
+      return;
+    }
+
+    try {
+      const result = await applyCoupon(code);
+
+      if (result?.success === false) {
+        toast.error(result.message || "Invalid coupon code");
+        return;
+      }
+
+      toast.success(result?.message || `Coupon "${code}" applied`);
       setCouponCode("");
+    } catch (error) {
+      console.error("Error applying coupon:", error);
+      toast.error("Could not apply coupon. Please try again.");
+    }
+  };
+
+  const handleRemoveCoupon = async () => {
+    try {
+      await removeCoupon();
+      toast.info("Coupon removed");
+    } catch (error) {
+      console.error("Error removing coupon:", error);
+      toast.error("Could not remove coupon. Please try again.");
     }
   };
 
@@ -106,7 +134,7 @@ export default function CheckoutSummary({
             <button
               type="button"
               className={styles.removeTicketButton}
-              onClick={removeCoupon}
+              onClick={handleRemoveCoupon}
             >
               REMOVE
             </button>
