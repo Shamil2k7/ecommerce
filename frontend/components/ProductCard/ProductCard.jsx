@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import axios from "axios";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import styles from "./ProductCard.module.css";
 import { useCart } from "../../context/CartContext";
@@ -11,6 +12,10 @@ export default function ProductCard({ product }) {
   const [imageSrc, setImageSrc] = useState(
     product.image
   );
+  const [wishlisted, setWishlisted] = useState(false);
+  const [wishlistLoading, setWishlistLoading] = useState(false);
+
+  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   const [loading, setLoading] = useState(false);
 
@@ -27,6 +32,58 @@ export default function ProductCard({ product }) {
       setLoading(false);
     }
   };
+  useEffect(() => {
+    checkWishlist();
+  }, []);
+
+  const checkWishlist = async () => {
+    try {
+      const token = localStorage.getItem("token");
+
+      if (!token) return;
+
+      const { data } = await axios.get(
+        `${API}/api/wishlist/check/${product.id}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setWishlisted(data.wishlisted);
+    } catch (err) {
+      console.log(err);
+    }
+  };
+  const toggleWishlist = async () => {
+    try {
+      setWishlistLoading(true);
+
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        alert("Please login first");
+        return;
+      }
+
+      const { data } = await axios.post(
+        `${API}/api/wishlist/toggle/${product.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      setWishlisted(data.wishlisted);
+    } catch (err) {
+      console.log(err.response?.data || err.message);
+    } finally {
+      setWishlistLoading(false);
+    }
+  };
 
   return (
     <div className={styles.card}>
@@ -37,8 +94,16 @@ export default function ProductCard({ product }) {
           </span>
         )}
 
-        <button className={styles.wishlist}>
-          <Heart size={18} />
+        <button
+          className={styles.wishlist}
+          onClick={toggleWishlist}
+          disabled={wishlistLoading}
+        >
+          <Heart
+            size={18}
+            fill={wishlisted ? "#ef4444" : "none"}
+            color={wishlisted ? "#ef4444" : "#444"}
+          />
         </button>
 
         <Link href={`/products/${product.id}`}>
