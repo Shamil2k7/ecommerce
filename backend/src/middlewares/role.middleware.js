@@ -13,4 +13,6 @@ export const checkRole = (...roles) => {
 };
 
 export const isAdmin = checkRole("admin");
+export const isStaff= checkRole("staff");
+export const isAdminOrStaff = checkRole("admin","staff");
 export default checkRole;
