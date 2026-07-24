@@ -81,7 +81,11 @@ router.post(
   upload.array("images", 10),
   uploadProductImages
 );
-router.delete("/products/:id/images/:imageId", deleteProductImage);
+router.delete(/^\/products\/([^/]+)\/images\/(.+)$/, (req, res, next) => {
+  req.params.id = req.params[0];
+  req.params.imageId = req.params[1];
+  next();
+}, deleteProductImage);
 
 /* =====================================================
                     CATEGORY

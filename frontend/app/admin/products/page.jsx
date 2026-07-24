@@ -212,12 +212,12 @@ export default function ProductsPage() {
 
                   <td>{product.name}</td>
 
-                  <td>{typeof product.category === "object" ? product.category?.name : product.category || "Uncategorized"}</td>
+                  <td>
+                    {product.category?.name || product.category || "-"}
+                  </td>
 
                   <td>
-                    {typeof product.brand === "object"
-                      ? product.brand.name
-                      : product.brand || "-"}
+                    {product.brand?.name || product.brand || "-"}
                   </td>
 
                   <td>
@@ -300,70 +300,70 @@ export default function ProductsPage() {
 
       </div>
       {showModal && selectedProduct && (
-  <div className={styles.modalOverlay}>
-    <div className={styles.modal}>
+        <div className={styles.modalOverlay}>
+          <div className={styles.modal}>
 
-      <button
-        className={styles.closeBtn}
-        onClick={closeModal}
-      >
-        ×
-      </button>
+            <button
+              className={styles.closeBtn}
+              onClick={closeModal}
+            >
+              ×
+            </button>
 
-      <div className={styles.modalContent}>
+            <div className={styles.modalContent}>
 
-        <img
-          src={
-            selectedProduct.images?.[0]?.url ||
-            "/images/headphone.png"
-          }
-          alt={selectedProduct.name}
-          className={styles.modalImage}
-        />
+              <img
+                src={
+                  selectedProduct.images?.[0]?.url ||
+                  "/images/headphone.png"
+                }
+                alt={selectedProduct.name}
+                className={styles.modalImage}
+              />
 
-        <div className={styles.modalInfo}>
+              <div className={styles.modalInfo}>
 
-          <h2>{selectedProduct.name}</h2>
+                <h2>{selectedProduct.name}</h2>
 
-          <p>
-            <strong>Category:</strong>{" "}
-            {selectedProduct.category?.name ||
-              selectedProduct.category}
-          </p>
+                <p>
+                  <strong>Category:</strong>{" "}
+                  {selectedProduct.category?.name ||
+                    selectedProduct.category}
+                </p>
 
-          <p>
-            <strong>Brand:</strong>{" "}
-            {selectedProduct.brand?.name ||
-              selectedProduct.brand ||
-              "-"}
-          </p>
+                <p>
+                  <strong>Brand:</strong>{" "}
+                  {selectedProduct.brand?.name ||
+                    selectedProduct.brand ||
+                    "-"}
+                </p>
 
-          <p>
-            <strong>Price:</strong> ₹
-            {selectedProduct.price}
-          </p>
+                <p>
+                  <strong>Price:</strong> ₹
+                  {selectedProduct.price}
+                </p>
 
-          <p>
-            <strong>Stock:</strong>{" "}
-            {selectedProduct.stock}
-          </p>
+                <p>
+                  <strong>Stock:</strong>{" "}
+                  {selectedProduct.stock}
+                </p>
 
-          <p>
-            <strong>Description:</strong>
-          </p>
+                <p>
+                  <strong>Description:</strong>
+                </p>
 
-          <p>
-            {selectedProduct.description ||
-              "No description"}
-          </p>
+                <p>
+                  {selectedProduct.description ||
+                    "No description"}
+                </p>
 
+              </div>
+
+            </div>
+
+          </div>
         </div>
-
-      </div>
-
-    </div>
-  </div>
-)}
+      )}
 
     </section>
   );
