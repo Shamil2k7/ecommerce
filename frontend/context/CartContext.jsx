@@ -7,6 +7,7 @@ import {
   useEffect,
   useCallback,
 } from "react";
+import { toast } from "react-toastify";
 import cartService from "../services/cartService";
 import { useAuth } from "./AuthContext";
 
@@ -25,7 +26,12 @@ export const CartProvider = ({ children }) => {
       return await request();
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || errorMessage);
+
+      toast.error(error.response?.data?.message || errorMessage, {
+        position: "top-center",
+        autoClose: 2500,
+      });
+
       return null;
     } finally {
       setLoading(false);
@@ -53,7 +59,10 @@ export const CartProvider = ({ children }) => {
   // Add item
   const addToCart = async (product) => {
     if (!user?._id) {
-      alert("Please login first");
+      toast.warning("Please login first", {
+        position: "top-center",
+        autoClose: 2500,
+      });
       return;
     }
 
@@ -68,7 +77,11 @@ export const CartProvider = ({ children }) => {
 
     if (data) {
       setCart(data.cart || data);
-      alert(data.message || "Product added to cart");
+
+      toast.success(data.message || "Product added to cart", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -115,7 +128,11 @@ export const CartProvider = ({ children }) => {
 
     if (data) {
       setCart(data.cart || data);
-      alert(data.message || "Item removed");
+
+      toast.success(data.message || "Item removed from cart", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -130,7 +147,11 @@ export const CartProvider = ({ children }) => {
 
     if (data) {
       setCart(data.cart || data);
-      alert(data.message || "Cart cleared");
+
+      toast.success(data.message || "Cart cleared", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -149,7 +170,11 @@ export const CartProvider = ({ children }) => {
 
     if (data) {
       setCart(data.cart);
-      alert(data.message);
+
+      toast.success(data.message, {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -168,7 +193,11 @@ export const CartProvider = ({ children }) => {
 
     if (data) {
       setCart(data.cart || data);
-      alert(data.message || "Coupon removed");
+
+      toast.success(data.message || "Coupon removed", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     }
   };
 
@@ -193,8 +222,10 @@ export const CartProvider = ({ children }) => {
 
 export const useCart = () => {
   const context = useContext(CartContext);
+
   if (context === undefined) {
     throw new Error("useCart must be used within a CartProvider");
   }
+
   return context;
 };

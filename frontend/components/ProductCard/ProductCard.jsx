@@ -9,7 +9,7 @@ import { useCart } from "../../context/CartContext";
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
   const [imageSrc, setImageSrc] = useState(
-    product.image || "/images/headphone.png"
+    product.image
   );
 
   const [loading, setLoading] = useState(false);
