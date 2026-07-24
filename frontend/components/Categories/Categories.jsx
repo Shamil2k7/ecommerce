@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
@@ -19,6 +19,9 @@ export default function Categories() {
 
   const [categories, setCategories] = useState([]);
 
+  const prevRef = useRef(null);
+  const nextRef = useRef(null);
+
   useEffect(() => {
     fetchCategories();
   }, []);
@@ -32,51 +35,56 @@ export default function Categories() {
       const data = await res.json();
 
       if (data.success) {
-        // Show only parent categories
         const parentCategories = (data.data || []).filter(
-          (category) => !category.parentCategory && category.isActive
+          (category) =>
+            !category.parentCategory &&
+            category.isActive
         );
 
         setCategories(parentCategories);
       }
     } catch (err) {
-      console.error("Error fetching categories:", err);
+      console.error(err);
     }
   };
+
+  // Duplicate categories for smooth loop
+  const swiperCategories = useMemo(() => {
+    if (!categories.length) return [];
+
+    let arr = [...categories];
+
+    while (arr.length < 20) {
+      arr = [...arr, ...categories];
+    }
+
+    return arr;
+  }, [categories]);
+
+  if (!swiperCategories.length) return null;
 
   return (
     <section className={styles.categories}>
       <div className={styles.container}>
-        {/* Header */}
         <div className={styles.header}>
-          <div className={styles.nav}>
-            <button className="category-prev" aria-label="Previous">
-              <ChevronLeft size={20} />
-            </button>
 
-            <button className="category-next" aria-label="Next">
-              <ChevronRight size={20} />
-            </button>
-          </div>
         </div>
 
-        {/* Swiper */}
         <Swiper
           modules={[Navigation, Autoplay]}
-          navigation={{
-            prevEl: ".category-prev",
-            nextEl: ".category-next",
-          }}
+          slidesPerView={6}
+          spaceBetween={12}
+          loop={true}
+          speed={900}
           autoplay={{
-            delay: 1,
+            delay: 0,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
-          speed={900}
-          loop={categories.length > 6}
           grabCursor={true}
-          slidesPerView={6}
-          spaceBetween={12}
+          observer={true}
+          observeParents={true}
+          watchOverflow={false}
           breakpoints={{
             1400: {
               slidesPerView: 8,
@@ -107,9 +115,13 @@ export default function Categories() {
               spaceBetween: 8,
             },
           }}
+          onBeforeInit={(swiper) => {
+            swiper.params.navigation.prevEl = prevRef.current;
+            swiper.params.navigation.nextEl = nextRef.current;
+          }}
         >
-          {categories.map((category) => (
-            <SwiperSlide key={category._id}>
+          {swiperCategories.map((category, index) => (
+            <SwiperSlide key={`${category._id}-${index}`}>
               <Link
                 href={`/products?category=${category.slug}`}
                 className={styles.card}
