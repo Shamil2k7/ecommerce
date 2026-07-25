@@ -75,7 +75,7 @@ export default function OrdersPage() {
     try {
       setLoading(true);
 
-      const token = localStorage.getItem("token");
+      
 
       const { data } = await axios.get(
         `${API_URL}/my-orders`,
@@ -98,15 +98,13 @@ export default function OrdersPage() {
     if (!confirm("Cancel this order?")) return;
 
     try {
-      const token = localStorage.getItem("token");
+      
 
       const { data } = await axios.put(
         `${API_URL}/${id}/cancel`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          
           withCredentials: true,
         }
       );
@@ -125,15 +123,13 @@ export default function OrdersPage() {
     if (!confirm("Request refund?")) return;
 
     try {
-      const token = localStorage.getItem("token");
+      
 
       const { data } = await axios.put(
         `${API_URL}/${id}/request-refund`,
         {},
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          
           withCredentials: true,
         }
       );
@@ -172,7 +168,6 @@ export default function OrdersPage() {
     try {
       setSubmittingReview(true);
 
-      const token = localStorage.getItem("token");
 
       const { data } = await axios.post(
         `${API_BASE}/api/products/${reviewProductId}/review`,
@@ -181,9 +176,7 @@ export default function OrdersPage() {
           comment,
         },
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+         withCredentials: true,
         }
       );
 
