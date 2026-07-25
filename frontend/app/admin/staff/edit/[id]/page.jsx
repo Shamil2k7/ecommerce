@@ -312,10 +312,12 @@ export default function EditStaffPage() {
                 onChange={handleImage}
               />
 
-              <div className={styles.overlay}>
-                <Upload size={24} />
-                Change Photo
-              </div>
+              {staff.profileImage && (
+                <div className={styles.overlay}>
+                  <Upload size={24} />
+                  <span>Change Photo</span>
+                </div>
+              )}
             </label>
           </div>
 
@@ -344,11 +346,14 @@ export default function EditStaffPage() {
               onClick={handleDelete}
               disabled={loading}
             >
-              <Trash2 size={22}
+              <Trash2
+                size={20}
                 className={styles.trashIcon}
               />
 
-              {/* Delete */}
+              <span className={styles.deleteText}>
+                Delete
+              </span>
             </button>
 
             <button
