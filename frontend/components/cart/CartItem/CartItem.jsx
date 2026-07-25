@@ -1,10 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import { FiHeart, FiTrash2, FiShoppingBag } from "react-icons/fi";
 import { useRouter } from "next/navigation";
 import styles from "./CartItem.module.css";
 
 const CartItem = ({ item, updateQuantity, removeItem }) => {
   const router = useRouter();
+  const [isSwiped, setIsSwiped] = useState(false);
 
   const discount =
     item.originalPrice > item.price
@@ -17,42 +18,36 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
   const ratingsAverage = item.productId?.ratingsAverage || 0;
   const ratingsCount = item.productId?.ratingsCount || 0;
 
+  const goToCheckout = (e) => {
+    e.stopPropagation();
+    const query = new URLSearchParams();
+    query.set("buyNow", productId);
+    if (item.color) query.set("color", item.color);
+    if (item.size) query.set("size", item.size);
+    router.push(`/checkout?${query.toString()}`);
+  };
+
   return (
     <div className={styles.cartItem}>
+      {/* ---------- Desktop layout ---------- */}
       <div className={styles.leftSection}>
-        <img
-          src={item.image}
-          alt={item.name}
-          className={styles.itemImage}
-        />
+        <img src={item.image} alt={item.name} className={styles.itemImage} />
 
         <div className={styles.quantityControl}>
           <button
             className={styles.qtyBtn}
             onClick={() =>
-              updateQuantity(
-                productId,
-                item.quantity - 1,
-                item.color,
-                item.size
-              )
+              updateQuantity(productId, item.quantity - 1, item.color, item.size)
             }
             disabled={item.quantity <= 1}
           >
             −
           </button>
-
           <span className={styles.qtyValue}>{item.quantity}</span>
-
           <button
             className={styles.qtyBtn}
             onClick={() =>
-              updateQuantity(
-                productId,
-                item.quantity + 1,
-                item.color,
-                item.size
-              )
+              updateQuantity(productId, item.quantity + 1, item.color, item.size)
             }
             disabled={item.quantity >= item.stock}
           >
@@ -71,32 +66,25 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
           </div>
         )}
 
-       
-
         <div className={styles.ratingRow}>
           <span className={styles.ratingBadge}>{ratingsAverage.toFixed(1)} ★</span>
           <span className={styles.reviewCount}>({ratingsCount} Reviews)</span>
         </div>
 
         <div className={styles.priceRow}>
-          {discount > 0 && (
-            <span className={styles.offer}>{discount}% Off</span>
-          )}
-
+          {discount > 0 && <span className={styles.offer}>{discount}% Off</span>}
           {item.originalPrice > item.price && (
-            <span className={styles.itemOriginalPrice}>
-              ₹{item.originalPrice}
-            </span>
+            <span className={styles.itemOriginalPrice}>₹{item.originalPrice}</span>
           )}
-
           <span className={styles.itemPrice}>₹{item.price}</span>
         </div>
 
-        <div className={styles.upiOffer}>
-          ₹{item.price - 50} with UPI Offer
-        </div>
+        <div className={styles.upiOffer}>₹{item.price - 50} with UPI Offer</div>
 
-         <div className={styles.itemVariant} style={{ marginTop: '4px', fontSize: '13px', color: '#666' }}>
+        <div
+          className={styles.itemVariant}
+          style={{ marginTop: "4px", fontSize: "13px", color: "#666" }}
+        >
           <span>Stock available: {item.stock}</span>
         </div>
 
@@ -105,35 +93,112 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             <FiHeart className={styles.actionIcon} />
             Save for later
           </button>
-
           <button
             className={`${styles.actionBtn} ${styles.removeBtn}`}
-            onClick={() =>
-              removeItem(
-                productId,
-                item.color,
-                item.size
-              )
-            }
+            onClick={() => removeItem(productId, item.color, item.size)}
           >
             <FiTrash2 className={styles.actionIcon} />
             Remove
           </button>
-
-          <button 
-            className={styles.actionBtn}
-            onClick={() => {
-              const query = new URLSearchParams();
-              query.set("buyNow", productId);
-              if (item.color) query.set("color", item.color);
-              if (item.size) query.set("size", item.size);
-              router.push(`/checkout?${query.toString()}`);
-            }}
-          >
+          <button className={styles.actionBtn} onClick={goToCheckout}>
             <FiShoppingBag className={styles.actionIcon} />
             Buy this now
           </button>
         </div>
+      </div>
+
+      {/* ---------- Mobile layout ---------- */}
+      <div className={styles.mobileWrapper}>
+        <div
+          className={`${styles.mobileContent} ${isSwiped ? styles.swiped : ""}`}
+          onClick={() => setIsSwiped((prev) => !prev)}
+        >
+          <img src={item.image} alt={item.name} className={styles.mobileImage} />
+
+          <div className={styles.mobileInfo}>
+            <h3 className={styles.mobileName}>{item.name}</h3>
+
+            {(item.color || item.size) && (
+              <div className={styles.mobileVariant}>
+                {item.color && <span>{item.color}</span>}
+                {item.size && <span>{item.size}</span>}
+              </div>
+            )}
+
+            <div className={styles.mobileRating}>
+              <span className={styles.mobileRatingBadge}>
+                {ratingsAverage.toFixed(1)} ★
+              </span>
+              <span className={styles.mobileReviewCount}>({ratingsCount})</span>
+            </div>
+
+            <div className={styles.mobilePriceRow}>
+              <span className={styles.mobilePrice}>₹{item.price}</span>
+              {item.originalPrice > item.price && (
+                <span className={styles.mobileOriginalPrice}>
+                  ₹{item.originalPrice}
+                </span>
+              )}
+              {discount > 0 && (
+                <span className={styles.mobileDiscount}>{discount}% off</span>
+              )}
+            </div>
+
+            <div className={styles.mobileUpi}>₹{item.price - 50} with UPI</div>
+            <div className={styles.mobileStock}>Stock: {item.stock}</div>
+
+            <div className={styles.mobileFooter}>
+              <div
+                className={styles.mobileQty}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <button
+                  onClick={() =>
+                    updateQuantity(productId, item.quantity - 1, item.color, item.size)
+                  }
+                  disabled={item.quantity <= 1}
+                >
+                  −
+                </button>
+                <span>{item.quantity}</span>
+                <button
+                  onClick={() =>
+                    updateQuantity(productId, item.quantity + 1, item.color, item.size)
+                  }
+                  disabled={item.quantity >= item.stock}
+                >
+                  +
+                </button>
+              </div>
+
+              <div className={styles.mobileActions}>
+                <button
+                  className={styles.mobileIconBtn}
+                  onClick={(e) => e.stopPropagation()}
+                  aria-label="Save for later"
+                >
+                  <FiHeart />
+                </button>
+                <button
+                  className={styles.mobileIconBtn}
+                  onClick={goToCheckout}
+                  aria-label="Buy now"
+                >
+                  <FiShoppingBag />
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <button
+          className={styles.mobileDeleteBtn}
+          onClick={() => removeItem(productId, item.color, item.size)}
+          aria-label="Remove item"
+        >
+          <FiTrash2 />
+          <span>Remove</span>
+        </button>
       </div>
     </div>
   );
