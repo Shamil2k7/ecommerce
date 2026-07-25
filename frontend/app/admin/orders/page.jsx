@@ -64,14 +64,11 @@ export default function OrdersPage() {
 
   const deleteOrder = async (id) => {
     try {
-      const token = localStorage.getItem("token");
 
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${id}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          
           withCredentials: true,
         }
       );
