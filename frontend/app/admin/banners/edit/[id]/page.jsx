@@ -5,14 +5,16 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { ArrowLeft, Upload, Trash2 } from "lucide-react";
 import axios from "axios";
-import styles from "../../add/AddBanner.module.css";
+import styles from "./EditBanner.module.css";
 
 export default function EditBannerPage() {
   const { id } = useParams();
   const router = useRouter();
 
   const API = process.env.NEXT_PUBLIC_API_URL;
-
+  const [errors, setErrors] = useState({
+    image: "",
+  });
   const [banner, setBanner] = useState({
     image: "",
     displayOrder: "",
@@ -46,27 +48,74 @@ export default function EditBannerPage() {
       alert(error.response?.data?.message || "Failed to load banner");
     }
   };
-
-  // Handle image
   const handleImage = (e) => {
     const file = e.target.files[0];
 
     if (!file) return;
 
-    const reader = new FileReader();
+    // Clear previous error
+    setErrors({
+      image: "",
+    });
 
-    reader.onloadend = () => {
-      setBanner((prev) => ({
-        ...prev,
-        image: reader.result,
-      }));
+    // Validate file type
+    if (!file.type.startsWith("image/")) {
+      setErrors({
+        image: "Please select a valid image file.",
+      });
+      return;
+    }
+
+    const image = new Image();
+    const imageURL = URL.createObjectURL(file);
+
+    image.onload = () => {
+      // Validate dimensions
+      if (image.width < 1600 || image.height < 500) {
+        setErrors({
+          image: `Selected image is ${image.width} × ${image.height}px.\nMinimum required size is 1600 × 500 pixels.`,
+        });
+
+        URL.revokeObjectURL(imageURL);
+        return;
+      }
+
+      // Convert image to Base64
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        setBanner((prev) => ({
+          ...prev,
+          image: reader.result,
+        }));
+
+        setErrors({
+          image: "",
+        });
+      };
+
+      reader.readAsDataURL(file);
+
+      URL.revokeObjectURL(imageURL);
     };
 
-    reader.readAsDataURL(file);
-  };
+    image.onerror = () => {
+      setErrors({
+        image: "Invalid image file.",
+      });
 
+      URL.revokeObjectURL(imageURL);
+    };
+
+    image.src = imageURL;
+  };
   // Update banner
   const handleUpdate = async () => {
+    if (errors.image) {
+      alert(errors.image);
+      return;
+    }
+
     try {
       setUpdating(true);
 
@@ -91,7 +140,6 @@ export default function EditBannerPage() {
       setUpdating(false);
     }
   };
-
   // Delete banner
   const handleDelete = async () => {
     if (!window.confirm("Delete this banner?")) return;
@@ -127,10 +175,33 @@ export default function EditBannerPage() {
       </div>
 
       <div className={styles.card}>
+        {/* Banner Image */}
         <div className={styles.field}>
-          <label>Banner Image</label>
+          <div className={styles.imageHeader}>
+            <label>Banner Image</label>
 
-          <label className={styles.upload}>
+            <button
+              type="button"
+              className={styles.infoBtn}
+              onClick={() =>
+                alert(
+                  "Banner Image Requirements\n\n" +
+                  "• Minimum Size: 1920 × 600 pixels\n" +
+                  "• Recommended Size: 1920 × 600 pixels\n" +
+                  "• Aspect Ratio: 16:5\n" +
+                  "• Formats: JPG, PNG, WebP\n" +
+                  "• Maximum File Size: 2 MB"
+                )
+              }
+            >
+              Image Requirements
+            </button>
+          </div>
+
+          <label
+            className={`${styles.upload} ${errors.image ? styles.errorUpload : ""
+              }`}
+          >
             {banner.image && (
               <img
                 src={banner.image}
@@ -150,8 +221,15 @@ export default function EditBannerPage() {
               onChange={handleImage}
             />
           </label>
+
+          {errors.image && (
+            <p className={styles.error}>
+              {errors.image}
+            </p>
+          )}
         </div>
 
+        {/* Display Order */}
         <div className={styles.field}>
           <label>Display Order</label>
 
@@ -167,6 +245,7 @@ export default function EditBannerPage() {
           />
         </div>
 
+        {/* Status */}
         <div className={styles.field}>
           <label>Status</label>
 
@@ -184,6 +263,7 @@ export default function EditBannerPage() {
           </select>
         </div>
 
+        {/* Buttons */}
         <div className={styles.buttons}>
           <button
             className={styles.delete}
