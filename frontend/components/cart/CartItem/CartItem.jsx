@@ -29,7 +29,6 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
 
   return (
     <div className={styles.cartItem}>
-      {/* ---------- Desktop layout ---------- */}
       <div className={styles.leftSection}>
         <img src={item.image} alt={item.name} className={styles.itemImage} />
 
@@ -41,7 +40,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
             }
             disabled={item.quantity <= 1}
           >
-            −
+            -
           </button>
           <span className={styles.qtyValue}>{item.quantity}</span>
           <button
@@ -107,7 +106,6 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
         </div>
       </div>
 
-      {/* ---------- Mobile layout ---------- */}
       <div className={styles.mobileWrapper}>
         <div
           className={`${styles.mobileContent} ${isSwiped ? styles.swiped : ""}`}
