@@ -82,6 +82,7 @@ export default function AddStaffPage() {
         {
           method: "POST",
           body: formData,
+          credentials: "include",
         }
       );
 

@@ -40,7 +40,9 @@ export default function EditStaffPage() {
       setPageLoading(true);
 
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/staff/${id}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/staff/${id}`,{
+          credentials:"include",
+        }
       );
 
       const data = await response.json();
@@ -127,6 +129,7 @@ export default function EditStaffPage() {
         {
           method: "PUT",
           body: formData,
+          credentials:"include",
         }
       );
 
@@ -164,6 +167,7 @@ export default function EditStaffPage() {
         `${process.env.NEXT_PUBLIC_API_URL}/api/staff/${id}`,
         {
           method: "DELETE",
+          credentials:"include",
         }
       );
 
