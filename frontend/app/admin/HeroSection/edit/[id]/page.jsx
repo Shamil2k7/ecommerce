@@ -81,10 +81,10 @@ export default function EditHeroSection() {
     const img = new Image();
 
     img.onload = () => {
-      if (img.width < 1200 || img.height < 400) {
+      if (img.width < 1600 || img.height < 500) {
         setErrors((prev) => ({
           ...prev,
-          image: "Image should be minimum 1200 x 400 pixels",
+          image: "Image should be minimum 1600 x 500 pixels",
         }));
         return;
       }
@@ -172,162 +172,166 @@ export default function EditHeroSection() {
   }
 
   return (
-    <section className={styles.container}>
-      <div className={styles.header}>
-        <Link
-          href="/admin/HeroSection"
-          className={styles.backBtn}
-        >
-          <ArrowLeft size={18} />
-          Back to Hero Sections
-        </Link>
+  <section className={styles.container}>
+    <div className={styles.header}>
+      <Link
+        href="/admin/HeroSection"
+        className={styles.backBtn}
+      >
+        <ArrowLeft size={18} />
+        Back to Hero Sections
+      </Link>
 
-        <h1 className={styles.title}>
-          Edit Hero Section
-        </h1>
+      <h1 className={styles.title}>
+        Edit Hero Section
+      </h1>
 
-        <p className={styles.subtitle}>
-          Update Hero Banner
-        </p>
+      <p className={styles.subtitle}>
+        Update Hero Banner
+      </p>
+    </div>
+
+    <div className={styles.formCard}>
+      {/* Brand */}
+      <div className={styles.formGroup}>
+        <label>Brand</label>
+
+        <input
+          className={styles.input}
+          type="text"
+          name="brand"
+          value={hero.brand}
+          onChange={handleChange}
+          placeholder="Enter Brand Name"
+        />
+
+        {errors.brand && (
+          <p className={styles.error}>
+            {errors.brand}
+          </p>
+        )}
       </div>
 
-      <div className={styles.formCard}>
-        <div className={styles.formGroup}>
-          <label>Brand</label>
-
-          <input
-            className={styles.input}
-            type="text"
-            name="brand"
-            value={hero.brand}
-            onChange={handleChange}
-          />
-
-          {errors.brand && (
-            <p className={styles.error}>
-              {errors.brand}
-            </p>
-          )}
-        </div>
-
-        {/* Offer */}
-        {/* Uncomment if needed
-        <div className={styles.formGroup}>
-          <label>Offer</label>
-          <input
-            className={styles.input}
-            type="text"
-            name="offer"
-            value={hero.offer}
-            onChange={handleChange}
-          />
-        </div>
-        */}
-
-        {/* Sub Offer */}
-        {/* Uncomment if needed
-        <div className={styles.formGroup}>
-          <label>Sub Offer</label>
-          <input
-            className={styles.input}
-            type="text"
-            name="subOffer"
-            value={hero.subOffer}
-            onChange={handleChange}
-          />
-        </div>
-        */}
-
-        <div className={styles.formGroup}>
+      {/* Hero Image */}
+      <div className={styles.formGroup}>
+        <div className={styles.imageHeader}>
           <label>Hero Image</label>
 
-          <label className={styles.uploadBox}>
-            {preview ? (
-              <img
-                src={preview}
-                alt="Preview"
-              />
-            ) : (
-              <>
-                <Upload size={40} />
-                <span>Upload Hero Image</span>
-              </>
-            )}
-
-            <input
-              hidden
-              type="file"
-              accept="image/*"
-              onChange={handleImage}
-            />
-          </label>
-
-          {errors.image && (
-            <p className={styles.error}>
-              {errors.image}
-            </p>
-          )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Display Order</label>
-
-          <input
-            className={styles.input}
-            type="number"
-            name="displayOrder"
-            min="1"
-            value={hero.displayOrder}
-            onChange={handleChange}
-          />
-
-          {errors.displayOrder && (
-            <p className={styles.error}>
-              {errors.displayOrder}
-            </p>
-          )}
-        </div>
-
-        <div className={styles.formGroup}>
-          <label>Status</label>
-
-          <select
-            className={styles.select}
-            name="status"
-            value={hero.status}
-            onChange={handleChange}
-          >
-            <option value="Active">
-              Active
-            </option>
-
-            <option value="Inactive">
-              Inactive
-            </option>
-          </select>
-        </div>
-
-        <div className={styles.buttonGroup}>
           <button
-            className={styles.cancelBtn}
+            type="button"
+            className={styles.infoBtn}
             onClick={() =>
-              router.push("/admin/HeroSection")
+              alert(
+                "Hero Image Requirements\n\n" +
+                  "• Minimum Size: 1600 × 500 pixels\n" +
+                  "• Recommended Size: 1920 × 600 pixels\n" +
+                  "• Aspect Ratio: 16:5\n" +
+                  "• Formats: JPG, PNG, WebP\n" +
+                  "• Maximum File Size: 5 MB"
+              )
             }
           >
-            Cancel
-          </button>
-
-          <button
-            className={styles.saveBtn}
-            onClick={handleSubmit}
-            disabled={loading}
-          >
-            {loading
-              ? "Updating..."
-              : "Update Hero Section"}
+            Image Requirements
           </button>
         </div>
+
+        <label
+          className={`${styles.uploadBox} ${
+            errors.image ? styles.errorUpload : ""
+          }`}
+        >
+          {preview ? (
+            <img
+              src={preview}
+              alt="Hero Preview"
+            />
+          ) : (
+            <>
+              <Upload size={40} />
+              <span>Upload Hero Image</span>
+            </>
+          )}
+
+          <input
+            hidden
+            type="file"
+            accept="image/*"
+            onChange={handleImage}
+          />
+        </label>
+
+        {errors.image && (
+          <p className={styles.error}>
+            {errors.image}
+          </p>
+        )}
       </div>
-    </section>
-  );
+
+      {/* Display Order */}
+      <div className={styles.formGroup}>
+        <label>Display Order</label>
+
+        <input
+          className={styles.input}
+          type="number"
+          name="displayOrder"
+          min="1"
+          value={hero.displayOrder}
+          onChange={handleChange}
+        />
+
+        {errors.displayOrder && (
+          <p className={styles.error}>
+            {errors.displayOrder}
+          </p>
+        )}
+      </div>
+
+      {/* Status */}
+      <div className={styles.formGroup}>
+        <label>Status</label>
+
+        <select
+          className={styles.select}
+          name="status"
+          value={hero.status}
+          onChange={handleChange}
+        >
+          <option value="Active">
+            Active
+          </option>
+
+          <option value="Inactive">
+            Inactive
+          </option>
+        </select>
+      </div>
+
+      {/* Buttons */}
+      <div className={styles.buttonGroup}>
+        <button
+          type="button"
+          className={styles.cancelBtn}
+          onClick={() =>
+            router.push("/admin/HeroSection")
+          }
+          disabled={loading}
+        >
+          Cancel
+        </button>
+
+        <button
+          type="button"
+          className={styles.saveBtn}
+          onClick={handleSubmit}
+          disabled={loading}
+        >
+          {loading
+            ? "Updating..."
+            : "Update Hero Section"}
+        </button>
+      </div>
+    </div>
+  </section>
+);
 }

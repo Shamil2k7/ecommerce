@@ -1,0 +1,302 @@
+.container {
+  max-width: 950px;
+  margin: 30px auto;
+  padding: 20px;
+}
+
+.header {
+  margin-bottom: 30px;
+}
+
+.back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 16px;
+
+  color: #111827;
+  text-decoration: none;
+  font-weight: 600;
+
+  transition: 0.3s;
+}
+
+.back:hover {
+  color: #000;
+}
+
+.header h1 {
+  font-size: 32px;
+  font-weight: 700;
+  color: #1f2937;
+}
+
+.header p {
+  margin-top: 8px;
+  color: #6b7280;
+}
+
+.card {
+  background: #fff;
+  border-radius: 16px;
+  padding: 32px;
+  box-shadow: 0 10px 30px rgba(0,0,0,.08);
+}
+
+.field {
+  margin-bottom: 24px;
+}
+
+.field label {
+  display: block;
+  margin-bottom: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* Inputs */
+
+.field input,
+.field select {
+  width: 100%;
+  height: 48px;
+
+  padding: 0 15px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  font-size: 15px;
+
+  outline: none;
+  transition: .3s;
+}
+
+.field input:focus,
+.field select:focus {
+  border-color: #111827;
+  box-shadow: 0 0 0 4px rgba(17,24,39,.12);
+}
+
+/* Image Header */
+
+.imageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  margin-bottom: 10px;
+}
+
+/* Requirement Button */
+
+.infoBtn {
+  background: #fff8e1;
+  color: #b7791f;
+
+  border: 1px solid #f6c453;
+  border-radius: 8px;
+
+  padding: 8px 14px;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.infoBtn:hover {
+  background: #fef3c7;
+}
+
+/* Upload */
+
+.upload {
+  position: relative;
+
+  width: 100%;
+  height: 340px;
+
+  border: 2px dashed #d1d5db;
+  border-radius: 14px;
+
+  overflow: hidden;
+
+  background: #f8fafc;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+.upload:hover {
+  border-color: #111827;
+}
+
+.errorUpload {
+  border-color: #dc2626;
+}
+
+.upload img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: cover;
+
+  transition: .4s;
+}
+
+.upload:hover img {
+  transform: scale(1.04);
+}
+
+/* Overlay */
+
+.overlay {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  gap: 10px;
+
+  background: rgba(17,24,39,.65);
+
+  color: white;
+
+  opacity: 0;
+
+  transition: .3s;
+}
+
+.upload:hover .overlay {
+  opacity: 1;
+}
+
+/* Error */
+
+.error {
+  margin-top: 8px;
+  color: #dc2626;
+  font-size: 14px;
+  white-space: pre-line;
+}
+
+/* Buttons */
+
+.buttons {
+  display: flex;
+  justify-content: flex-end;
+  gap: 14px;
+
+  margin-top: 35px;
+}
+
+.delete,
+.cancel,
+.save {
+  min-width: 150px;
+  height: 48px;
+
+  border-radius: 10px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+
+  font-size: 15px;
+  font-weight: 600;
+
+  cursor: pointer;
+
+  transition: .3s;
+}
+
+/* Delete */
+
+.delete {
+  background: #dc2626;
+  color: white;
+  border: none;
+}
+
+.delete:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+/* Cancel */
+
+.cancel {
+  background: white;
+  color: #374151;
+
+  border: 1px solid #d1d5db;
+}
+
+.cancel:hover:not(:disabled) {
+  background: #f3f4f6;
+}
+
+/* Save */
+
+.save {
+  background: #111827;
+  color: white;
+
+  border: none;
+}
+
+.save:hover:not(:disabled) {
+  background: #000;
+}
+
+.delete:disabled,
+.cancel:disabled,
+.save:disabled {
+  opacity: .6;
+  cursor: not-allowed;
+}
+
+/* Responsive */
+
+@media (max-width:768px){
+
+  .container{
+    padding:15px;
+  }
+
+  .card{
+    padding:20px;
+  }
+
+  .header h1{
+    font-size:28px;
+  }
+
+  .upload{
+    height:240px;
+  }
+
+  .imageHeader{
+    flex-direction:column;
+    align-items:flex-start;
+    gap:10px;
+  }
+
+  .buttons{
+    flex-direction:column;
+  }
+
+  .delete,
+  .cancel,
+  .save{
+    width:100%;
+  }
+}

@@ -22,30 +22,75 @@ export default function AddBanner() {
     image: "",
     displayOrder: "",
   });
-  // Image Upload
-  const handleImage = (e) => {
-    const file = e.target.files[0];
+ // Upload Banner Image
+const handleImage = (e) => {
+  const file = e.target.files[0];
 
-    if (!file) return;
+  // Stop if no file is selected
+  if (!file) return;
 
+  // Allow only image files
+  if (!file.type.startsWith("image/")) {
+    setErrors({
+      ...errors,
+      image: "Please select a valid image file.",
+    });
+    return;
+  }
+
+  // Check image dimensions
+  const image = new Image();
+
+  image.onload = () => {
+    // Minimum banner size
+    if (image.width < 1920 || image.height < 600) {
+      setErrors({
+        ...errors,
+        image: "Banner image must be at least 1920 × 600 pixels.",
+      });
+
+      setPreview(null);
+
+      setBanner((prev) => ({
+        ...prev,
+        image: "",
+      }));
+
+      return;
+    }
+
+    // Image is valid
+    setErrors({
+      ...errors,
+      image: "",
+    });
+
+    // Preview image
     setPreview(URL.createObjectURL(file));
 
+    // Convert image to Base64
     const reader = new FileReader();
 
-    reader.readAsDataURL(file);
-
-    reader.onloadend = () => {
+    reader.onload = () => {
       setBanner((prev) => ({
         ...prev,
         image: reader.result,
       }));
-
-      setErrors((prev) => ({
-        ...prev,
-        image: "",
-      }));
     };
+
+    reader.readAsDataURL(file);
   };
+
+  image.onerror = () => {
+    setErrors({
+      ...errors,
+      image: "Unable to read image.",
+    });
+  };
+
+  // Load image to check width and height
+  image.src = URL.createObjectURL(file);
+};
   // Input Change
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -108,108 +153,107 @@ export default function AddBanner() {
       setLoading(false);
     }
   };
- return (
-  <section className={styles.container}>
-    <div className={styles.header}>
-      <Link href="/admin/banners" className={styles.back}>
-        <ArrowLeft size={18} />
-        Back to Banners
-      </Link>
+  return (
+    <section className={styles.container}>
+      <div className={styles.header}>
+        <Link href="/admin/banners" className={styles.back}>
+          <ArrowLeft size={18} />
+          Back to Banners
+        </Link>
 
-      <h1>Add Banner</h1>
-      <p>Upload a homepage slider image.</p>
-    </div>
+        <h1>Add Banner</h1>
+        <p>Upload a homepage slider image.</p>
+      </div>
 
-    <div className={styles.card}>
-      {/* Banner Image */}
-      <div className={styles.field}>
-        <label>Banner Image</label>
+      <div className={styles.card}>
+        {/* Banner Image */}
+        <div className={styles.field}>
+          <label>Banner Image</label>
 
-        <label
-          className={`${styles.upload} ${
-            errors.image ? styles.errorUpload : ""
-          }`}
-        >
-          {preview ? (
-            <img src={preview} alt="Banner Preview" />
-          ) : (
-            <>
-              <Upload size={40} />
-              <span>Upload Banner</span>
-            </>
+          <label
+            className={`${styles.upload} ${errors.image ? styles.errorUpload : ""
+              }`}
+          >
+            {preview ? (
+              <img src={preview} alt="Banner Preview" />
+            ) : (
+              <>
+                <Upload size={40} />
+                <span>Upload Banner</span>
+              </>
+            )}
+
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={handleImage}
+            />
+          </label>
+
+          {errors.image && (
+            <p className={styles.error}>{errors.image}</p>
           )}
+        </div>
+
+        {/* Display Order */}
+        <div className={styles.field}>
+          <label>Display Order</label>
 
           <input
-            hidden
-            type="file"
-            accept="image/*"
-            onChange={handleImage}
+            type="number"
+            name="displayOrder"
+            min="1"
+            value={banner.displayOrder}
+            onChange={handleChange}
+            placeholder="Enter display order"
+            className={
+              errors.displayOrder ? styles.errorInput : ""
+            }
           />
-        </label>
 
-        {errors.image && (
-          <p className={styles.error}>{errors.image}</p>
-        )}
+          {errors.displayOrder && (
+            <p className={styles.error}>
+              {errors.displayOrder}
+            </p>
+          )}
+        </div>
+
+        {/* Status */}
+        <div className={styles.field}>
+          <label>Status</label>
+
+          <select
+            name="status"
+            value={banner.status}
+            onChange={handleChange}
+          >
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        {/* Buttons */}
+        <div className={styles.buttons}>
+          <button
+            type="button"
+            className={styles.cancel}
+            onClick={() => router.push("/admin/banners")}
+            disabled={loading}
+          >
+            Cancel
+          </button>
+
+          <button
+            type="button"
+            className={styles.save}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Saving..." : "Save Banner"}
+          </button>
+        </div>
       </div>
-
-      {/* Display Order */}
-      <div className={styles.field}>
-        <label>Display Order</label>
-
-        <input
-          type="number"
-          name="displayOrder"
-          min="1"
-          value={banner.displayOrder}
-          onChange={handleChange}
-          placeholder="Enter display order"
-          className={
-            errors.displayOrder ? styles.errorInput : ""
-          }
-        />
-
-        {errors.displayOrder && (
-          <p className={styles.error}>
-            {errors.displayOrder}
-          </p>
-        )}
-      </div>
-
-      {/* Status */}
-      <div className={styles.field}>
-        <label>Status</label>
-
-        <select
-          name="status"
-          value={banner.status}
-          onChange={handleChange}
-        >
-          <option value="Active">Active</option>
-          <option value="Inactive">Inactive</option>
-        </select>
-      </div>
-
-      {/* Buttons */}
-      <div className={styles.buttons}>
-        <button
-          type="button"
-          className={styles.cancel}
-          onClick={() => router.push("/admin/banners")}
-          disabled={loading}
-        >
-          Cancel
-        </button>
-
-        <button
-          type="button"
-          className={styles.save}
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          {loading ? "Saving..." : "Save Banner"}
-        </button>
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
 }
