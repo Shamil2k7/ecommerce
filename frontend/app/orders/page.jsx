@@ -58,7 +58,7 @@ export default function OrdersPage() {
           order.orderNumber?.toString().toLowerCase() || "";
 
         const product =
-          order.productId?.name?.toLowerCase() || "";
+          order.products?.[0]?.name?.toLowerCase() || "";
 
         const matchesSearch =
           orderNo.includes(value) || product.includes(value);
@@ -267,15 +267,15 @@ export default function OrdersPage() {
 
               <div className={styles.thumb}>
                 <img
-                  src={order.productId?.image || "/no-image.png"}
-                  alt={order.productId?.name}
+                  src={order.products?.[0]?.productId?.images?.[0]?.url || order.products?.[0]?.image || "/no-image.png"}
+                  alt={order.products?.[0]?.name}
                 />
               </div>
 
               <div className={styles.rowBody}>
 
                 <div className={styles.rowTitle}>
-                  {order.productId?.name}
+                  {order.products?.[0]?.name}
                 </div>
 
                 <div className={styles.rowMeta}>
@@ -344,7 +344,7 @@ export default function OrdersPage() {
                 {order.orderStatus === "Delivered" && (
                   <button
                     className={styles.reviewBtn}
-                    onClick={() => openReviewModal(order.productId?._id)}
+                    onClick={() => openReviewModal(order.products?.[0]?.productId?._id || order.products?.[0]?.productId)}
                   >
                     <Star size={16} />
                     Write Review
@@ -465,27 +465,27 @@ export default function OrdersPage() {
 
                 <div className={styles.product}>
 
-                  {/* <img
-                    src={selectedOrder.productId?.image || "/no-image.png"}
-                    alt="Product"
-                  /> */}
+                  <img
+                    src={selectedOrder.products?.[0]?.productId?.images?.[0]?.url || selectedOrder.products?.[0]?.image || "/no-image.png"}
+                    alt={selectedOrder.products?.[0]?.name || "Product"}
+                  />
 
                   <div>
 
-                    <h3>{selectedOrder.productId?.name}</h3>
+                    <h3>{selectedOrder.products?.[0]?.name}</h3>
 
                     <p>
                       Price :{" "}
                       <strong>
                         ₹
                         {Number(
-                          selectedOrder.productId?.price || 0
+                          selectedOrder.products?.[0]?.price || 0
                         ).toLocaleString("en-IN")}
                       </strong>
                     </p>
 
                     <p>
-                      Quantity : <strong>{selectedOrder.quantity}</strong>
+                      Quantity : <strong>{selectedOrder.products?.[0]?.quantity}</strong>
                     </p>
 
                   </div>
@@ -626,7 +626,7 @@ export default function OrdersPage() {
                 <button
                   className={styles.reviewBtn}
                   onClick={() =>
-                    openReviewModal(selectedOrder.productId?._id)
+                    openReviewModal(selectedOrder.products?.[0]?.productId?._id || selectedOrder.products?.[0]?.productId)
                   }
                 >
                   <Star size={18} />

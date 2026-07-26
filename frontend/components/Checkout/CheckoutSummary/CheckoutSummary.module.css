@@ -152,9 +152,6 @@
   height: 120px;
 
   background: linear-gradient(135deg,#90AD72 0%, #90AD72 100%);
-  /* background: linear-gradient(135deg, #ffd95a 0%, #ffbf00 100%); */
-
-  /* box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08); */
 }
 
 
@@ -341,6 +338,11 @@
   border-left: 2px dashed #9ce37f;
 }
 
+/* Default (desktop): normal flow, no special stickiness of its own */
+.stickyFooter {
+  position: static;
+}
+
 .grandTotalRow {
   display: flex;
   justify-content: space-between;
@@ -451,6 +453,33 @@
     border-left: none;
     border-top: 2px dashed rgba(255,255,255,.6);
   }
+
+  /* Sticky footer: Total + Pay button + security note pinned to bottom
+     while the order summary card is still on screen */
+  .stickyFooter {
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+    background: #fff;
+    margin: 0 -24px -24px;
+    padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
+    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    border-top: 1px solid #eee;
+  }
+
+  .grandTotalRow {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .checkoutButton {
+    margin-top: 14px;
+  }
+
+  .checkoutSecurity {
+    margin-top: 10px;
+  }
 }
 
 @media (max-width: 768px) {
@@ -508,6 +537,11 @@
   .checkoutButton {
     padding: 15px;
     font-size: 14px;
+  }
+
+  .stickyFooter {
+    margin: 0 -20px -20px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
   }
 }
 
@@ -576,5 +610,10 @@
 
   .securityIcon {
     font-size: 16px;
+  }
+
+  .stickyFooter {
+    margin: 0 -16px -16px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   }
 }

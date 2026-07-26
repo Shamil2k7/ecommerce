@@ -80,7 +80,6 @@ export default function CheckoutSummary({
           ))}
         </div>
 
-
         <div className={styles.priceRow}>
           <span>Subtotal</span>
           <span>₹{cart.subtotal?.toLocaleString()}</span>
@@ -108,9 +107,6 @@ export default function CheckoutSummary({
               : `₹${cart.shipping?.toLocaleString()}`}
           </span>
         </div>
-
-       
-       
 
         {cart.couponApplied ? (
           <div className={styles.activeCouponTicket}>
@@ -167,31 +163,31 @@ export default function CheckoutSummary({
           </form>
         )}
 
+        {/* Sticky on mobile: Total + Pay button + security note */}
+        <div className={styles.stickyFooter}>
+          <div className={styles.grandTotalRow}>
+            <span>Total Amount</span>
 
-        <div className={styles.grandTotalRow}>
-          <span>Total Amount</span>
+            <span className={styles.grandTotalPrice}>
+              ₹{cart.finalTotal?.toLocaleString()}
+            </span>
+          </div>
 
-          <span className={styles.grandTotalPrice}>
-            ₹{cart.finalTotal?.toLocaleString()}
-          </span>
+          <button
+            className={styles.checkoutButton}
+            onClick={handlePlaceOrder}
+            disabled={!selectedAddress}
+          >
+            {selectedAddress
+              ? `Pay ₹${cart.finalTotal?.toLocaleString()}`
+              : "Select Address to Continue"}
+          </button>
+
+          <p className={styles.checkoutSecurity}>
+            <FiLock className={styles.securityIcon} />
+            <span>Secure Checkout</span>
+          </p>
         </div>
-
-
-        <button
-          className={styles.checkoutButton}
-          onClick={handlePlaceOrder}
-          disabled={!selectedAddress}
-        >
-          {selectedAddress
-            ? `Pay ₹${cart.finalTotal?.toLocaleString()}`
-            : "Select Address to Continue"}
-        </button>
-
-
-        <p className={styles.checkoutSecurity}>
-          <FiLock className={styles.securityIcon} />
-          <span>Secure Checkout</span>
-        </p>
       </div>
     </aside>
   );
