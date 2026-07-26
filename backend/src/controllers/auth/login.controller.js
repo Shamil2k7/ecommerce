@@ -7,13 +7,14 @@ const login = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: "Please provide email and password",
+      message: "Email and password are required",
     });
   }
 
   try {
-    const formattedEmail = email.trim().toLowerCase();
-    const user = await User.findOne({ email: formattedEmail });
+    const user = await User.findOne({
+      email: email.trim().toLowerCase(),
+    });
 
     if (!user) {
       return res.status(401).json({
@@ -30,6 +31,7 @@ const login = async (req, res) => {
     }
 
     const isMatch = await user.matchPassword(password);
+
     if (!isMatch) {
       return res.status(401).json({
         success: false,
@@ -39,7 +41,7 @@ const login = async (req, res) => {
 
     createToken(res, user._id);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Login successful",
       user: {
@@ -51,7 +53,7 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -59,4 +61,3 @@ const login = async (req, res) => {
 };
 
 export default login;
-

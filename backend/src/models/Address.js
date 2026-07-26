@@ -7,14 +7,12 @@ const addressSchema = new mongoose.Schema(
       ref: "User",
       required: true,
     },
-
     label: {
       type: String,
-      required: true,
       enum: ["Home", "Work", "Other"],
       default: "Home",
+      required: true,
     },
-
     text: {
       type: String,
       required: true,
@@ -26,4 +24,6 @@ const addressSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Address", addressSchema);
+const Address = mongoose.model("Address", addressSchema);
+
+export default Address;
