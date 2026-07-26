@@ -1,6 +1,5 @@
 import User from "../../models/userModels.js";
 
-// Change password for logged-in user
 const changePassword = async (req, res) => {
   const { currentPassword, newPassword } = req.body;
 
@@ -28,7 +27,6 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Verify current (old) password
     const isMatch = await user.matchPassword(currentPassword);
 
     if (!isMatch) {
@@ -38,7 +36,6 @@ const changePassword = async (req, res) => {
       });
     }
 
-    // Set new password (saved via hook)
     user.password = newPassword;
     await user.save();
 
@@ -55,3 +52,4 @@ const changePassword = async (req, res) => {
 };
 
 export default changePassword;
+

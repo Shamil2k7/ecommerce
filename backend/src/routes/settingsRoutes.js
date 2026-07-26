@@ -8,6 +8,8 @@ import {
   removeFavicon,
 } from "../controllers/settings/settingsController.js";
 import upload from "../config/multer.js";
+import protect from "../middlewares/auth.middleware.js";
+import { isAdmin } from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
@@ -15,15 +17,15 @@ const router = express.Router();
 router.get("/", getSettings);
 
 // Update store name & tagline
-router.put("/", updateSettings);
+router.put("/", protect, isAdmin, updateSettings);
 
 // Upload logo
-router.put("/logo", upload.single("logo"), uploadLogo);
+router.put("/logo", protect, isAdmin, upload.single("logo"), uploadLogo);
 
 // Upload favicon
-router.put("/favicon", upload.single("favicon"), uploadFavicon);
+router.put("/favicon", protect, isAdmin, upload.single("favicon"), uploadFavicon);
 
-router.delete("/logo", removeLogo);
-router.delete("/favicon", removeFavicon);
+router.delete("/logo", protect, isAdmin, removeLogo);
+router.delete("/favicon", protect, isAdmin, removeFavicon);
 
 export default router;

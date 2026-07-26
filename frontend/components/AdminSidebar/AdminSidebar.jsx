@@ -3,6 +3,8 @@
 import { useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 import {
   BanknoteArrowDown,
@@ -57,6 +59,16 @@ const menuItems = [
 
 export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
   const pathname = usePathname();
+  const { user, logout } = useAuth();
+
+  const router = useRouter();
+
+  const handleLogout = async () => {
+    const result = await logout();
+    if (result.success) {
+      router.push("/auth/login")
+    }
+  };
 
   const [bannerOpen, setBannerOpen] = useState(
     pathname.startsWith("/admin/banners") ||
@@ -73,6 +85,13 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
       {/* Navigation */}
       <nav className={styles.nav}>
         {menuItems.map((item) => {
+          if (
+            user?.role === "staff" &&
+            (item.title.toLowerCase() === "staff" || item.title.toLowerCase() === "settings")
+          ) {
+            return null;
+          }
+
           const Icon = item.icon;
 
           if (item.children) {
@@ -137,7 +156,7 @@ export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
 
       {/* Bottom */}
       <div className={styles.bottom}>
-        <button className={styles.logout}>
+        <button className={styles.logout} onClick={handleLogout}>
           <LogOut size={20} />
           <span>Logout</span>
         </button>

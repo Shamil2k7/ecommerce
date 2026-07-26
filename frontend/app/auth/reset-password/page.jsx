@@ -17,7 +17,7 @@ function ResetPasswordForm() {
   const [successMsg, setSuccessMsg] = useState("");
 
   const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const otp = searchParams.get("otp");
   const email = searchParams.get("email");
   const { resetPassword } = useAuth();
   const router = useRouter();
@@ -27,7 +27,7 @@ function ResetPasswordForm() {
     setErrorMsg("");
     setSuccessMsg("");
 
-    if (!token || !email) {
+    if (!otp || !email) {
       setErrorMsg("Password reset credentials are missing. Please request a new OTP code.");
       return;
     }
@@ -48,7 +48,7 @@ function ResetPasswordForm() {
     }
 
     setLoading(true);
-    const result = await resetPassword(email, token, password);
+    const result = await resetPassword(email, otp, password);
     setLoading(false);
 
     if (result.success) {
@@ -98,7 +98,7 @@ function ResetPasswordForm() {
         </div>
       )}
 
-      {!token || !email ? (
+      {!otp || !email ? (
         <div style={{ margin: "20px 0", textAlign: "center", color: "#ef4444" }}>
           <p>No valid reset credentials found in URL.</p>
           <Link href="/auth/forgot-password" style={{ color: "#4f46e5", textDecoration: "underline", fontWeight: "bold" }}>

@@ -1,7 +1,6 @@
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
 
-// Register new user
 const register = async (req, res) => {
   const { fullName, email, phone, password } = req.body;
 
@@ -20,8 +19,13 @@ const register = async (req, res) => {
   }
 
   try {
-    // Check if user already exists
-    const userExists = await User.findOne({ $or: [{ email }, { phone }] });
+    const formattedEmail = email.trim().toLowerCase();
+    const formattedPhone = phone.trim();
+    const formattedName = fullName.trim();
+
+    const userExists = await User.findOne({
+      $or: [{ email: formattedEmail }, { phone: formattedPhone }],
+    });
 
     if (userExists) {
       return res.status(400).json({
@@ -30,11 +34,10 @@ const register = async (req, res) => {
       });
     }
 
-    // Create user (password is automatically hashed via pre-save hook)
     const user = await User.create({
-      fullName,
-      email,
-      phone,
+      fullName: formattedName,
+      email: formattedEmail,
+      phone: formattedPhone,
       password,
     });
 
@@ -64,3 +67,4 @@ const register = async (req, res) => {
 };
 
 export default register;
+

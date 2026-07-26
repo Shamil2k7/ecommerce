@@ -5,7 +5,6 @@ import { useRouter } from "next/navigation";
 
 const AuthContext = createContext();
 
-// Base URL for all auth API calls
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth`;
 
 export function AuthProvider({ children }) {
@@ -13,7 +12,6 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
   const router = useRouter();
 
-  // Check if the user is logged in on every page load
   const checkAuth = async () => {
     try {
       const response = await fetch(`${API_BASE_URL}/me`, {
@@ -21,19 +19,17 @@ export function AuthProvider({ children }) {
         headers: {
           "Content-Type": "application/json",
         },
-        credentials: "include", // needed to send the JWT cookie cross-origin
+        credentials: "include",
       });
 
       const data = await response.json();
 
       if (response.ok && data.success) {
         setUser(data.user);
-
       } else {
         setUser(null);
       }
     } catch (error) {
-      console.error("Auth check failed:", error);
       setUser(null);
     } finally {
       setLoading(false);
@@ -130,10 +126,10 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        return { 
-          success: true, 
+        return {
+          success: true,
           message: data.message,
-          token: data.token 
+          otp: data.otp,
         };
       } else {
         return { success: false, message: data.message || "Failed to send reset link" };
@@ -157,7 +153,7 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        return { success: true, message: data.message, token: data.token };
+        return { success: true, message: data.message, otp: data.otp };
       } else {
         return { success: false, message: data.message || "Invalid or expired OTP" };
       }
@@ -166,14 +162,14 @@ export function AuthProvider({ children }) {
     }
   };
 
-  const resetPassword = async (email, token, password) => {
+  const resetPassword = async (email, otp, password) => {
     try {
       const response = await fetch(`${API_BASE_URL}/reset-password`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ email, token, password }),
+        body: JSON.stringify({ email, otp, password }),
         credentials: "include",
       });
 
@@ -228,7 +224,7 @@ export function AuthProvider({ children }) {
 
       if (response.ok && data.success) {
         setUser(data.user);
-        return { success: true, message: data.message , user: data.user};
+        return { success: true, message: data.message, user: data.user };
       } else {
         return { success: false, message: data.message || "Google authentication failed" };
       }
@@ -265,3 +261,4 @@ export function useAuth() {
   }
   return context;
 }
+

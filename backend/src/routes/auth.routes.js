@@ -10,7 +10,7 @@ import googleLogin from "../controllers/auth/google.controller.js";
 import getUsers from "../controllers/auth/getUsers.controller.js";
 import toggleBlockUser from "../controllers/auth/blockUser.controller.js";
 import protect from "../middlewares/auth.middleware.js";
-import { isAdmin } from "../middlewares/role.middleware.js";
+import { isAdmin, isAdminOrStaff } from "../middlewares/role.middleware.js";
 
 import { getProfile, updateProfile } from "../controllers/auth/profile.controller.js";
 import { getAddresses, addAddress, updateAddress, deleteAddress } from "../controllers/auth/address.controller.js";
@@ -25,8 +25,8 @@ router.post("/verify-otp", verifyOtp);
 router.post("/reset-password", resetPassword);
 router.post("/change-password", protect, changePassword);
 router.post("/google", googleLogin);
-router.get("/users", protect, isAdmin, getUsers);
-router.patch("/users/:id/block", protect, isAdmin, toggleBlockUser);
+router.get("/users", protect, isAdminOrStaff, getUsers);
+router.patch("/users/:id/block", protect, isAdminOrStaff, toggleBlockUser);
 
 // Get the logged-in user's profile from the JWT cookie
 router.get("/me", protect, (req, res) => {
