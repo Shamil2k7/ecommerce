@@ -5,17 +5,22 @@ import Link from "next/link";
 import axios from "axios";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import styles from "./Banners.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function BannerPage() {
   const [banners, setBanners] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API = process.env.NEXT_PUBLIC_API_URL;
+  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   const getBanners = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(`${API}/api/marketing/banners`);
-      setBanners(res.data.banners || []);
+      if (res.data.success) {
+        setBanners(res.data.banners || []);
+      }
     } catch (error) {
       console.error("Get Banners Error:", error);
     } finally {
@@ -28,11 +33,18 @@ export default function BannerPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this banner?"
-    );
+    const confirmResult = await Swal.fire({
+      title: "Delete Banner?",
+      text: "Are you sure you want to delete this banner?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
 
-    if (!confirmDelete) return;
+    if (!confirmResult.isConfirmed) return;
 
     try {
       await axios.delete(`${API}/api/marketing/banners/${id}`, {
@@ -41,9 +53,10 @@ export default function BannerPage() {
 
       // Remove deleted banner from state
       setBanners((prev) => prev.filter((banner) => banner._id !== id));
+      toast.success("Banner deleted successfully!");
     } catch (error) {
       console.error("Delete Banner Error:", error);
-      alert("Failed to delete banner.");
+      toast.error("Failed to delete banner.");
     }
   };
 

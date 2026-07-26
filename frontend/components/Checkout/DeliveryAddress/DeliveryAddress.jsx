@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import { FiEdit2, FiTrash2 } from "react-icons/fi";
 import styles from "./DeliveryAddress.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function DeliveryAddress({
   addresses,
@@ -66,7 +68,7 @@ export default function DeliveryAddress({
           },
           credentials: "include",
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       const result = await response.json();
@@ -75,9 +77,7 @@ export default function DeliveryAddress({
 
       if (isEditing) {
         setAddresses((prev) =>
-          prev.map((item) =>
-            item._id === editingId ? result.address : item
-          )
+          prev.map((item) => (item._id === editingId ? result.address : item)),
         );
       } else {
         setAddresses((prev) => [...prev, result.address]);
@@ -106,11 +106,18 @@ export default function DeliveryAddress({
   const handleDelete = async (e, id) => {
     e.stopPropagation();
 
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this address?"
-    );
+    const confirmResult = await Swal.fire({
+      title: "Delete Address?",
+      text: "Are you sure you want to delete this address?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
 
-    if (!confirmed) return;
+    if (!confirmResult.isConfirmed) return;
 
     try {
       const response = await fetch(`${API_URL}/addresses/${id}`, {
@@ -123,7 +130,7 @@ export default function DeliveryAddress({
       if (!result.success) return;
 
       const updatedAddresses = addresses.filter(
-        (address) => address._id !== id
+        (address) => address._id !== id,
       );
 
       setAddresses(updatedAddresses);
@@ -131,6 +138,11 @@ export default function DeliveryAddress({
       if (selectedAddress === id) {
         setSelectedAddress(updatedAddresses[0]?._id || null);
       }
+
+      toast.success("Address deleted successfully", {
+        position: "top-center",
+        autoClose: 2000,
+      });
     } catch (error) {
       console.error("Failed to delete address:", error);
     }
@@ -153,10 +165,7 @@ export default function DeliveryAddress({
         <h2>Delivery Address</h2>
 
         {!showForm && (
-          <button
-            className={styles.addBtn}
-            onClick={() => setShowForm(true)}
-          >
+          <button className={styles.addBtn} onClick={() => setShowForm(true)}>
             + Add New
           </button>
         )}
@@ -167,79 +176,68 @@ export default function DeliveryAddress({
         <p className={styles.loadingText}>Loading addresses...</p>
       ) : (
         <div className={styles.addressList}>
-          {addresses.length === 0 ? (
-            !showForm && (
-              <p className={styles.noAddressText}>
-                No saved addresses found. Please add one.
-              </p>
-            )
-          ) : (
-            addresses.map((address) => (
-              <div
-                key={address._id}
-                className={`${styles.addressItem} ${
-                  selectedAddress === address._id ? styles.selected : ""
-                }`}
-                onClick={() => setSelectedAddress(address._id)}
-              >
-                {/* Radio */}
-                <div className={styles.radioWrapper}>
-                  <input
-                    type="radio"
-                    checked={selectedAddress === address._id}
-                    onChange={() =>
-                      setSelectedAddress(address._id)
-                    }
-                  />
-                </div>
-
-                {/* Address */}
-                <div className={styles.addressDetails}>
-                  <div className={styles.addressContent}>
-                    <span className={styles.addressLabel}>
-                      {address.label}
-                    </span>
-
-                    <p className={styles.addressText}>
-                      {address.text}
-                    </p>
+          {addresses.length === 0
+            ? !showForm && (
+                <p className={styles.noAddressText}>
+                  No saved addresses found. Please add one.
+                </p>
+              )
+            : addresses.map((address) => (
+                <div
+                  key={address._id}
+                  className={`${styles.addressItem} ${
+                    selectedAddress === address._id ? styles.selected : ""
+                  }`}
+                  onClick={() => setSelectedAddress(address._id)}
+                >
+                  {/* Radio */}
+                  <div className={styles.radioWrapper}>
+                    <input
+                      type="radio"
+                      checked={selectedAddress === address._id}
+                      onChange={() => setSelectedAddress(address._id)}
+                    />
                   </div>
 
-                  {/* Right Side Actions */}
-                  <div className={styles.addressActions}>
-                    <button
-                      type="button"
-                      className={styles.actionBtn}
-                      onClick={(e) => handleEdit(e, address)}
-                      title="Edit Address"
-                    >
-                      <FiEdit2 size={18} />
-                    </button>
+                  {/* Address */}
+                  <div className={styles.addressDetails}>
+                    <div className={styles.addressContent}>
+                      <span className={styles.addressLabel}>
+                        {address.label}
+                      </span>
 
-                    <button
-                      type="button"
-                      className={`${styles.actionBtn} ${styles.deleteBtn}`}
-                      onClick={(e) =>
-                        handleDelete(e, address._id)
-                      }
-                      title="Delete Address"
-                    >
-                      <FiTrash2 size={18} />
-                    </button>
+                      <p className={styles.addressText}>{address.text}</p>
+                    </div>
+
+                    {/* Right Side Actions */}
+                    <div className={styles.addressActions}>
+                      <button
+                        type="button"
+                        className={styles.actionBtn}
+                        onClick={(e) => handleEdit(e, address)}
+                        title="Edit Address"
+                      >
+                        <FiEdit2 size={18} />
+                      </button>
+
+                      <button
+                        type="button"
+                        className={`${styles.actionBtn} ${styles.deleteBtn}`}
+                        onClick={(e) => handleDelete(e, address._id)}
+                        title="Delete Address"
+                      >
+                        <FiTrash2 size={18} />
+                      </button>
+                    </div>
                   </div>
                 </div>
-              </div>
-            ))
-          )}
+              ))}
         </div>
       )}
 
       {/* Form */}
       {showForm && (
-        <form
-          onSubmit={handleSubmit}
-          className={styles.addressForm}
-        >
+        <form onSubmit={handleSubmit} className={styles.addressForm}>
           <div className={styles.formGroup}>
             <label>Label</label>
 
@@ -284,10 +282,7 @@ export default function DeliveryAddress({
               Cancel
             </button>
 
-            <button
-              type="submit"
-              className={styles.saveBtn}
-            >
+            <button type="submit" className={styles.saveBtn}>
               {editingId ? "Update Address" : "Save Address"}
             </button>
           </div>

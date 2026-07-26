@@ -16,6 +16,8 @@ import {
 
 import styles from "./Orders.module.css";
 import axios from "axios";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const API_BASE = "http://localhost:5000";
 const API_URL = `${API_BASE}/api/orders`;
@@ -75,8 +77,6 @@ export default function OrdersPage() {
     try {
       setLoading(true);
 
-      
-
       const { data } = await axios.get(
         `${API_URL}/my-orders`,
         {
@@ -95,53 +95,72 @@ export default function OrdersPage() {
   };
 
   const cancelOrder = async (id) => {
-    if (!confirm("Cancel this order?")) return;
+    const confirmResult = await Swal.fire({
+      title: "Cancel Order?",
+      text: "Are you sure you want to cancel this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, cancel it",
+      cancelButtonText: "No, keep it"
+    });
+
+    if (!confirmResult.isConfirmed) return;
 
     try {
-      
-
       const { data } = await axios.put(
         `${API_URL}/${id}/cancel`,
         {},
         {
-          
           withCredentials: true,
         }
       );
 
       if (data.success) {
+        toast.success("Order cancelled successfully");
         fetchOrders();
       } else {
-        alert(data.message);
+        toast.error(data.message || "Failed to cancel order");
       }
     } catch (err) {
       console.error(err.response?.data || err.message);
+      toast.error("Failed to cancel order");
     }
   };
 
   const requestRefund = async (id) => {
-    if (!confirm("Request refund?")) return;
+    const confirmResult = await Swal.fire({
+      title: "Request Refund?",
+      text: "Are you sure you want to request a refund for this order?",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, request refund",
+      cancelButtonText: "Cancel"
+    });
+
+    if (!confirmResult.isConfirmed) return;
 
     try {
-      
-
       const { data } = await axios.put(
         `${API_URL}/${id}/request-refund`,
         {},
         {
-          
           withCredentials: true,
         }
       );
 
       if (data.success) {
-        alert("Refund request submitted");
+        toast.success("Refund request submitted");
         fetchOrders();
       } else {
-        alert(data.message);
+        toast.error(data.message || "Failed to request refund");
       }
     } catch (err) {
       console.error(err.response?.data || err.message);
+      toast.error("Failed to request refund");
     }
   };
 
@@ -161,13 +180,12 @@ export default function OrdersPage() {
 
   const submitReview = async () => {
     if (!comment.trim()) {
-      alert("Please write a comment before submitting.");
+      toast.error("Please write a comment before submitting.");
       return;
     }
 
     try {
       setSubmittingReview(true);
-
 
       const { data } = await axios.post(
         `${API_BASE}/api/products/${reviewProductId}/review`,
@@ -181,14 +199,14 @@ export default function OrdersPage() {
       );
 
       if (data.success) {
-        alert("Review Added");
+        toast.success("Review Added");
         closeReviewModal();
       } else {
-        alert(data.message);
+        toast.error(data.message || "Could not submit review");
       }
     } catch (err) {
       console.error(err.response?.data || err.message);
-      alert(err.response?.data?.message || "Could not submit review");
+      toast.error(err.response?.data?.message || "Could not submit review");
     } finally {
       setSubmittingReview(false);
     }

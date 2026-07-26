@@ -6,6 +6,7 @@ import axios from "axios";
 import { Heart, ShoppingCart, Star } from "lucide-react";
 import styles from "./ProductCard.module.css";
 import { useCart } from "../../context/CartContext";
+import { toast } from "react-toastify";
 
 export default function ProductCard({ product }) {
   const { addToCart } = useCart();
@@ -63,7 +64,7 @@ export default function ProductCard({ product }) {
       const token = localStorage.getItem("token");
 
       if (!token) {
-        alert("Please login first");
+        toast.error("Please login first");
         return;
       }
 

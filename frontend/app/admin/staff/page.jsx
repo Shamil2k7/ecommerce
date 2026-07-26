@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import styles from "./Staff.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function StaffPage() {
   const [staff, setStaff] = useState([]);
@@ -31,7 +33,7 @@ export default function StaffPage() {
 
       setStaff(data.data);
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message || "Failed to fetch staff");
     } finally {
       setLoading(false);
     }
@@ -45,11 +47,18 @@ export default function StaffPage() {
   // Delete Staff
   // ==========================
   const handleDelete = async (id) => {
-    const confirmDelete = window.confirm(
-      "Are you sure you want to delete this staff?"
-    );
+    const confirmResult = await Swal.fire({
+      title: "Delete Staff?",
+      text: "Are you sure you want to delete this staff member?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete",
+      cancelButtonText: "Cancel"
+    });
 
-    if (!confirmDelete) return;
+    if (!confirmResult.isConfirmed) return;
 
     try {
       const response = await fetch(
@@ -66,11 +75,11 @@ export default function StaffPage() {
         throw new Error(data.message);
       }
 
-      alert("Staff deleted successfully");
+      toast.success("Staff deleted successfully");
 
       fetchStaff();
     } catch (error) {
-      alert(error.message);
+      toast.error(error.message || "Failed to delete staff");
     }
   };
 

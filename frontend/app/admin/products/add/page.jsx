@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import styles from "./AddProduct.module.css";
+import { toast } from "react-toastify";
 
 export default function AddProductPage() {
   const router = useRouter();
@@ -366,11 +367,11 @@ export default function AddProductPage() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!name) return alert("Product name is required");
-    if (!category) return alert("Category is required");
-    if (!brand) return alert("Brand is required");
-    if (!price) return alert("Price is required");
-    if (!description) return alert("Description is required");
+    if (!name) return toast.error("Product name is required");
+    if (!category) return toast.error("Category is required");
+    if (!brand) return toast.error("Brand is required");
+    if (!price) return toast.error("Price is required");
+    if (!description) return toast.error("Description is required");
 
     try {
       setLoading(true);
@@ -509,14 +510,11 @@ export default function AddProductPage() {
         throw new Error(data.message || "Failed to create product.");
       }
 
-      alert("✅ Product Created Successfully");
-
-      resetForm();
-
+      toast.success("Product Created Successfully");
       router.push("/admin/products");
     } catch (error) {
       console.error(error);
-      alert(error.message);
+      toast.error(error.message || "Failed to create product");
     } finally {
       setLoading(false);
     }

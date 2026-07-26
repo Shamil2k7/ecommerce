@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Policies.module.css";
+import { toast } from "react-toastify";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -54,11 +55,11 @@ export default function PoliciesPage() {
       );
 
       if (res.data.success) {
-        alert("Policies Updated Successfully");
+        toast.success("Policies Updated Successfully");
       }
     } catch (error) {
       console.error(error);
-      alert("Failed to update policies");
+      toast.error("Failed to update policies");
     } finally {
       setLoading(false);
     }
