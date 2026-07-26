@@ -26,11 +26,12 @@ const forgotPassword = async (req, res) => {
 
     const otp = crypto.randomInt(100000, 1000000).toString();
 
-    user.resetPasswordToken = crypto
+    const hashedOtp = crypto
       .createHash("sha256")
       .update(otp)
       .digest("hex");
 
+    user.resetPasswordToken = hashedOtp;
     user.resetPasswordExpire = Date.now() + 5 * 60 * 1000;
 
     await user.save({ validateBeforeSave: false });
@@ -39,14 +40,12 @@ const forgotPassword = async (req, res) => {
       user.email,
       "Password Reset OTP",
       `
-      <div style="font-family: Arial, sans-serif; padding: 20px; color: #333;">
+      <div style="font-family: Arial, sans-serif; padding:20px;">
         <h2>Password Reset Request</h2>
-        <p>Your OTP for password reset is:</p>
-        <h1 style="text-align: center; color: #4f46e5; letter-spacing: 5px;">
-          ${otp}
-        </h1>
+        <p>Your OTP is:</p>
+        <h1 style="letter-spacing:5px; color:#4f46e5;">${otp}</h1>
         <p>This OTP is valid for <strong>5 minutes</strong>.</p>
-        <p>If you did not request a password reset, please ignore this email.</p>
+        <p>If you didn't request this, you can ignore this email.</p>
       </div>
       `
     );
@@ -59,17 +58,17 @@ const forgotPassword = async (req, res) => {
 
       return res.status(500).json({
         success: false,
-        message: "Failed to send OTP email. Please try again later.",
+        message: "Failed to send OTP",
       });
     }
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "OTP sent successfully",
       otp: process.env.NODE_ENV === "development" ? otp : undefined,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });

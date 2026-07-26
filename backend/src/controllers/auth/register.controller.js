@@ -7,7 +7,7 @@ const register = async (req, res) => {
   if (!fullName || !email || !phone || !password) {
     return res.status(400).json({
       success: false,
-      message: "Please enter all fields (Full Name, Email, Phone, Password)",
+      message: "All fields are required",
     });
   }
 
@@ -23,14 +23,17 @@ const register = async (req, res) => {
     const formattedPhone = phone.trim();
     const formattedName = fullName.trim();
 
-    const userExists = await User.findOne({
-      $or: [{ email: formattedEmail }, { phone: formattedPhone }],
+    const existingUser = await User.findOne({
+      $or: [
+        { email: formattedEmail },
+        { phone: formattedPhone },
+      ],
     });
 
-    if (userExists) {
+    if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "User with this email or phone number already exists",
+        message: "User already exists",
       });
     }
 
@@ -41,25 +44,23 @@ const register = async (req, res) => {
       password,
     });
 
-    if (user) {
-      createToken(res, user._id);
+    createToken(res, user._id);
 
-      return res.status(201).json({
-        success: true,
-        message: "User registered successfully",
-        user: {
-          _id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          isVerified: user.isVerified,
-          isBlocked: user.isBlocked,
-        },
-      });
-    }
+    res.status(201).json({
+      success: true,
+      message: "Registration successful",
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        isVerified: user.isVerified,
+        isBlocked: user.isBlocked,
+      },
+    });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -67,4 +68,3 @@ const register = async (req, res) => {
 };
 
 export default register;
-

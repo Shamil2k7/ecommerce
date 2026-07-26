@@ -6,14 +6,14 @@ const changePassword = async (req, res) => {
   if (!currentPassword || !newPassword) {
     return res.status(400).json({
       success: false,
-      message: "Please enter both your current password and your new password",
+      message: "Current password and new password are required",
     });
   }
 
   if (newPassword.length < 8) {
     return res.status(400).json({
       success: false,
-      message: "New password must be at least 8 characters long",
+      message: "Password must be at least 8 characters long",
     });
   }
 
@@ -32,19 +32,19 @@ const changePassword = async (req, res) => {
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect current password",
+        message: "Current password is incorrect",
       });
     }
 
     user.password = newPassword;
     await user.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Password changed successfully",
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -52,4 +52,3 @@ const changePassword = async (req, res) => {
 };
 
 export default changePassword;
-

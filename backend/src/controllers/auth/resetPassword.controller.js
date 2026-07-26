@@ -8,7 +8,7 @@ const resetPassword = async (req, res) => {
   if (!email || !otp || !password) {
     return res.status(400).json({
       success: false,
-      message: "Email, OTP and password are required",
+      message: "Email, OTP, and password are required",
     });
   }
 
@@ -22,7 +22,7 @@ const resetPassword = async (req, res) => {
   try {
     const hashedOtp = crypto
       .createHash("sha256")
-      .update(otp.toString().trim())
+      .update(otp.trim())
       .digest("hex");
 
     const user = await User.findOne({
@@ -34,7 +34,7 @@ const resetPassword = async (req, res) => {
     if (!user) {
       return res.status(400).json({
         success: false,
-        message: "Invalid or expired verification session",
+        message: "Invalid or expired OTP",
       });
     }
 

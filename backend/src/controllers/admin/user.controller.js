@@ -1,6 +1,5 @@
 import User from "../models/userModels.js";
 import bcrypt from "bcrypt";
-import jwt from "jsonwebtoken";
 import createToken from "../utils/createToken.js";
 
 // Register User
@@ -10,16 +9,19 @@ const createUser = async (req, res) => {
   if (!fullName || !email || !phone || !password) {
     return res.status(400).json({
       success: false,
-      message: "Please provide all required fields",
+      message: "All fields are required",
     });
   }
 
   try {
-    const existingUser = await User.findOne({ email });
+    const formattedEmail = email.trim().toLowerCase();
+
+    const existingUser = await User.findOne({ email: formattedEmail });
+
     if (existingUser) {
       return res.status(400).json({
         success: false,
-        message: "User with this email already exists",
+        message: "User already exists",
       });
     }
 
@@ -28,14 +30,14 @@ const createUser = async (req, res) => {
 
     const user = await User.create({
       fullName,
-      email,
+      email: formattedEmail,
       phone,
       password: hashedPassword,
     });
 
     createToken(res, user._id);
 
-    return res.status(201).json({
+    res.status(201).json({
       _id: user._id,
       fullName: user.fullName,
       email: user.email,
@@ -43,7 +45,7 @@ const createUser = async (req, res) => {
       role: user.role,
     });
   } catch (error) {
-    return res.status(400).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -57,29 +59,33 @@ const loginUser = async (req, res) => {
   if (!email || !password) {
     return res.status(400).json({
       success: false,
-      message: "Please provide email and password",
+      message: "Email and password are required",
     });
   }
 
   try {
-    const user = await User.findOne({ email });
-    if (user && (await bcrypt.compare(password, user.password))) {
-      createToken(res, user._id);
-      return res.status(200).json({
-        _id: user._id,
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
+    const user = await User.findOne({
+      email: email.trim().toLowerCase(),
+    });
+
+    if (!user || !(await bcrypt.compare(password, user.password))) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
       });
     }
 
-    return res.status(401).json({
-      success: false,
-      message: "Invalid email or password",
+    createToken(res, user._id);
+
+    res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
     });
   } catch (error) {
-    return res.status(550).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -93,128 +99,85 @@ const logoutUser = async (req, res) => {
     expires: new Date(0),
   });
 
-  return res.status(200).json({
+  res.status(200).json({
     success: true,
-    message: "User logged out successfully",
+    message: "Logged out successfully",
   });
 };
 
-// Get Current User Profile
+// Get Current User
 const getCurrentUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
-    if (user) {
-      return res.status(200).json({
-        _id: user._id,
-        fullName: user.fullName,
-        email: user.email,
-        phone: user.phone,
-        role: user.role,
+
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
       });
     }
 
-    return res.status(404).json({
-      success: false,
-      message: "User not found",
+    res.status(200).json({
+      _id: user._id,
+      fullName: user.fullName,
+      email: user.email,
+      phone: user.phone,
+      role: user.role,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
 
-// Update User Profile
+// Update Profile
 const updateUserProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
 
-    if (user) {
-      user.fullName = req.body.fullName || user.fullName;
-      user.email = req.body.email || user.email;
-      user.phone = req.body.phone || user.phone;
-
-      if (req.body.password) {
-        const salt = await bcrypt.genSalt(12);
-        user.password = await bcrypt.hash(req.body.password, salt);
-      }
-
-      const updatedUser = await user.save();
-
-      return res.status(200).json({
-        _id: updatedUser._id,
-        fullName: updatedUser.fullName,
-        email: updatedUser.email,
-        phone: updatedUser.phone,
-        role: updatedUser.role,
-      });
-    }
-
-    return res.status(404).json({
-      success: false,
-      message: "User not found",
-    });
-  } catch (error) {
-    return res.status(400).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Forgot Password (generate stateless password reset token)
-const forgotPassword = async (req, res) => {
-  const { email } = req.body;
-
-  if (!email) {
-    return res.status(400).json({
-      success: false,
-      message: "Please enter your email",
-    });
-  }
-
-  try {
-    const user = await User.findOne({ email });
     if (!user) {
       return res.status(404).json({
         success: false,
-        message: "No user with this email exists",
+        message: "User not found",
       });
     }
 
-    // Embed current password hash inside secret key to make the token valid 
-    // for single use (if password changes, verification will fail)
-    const secret = process.env.JWT_SECRET + user.password;
-    const token = jwt.sign({ id: user._id, email: user.email }, secret, {
-      expiresIn: "15m",
-    });
+    user.fullName = req.body.fullName || user.fullName;
+    user.email = req.body.email || user.email;
+    user.phone = req.body.phone || user.phone;
 
-    const resetLink = `http://localhost:3000/auth/reset-password?token=${token}`;
+    if (req.body.password) {
+      const salt = await bcrypt.genSalt(12);
+      user.password = await bcrypt.hash(req.body.password, salt);
+    }
 
-    console.log(`Password reset link generated for ${email}: ${resetLink}`);
+    const updatedUser = await user.save();
 
-    return res.status(200).json({
-      success: true,
-      message: "Password reset link generated successfully. (Check server logs or copy link below)",
-      resetLink,
+    res.status(200).json({
+      _id: updatedUser._id,
+      fullName: updatedUser.fullName,
+      email: updatedUser.email,
+      phone: updatedUser.phone,
+      role: updatedUser.role,
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
   }
 };
 
-// Reset Password
-const resetPassword = async (req, res) => {
-  const { token, newPassword } = req.body;
+// Change Password
+const changePassword = async (req, res) => {
+  const { currentPassword, newPassword } = req.body;
 
-  if (!token || !newPassword) {
+  if (!currentPassword || !newPassword) {
     return res.status(400).json({
       success: false,
-      message: "Required resetting details are missing",
+      message: "Current password and new password are required",
     });
   }
 
@@ -226,70 +189,8 @@ const resetPassword = async (req, res) => {
   }
 
   try {
-    // Decode user without verifying signature first to find the user in DB
-    const decodedPayload = jwt.decode(token);
-    if (!decodedPayload || !decodedPayload.id) {
-      return res.status(400).json({
-        success: false,
-        message: "Invalid reset token",
-      });
-    }
-
-    const user = await User.findById(decodedPayload.id);
-    if (!user) {
-      return res.status(404).json({
-        success: false,
-        message: "User not found",
-      });
-    }
-
-    // Verify token using secret signature mixed with old password hash
-    const secret = process.env.JWT_SECRET + user.password;
-    try {
-      jwt.verify(token, secret);
-    } catch (err) {
-      return res.status(400).json({
-        success: false,
-        message: "Password reset link is invalid or has expired",
-      });
-    }
-
-    const salt = await bcrypt.genSalt(12);
-    user.password = await bcrypt.hash(newPassword, salt);
-    await user.save();
-
-    return res.status(200).json({
-      success: true,
-      message: "Password was reset successfully. You can now login.",
-    });
-  } catch (error) {
-    return res.status(500).json({
-      success: false,
-      message: error.message,
-    });
-  }
-};
-
-// Change Password (while authenticated)
-const changePassword = async (req, res) => {
-  const { currentPassword, newPassword } = req.body;
-
-  if (!currentPassword || !newPassword) {
-    return res.status(400).json({
-      success: false,
-      message: "Please enter current and new passwords",
-    });
-  }
-
-  if (newPassword.length < 6) {
-    return res.status(400).json({
-      success: false,
-      message: "New password must be at least 6 characters long",
-    });
-  }
-
-  try {
     const user = await User.findById(req.user._id);
+
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -298,23 +199,25 @@ const changePassword = async (req, res) => {
     }
 
     const isMatch = await bcrypt.compare(currentPassword, user.password);
+
     if (!isMatch) {
       return res.status(400).json({
         success: false,
-        message: "Incorrect current password",
+        message: "Current password is incorrect",
       });
     }
 
     const salt = await bcrypt.genSalt(12);
     user.password = await bcrypt.hash(newPassword, salt);
+
     await user.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Password changed successfully",
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -327,7 +230,5 @@ export {
   logoutUser,
   getCurrentUserProfile,
   updateUserProfile,
-  forgotPassword,
-  resetPassword,
   changePassword,
 };

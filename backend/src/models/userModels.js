@@ -40,7 +40,12 @@ const userSchema = new mongoose.Schema(
       default: "user",
     },
 
-      profileImage: {
+    profileImage: {
+      type: String,
+      default: "",
+    },
+
+    cloudinary_id: {
       type: String,
       default: "",
     },
@@ -62,10 +67,6 @@ const userSchema = new mongoose.Schema(
       enum: ["Active", "Inactive"],
       default: "Active",
     },
-     cloudinary_id: {
-      type: String,
-      default: "",
-    },
 
     isVerified: {
       type: Boolean,
@@ -77,27 +78,30 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
+    resetPasswordToken: {
+      type: String,
+    },
 
-    resetPasswordToken: String,
-    resetPasswordExpire: Date,
+    resetPasswordExpire: {
+      type: Date,
+    },
   },
   {
     timestamps: true,
   }
 );
 
-// Only hash the password if it was changed — prevents double-hashing on other saves
+// Hash password before saving
 userSchema.pre("save", async function () {
-  if (!this.isModified("password")) {
-    return;
-  }
+  if (!this.isModified("password")) return;
+
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Match entered password with hashed password
+// Compare password
 userSchema.methods.matchPassword = async function (enteredPassword) {
-  return await bcrypt.compare(enteredPassword, this.password);
+  return bcrypt.compare(enteredPassword, this.password);
 };
 
 const User = mongoose.model("User", userSchema);

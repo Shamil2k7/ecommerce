@@ -3,31 +3,49 @@ import User from "../../models/userModels.js";
 export const getProfile = async (req, res) => {
   try {
     const user = await User.findById(req.user._id).select("-password");
+
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
-    return res.status(200).json({ success: true, user });
+
+    res.status(200).json({
+      success: true,
+      user,
+    });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 
 export const updateProfile = async (req, res) => {
   try {
     const { fullName, phone, profileImage } = req.body;
+
     const user = await User.findById(req.user._id);
 
     if (!user) {
-      return res.status(404).json({ success: false, message: "User not found" });
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
     }
 
-    if (fullName) user.fullName = fullName;
-    if (phone) user.phone = phone;
-    if (profileImage !== undefined) user.profileImage = profileImage;
+    user.fullName = fullName || user.fullName;
+    user.phone = phone || user.phone;
+
+    if (profileImage !== undefined) {
+      user.profileImage = profileImage;
+    }
 
     await user.save();
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Profile updated successfully",
       user: {
@@ -40,6 +58,9 @@ export const updateProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };

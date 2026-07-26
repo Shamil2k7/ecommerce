@@ -1,6 +1,6 @@
+import crypto from "crypto";
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
-import crypto from "crypto";
 
 const googleLogin = async (req, res) => {
   const { token } = req.body;
@@ -8,29 +8,28 @@ const googleLogin = async (req, res) => {
   if (!token) {
     return res.status(400).json({
       success: false,
-      message: "Google OAuth credential token is required",
+      message: "Google token is required",
     });
   }
 
   try {
-    const verificationResponse = await fetch(
+    const response = await fetch(
       `https://oauth2.googleapis.com/tokeninfo?id_token=${token}`
     );
 
-    if (!verificationResponse.ok) {
+    if (!response.ok) {
       return res.status(400).json({
         success: false,
-        message: "Failed to verify Google credential with Google servers",
+        message: "Failed to verify Google token",
       });
     }
 
-    const payload = await verificationResponse.json();
-    const { email, name, sub, email_verified } = payload;
+    const { email, name, sub, email_verified } = await response.json();
 
     if (!email_verified || !email) {
       return res.status(400).json({
         success: false,
-        message: "Google email is not verified or available",
+        message: "Invalid Google account",
       });
     }
 
@@ -48,39 +47,7 @@ const googleLogin = async (req, res) => {
 
       return res.status(200).json({
         success: true,
-        message: "Google Login successful",
-        user: {
-          _id: user._id,
-          fullName: user.fullName,
-          email: user.email,
-          phone: user.phone,
-          role: user.role,
-          isVerified: user.isVerified,
-          isBlocked: user.isBlocked,
-        },
-      });
-    } else {
-      const generatedPhone = `G-${sub.slice(-10)}`;
-
-      // If a Google sub ID collision happens, append a timestamp to make it unique
-      const phoneExists = await User.findOne({ phone: generatedPhone });
-      const finalPhone = phoneExists ? `G-${sub.slice(-10)}-${Date.now().toString().slice(-4)}` : generatedPhone;
-
-      const generatedPassword = crypto.randomBytes(16).toString("hex");
-
-      user = await User.create({
-        fullName: name || "Google User",
-        email,
-        phone: finalPhone,
-        password: generatedPassword,
-        isVerified: true,
-      });
-
-      createToken(res, user._id);
-
-      return res.status(201).json({
-        success: true,
-        message: "Google Registration successful",
+        message: "Google login successful",
         user: {
           _id: user._id,
           fullName: user.fullName,
@@ -92,10 +59,42 @@ const googleLogin = async (req, res) => {
         },
       });
     }
+
+    const phone = `G-${sub.slice(-10)}`;
+
+    const phoneExists = await User.findOne({ phone });
+
+    const finalPhone = phoneExists
+      ? `${phone}-${Date.now().toString().slice(-4)}`
+      : phone;
+
+    user = await User.create({
+      fullName: name || "Google User",
+      email,
+      phone: finalPhone,
+      password: crypto.randomBytes(16).toString("hex"),
+      isVerified: true,
+    });
+
+    createToken(res, user._id);
+
+    res.status(201).json({
+      success: true,
+      message: "Google registration successful",
+      user: {
+        _id: user._id,
+        fullName: user.fullName,
+        email: user.email,
+        phone: user.phone,
+        role: user.role,
+        isVerified: user.isVerified,
+        isBlocked: user.isBlocked,
+      },
+    });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
-      message: error.message || "An error occurred during Google OAuth",
+      message: error.message,
     });
   }
 };

@@ -1,18 +1,25 @@
-export const checkRole = (...roles) => {
+const checkRole = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {
-      return res.status(401).json({ success: false, message: "Unauthorized" });
+      return res.status(401).json({
+        success: false,
+        message: "Unauthorized",
+      });
     }
-    
-    
+
     if (!roles.includes(req.user.role)) {
-      return res.status(403).json({ success: false, message: "Forbidden" });
+      return res.status(403).json({
+        success: false,
+        message: "Forbidden",
+      });
     }
+
     next();
   };
 };
 
 export const isAdmin = checkRole("admin");
-export const isStaff= checkRole("staff");
-export const isAdminOrStaff = checkRole("admin","staff");
+export const isStaff = checkRole("staff");
+export const isAdminOrStaff = checkRole("admin", "staff");
+
 export default checkRole;
