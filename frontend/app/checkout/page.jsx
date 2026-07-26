@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
 import DeliveryAddress from "../../components/Checkout/DeliveryAddress/DeliveryAddress";
+import { toast } from "react-toastify";
 
 function CheckoutContent() {
   const [payment, setPayment] = useState("Cash on Delivery");
@@ -47,17 +48,14 @@ function CheckoutContent() {
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) {
-      alert("Please select a delivery address");
+      toast.error("Please select a delivery address");
       return;
     }
     
     if (!user) {
-      alert("Please login to place an order");
+      toast.error("Please login to place an order");
       return;
     }
-
-    const confirmOrder = window.confirm("Are you sure you want to place this order?");
-    if (!confirmOrder) return;
 
     const addr = addresses.find((a) => a._id === selectedAddress);
     
@@ -96,9 +94,9 @@ function CheckoutContent() {
       const hasError = results.find((r) => !r.success);
       
       if (hasError) {
-        alert(hasError.message || "Error placing one or more orders.");
+        toast.error(hasError.message || "Error placing one or more orders.");
       } else {
-        alert("Order successfully placed!");
+        toast.success("Order successfully placed!");
         if (buyNowProductId) {
           await removeItem(buyNowProductId, buyNowColor || "", buyNowSize || "");
         } else {
@@ -108,7 +106,7 @@ function CheckoutContent() {
       }
     } catch (error) {
       console.error("Order error:", error);
-      alert("Something went wrong while placing the order.");
+      toast.error("Something went wrong while placing the order.");
     }
   };
 

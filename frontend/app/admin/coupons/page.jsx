@@ -5,22 +5,27 @@ import Link from "next/link";
 import { Search, Plus, Pencil, Trash2 } from "lucide-react";
 import axios from "axios";
 import styles from "./Coupons.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function CouponsPage() {
   const [coupons, setCoupons] = useState([]);
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // Get all coupons
+  // Fetch coupons from API
   const fetchCoupons = async () => {
     try {
+      setLoading(true);
+
       const response = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons`,
+        {
+          withCredentials: true,
+        }
       );
 
-      console.log("Coupons:", response.data);
-
-      setCoupons(response.data);
+      setCoupons(response.data.coupons || []);
     } catch (error) {
       console.log("Fetch coupon error:", error);
     } finally {
@@ -36,26 +41,34 @@ export default function CouponsPage() {
 
   // Delete coupon
   const handleDelete = async (id) => {
-  const confirmDelete = window.confirm(
-    "Are you sure you want to delete this coupon?"
-  );
+    const confirmResult = await Swal.fire({
+      title: "Delete Coupon?",
+      text: "Are you sure you want to delete this coupon?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
 
-  if (!confirmDelete) return;
+    if (!confirmResult.isConfirmed) return;
 
-  try {
-    await axios.delete(
-      `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`,
-      {
-        withCredentials: true,
-      }
-    );
+    try {
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`,
+        {
+          withCredentials: true,
+        }
+      );
 
-    fetchCoupons();
-  } catch (error) {
-    console.log(error.response?.data || error.message);
-    alert(error.response?.data?.message || "Delete failed");
-  }
-};
+      toast.success("Coupon deleted successfully");
+      fetchCoupons();
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+      toast.error(error.response?.data?.message || "Delete failed");
+    }
+  };
 
   // Search
   const filteredCoupons = coupons.filter((item) =>

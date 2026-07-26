@@ -5,12 +5,14 @@ import Link from "next/link";
 import axios from "axios";
 import { Plus, Pencil, Trash2 } from "lucide-react";
 import styles from "./HeroSection.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function HeroSectionsPage() {
   const [heroSections, setHeroSections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API = process.env.NEXT_PUBLIC_API_URL;
+  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     fetchHeroSections();
@@ -25,23 +27,35 @@ export default function HeroSectionsPage() {
       setHeroSections(res.data.heroSections || []);
     } catch (err) {
       console.log(err);
-      alert("Failed to load Hero Sections");
+      toast.error("Failed to load Hero Sections");
     } finally {
       setLoading(false);
     }
   };
 
   const deleteHero = async (id) => {
-    if (!confirm("Delete this Hero Section?")) return;
+    const confirmResult = await Swal.fire({
+      title: "Delete Hero Section?",
+      text: "Are you sure you want to delete this Hero Section?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
+
+    if (!confirmResult.isConfirmed) return;
 
     try {
       await axios.delete(
         `${API}/api/marketing/hero-sections/${id}`
       );
 
+      toast.success("Hero Section deleted successfully!");
       fetchHeroSections();
     } catch (err) {
-      alert("Delete failed");
+      toast.error("Delete failed");
     }
   };
 
