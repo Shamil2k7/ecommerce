@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./Profile.module.css";
-import { User, Mail, Phone, Shield, Calendar, LogOut, Loader2, MapPin, Plus, Package, Map, Settings, X, Trash2, Edit } from "lucide-react";
+import { User, Mail, Phone, Shield, Calendar, LogOut, Loader2, MapPin, Plus, Package, Map, X, Trash2, Edit } from "lucide-react";
 
 const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth`;
 
@@ -271,10 +271,7 @@ export default function ProfilePage() {
               <span>Manage Addresses</span>
             </button>
 
-            <button className={styles.actionButton} style={{ cursor: "default" }}>
-              <Settings size={18} />
-              <span>Settings</span>
-            </button>
+            
 
             <button className={`${styles.actionButton} ${styles.logoutAction}`} onClick={handleLogout}>
               <LogOut size={18} />

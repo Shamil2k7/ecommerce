@@ -44,9 +44,7 @@ export default function Footer() {
           <ul>
             <li><Link href="/contact">Contact Us</Link></li>
             <li><Link href="/about">About Us</Link></li>
-            <li><Link href="/careers">Careers</Link></li>
-            <li><Link href="/blog">Blog</Link></li>
-            <li><Link href="/press">Press</Link></li>
+
           </ul>
         </div>
 
@@ -60,7 +58,7 @@ export default function Footer() {
             <li><Link href="/categories">Categories</Link></li>
             <li><Link href="/wishlist">Wishlist</Link></li>
             <li><Link href="/cart">Cart</Link></li>
-            <li><Link href="/offers">Offers</Link></li>
+        
           </ul>
         </div>
 
@@ -73,7 +71,7 @@ export default function Footer() {
             <li><Link href="/payments">Payments</Link></li>
             <li><Link href="/shipping">Shipping</Link></li>
             <li><Link href="/returns">Returns</Link></li>
-            <li><Link href="/faq">FAQ</Link></li>
+            
           </ul>
         </div>
 
