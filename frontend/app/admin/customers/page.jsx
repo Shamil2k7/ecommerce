@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import { Search, Loader2 } from "lucide-react";
 import styles from "./Customers.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -47,11 +49,18 @@ export default function CustomersPage() {
   const handleToggleBlock = async (customer) => {
     const action = customer.isBlocked ? "unblock" : "block";
 
-    const confirmed = window.confirm(
-      `Are you sure you want to ${action} ${customer.fullName}?`
-    );
+    const confirmResult = await Swal.fire({
+      title: `${action === "block" ? "Block" : "Unblock"} Customer?`,
+      text: `Are you sure you want to ${action} ${customer.fullName}?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: action === "block" ? "#d33" : "#3085d6",
+      cancelButtonColor: "#6e7881",
+      confirmButtonText: `Yes, ${action}`,
+      cancelButtonText: "Cancel"
+    });
 
-    if (!confirmed) return;
+    if (!confirmResult.isConfirmed) return;
 
     setBlockingId(customer._id);
 

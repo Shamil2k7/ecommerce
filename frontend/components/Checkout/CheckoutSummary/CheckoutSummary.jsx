@@ -1,7 +1,7 @@
 import { useState } from "react";
 import styles from "./CheckoutSummary.module.css";
 import { FiLock } from "react-icons/fi";
-import { toast } from "react-toastify";
+import { toast } from "react-toastify"; // 1. Import toast
 
 export default function CheckoutSummary({
   cart,
@@ -12,11 +12,13 @@ export default function CheckoutSummary({
 }) {
   const [couponCode, setCouponCode] = useState("");
 
+  // Handle Apply Coupon Form Submission
   const handleApplyCoupon = async (e) => {
     e.preventDefault();
 
     const code = couponCode.trim();
 
+    // Show error toast if field is empty
     if (!code) {
       toast.error("Please enter a coupon code");
       return;
@@ -30,6 +32,7 @@ export default function CheckoutSummary({
         return;
       }
 
+      // Show success toast when coupon is applied
       toast.success(result?.message || `Coupon "${code}" applied`);
       setCouponCode("");
     } catch (error) {
@@ -38,10 +41,11 @@ export default function CheckoutSummary({
     }
   };
 
+  // Handle Remove Coupon
   const handleRemoveCoupon = async () => {
     try {
       await removeCoupon();
-      toast.info("Coupon removed");
+      toast.info("Coupon removed"); // Show info toast when coupon is removed
     } catch (error) {
       console.error("Error removing coupon:", error);
       toast.error("Could not remove coupon. Please try again.");
@@ -112,7 +116,7 @@ export default function CheckoutSummary({
           <div className={styles.activeCouponTicket}>
             <div className={styles.ticketSuccessLeft}>
               <span className={styles.ticketAppliedLabel}>
-                 COUPON APPLIED
+                COUPON APPLIED
               </span>
 
               <h3 className={styles.ticketCouponCode}>
@@ -163,15 +167,8 @@ export default function CheckoutSummary({
           </form>
         )}
 
-        {/* Sticky on mobile: Total + Pay button + security note */}
-        <div className={styles.stickyFooter}>
-          <div className={styles.grandTotalRow}>
-            <span>Total Amount</span>
-
-            <span className={styles.grandTotalPrice}>
-              ₹{cart.finalTotal?.toLocaleString()}
-            </span>
-          </div>
+        <div className={styles.grandTotalRow}>
+          <span>Total Amount</span>
 
           <button
             className={styles.checkoutButton}
@@ -188,6 +185,21 @@ export default function CheckoutSummary({
             <span>Secure Checkout</span>
           </p>
         </div>
+
+        <button
+          className={styles.checkoutButton}
+          onClick={handlePlaceOrder}
+          disabled={!selectedAddress}
+        >
+          {selectedAddress
+            ? `Pay ₹${cart.finalTotal?.toLocaleString()}`
+            : "Select Address to Continue"}
+        </button>
+
+        <p className={styles.checkoutSecurity}>
+          <FiLock className={styles.securityIcon} />
+          <span>Secure Checkout</span>
+        </p>
       </div>
     </aside>
   );

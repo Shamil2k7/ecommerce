@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 
 import styles from "./Brands.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function BrandsPage() {
   const router = useRouter();
@@ -32,7 +34,18 @@ export default function BrandsPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this brand?")) return;
+    const confirmResult = await Swal.fire({
+      title: "Delete Brand?",
+      text: "Are you sure you want to delete this brand?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
+
+    if (!confirmResult.isConfirmed) return;
 
     try {
       const res = await fetch(
@@ -46,12 +59,13 @@ export default function BrandsPage() {
         setBrands((prev) =>
           prev.filter((brand) => brand._id !== id)
         );
+        toast.success("Brand deleted successfully!");
       } else {
-        alert("Failed to delete brand");
+        toast.error("Failed to delete brand");
       }
     } catch (err) {
       console.error(err);
-      alert("Error deleting brand");
+      toast.error("Error deleting brand");
     }
   };
 

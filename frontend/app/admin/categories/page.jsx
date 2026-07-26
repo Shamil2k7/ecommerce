@@ -11,6 +11,8 @@ import {
 } from "lucide-react";
 
 import styles from "./Categories.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function CategoriesPage() {
     const router = useRouter();
@@ -43,19 +45,32 @@ export default function CategoriesPage() {
     }, []);
 
     const handleDelete = async (id) => {
-        if (!confirm("Are you sure you want to delete this category?")) return;
+        const confirmResult = await Swal.fire({
+            title: "Delete Category?",
+            text: "Are you sure you want to delete this category?",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#d33",
+            cancelButtonColor: "#3085d6",
+            confirmButtonText: "Yes, delete it",
+            cancelButtonText: "Cancel"
+        });
+
+        if (!confirmResult.isConfirmed) return;
+
         try {
             const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
                 method: "DELETE",
             });
             if (res.ok) {
                 setCategories((prev) => prev.filter((cat) => cat._id !== id));
+                toast.success("Category deleted successfully!");
             } else {
-                alert("Failed to delete category");
+                toast.error("Failed to delete category");
             }
         } catch (err) {
             console.error(err);
-            alert("Error deleting category");
+            toast.error("Error deleting category");
         }
     };
 

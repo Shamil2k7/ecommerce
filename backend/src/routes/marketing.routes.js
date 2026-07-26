@@ -19,24 +19,24 @@ import {
 } from "../controllers/marketing/banner.controller.js";
 
 import protect from "../middlewares/auth.middleware.js";
-import { isAdmin } from "../middlewares/role.middleware.js";
+import { isAdminOrStaff } from "../middlewares/role.middleware.js";
 
 const router = express.Router();
 
 //coupon routes
 
-router.post("/coupons", protect, isAdmin, createCoupon);
+router.post("/coupons", protect, isAdminOrStaff, createCoupon);
 router.get("/coupons", getCoupons);
 router.get("/coupons/:id", getCouponById);
-router.put("/coupons/:id", protect, isAdmin, updateCoupon);
-router.delete("/coupons/:id", protect, isAdmin, deleteCoupon);
+router.put("/coupons/:id", protect, isAdminOrStaff, updateCoupon);
+router.delete("/coupons/:id", protect, isAdminOrStaff, deleteCoupon);
 
 //banner routes
 
-router.post("/banners", protect, isAdmin, createBanner);
+router.post("/banners", protect, isAdminOrStaff, createBanner);
 router.get("/banners", getAllBanners);
 router.get("/banners/:id", getBannerById);
-router.put("/banners/:id", protect, isAdmin, updateBanner);
-router.delete("/banners/:id", protect, isAdmin, deleteBanner);
+router.put("/banners/:id", protect, isAdminOrStaff, updateBanner);
+router.delete("/banners/:id", protect, isAdminOrStaff, deleteBanner);
 
 export default router;

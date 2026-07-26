@@ -214,42 +214,6 @@ export default function FilterSidebar({
         </label>
       </div>
 
-      {/* Rating */}
-
-      <div className={styles.filterSection}>
-        <h4>Rating</h4>
-
-        <label className={styles.radio}>
-          <input type="radio" name="rating" />
-          ⭐⭐⭐⭐⭐
-        </label>
-
-        <label className={styles.radio}>
-          <input type="radio" name="rating" />
-          ⭐⭐⭐⭐☆
-        </label>
-
-        <label className={styles.radio}>
-          <input type="radio" name="rating" />
-          ⭐⭐⭐☆☆
-        </label>
-      </div>
-
-      {/* Availability */}
-
-      <div className={styles.filterSection}>
-        <h4>Availability</h4>
-
-        <label className={styles.checkbox}>
-          <input type="checkbox" />
-          <span>In Stock</span>
-        </label>
-
-        <label className={styles.checkbox}>
-          <input type="checkbox" />
-          <span>Out of Stock</span>
-        </label>
-      </div>
     </aside>
   );
 }

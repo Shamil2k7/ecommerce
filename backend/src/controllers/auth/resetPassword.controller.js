@@ -1,26 +1,41 @@
+import crypto from "crypto";
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
 
 const resetPassword = async (req, res) => {
-  const { email, token, password } = req.body;
+  const { email, otp, password } = req.body;
 
-  if (!email || !token || !password) {
-    return res.status(400).json({ success: false, message: "Email, token, and password are required" });
+  if (!email || !otp || !password) {
+    return res.status(400).json({
+      success: false,
+      message: "Email, OTP and password are required",
+    });
   }
 
   if (password.length < 8) {
-    return res.status(400).json({ success: false, message: "Password must be at least 8 characters long" });
+    return res.status(400).json({
+      success: false,
+      message: "Password must be at least 8 characters long",
+    });
   }
 
   try {
+    const hashedOtp = crypto
+      .createHash("sha256")
+      .update(otp.toString().trim())
+      .digest("hex");
+
     const user = await User.findOne({
-      email: email.toLowerCase(),
-      resetPasswordToken: token,
+      email: email.trim().toLowerCase(),
+      resetPasswordToken: hashedOtp,
       resetPasswordExpire: { $gt: Date.now() },
     });
 
     if (!user) {
-      return res.status(400).json({ success: false, message: "Invalid or expired verification session" });
+      return res.status(400).json({
+        success: false,
+        message: "Invalid or expired verification session",
+      });
     }
 
     user.password = password;
@@ -31,7 +46,7 @@ const resetPassword = async (req, res) => {
 
     createToken(res, user._id);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Password reset successfully",
       user: {
@@ -43,7 +58,10 @@ const resetPassword = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({ success: false, message: error.message });
+    res.status(500).json({
+      success: false,
+      message: error.message,
+    });
   }
 };
 

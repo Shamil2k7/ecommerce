@@ -8,9 +8,7 @@ import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
 import DeliveryAddress from "../../components/Checkout/DeliveryAddress/DeliveryAddress";
-import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
-
-import styles from "./Checkout.module.css";
+import { toast } from "react-toastify";
 
 function CheckoutContent() {
   const router = useRouter();
@@ -56,25 +54,17 @@ function CheckoutContent() {
 
   const handlePlaceOrder = async () => {
     if (!selectedAddress) {
-      alert("Please select a delivery address.");
+      toast.error("Please select a delivery address");
       return;
     }
 
     if (!user) {
-      alert("Please login to continue.");
+      toast.error("Please login to place an order");
       return;
     }
 
-    const confirmed = window.confirm(
-      "Are you sure you want to place this order?"
-    );
-
-    if (!confirmed) return;
-
-    const address = addresses.find(
-      (item) => item._id === selectedAddress
-    );
-
+    const addr = addresses.find((a) => a._id === selectedAddress);
+    
     const shippingAddress = {
       fullName: user.fullName || "Guest",
       phone: user.phone || "0000000000",
@@ -119,23 +109,25 @@ function CheckoutContent() {
         alert(failedOrder.message || "Unable to place the order.");
         return;
       }
-
-      alert("Your order has been placed successfully!");
-
-      if (buyNowProductId) {
-        await removeItem(
-          buyNowProductId,
-          buyNowColor || "",
-          buyNowSize || ""
-        );
+      
+      const hasError = results.find((r) => !r.success);
+      
+      if (hasError) {
+        toast.error(hasError.message || "Error placing one or more orders.");
       } else {
-        await clearCart();
+        toast.success("Order successfully placed!");
+        if (buyNowProductId) {
+          await removeItem(buyNowProductId, buyNowColor || "", buyNowSize || "");
+        } else {
+          await clearCart();
+        }
+        router.push("/orders");
       }
 
       router.push("/orders");
     } catch (error) {
-      console.error("Order Placement Error:", error);
-      alert("Something went wrong while placing your order.");
+      console.error("Order error:", error);
+      toast.error("Something went wrong while placing the order.");
     }
   };
 

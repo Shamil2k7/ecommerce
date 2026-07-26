@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import styles from "./Settings.module.css";
+import { toast } from "react-toastify";
 
 const API = process.env.NEXT_PUBLIC_API_URL;
 
@@ -109,7 +110,7 @@ export default function Page() {
         });
       }
 
-      alert("Settings Updated Successfully");
+      toast.success("Settings Updated Successfully");
 
       setLogo(null);
       setFavicon(null);
@@ -117,7 +118,7 @@ export default function Page() {
       fetchSettings();
     } catch (err) {
       console.log(err);
-      alert("Something went wrong");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
@@ -130,10 +131,11 @@ export default function Page() {
       setLogo(null);
       setLogoPreview("");
 
+      toast.success("Logo removed successfully");
       fetchSettings();
     } catch (err) {
       console.log(err);
-      alert("Failed to remove logo");
+      toast.error("Failed to remove logo");
     }
   };
 
@@ -144,10 +146,11 @@ export default function Page() {
       setFavicon(null);
       setFaviconPreview("");
 
+      toast.success("Favicon removed successfully");
       fetchSettings();
     } catch (err) {
       console.log(err);
-      alert("Failed to remove favicon");
+      toast.error("Failed to remove favicon");
     }
   };
 
