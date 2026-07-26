@@ -39,47 +39,54 @@ export default function ProductCard({ product }) {
 
   const checkWishlist = async () => {
     try {
-      const token = localStorage.getItem("token");
-
-      if (!token) return;
-
       const { data } = await axios.get(
         `${API}/api/wishlist/check/${product.id}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
+          withCredentials: true,
         }
       );
 
       setWishlisted(data.wishlisted);
     } catch (err) {
-      console.log(err);
+      console.log("Status:", err.response?.status);
+      console.log("Data:", err.response?.data);
+      console.log("Message:", err.message);
     }
   };
+
   const toggleWishlist = async () => {
     try {
       setWishlistLoading(true);
 
-      const token = localStorage.getItem("token");
+      if (wishlisted) {
+        await axios.delete(
+          `${API}/api/wishlist/${product.id}`,
+          {
+            withCredentials: true,
+          }
+        );
 
-      if (!token) {
+        setWishlisted(false);
+        toast.success("Removed from wishlist");
+      } else {
+        await axios.post(
+          `${API}/api/wishlist/${product.id}`,
+          {},
+          {
+            withCredentials: true,
+          }
+        );
+
+        setWishlisted(true);
+        toast.success("Added to wishlist");
+      }
+    } catch (err) {
+      if (err.response?.status === 401) {
         toast.error("Please login first");
         return;
       }
 
-      const { data } = await axios.post(
-        `${API}/api/wishlist/toggle/${product.id}`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      setWishlisted(data.wishlisted);
-    } catch (err) {
+      toast.error(err.response?.data?.message || "Something went wrong");
       console.log(err.response?.data || err.message);
     } finally {
       setWishlistLoading(false);
