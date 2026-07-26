@@ -161,6 +161,39 @@
   color: #ef4444;
   transform: scale(1.15);
 }
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.deleteText {
+  display: none;
+}
+
+@media (max-width:480px){
+
+  .actions{
+    display:flex;
+    flex-direction:column;
+    gap:12px;
+  }
+
+  .deleteBtn,
+  .cancelBtn,
+  .saveBtn{
+    width:100%;
+    height:48px;
+    flex:none;
+  }
+
+  .deleteText{
+    display:inline;
+    font-weight:600;
+  }
+
+}
 
 @media (max-width:900px) {
   .grid {

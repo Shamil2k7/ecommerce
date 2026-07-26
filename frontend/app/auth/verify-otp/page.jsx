@@ -3,11 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
-import {
-  ShieldCheck,
-  Loader2,
-  ArrowLeft,
-} from "lucide-react";
+import { ShieldCheck, Loader2, ArrowLeft } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./VerifyOtp.module.css";
 
@@ -25,7 +21,7 @@ export default function VerifyOtpPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
-  // 5 minutes
+  // 5 minutes countdown
   const [timeLeft, setTimeLeft] = useState(300);
 
   useEffect(() => {
@@ -131,10 +127,9 @@ export default function VerifyOtpPage() {
     if (result.success) {
       setOtp(["", "", "", "", "", ""]);
       setTimeLeft(300);
-
       setSuccessMsg("A new OTP has been sent to your email.");
 
-      document.getElementById("otp-0")?.focus();
+    document.getElementById("otp-0")?.focus();
     } else {
       setErrorMsg(result.message);
     }
@@ -158,17 +153,23 @@ export default function VerifyOtpPage() {
 
           <h1>Verify OTP</h1>
 
-          <p>Enter the 6-digit verification code sent to</p>
+          <p>
+            Enter the 6-digit verification code sent to
+          </p>
 
           <strong>{email}</strong>
         </div>
 
         {errorMsg && (
-          <div className={styles.error}>{errorMsg}</div>
+          <div className={styles.error}>
+            {errorMsg}
+          </div>
         )}
 
         {successMsg && (
-          <div className={styles.success}>{successMsg}</div>
+          <div className={styles.success}>
+            {successMsg}
+          </div>
         )}
 
         <form onSubmit={handleVerify}>
@@ -195,10 +196,19 @@ export default function VerifyOtpPage() {
             ))}
           </div>
 
-          <p className={styles.timer}>
+          <p
+            style={{
+              textAlign: "center",
+              marginBottom: "20px",
+              color: timeLeft > 60 ? "#100062" : "#ef4444",
+              fontWeight: "600",
+              fontSize: "14px",
+            }}
+          >
             OTP expires in: {minutes}:{seconds}
           </p>
 
+          
           <button
             type="submit"
             className={styles.verifyBtn}

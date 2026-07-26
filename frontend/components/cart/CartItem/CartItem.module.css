@@ -7,7 +7,6 @@
   margin-bottom: -16px;
 }
 
-
 .leftSection {
   width: 170px;
   display: flex;
@@ -23,7 +22,6 @@
   object-fit: contain;
 }
 
-
 .itemDetails {
   flex: 1;
   display: flex;
@@ -35,7 +33,6 @@
   font-weight: 500;
   color: #212121;
   margin-bottom: 8px;
-  line-height: 1.5;
   transition: 0.3s;
 }
 
@@ -47,7 +44,7 @@
 .itemVariant {
   display: flex;
   gap: 15px;
-  margin-bottom: 10px;
+  margin-bottom: 5px;
 }
 
 .itemVariant span {
@@ -58,8 +55,8 @@
 .ratingRow {
   display: flex;
   align-items: center;
-  gap: 10px;
-  margin-bottom: 12px;
+  gap: 8px;
+  margin-bottom: 4px;
 }
 
 .ratingBadge {
@@ -76,13 +73,12 @@
   font-size: 14px;
 }
 
-
 .priceRow {
   display: flex;
   align-items: center;
   gap: 12px;
   flex-wrap: wrap;
-  margin-bottom: 10px;
+  margin-bottom: 2px;
 }
 
 .offer {
@@ -106,9 +102,8 @@
 .upiOffer {
   color: #2874f0;
   font-size: 15px;
-  margin-bottom: 15px;
+  margin-bottom: 3px;
 }
-
 
 .quantityControl {
   display: flex;
@@ -145,7 +140,6 @@
   font-weight: 600;
 }
 
-
 .actionBar {
   display: flex;
   align-items: center;
@@ -175,12 +169,10 @@
   border-right: none;
 }
 
-
 .actionIcon {
   font-size: 18px;
   transition: all 0.3s ease;
 }
-
 
 .actionBtn:hover {
   color: #2874f0;
@@ -191,7 +183,6 @@
   transform: scale(1.1);
 }
 
-
 .removeBtn:hover {
   color: #e53935 !important;
 }
@@ -200,7 +191,6 @@
   color: #e53935 !important;
   transform: scale(1.1);
 }
-
 
 .buyBtn:hover {
   color: #16a34a;
@@ -211,131 +201,336 @@
   transform: scale(1.1);
 }
 
-
-
-
-
-
-
-
-
-@media (max-width:600px){
-
-.cartItem{
-    display:flex;
-    gap:14px;
-    align-items:flex-start;
-    position:relative;
-
-    padding:16px;
-    border:1px solid #ececec;
-    border-radius:18px;
-    margin-bottom:16px;
-    background:#fff;
+.mobileWrapper {
+  display: none;
 }
 
-.leftSection{
-    width:90px;
-    flex-shrink:0;
+
+@media (max-width: 1024px) and (min-width: 601px) {
+  .cartItem {
+    gap: 16px;
+    padding: 16px;
+  }
+
+  .leftSection {
+    width: 130px;
+    gap: 14px;
+  }
+
+  .itemImage {
+    width: 115px;
+    height: 115px;
+  }
+
+  .itemName {
+    font-size: 16px;
+    margin-bottom: 6px;
+  }
+
+  .itemVariant {
+    gap: 10px;
+  }
+
+  .itemVariant span {
+    font-size: 13px;
+  }
+
+  .ratingBadge {
+    font-size: 12px;
+    padding: 2px 6px;
+  }
+
+  .reviewCount {
+    font-size: 13px;
+  }
+
+  .itemPrice {
+    font-size: 20px;
+  }
+
+  .itemOriginalPrice {
+    font-size: 16px;
+  }
+
+  .offer {
+    font-size: 13px;
+  }
+
+  .upiOffer {
+    font-size: 13px;
+  }
+
+  .qtyBtn {
+    width: 34px;
+    height: 34px;
+    font-size: 18px;
+  }
+
+  .qtyValue {
+    width: 46px;
+    font-size: 15px;
+  }
+
+  .actionBtn {
+    padding: 14px 8px;
+    font-size: 13px;
+    gap: 6px;
+  }
+
+  .actionIcon {
+    font-size: 16px;
+  }
 }
 
-.itemImage{
-    width:82px;
-    height:82px;
-    object-fit:cover;
-    border-radius:12px;
+
+@media (max-width: 600px) {
+  .leftSection,
+  .itemDetails {
+    display: none;
+  }
+
+  .cartItem {
+    padding: 0;
+    width: 100%;
+    max-width: 100%;
+    border: none;
+    /* border-radius: 16px; */
+    /* margin: 0 12px 12px 12px; */
+  margin-bottom: -5px;
+
+    background: transparent;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06);
+    box-sizing: border-box;
+  }
+
+  .mobileWrapper {
+    display: block;
+    position: relative;
+    overflow: hidden;
+    /* border-radius: 16px; */
+    border: 1px solid #ececec;
+    width: 100%;
+  }
+
+  .mobileContent {
+    display: flex;
+    gap: 12px;
+    padding: 14px;
+    background: #fff;
+    position: relative;
+    z-index: 2;
+    transition: transform 0.28s ease;
+    cursor: pointer;
+  }
+
+  .mobileContent.swiped {
+    transform: translateX(-76px);
+  }
+
+  .mobileImage {
+    width: 64px;
+    height: 64px;
+    object-fit: cover;
+    border-radius: 8px;
+    flex-shrink: 0;
+    background: #f5f5f5;
+  }
+
+  .mobileInfo {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+
+  .mobileName {
+    font-size: 14px;
+    font-weight: 600;
+    color: #212121;
+    line-height: 1.35;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    margin: 0;
+  }
+
+  .mobileVariant {
+    display: flex;
+    gap: 8px;
+  }
+
+  .mobileVariant span {
+    font-size: 11px;
+    color: #878787;
+  }
+
+  .mobileRating {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .mobileRatingBadge {
+    background: #388e3c;
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 600;
+  }
+
+  .mobileReviewCount {
+    font-size: 11px;
+    color: #878787;
+  }
+
+  .mobilePriceRow {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+  }
+
+  .mobilePrice {
+    font-size: 16px;
+    font-weight: 700;
+    color: #212121;
+  }
+
+  .mobileOriginalPrice {
+    font-size: 12px;
+    color: #878787;
+    text-decoration: line-through;
+  }
+
+  .mobileDiscount {
+    font-size: 11px;
+    font-weight: 600;
+    color: #388e3c;
+  }
+
+  .mobileUpi {
+    font-size: 11px;
+    color: #2874f0;
+  }
+
+  .mobileStock {
+    font-size: 11px;
+    color: #666;
+  }
+
+  .mobileFooter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 6px;
+  }
+
+  .mobileQty {
+    display: flex;
+    align-items: center;
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+
+  .mobileQty button {
+    width: 26px;
+    height: 26px;
+    border: none;
+    background: #f5f5f5;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .mobileQty button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .mobileQty span {
+    width: 26px;
+    text-align: center;
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  .mobileActions {
+    display: flex;
+    gap: 10px;
+  }
+
+  .mobileIconBtn {
+    width: 30px;
+    height: 30px;
+    border-radius: 5px;
+    border: 1px solid #ececec;
+    background: #fff;
+    color: #555;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 15px;
+    cursor: pointer;
+  }
+
+  .mobileIconBtn:active {
+    color: #2874f0;
+    border-color: #2874f0;
+  }
+
+  .mobileDeleteBtn {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 76px;
+    height: 100%;
+    background: #e53935;
+    border: none;
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    font-size: 20px;
+    z-index: 1;
+    cursor: pointer;
+  }
+
+  .mobileDeleteBtn span {
+    font-size: 10px;
+    font-weight: 600;
+  }
 }
 
-.quantityControl{
-    margin-top:12px;
-    width:82px;
-    justify-content:space-between;
-}
 
-.qtyBtn{
-    width:28px;
-    height:28px;
-    font-size:18px;
-}
+@media (max-width: 360px) {
+  .cartItem {
+    margin: 0 8px 10px 8px;
+  }
 
-.qtyValue{
-    width:auto;
-    font-size:15px;
-}
+  .mobileImage {
+    width: 54px;
+    height: 54px;
+  }
 
-.itemDetails{
-    flex:1;
-}
+  .mobileName {
+    font-size: 13px;
+  }
 
-.itemName{
-    font-size:15px;
-    line-height:1.4;
-    margin-bottom:6px;
+  .mobilePrice {
+    font-size: 15px;
+  }
 
-    display:-webkit-box;
-    -webkit-line-clamp:2;
-    -webkit-box-orient:vertical;
-    overflow:hidden;
-}
+  .mobileDeleteBtn {
+    width: 64px;
+    font-size: 18px;
+  }
 
-.itemVariant{
-    gap:6px;
-    margin-bottom:8px;
-}
-
-.itemVariant span{
-    font-size:12px;
-}
-
-.ratingRow{
-    margin-bottom:8px;
-}
-
-.ratingBadge{
-    font-size:11px;
-}
-
-.reviewCount{
-    font-size:12px;
-}
-
-.priceRow{
-    margin-bottom:8px;
-}
-
-.itemPrice{
-    font-size:20px;
-}
-
-.itemOriginalPrice{
-    font-size:14px;
-}
-
-.offer{
-    font-size:12px;
-}
-
-.upiOffer{
-    display:none;
-}
-
-.actionBar{
-    margin-top:12px;
-    border:none;
-    justify-content:flex-start;
-    gap:16px;
-}
-
-.actionBtn{
-    flex:none;
-    border:none;
-    padding:0;
-    background:none;
-    font-size:13px;
-    color:#555;
-}
-
-.actionIcon{
-    font-size:18px;
-}
+  .mobileContent.swiped {
+    transform: translateX(-64px);
+  }
 }

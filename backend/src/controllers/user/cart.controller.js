@@ -4,7 +4,16 @@ import Coupon from "../../models/Coupon.js";
 import { calculateCartTotals } from "../../utils/cartCalculations.js";
 
 const getCartByUser = async (userId) => {
-  let cart = await Cart.findOne({ userId });
+  let cart = await Cart.findOne({ userId })
+  .populate({
+    path: "products.productId",
+    select:
+      "name slug description price discountPrice stock images ratingsAverage ratingsCount category brand variants isFeatured isTrending isBestSeller isNewArrival",
+    populate: [
+      { path: "category", select: "name" },
+      { path: "brand", select: "name" },
+    ],
+  });
 
   if (!cart) {
     cart = await Cart.create({
@@ -16,14 +25,11 @@ const getCartByUser = async (userId) => {
   return cart;
 };
 
-// Recalculate cart totals
 const updateCartTotals = async (cart) => {
-  // Populate coupon safely
   if (cart.couponApplied) {
     await cart.populate("couponApplied");
   }
 
-  // Populate offer only if one is actually stored
   if (cart.offerApplied) {
     try {
       await cart.populate("offerApplied");
@@ -377,7 +383,7 @@ export const applyCoupon = async (req, res) => {
       });
     }
 
-    // ✅ Check if this user already used this coupon
+    // Check if this user already used this coupon
     const alreadyUsed = coupon.usedBy.some(
       (id) => id.toString() === userId
     );

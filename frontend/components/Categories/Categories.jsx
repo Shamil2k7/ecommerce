@@ -1,16 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Autoplay } from "swiper/modules";
+import { Autoplay } from "swiper/modules";
 
 import "swiper/css";
-import "swiper/css/navigation";
-
-import { ChevronLeft, ChevronRight } from "lucide-react";
 
 import styles from "./Categories.module.css";
 
@@ -18,109 +15,97 @@ export default function Categories() {
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [categories, setCategories] = useState([]);
-
-  const prevRef = useRef(null);
-  const nextRef = useRef(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCategories();
+    getCategories();
   }, []);
 
-  const fetchCategories = async () => {
+  const getCategories = async () => {
     try {
-      const res = await fetch(`${API}/api/categories`, {
+      const response = await fetch(`${API}/api/categories`, {
         cache: "no-store",
       });
 
-      const data = await res.json();
+      const result = await response.json();
 
-      if (data.success) {
-        const parentCategories = (data.data || []).filter(
-          (category) =>
-            !category.parentCategory &&
-            category.isActive
-        );
+      if (result.success) {
+        const activeCategories = result.data.filter((item) => {
+          return !item.parentCategory && item.isActive;
+        });
 
-        setCategories(parentCategories);
+        setCategories(activeCategories);
       }
-    } catch (err) {
-      console.error(err);
+    } catch (error) {
+      console.error("Error fetching categories:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  // Duplicate categories for smooth loop
-  const swiperCategories = useMemo(() => {
-    if (!categories.length) return [];
+  const sliderCategories = useMemo(() => {
+    if (categories.length === 0) return [];
 
-    let arr = [...categories];
+    let items = [...categories];
 
-    while (arr.length < 20) {
-      arr = [...arr, ...categories];
+    while (items.length < 20) {
+      items = [...items, ...categories];
     }
 
-    return arr;
+    return items;
   }, [categories]);
 
-  if (!swiperCategories.length) return null;
+  if (loading) return null;
+  if (sliderCategories.length === 0) return null;
 
   return (
     <section className={styles.categories}>
       <div className={styles.container}>
-        <div className={styles.header}>
-
-        </div>
-
         <Swiper
-          modules={[Navigation, Autoplay]}
-          slidesPerView={6}
-          spaceBetween={12}
+          modules={[Autoplay]}
           loop={true}
-          speed={900}
+          speed={1000}
+          grabCursor={true}
+          observer={true}
+          observeParents={true}
+          watchOverflow={false}
           autoplay={{
             delay: 0,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
-          grabCursor={true}
-          observer={true}
-          observeParents={true}
-          watchOverflow={false}
           breakpoints={{
-            1400: {
-              slidesPerView: 8,
-              spaceBetween: 6,
+            0: {
+              slidesPerView: 2.3,
+              spaceBetween: 10,
             },
-            1200: {
-              slidesPerView: 7,
-              spaceBetween: 6,
-            },
-            992: {
-              slidesPerView: 6,
-              spaceBetween: 8,
-            },
-            768: {
-              slidesPerView: 5,
-              spaceBetween: 8,
+            480: {
+              slidesPerView: 3,
+              spaceBetween: 10,
             },
             576: {
               slidesPerView: 4,
-              spaceBetween: 8,
+              spaceBetween: 12,
             },
-            360: {
-              slidesPerView: 3,
-              spaceBetween: 8,
+            768: {
+              slidesPerView: 5,
+              spaceBetween: 14,
             },
-            0: {
-              slidesPerView: 2.6,
-              spaceBetween: 8,
+            992: {
+              slidesPerView: 6,
+              spaceBetween: 16,
             },
-          }}
-          onBeforeInit={(swiper) => {
-            swiper.params.navigation.prevEl = prevRef.current;
-            swiper.params.navigation.nextEl = nextRef.current;
+            1200: {
+              slidesPerView: 7,
+              spaceBetween: 18,
+            },
+            1400: {
+              slidesPerView: 8,
+              spaceBetween: 20,
+            },
           }}
         >
-          {swiperCategories.map((category, index) => (
+          {sliderCategories.map((category, index) => (
             <SwiperSlide key={`${category._id}-${index}`}>
               <Link
                 href={`/products?category=${category.slug}`}
@@ -132,7 +117,8 @@ export default function Categories() {
                     alt={category.name}
                     fill
                     className={styles.image}
-                    sizes="(max-width:768px) 80px, 120px"
+                    sizes="(max-width:768px) 90px, 140px"
+                    priority={index < 8}
                   />
                 </div>
 

@@ -150,6 +150,34 @@
   cursor: not-allowed;
 }
 
+.imageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.infoBtn {
+  padding: 7px 14px;
+  border: 1px solid #e5e7eb;
+  border-radius: 8px;
+  background: #fff8e1;
+  color: #a16207;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.infoBtn:hover {
+  background: #fef3c7;
+  border-color: #f59e0b;
+}
+
+.errorUpload {
+  border: 2px solid #ef4444;
+}
+
 @media (max-width: 768px) {
   .container {
     padding: 15px;

@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 
 import styles from "./Orders.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 const API_URL = "http://localhost:5000/api/orders";
 
@@ -63,28 +65,36 @@ export default function OrdersPage() {
   };
 
   const deleteOrder = async (id) => {
-    try {
-      const token = localStorage.getItem("token");
+    const confirmResult = await Swal.fire({
+      title: "Delete Order?",
+      text: "Are you sure you want to delete this order?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
 
+    if (!confirmResult.isConfirmed) return;
+
+    try {
       const res = await axios.delete(
         `${process.env.NEXT_PUBLIC_API_URL}/api/orders/${id}`,
         {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
           withCredentials: true,
         }
       );
 
       if (res.data.success) {
-        alert("Order deleted successfully");
+        toast.success("Order deleted successfully");
 
         // Remove deleted order from state
         setOrders((prev) => prev.filter((order) => order._id !== id));
       }
     } catch (error) {
       console.error(error);
-      alert(error.response?.data?.message || "Failed to delete order");
+      toast.error(error.response?.data?.message || "Failed to delete order");
     }
   };
   const getOrders = async () => {
@@ -151,10 +161,11 @@ export default function OrdersPage() {
             orderStatus: status,
           }));
         }
+        toast.success(`Order status updated to ${status}`);
       }
     } catch (err) {
       console.error(err);
-      alert(err.response?.data?.message || "Failed to update order.");
+      toast.error(err.response?.data?.message || "Failed to update order.");
     }
   };
 
@@ -320,8 +331,17 @@ export default function OrdersPage() {
 
                       <button
                         title="Cancel"
-                        onClick={() => {
-                          if (confirm("Cancel this order?")) {
+                        onClick={async () => {
+                          const confirmResult = await Swal.fire({
+                            title: "Cancel Order?",
+                            text: "Are you sure you want to cancel this order?",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "Yes, cancel it"
+                          });
+                          if (confirmResult.isConfirmed) {
                             updateStatus(order._id, "Cancelled");
                           }
                         }}

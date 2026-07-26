@@ -77,37 +77,100 @@ export const updateCategory = asyncHandler(async (req, res) => {
   }
 
   const category = await Category.findById(id);
-  if (!category) throw new ApiError(404, "Category not found");
 
-  const { name, parentCategory } = req.body;
-  if (name !== undefined && (typeof name !== "string" || !name.trim())) {
+  if (!category) {
+    throw new ApiError(404, "Category not found");
+  }
+
+  let {
+    name,
+    description,
+    parentCategory,
+    isActive,
+  } = req.body;
+
+  // Validate name
+  if (
+    name !== undefined &&
+    (typeof name !== "string" || !name.trim())
+  ) {
     throw new ApiError(400, "Category name cannot be empty");
   }
-  if (parentCategory && parentCategory !== "null" && parentCategory !== "" && !mongoose.Types.ObjectId.isValid(parentCategory)) {
+
+  // Convert empty value to null
+  if (
+    parentCategory === "" ||
+    parentCategory === "null" ||
+    parentCategory === undefined
+  ) {
+    parentCategory = null;
+  }
+
+  // Validate parentCategory
+  if (
+    parentCategory !== null &&
+    !mongoose.Types.ObjectId.isValid(parentCategory)
+  ) {
     throw new ApiError(400, "Invalid parent category id");
   }
 
-  const updates = { ...req.body };
-
-  if (req.file) {
-    if (category.image?.public_id) {
-      try {
-        await cloudinary.uploader.destroy(category.image.public_id);
-      } catch (err) {
-        console.log("Cloudinary Delete Error:", err.message);
-      }
-    }
-    updates.image = { url: req.file.path, public_id: req.file.filename };
+  // Prevent category becoming its own parent
+  if (
+    parentCategory &&
+    parentCategory.toString() === id.toString()
+  ) {
+    throw new ApiError(
+      400,
+      "Category cannot be its own parent"
+    );
   }
 
-  const updatedCategory = await Category.findByIdAndUpdate(id, updates, {
-    new: true,
-    runValidators: true,
-  });
+  const updates = {
+    ...(name !== undefined && { name }),
+    ...(description !== undefined && { description }),
+    ...(isActive !== undefined && {
+      isActive:
+        isActive === true || isActive === "true",
+    }),
+    parentCategory,
+  };
 
-  return res.status(200).json(new ApiResponse(200, updatedCategory, "Category updated successfully"));
+  // Upload new image
+  if (req.file) {
+    // Delete old image
+    if (category.image?.public_id) {
+      try {
+        await cloudinary.uploader.destroy(
+          category.image.public_id
+        );
+      } catch (err) {
+        console.log(
+          "Cloudinary Delete Error:",
+          err.message
+        );
+      }
+    }
+
+    updates.image = {
+      url: req.file.path,
+      public_id: req.file.filename,
+    };
+  }
+
+  const updatedCategory =
+    await Category.findByIdAndUpdate(id, updates, {
+      new: true,
+      runValidators: true,
+    }).populate("parentCategory", "name slug");
+
+  return res.status(200).json(
+    new ApiResponse(
+      200,
+      updatedCategory,
+      "Category updated successfully"
+    )
+  );
 });
-
 // @desc Delete category
 // @route DELETE /api/categories/:id
 export const deleteCategory = asyncHandler(async (req, res) => {

@@ -59,19 +59,32 @@ export default function ProductsPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!confirm("Are you sure you want to delete this product?")) return;
+    const confirmResult = await Swal.fire({
+      title: "Delete Product?",
+      text: "Are you sure you want to delete this product?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
+
+    if (!confirmResult.isConfirmed) return;
+
     try {
       const res = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "DELETE",
       });
       if (res.ok) {
         setProductData((prev) => prev.filter((p) => p._id !== id));
+        toast.success("Product deleted successfully!");
       } else {
-        alert("Failed to delete product");
+        toast.error("Failed to delete product");
       }
     } catch (err) {
       console.error(err);
-      alert("Error deleting product");
+      toast.error("Error deleting product");
     }
   };
 

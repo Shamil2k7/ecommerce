@@ -3,21 +3,28 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
-import { Search, Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2 } from "lucide-react";
 import styles from "./Banners.module.css";
+import { toast } from "react-toastify";
+import Swal from "sweetalert2";
 
 export default function BannerPage() {
   const [banners, setBanners] = useState([]);
-  const [search, setSearch] = useState("");
+  const [loading, setLoading] = useState(true);
 
-  const API = process.env.NEXT_PUBLIC_API_URL;
+  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   const getBanners = async () => {
     try {
+      setLoading(true);
       const res = await axios.get(`${API}/api/marketing/banners`);
-      setBanners(res.data.banners || []);
+      if (res.data.success) {
+        setBanners(res.data.banners || []);
+      }
     } catch (error) {
       console.error("Get Banners Error:", error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -26,24 +33,36 @@ export default function BannerPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Delete this banner?")) return;
+    const confirmResult = await Swal.fire({
+      title: "Delete Banner?",
+      text: "Are you sure you want to delete this banner?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+      confirmButtonText: "Yes, delete it",
+      cancelButtonText: "Cancel"
+    });
+
+    if (!confirmResult.isConfirmed) return;
 
     try {
       await axios.delete(`${API}/api/marketing/banners/${id}`, {
         withCredentials: true,
       });
-      getBanners();
+
+      // Remove deleted banner from state
+      setBanners((prev) => prev.filter((banner) => banner._id !== id));
+      toast.success("Banner deleted successfully!");
     } catch (error) {
       console.error("Delete Banner Error:", error);
+      toast.error("Failed to delete banner.");
     }
   };
 
-  const filtered = banners.filter((banner) =>
-    banner.displayOrder?.toString().includes(search)
-  );
-
   return (
     <section className={styles.container}>
+      {/* Header */}
       <div className={styles.header}>
         <div>
           <h1>Banners</h1>
@@ -56,16 +75,7 @@ export default function BannerPage() {
         </Link>
       </div>
 
-      <div className={styles.searchBox}>
-        <Search size={18} />
-        <input
-          type="text"
-          placeholder="Search banner..."
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-        />
-      </div>
-
+      {/* Table */}
       <div className={styles.table}>
         <table>
           <thead>
@@ -80,13 +90,25 @@ export default function BannerPage() {
           </thead>
 
           <tbody>
-            {filtered.length > 0 ? (
-              filtered.map((item, index) => (
+            {loading ? (
+              <tr>
+                <td
+                  colSpan={6}
+                  style={{
+                    textAlign: "center",
+                    padding: "20px",
+                  }}
+                >
+                  Loading banners...
+                </td>
+              </tr>
+            ) : banners.length > 0 ? (
+              banners.map((item, index) => (
                 <tr key={item._id}>
                   <td>
                     <img
                       src={item.image}
-                      alt="Banner"
+                      alt={`Banner ${index + 1}`}
                       className={styles.image}
                     />
                   </td>
@@ -123,6 +145,7 @@ export default function BannerPage() {
                       </Link>
 
                       <button
+                        type="button"
                         className={styles.actionBtn}
                         onClick={() => handleDelete(item._id)}
                       >
@@ -134,8 +157,14 @@ export default function BannerPage() {
               ))
             ) : (
               <tr>
-                <td colSpan={6} style={{ textAlign: "center" }}>
-                  No banners found
+                <td
+                  colSpan={6}
+                  style={{
+                    textAlign: "center",
+                    padding: "20px",
+                  }}
+                >
+                  No banners found.
                 </td>
               </tr>
             )}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useAuth } from "@/context/AuthContext";
 import styles from "./GoogleLoginButton.module.css";
 import { Loader2 } from "lucide-react";
+import { toast } from "react-toastify";
 
 export default function GoogleLoginButton() {
   const { googleLogin } = useAuth();
@@ -82,7 +83,7 @@ export default function GoogleLoginButton() {
 
   // Displaying fallback handler when script is unavailable
   const handleFallbackClick = () => {
-    alert(
+    toast.error(
       "Google Sign-In is unavailable. Ensure NEXT_PUBLIC_GOOGLE_CLIENT_ID is set in your .env file."
     );
   };
