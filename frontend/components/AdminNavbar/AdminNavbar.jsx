@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
-
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 
@@ -71,10 +70,7 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
           <Menu size={22} />
         </button>
 
-        <div className={styles.searchBox}>
-          <Search size={18} />
-          <input type="text" placeholder="Search..." />
-        </div>
+        
 
         {/* Mobile search trigger */}
         <button
@@ -116,13 +112,10 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
           <div
             className={`${styles.dropdown} ${profileOpen ? styles.show : ""}`}
           >
-            <button onClick={() => setProfileOpen(false)}>
-              <User size={18} />
-              Profile
-            </button>
+            
             {user?.role === "admin" && (
 
-               <button onClick={() => setProfileOpen(false)}>
+               <button onClick={() => router.push("/admin/settings")}>
               <Settings size={18} />
               Settings
             </button>
