@@ -8,7 +8,7 @@ const resetPassword = async (req, res) => {
   if (!email || !otp || !password) {
     return res.status(400).json({
       success: false,
-      message: "Email, OTP, and password are required",
+      message: "Email, OTP and password are required",
     });
   }
 
@@ -20,16 +20,13 @@ const resetPassword = async (req, res) => {
   }
 
   try {
-    const formattedEmail = email.trim().toLowerCase();
-    const formattedOtp = otp.toString().trim();
-
     const hashedOtp = crypto
       .createHash("sha256")
-      .update(formattedOtp)
+      .update(otp.toString().trim())
       .digest("hex");
 
     const user = await User.findOne({
-      email: formattedEmail,
+      email: email.trim().toLowerCase(),
       resetPasswordToken: hashedOtp,
       resetPasswordExpire: { $gt: Date.now() },
     });
@@ -49,7 +46,7 @@ const resetPassword = async (req, res) => {
 
     createToken(res, user._id);
 
-    return res.status(200).json({
+    res.status(200).json({
       success: true,
       message: "Password reset successfully",
       user: {
@@ -61,7 +58,7 @@ const resetPassword = async (req, res) => {
       },
     });
   } catch (error) {
-    return res.status(500).json({
+    res.status(500).json({
       success: false,
       message: error.message,
     });
