@@ -38,18 +38,21 @@ const CartSummary = ({ cart }) => {
         <span>${cart.tax.toFixed(2)}</span>
       </div>
 
-      <div className={`${styles.summaryRow} ${styles.total}`}>
-        <span>Total</span>
-        <span>₹{cart.finalTotal.toFixed(2)}</span>
-      </div>
+      {/* Sticky on mobile via CSS, normal flow on desktop */}
+      <div className={styles.stickyFooter}>
+        <div className={`${styles.summaryRow} ${styles.total}`}>
+          <span>Total</span>
+          <span>₹{cart.finalTotal.toFixed(2)}</span>
+        </div>
 
-      <button 
-        className={styles.checkoutBtn} 
-        onClick={() => router.push('/checkout')}
-        disabled={cart.products.length === 0}
-      >
-        Proceed to Checkout
-      </button>
+        <button 
+          className={styles.checkoutBtn} 
+          onClick={() => router.push('/checkout')}
+          disabled={cart.products.length === 0}
+        >
+          Proceed to Checkout
+        </button>
+      </div>
     </div>
   );
 };

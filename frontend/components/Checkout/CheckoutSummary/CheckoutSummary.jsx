@@ -170,9 +170,20 @@ export default function CheckoutSummary({
         <div className={styles.grandTotalRow}>
           <span>Total Amount</span>
 
-          <span className={styles.grandTotalPrice}>
-            ₹{cart.finalTotal?.toLocaleString()}
-          </span>
+          <button
+            className={styles.checkoutButton}
+            onClick={handlePlaceOrder}
+            disabled={!selectedAddress}
+          >
+            {selectedAddress
+              ? `Pay ₹${cart.finalTotal?.toLocaleString()}`
+              : "Select Address to Continue"}
+          </button>
+
+          <p className={styles.checkoutSecurity}>
+            <FiLock className={styles.securityIcon} />
+            <span>Secure Checkout</span>
+          </p>
         </div>
 
         <button
