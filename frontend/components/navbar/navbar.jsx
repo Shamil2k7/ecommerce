@@ -4,7 +4,8 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import styles from "./Navbar.module.css";
-
+import { useRouter } from "next/navigation";
+import { useRef } from "react";
 import {
   IoMenu,
   IoClose,
@@ -24,6 +25,12 @@ export default function Navbar() {
     tagline: "",
     logo: "",
   });
+  const router = useRouter();
+
+  const [search, setSearch] = useState("");
+  const [suggestions, setSuggestions] = useState([]);
+  const [showSuggestions, setShowSuggestions] = useState(false);
+  const searchRef = useRef(null);
 
   useEffect(() => {
     fetchSettings();
@@ -41,12 +48,46 @@ export default function Navbar() {
       console.log(err);
     }
   }
+  useEffect(() => {
+    const handler = (e) => {
+      if (searchRef.current && !searchRef.current.contains(e.target)) {
+        setShowSuggestions(false);
+      }
+    };
 
+    document.addEventListener("click", handler);
+
+    return () => document.removeEventListener("click", handler);
+  }, []);
   const logoSrc = settings.logo
     ? settings.logo.startsWith("http")
       ? settings.logo
       : `${API}${settings.logo}`
     : "";
+  const searchProducts = async (value) => {
+    setSearch(value);
+
+    if (!value.trim()) {
+      setSuggestions([]);
+      setShowSuggestions(false);
+      return;
+    }
+
+    try {
+      const res = await fetch(
+        `${API}/api/products/search?q=${encodeURIComponent(value)}&limit=5`
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+        setSuggestions(data.data.products);
+        setShowSuggestions(true);
+      }
+    } catch (err) {
+      console.log(err);
+    }
+  };
 
   return (
     <>
@@ -71,7 +112,7 @@ export default function Navbar() {
                 className={styles.logoImage}
                 priority
               />
-            }   
+            }
 
             <div className={styles.logoText}>
               <h2>{settings.storeName}</h2>
@@ -80,13 +121,51 @@ export default function Navbar() {
           </Link>
 
           {/* Search */}
-          <div className={styles.search}>
+          <div className={styles.search} ref={searchRef}>
             <IoSearchOutline className={styles.searchIcon} />
 
             <input
               type="text"
-              placeholder="Search for Products..."
+              placeholder="Search products..."
+              value={search}
+              onChange={(e) => searchProducts(e.target.value)}
+              onFocus={() => {
+                if (suggestions.length) setShowSuggestions(true);
+              }}
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  router.push(`/products?search=${search}`);
+                  setShowSuggestions(false);
+                }
+              }}
             />
+            {showSuggestions && suggestions.length > 0 && (
+              <div className={styles.suggestions}>
+                {suggestions.map((item) => (
+                  <Link
+                    key={item._id}
+                    href={`/products/${item._id}`}
+                    className={styles.suggestionItem}
+                    onClick={() => {
+                      setShowSuggestions(false);
+                      setSearch("");
+                    }}
+                  >
+                    <Image
+                      src={item.images?.[0]?.url || "/images/no-image.png"}
+                      width={40}
+                      height={40}
+                      alt={item.name}
+                    />
+
+                    <div>
+                      <p>{item.name}</p>
+                      <small>₹{item.price}</small>
+                    </div>
+                  </Link>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Desktop Icons */}
@@ -122,16 +201,14 @@ export default function Navbar() {
 
         {/* Mobile Sidebar */}
         <div
-          className={`${styles.overlay} ${
-            menuOpen ? styles.show : ""
-          }`}
+          className={`${styles.overlay} ${menuOpen ? styles.show : ""
+            }`}
           onClick={() => setMenuOpen(false)}
         />
 
         <aside
-          className={`${styles.sidebar} ${
-            menuOpen ? styles.show : ""
-          }`}
+          className={`${styles.sidebar} ${menuOpen ? styles.show : ""
+            }`}
         >
           <button
             className={styles.closeBtn}
