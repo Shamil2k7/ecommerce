@@ -1,7 +1,5 @@
-// Logout user
 const logout = async (req, res) => {
   try {
-    // Clear JWT cookie
     res.cookie("jwt", "", {
       httpOnly: true,
       expires: new Date(0),
@@ -22,3 +20,4 @@ const logout = async (req, res) => {
 };
 
 export default logout;
+

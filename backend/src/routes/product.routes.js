@@ -1,6 +1,8 @@
 import { Router } from "express";
 import upload from "../config/multer.js";
 
+import protect from "../middlewares/auth.middleware.js";
+import { isAdminOrStaff } from "../middlewares/role.middleware.js";
 
 import {
   getTopRatedProducts,
@@ -50,10 +52,10 @@ router.get("/products/filters", getFilterOptions);
 /* =====================================================
                     INVENTORY
 ===================================================== */
-router.get("/products/inventory/low-stock", getLowStockProducts);
-router.patch("/products/inventory/bulk", bulkUpdateStock);
-router.patch("/products/:id/stock", setStock);
-router.patch("/products/:id/stock/adjust", adjustStock);
+router.get("/products/inventory/low-stock", protect, isAdminOrStaff, getLowStockProducts);
+router.patch("/products/inventory/bulk", protect, isAdminOrStaff, bulkUpdateStock);
+router.patch("/products/:id/stock", protect, isAdminOrStaff, setStock);
+router.patch("/products/:id/stock/adjust", protect, isAdminOrStaff, adjustStock);
 
 /* =====================================================
                     PRODUCTS
@@ -66,19 +68,20 @@ router.get("/products/top-rated", getTopRatedProducts);
 router
   .route("/products")
   .get(getAllProducts)
-  .post(upload.array("images", 10), createProduct);
+  .post(protect, isAdminOrStaff, upload.array("images", 10), createProduct);
 
 // Single Product
 router
   .route("/products/:id")
   .get(getProductById)
-  .patch(upload.array("images", 10), updateProduct)
-  .delete(deleteProduct);
+  .patch(protect, isAdminOrStaff, upload.array("images", 10), updateProduct)
+  .delete(protect, isAdminOrStaff, deleteProduct);
 /* =====================================================
                   PRODUCT IMAGES
 ===================================================== */
 router.post(
   "/products/:id/images",
+  protect, isAdminOrStaff,
   upload.array("images", 10),
   uploadProductImages
 );
@@ -86,7 +89,7 @@ router.delete(/^\/products\/([^/]+)\/images\/(.+)$/, (req, res, next) => {
   req.params.id = req.params[0];
   req.params.imageId = req.params[1];
   next();
-}, deleteProductImage);
+}, protect, isAdminOrStaff, deleteProductImage);
 
 /* =====================================================
                     CATEGORY
@@ -94,6 +97,7 @@ router.delete(/^\/products\/([^/]+)\/images\/(.+)$/, (req, res, next) => {
 router.route("/categories")
   .get(getAllCategories)
   .post(
+    protect, isAdminOrStaff,
     upload.single("image"),
     createCategory
   );
@@ -105,22 +109,22 @@ router
     upload.single("image"),
     updateCategory
   )
-  .delete(deleteCategory);
-  
-  router.post("/products/:productId/review",addReview);
+  .delete(protect, isAdminOrStaff, deleteCategory);
+
+router.post("/products/:productId/review", addReview);
 /* =====================================================
                     BRANDS
 ===================================================== */
 router
   .route("/brands")
   .get(getAllBrands)
-  .post(upload.single("logo"), createBrand);
+  .post(protect, isAdminOrStaff, upload.single("logo"), createBrand);
 
 router
   .route("/brands/:id")
   .get(getBrandById)
   .patch(upload.single("logo"), updateBrand)
-  .delete(deleteBrand);
+  .delete(protect, isAdminOrStaff, deleteBrand);
 
 export default router;
 

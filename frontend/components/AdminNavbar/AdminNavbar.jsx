@@ -1,6 +1,11 @@
 "use client";
 
 import { useState, useRef, useEffect } from "react";
+
+import { useRouter } from "next/navigation";
+import { useAuth } from "@/context/AuthContext";
+
+
 import {
   Menu,
   Search,
@@ -18,6 +23,9 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
   const [mobileSearchOpen, setMobileSearchOpen] = useState(false);
 
   const profileRef = useRef(null);
+
+  const router = useRouter();
+  const { user, logout } = useAuth();
 
   // Close profile dropdown when clicking outside
   useEffect(() => {
@@ -41,6 +49,15 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
     document.addEventListener("keydown", handleEscape);
     return () => document.removeEventListener("keydown", handleEscape);
   }, []);
+
+
+  const handleLogout = async () => {
+  const result = await logout();
+
+  if (result.success) {
+    router.push("/auth/login");
+  }
+};
 
   return (
     <header className={styles.navbar}>
@@ -85,8 +102,8 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
             </div>
 
             <div className={styles.info}>
-              <h4>Admin</h4>
-              <p>Administrator</p>
+              <h4>{user?.fullName}</h4>
+              <p>{user?.role}</p>
             </div>
 
             <ChevronDown
@@ -103,15 +120,20 @@ export default function AdminNavbar({ sidebarOpen, setSidebarOpen }) {
               <User size={18} />
               Profile
             </button>
+            {user?.role === "admin" && (
 
-            <button onClick={() => setProfileOpen(false)}>
+               <button onClick={() => setProfileOpen(false)}>
               <Settings size={18} />
               Settings
             </button>
 
+            )}
+
+           
+
             <button
               className={styles.logout}
-              onClick={() => setProfileOpen(false)}
+              onClick={handleLogout}
             >
               <LogOut size={18} />
               Logout
