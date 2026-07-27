@@ -42,7 +42,7 @@
   align-items: center;
   gap: 18px;
 
-  transition: .3s;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .card:hover {
@@ -57,7 +57,7 @@
   background: var(--secondary-soft);
   color: var(--primary);
 
-  border-radius: 16px;
+  border-radius: var(--radius-lg);
 
   display: flex;
   justify-content: center;
@@ -82,7 +82,7 @@
 }
 
 /* =======================
-      Charts
+          Charts
 ======================= */
 
 .grid {
@@ -117,8 +117,8 @@
 
   background: linear-gradient(
     135deg,
-    #f8f5f1,
-    #f2ece4
+    var(--bg),
+    var(--secondary-soft)
   );
 
   display: flex;
@@ -131,7 +131,7 @@
 }
 
 /* =======================
-      Low Stock
+        Low Stock
 ======================= */
 
 .stockList {
@@ -151,7 +151,7 @@
 
   background: var(--bg);
 
-  transition: .3s;
+  transition: background 0.3s ease;
 }
 
 .stockList div:hover {
@@ -167,8 +167,8 @@
 }
 
 /* =======================
-      Tables
-======================= */
+          Tables
+=========================== */
 
 .bottom {
   display: grid;
@@ -207,7 +207,7 @@
 }
 
 .tableCard tbody tr {
-  transition: .3s;
+  transition: background 0.3s ease;
 }
 
 .tableCard tbody tr:hover {
@@ -219,7 +219,7 @@
 
   padding: 6px 14px;
 
-  border-radius: 50px;
+  border-radius: var(--radius-pill);
 
   background: var(--success-bg);
 
@@ -231,7 +231,7 @@
 }
 
 /* =======================
-      Scrollbar
+        Scrollbar
 ======================= */
 
 .tableCard::-webkit-scrollbar {
@@ -239,24 +239,21 @@
 }
 
 .tableCard::-webkit-scrollbar-thumb {
-  background: #ccc;
-  border-radius: 50px;
+  background: var(--line);
+  border-radius: var(--radius-pill);
 }
 
 /* =======================
-      Responsive
+        Responsive
 ======================= */
 
 @media (max-width: 1200px) {
-
   .cards {
     grid-template-columns: repeat(2, 1fr);
   }
-
 }
 
 @media (max-width: 992px) {
-
   .grid {
     grid-template-columns: 1fr;
   }
@@ -264,11 +261,9 @@
   .bottom {
     grid-template-columns: 1fr;
   }
-
 }
 
 @media (max-width: 768px) {
-
   .dashboard {
     gap: 20px;
   }
@@ -307,11 +302,9 @@
   .tableCard {
     padding: 18px;
   }
-
 }
 
 @media (max-width: 480px) {
-
   .dashboard {
     gap: 16px;
   }
@@ -348,5 +341,4 @@
     padding: 5px 10px;
     font-size: 12px;
   }
-
 }

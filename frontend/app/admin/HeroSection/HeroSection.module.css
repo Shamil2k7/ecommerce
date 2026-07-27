@@ -4,7 +4,9 @@
   gap: 24px;
 }
 
-/* Header */
+/* ===========================
+        Header
+=========================== */
 
 .header {
   display: flex;
@@ -28,7 +30,9 @@
   flex-wrap: wrap;
 }
 
-/* Search */
+/* ===========================
+        Search Box
+=========================== */
 
 .searchBox {
   width: 400px;
@@ -41,7 +45,7 @@
 
   padding: 0 16px;
 
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
 }
@@ -51,10 +55,17 @@
   border: none;
   outline: none;
   background: transparent;
+  color: var(--text);
   font-size: 15px;
 }
 
-/* Add Button */
+.searchBox input::placeholder {
+  color: var(--text-soft);
+}
+
+/* ===========================
+        Add Button
+=========================== */
 
 .addBtn {
   height: 48px;
@@ -65,24 +76,26 @@
   gap: 10px;
 
   background: var(--primary);
-  color: white;
+  color: var(--surface);
   text-decoration: none;
 
   border-radius: var(--radius-md);
 
   font-weight: 600;
 
-  transition: 0.3s;
+  transition: background 0.3s ease;
 }
 
 .addBtn:hover {
   background: var(--primary-hover);
 }
 
-/* Table */
+/* ===========================
+        Table Area
+=========================== */
 
 .tableWrapper {
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow-x: auto;
@@ -94,7 +107,7 @@
 }
 
 .table thead {
-  background: #faf8f6;
+  background: var(--bg);
 }
 
 .table th {
@@ -112,6 +125,10 @@
   color: var(--text-soft);
 }
 
+.table tbody tr {
+  transition: background 0.25s ease;
+}
+
 .table tbody tr:hover {
   background: var(--secondary-soft);
 }
@@ -122,11 +139,13 @@
   width: 150px;
   height: 80px;
   object-fit: cover;
-  border-radius: 12px;
+  border-radius: var(--radius-md);
   border: 1px solid var(--line);
 }
 
-/* Status */
+/* ===========================
+        Status Badges
+=========================== */
 
 .active,
 .inactive {
@@ -138,7 +157,7 @@
 
   padding: 8px 14px;
 
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 
   font-size: 13px;
   font-weight: 600;
@@ -154,7 +173,9 @@
   color: var(--danger);
 }
 
-/* Buttons */
+/* ===========================
+        Action Buttons
+=========================== */
 
 .buttons {
   display: flex;
@@ -171,12 +192,12 @@
   align-items: center;
 
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
 
   background: var(--bg);
   cursor: pointer;
 
-  transition: 0.3s;
+  transition: background 0.25s ease, color 0.25s ease;
 }
 
 .edit {
@@ -190,8 +211,12 @@
 .edit:hover,
 .delete:hover {
   background: var(--primary);
-  color: white;
+  color: var(--surface);
 }
+
+/* ===========================
+        Responsive
+=========================== */
 
 /* Tablet */
 

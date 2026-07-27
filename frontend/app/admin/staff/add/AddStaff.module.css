@@ -4,6 +4,10 @@
   gap: 24px;
 }
 
+/* ===========================
+        Header & Nav
+=========================== */
+
 .header h1 {
   font-size: 32px;
   color: var(--text);
@@ -21,12 +25,17 @@
   margin-bottom: 16px;
   color: var(--text-soft);
   font-weight: 600;
-  transition: .3s;
+  text-decoration: none;
+  transition: color 0.3s ease;
 }
 
 .back:hover {
   color: var(--primary);
 }
+
+/* ===========================
+        Grid & Cards
+=========================== */
 
 .grid {
   display: grid;
@@ -48,6 +57,7 @@
 
 .card h3 {
   margin-bottom: 20px;
+  color: var(--text);
 }
 
 .row {
@@ -55,6 +65,10 @@
   grid-template-columns: 1fr 1fr;
   gap: 18px;
 }
+
+/* ===========================
+        Form Fields
+=========================== */
 
 .field {
   display: flex;
@@ -66,6 +80,7 @@
   margin-bottom: 8px;
   font-size: 14px;
   font-weight: 600;
+  color: var(--text);
 }
 
 .field input,
@@ -77,12 +92,15 @@
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
   outline: none;
-  transition: .3s;
-  background: white;
+  background: var(--surface);
+  color: var(--text);
+  font-size: 15px;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .field textarea {
   resize: vertical;
+  min-height: 120px;
 }
 
 .field input:focus,
@@ -90,8 +108,17 @@
 .field select:focus,
 .card select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(46,41,38,.08);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
 }
+
+.field input::placeholder,
+.field textarea::placeholder {
+  color: var(--text-soft);
+}
+
+/* ===========================
+        Upload Box
+=========================== */
 
 .upload {
   width: 100%;
@@ -105,7 +132,7 @@
   gap: 12px;
   cursor: pointer;
   overflow: hidden;
-  transition: .3s;
+  transition: border-color 0.3s ease, background-color 0.3s ease;
 }
 
 .upload:hover {
@@ -119,6 +146,10 @@
   object-fit: cover;
 }
 
+/* ===========================
+        Actions & Buttons
+=========================== */
+
 .actions {
   display: flex;
   gap: 12px;
@@ -131,12 +162,15 @@
   height: 48px;
   border-radius: var(--radius-md);
   font-weight: 600;
-  transition: .3s;
+  font-size: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease;
 }
 
 .cancelBtn {
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
+  color: var(--text);
 }
 
 .cancelBtn:hover {
@@ -144,64 +178,53 @@
 }
 
 .saveBtn {
+  border: none;
   background: var(--primary);
-  color: white;
+  color: var(--surface);
 }
 
 .saveBtn:hover {
   background: var(--primary-hover);
 }
 
-.trashIcon {
-  color: #2e2926;
-  transition: color 0.3s ease, transform 0.3s ease;
-}
+/* Delete Button & Icon */
 
-.deleteBtn:hover .trashIcon {
-  color: #ef4444;
-  transform: scale(1.15);
-}
 .deleteBtn {
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+}
+
+.trashIcon {
+  color: var(--text);
+  transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.deleteBtn:hover .trashIcon {
+  color: var(--danger);
+  transform: scale(1.15);
 }
 
 .deleteText {
   display: none;
+  color: var(--danger);
 }
 
-@media (max-width:480px){
+/* ===========================
+        Responsive
+=========================== */
 
-  .actions{
-    display:flex;
-    flex-direction:column;
-    gap:12px;
-  }
-
-  .deleteBtn,
-  .cancelBtn,
-  .saveBtn{
-    width:100%;
-    height:48px;
-    flex:none;
-  }
-
-  .deleteText{
-    display:inline;
-    font-weight:600;
-  }
-
-}
-
-@media (max-width:900px) {
+@media (max-width: 900px) {
   .grid {
     grid-template-columns: 1fr;
   }
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
   .header h1 {
     font-size: 28px;
   }
@@ -215,13 +238,32 @@
   }
 }
 
-@media (max-width:480px) {
+@media (max-width: 480px) {
   .header h1 {
     font-size: 24px;
   }
 
   .actions {
     flex-direction: column;
+    gap: 12px;
+  }
+
+  .deleteBtn,
+  .cancelBtn,
+  .saveBtn {
+    width: 100%;
+    height: 48px;
+    flex: none;
+  }
+
+  .deleteBtn {
+    background: var(--danger-bg);
+    border-radius: var(--radius-md);
+  }
+
+  .deleteText {
+    display: inline;
+    font-weight: 600;
   }
 
   .upload {
