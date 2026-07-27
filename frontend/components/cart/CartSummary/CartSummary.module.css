@@ -72,7 +72,7 @@
   padding: 15px;
   border: none;
   border-radius: 8px;
-  background: #000;
+  background:#7B1E3A;
   color: #fff;
   font-size: 15px;
   font-weight: 600;
@@ -83,7 +83,7 @@
 }
 
 .checkoutBtn:hover {
-  background: #181818;
+  background: #64182F;
   transform: translateY(-2px);
 }
 
@@ -92,7 +92,6 @@
   cursor: not-allowed;
 }
 
-/* Default (desktop): no special behavior, part of normal flow */
 .stickyFooter {
   position: static;
 }
@@ -122,7 +121,7 @@
     z-index: 50;
     background:  #ffffff;
     padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
+    /* box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08); */
     /* border-top: 1px solid #eee; */
     margin: 0 -24px -24px; 
   }

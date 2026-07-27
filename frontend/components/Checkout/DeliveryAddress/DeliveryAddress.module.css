@@ -3,10 +3,8 @@
   border: 1px solid #e3e6e6;
   /* border-radius: 12px; */
   padding: 24px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-/* ---------------- Header ---------------- */
 
 .cardHeader {
   display: flex;
@@ -38,7 +36,6 @@
   background: #f7ca00;
 }
 
-/* ---------------- Loading ---------------- */
 
 .loadingText,
 .noAddressText {
@@ -48,7 +45,6 @@
   padding: 24px 0;
 }
 
-/* ---------------- Address List ---------------- */
 
 .addressList {
   display: flex;
@@ -69,16 +65,15 @@
 }
 
 .addressItem:hover {
-  border-color: #007185;
+  border-color: #64182F;
   box-shadow: 0 4px 12px rgba(0, 113, 133, 0.08);
 }
 
 .selected {
-  border: 2px solid #007185;
-  background: #f2fcfc;
+  border: 2px solid #7B1E3A;
+  /* background: #f2fcfc; */
 }
 
-/* ---------------- Radio ---------------- */
 
 .radioWrapper {
   display: flex;
@@ -90,11 +85,10 @@
 .radioWrapper input {
   width: 18px;
   height: 18px;
-  accent-color: #007185;
+  accent-color:#7B1E3A;
   cursor: pointer;
 }
 
-/* ---------------- Address Content ---------------- */
 
 .addressDetails {
   flex: 1;
@@ -111,7 +105,7 @@
 .addressLabel {
   display: inline-block;
   padding: 5px 10px;
-  background: #007185;
+  background: #7B1E3A;
   color: #fff;
   border-radius: 20px;
   font-size: 11px;
@@ -122,17 +116,16 @@
 }
 
 .selected .addressLabel {
-  background: #005f6b;
+  background: #7B1E3A;
 }
 
 .addressText {
   margin: 0;
-  color: #374151;
+  color: #0e0f11;
   font-size: 15px;
   line-height: 1.6;
 }
 
-/* ---------------- Action Buttons ---------------- */
 
 .addressActions {
   display: flex;
@@ -171,7 +164,7 @@
   padding: 24px;
   background: #fafafa;
   border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  /* border-radius: 10px; */
 }
 
 .formGroup {
@@ -195,7 +188,7 @@
   width: 100%;
   padding: 12px 14px;
   border: 1px solid #d1d5db;
-  border-radius: 8px;
+  /* border-radius: 8px; */
   background: #fff;
   font-size: 15px;
   font-family: inherit;
@@ -210,11 +203,10 @@
 .formGroup select:focus,
 .formGroup textarea:focus {
   outline: none;
-  border-color: #007185;
+  border-color: #7B1E3A;
   box-shadow: 0 0 0 3px rgba(0, 113, 133, 0.15);
 }
 
-/* ---------------- Form Buttons ---------------- */
 
 .formActions {
   display: flex;
@@ -253,7 +245,6 @@
   background: #000;
 }
 
-/* ---------------- Tablet ---------------- */
 
 @media (max-width: 768px) {
   .card {
@@ -288,7 +279,6 @@
   }
 }
 
-/* ---------------- Mobile ---------------- */
 
 @media (max-width: 480px) {
   .card {
