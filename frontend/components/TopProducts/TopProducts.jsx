@@ -49,9 +49,9 @@ export default function TopProducts() {
       <div className={styles.grid}>
         {topRatedProducts.map((product) => (
           <ProductCard
-            key={product.id}
+            key={product._id}
             product={product}
-          />
+          />  
         ))}
       </div>
 

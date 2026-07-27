@@ -286,12 +286,11 @@ export const addReview = async (req, res) => {
 
     const userId = req.user._id;
 
-    // Check if user purchased this product
     const order = await Order.findOne({
       userId,
-      status: "Delivered",
-      "products.product": productId,
-    });
+      orderStatus: "Delivered",
+      "products.productId": productId,
+    }); 
 
     if (!order) {
       return res.status(403).json({
