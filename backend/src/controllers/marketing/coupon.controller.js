@@ -1,5 +1,6 @@
 import Coupon from "../../models/Coupon.js";
-//creat
+
+// Create Coupon
 export const createCoupon = async (req, res) => {
   try {
     const {
@@ -14,7 +15,9 @@ export const createCoupon = async (req, res) => {
     } = req.body;
 
     if (!name || !code || !discount || !expirydate) {
-      return res.status(400).send("All fields are required");
+      return res.status(400).json({
+        message: "All fields are required",
+      });
     }
 
     const existingCoupon = await Coupon.findOne({
@@ -22,10 +25,12 @@ export const createCoupon = async (req, res) => {
     });
 
     if (existingCoupon) {
-      return res.status(400).send("Coupon Already Exists");
+      return res.status(400).json({
+        message: "Coupon Already Exists",
+      });
     }
 
-    await Coupon.create({
+    const coupon = await Coupon.create({
       name,
       code: code.toUpperCase(),
       discount: Number(discount),
@@ -36,55 +41,74 @@ export const createCoupon = async (req, res) => {
       status,
     });
 
-    return res.status(201).send("Coupon Added Successfully");
+    return res.status(201).json({
+      message: "Coupon Added Successfully",
+      coupon,
+    });
   } catch (error) {
     console.log(error);
-    return res.status(500).send(error.message);
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-//find all
+// Get-All-Coupons
 export const getCoupons = async (req, res) => {
   try {
-    const coupons = await Coupon.find().sort({ createdAt: -1 });
-    return res.status(200).json(coupons);
+    const coupons = await Coupon.find().sort({
+      createdAt: -1,
+    });
+
+    return res.status(200).json({
+      coupons,
+    });
   } catch (error) {
-    return res.status(500).send(error.message);
+    console.log(error);
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-//findone
+// Get CouponById
 export const getCouponById = async (req, res) => {
   try {
     const coupon = await Coupon.findById(req.params.id);
 
     if (!coupon) {
-      return res.status(404).send("Coupon Not Found");
+      return res.status(404).json({
+        message: "Coupon Not Found",
+      });
     }
 
-    return res.status(200).json(coupon);
+    return res.status(200).json({
+      coupon,
+    });
   } catch (error) {
-    return res.status(500).send(error.message);
+    console.log(error);
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
-//update
+
+// Update Coupon
 export const updateCoupon = async (req, res) => {
   try {
-    // console.log("Update Controller Called");
-    // console.log("ID :", req.params.id);
-    // console.log("BODY :", req.body);
-
     const updatedCoupon = await Coupon.findByIdAndUpdate(
       req.params.id,
       req.body,
       {
-        returnDocument: "after",
+        new: true,
         runValidators: true,
       }
     );
 
     if (!updatedCoupon) {
-      return res.status(404).send("Coupon Not Found");
+      return res.status(404).json({
+        message: "Coupon Not Found",
+      });
     }
 
     return res.status(200).json({
@@ -93,20 +117,21 @@ export const updateCoupon = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send(error.message);
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };
 
-//delete
+// Delete Coupon
 export const deleteCoupon = async (req, res) => {
   try {
-    // console.log("Delete Controller Called");
-    // console.log("ID :", req.params.id);
-
     const deletedCoupon = await Coupon.findByIdAndDelete(req.params.id);
 
     if (!deletedCoupon) {
-      return res.status(404).send("Coupon Not Found");
+      return res.status(404).json({
+        message: "Coupon Not Found",
+      });
     }
 
     return res.status(200).json({
@@ -114,6 +139,8 @@ export const deleteCoupon = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).send(error.message);
+    return res.status(500).json({
+      message: error.message,
+    });
   }
 };

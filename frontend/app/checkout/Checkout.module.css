@@ -2,12 +2,22 @@
         Container & Layout
 =========================== */
 
-.container {
-  max-width: 1420px;
-  margin: auto;
-  padding: 24px;
-  background: var(--bg);
-  font-family: inherit;
+.container{
+  --primary:#007185;
+  --primary-hover:#005f6b;
+  --warning:#ffd814;
+  --warning-hover:#f7ca00;
+  --text:#111;
+  --text-light:#565959;
+  --white:#fff;
+  --success:#067d62;
+
+  
+  max-width:1420px;
+  margin:auto;
+  padding:24px;
+  background:var(--background);
+  font-family:Arial,Helvetica,sans-serif;
 }
 
 .header {
