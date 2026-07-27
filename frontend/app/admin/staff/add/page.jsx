@@ -8,11 +8,8 @@ import styles from "./AddStaff.module.css";
 
 export default function AddStaffPage() {
   const router = useRouter();
-
   const [loading, setLoading] = useState(false);
-
   const [preview, setPreview] = useState(null);
-
   const [image, setImage] = useState(null);
 
   const [staff, setStaff] = useState({
@@ -25,7 +22,7 @@ export default function AddStaffPage() {
     status: "Active",
   });
 
-  // Handle Input Change
+  // handled inputes changes
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -35,7 +32,7 @@ export default function AddStaffPage() {
     }));
   };
 
-  // Handle Image Upload
+  // handled images uploaded 
   const handleImage = (e) => {
     const file = e.target.files[0];
 
@@ -45,7 +42,7 @@ export default function AddStaffPage() {
     setPreview(URL.createObjectURL(file));
   };
 
-  // Submit Form
+  // submit forms handled
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -221,7 +218,7 @@ export default function AddStaffPage() {
 
 
 
-        {/* Right side  all codes  */}
+        {/* right side  all codes (upload side) */}
 
         <div>
           <div className={styles.card}>

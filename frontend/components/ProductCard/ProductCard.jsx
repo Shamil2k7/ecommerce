@@ -127,7 +127,7 @@ export default function ProductCard({ product }) {
 
       <div className={styles.content}>
         <p className={styles.category}>
-          {product.category || "Uncategorized"}
+          {product.category?.name || "Uncategorized"}
         </p>
 
         <Link href={`/products/${product.id}`}>
@@ -145,7 +145,7 @@ export default function ProductCard({ product }) {
 
           <span>{product.rating || 0}</span>
 
-          <small>({product.reviews || 0})</small>
+        <small>({product.reviews?.length || 0})</small>
         </div>
 
         <div className={styles.priceRow}>

@@ -21,7 +21,9 @@ import {
   LogOut,
   ChevronDown,
   ChevronRight,
-  HeartHandshake
+  HeartHandshake,
+  Info,
+  BookUser
 } from "lucide-react";
 
 import styles from "./AdminSidebar.module.css";
@@ -36,7 +38,8 @@ const menuItems = [
   { title: "Customers", href: "/admin/customers", icon: Users },
   { title: "Staff", href: "/admin/staff", icon: Users },
   { title: "Coupons", href: "/admin/coupons", icon: TicketPercent },
-
+  { title: "about", href: "/admin/about", icon: Info },
+  { title: "Contact", href: "/admin/contact", icon: BookUser },
   {
     title: "Banners",
     icon: Image,

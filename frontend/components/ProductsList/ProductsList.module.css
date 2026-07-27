@@ -23,8 +23,8 @@
   padding: 12px 24px;
   border-radius: var(--radius-pill);
   background: var(--primary);
-  color: #fff;
-  transition: 0.3s;
+  color: var(--surface);
+  transition: 0.3s ease;
 }
 
 .button:hover {
@@ -48,11 +48,11 @@
   border: none;
   border-radius: var(--radius-pill);
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.3s;
+  transition: 0.3s ease;
 }
 
 .loadMore button:hover:not(:disabled) {
@@ -79,6 +79,8 @@
   color: var(--text-soft);
   font-size: 18px;
 }
+
+/* ================= RESPONSIVE ================= */
 
 @media (max-width: 1200px) {
   .grid {

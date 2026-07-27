@@ -25,6 +25,7 @@ import cartRoutes from "./src/routes/cart.routes.js";
 import policyRoutes from "./src/routes/policy.routes.js";
 import wishlistRoutes from "./src/routes/wishlist.routes.js";
 import contactRoutes from "./src/routes/contact.routes.js";
+import aboutRoutes from "./src/routes/about.routes.js";
 const app = express();
 
 // Database
@@ -62,6 +63,7 @@ app.use("/api/staff", staffRoutes);
 app.use("/api/policies", policyRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/contact", contactRoutes);
+app.use("/api/about", aboutRoutes);
 
 app.get("/", (req, res) => {
   res.send("A simple Node App is running on this server");

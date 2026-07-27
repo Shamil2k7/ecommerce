@@ -1,7 +1,9 @@
 .hero {
   width: 100%;
-  background: #fff;
+  margin: 0;
+  padding: 0;
   overflow: hidden;
+  background: var(--surface);
 }
 
 .carouselWrapper {

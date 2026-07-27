@@ -5,17 +5,18 @@
 
 .orderSummaryCard {
   width: 100%;
-  background: #ffffff;
-  border: 1px solid #ececec;
+  background: var(--surface);
+  border: 1px solid var(--line);
   padding: 28px;
+  border-radius: var(--radius-lg);
 }
 
 .orderSummaryCard h2 {
   font-size: 28px;
   font-weight: 700;
-  color: #222;
+  color: var(--text);
   margin-bottom: 24px;
-  letter-spacing: .3px;
+  letter-spacing: 0.3px;
 }
 
 .orderSummaryCard h2::after {
@@ -24,11 +25,11 @@
   width: 100%;
   height: 4px;
   margin-top: 12px;
-  border-radius: 20px;
+  border-radius: var(--radius-pill);
   background: linear-gradient(
     to right,
-    #111 80%,
-    #ececec 80%
+    var(--primary) 80%,
+    var(--line) 80%
   );
 }
 
@@ -44,17 +45,17 @@
 }
 
 .orderItems::-webkit-scrollbar-track {
-  background: #f3f3f3;
-  border-radius: 20px;
+  background: var(--bg);
+  border-radius: var(--radius-pill);
 }
 
 .orderItems::-webkit-scrollbar-thumb {
-  background: #bcbcbc;
-  border-radius: 20px;
+  background: var(--line);
+  border-radius: var(--radius-pill);
 }
 
 .orderItems::-webkit-scrollbar-thumb:hover {
-  background: #999;
+  background: var(--text-soft);
 }
 
 .orderItem {
@@ -63,7 +64,7 @@
   align-items: flex-start;
   gap: 16px;
   padding: 16px 0;
-  border-bottom: 1px dashed #d9d9d9;
+  border-bottom: 1px dashed var(--line);
 }
 
 .orderItem:last-child {
@@ -79,7 +80,7 @@
   display: block;
   font-size: 16px;
   font-weight: 600;
-  color: #222;
+  color: var(--text);
   line-height: 1.4;
   margin-bottom: 6px;
 }
@@ -87,20 +88,20 @@
 .orderItemMeta {
   display: inline-block;
   font-size: 13px;
-  color: #777;
+  color: var(--text-soft);
 }
 
 .orderItemPrice {
   font-size: 16px;
   font-weight: 700;
-  color: #111;
+  color: var(--text);
   white-space: nowrap;
 }
 
 .sectionDivider {
   width: 100%;
   height: 1px;
-  background: #ececec;
+  background: var(--line);
   margin: 24px 0;
 }
 
@@ -110,8 +111,8 @@
   align-items: center;
   padding: 15px 0;
   font-size: 15px;
-  color: #444;
-  border-bottom: 1px dashed #d8d8d8;
+  color: var(--text-soft);
+  border-bottom: 1px dashed var(--line);
 }
 
 .priceRow:last-of-type {
@@ -124,15 +125,15 @@
 
 .priceRow span:last-child {
   font-weight: 600;
-  color: #111;
+  color: var(--text);
 }
 
 .discountRow {
-  color: #2e7d32;
+  color: var(--success);
 }
 
 .discountRow span:last-child {
-  color: #2e7d32;
+  color: var(--success);
   font-weight: 700;
 }
 
@@ -142,7 +143,7 @@
   align-items: stretch;
   margin: 24px 0;
   overflow: hidden;
-  border-radius: 14px;
+  border-radius: var(--radius-md);
   height: 120px;
   background: linear-gradient(135deg,#90AD72 0%, #90AD72 100%);
 }
@@ -153,7 +154,7 @@
   position: absolute;
   width: 28px;
   height: 28px;
-  background: #fff;
+  background: var(--surface);
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
@@ -181,7 +182,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: #ffffff;
+  color: var(--surface);
   margin-bottom: 12px;
   margin-left: 11px;
   text-transform: uppercase;
@@ -192,37 +193,37 @@
   border: none;
   outline: none;
   margin-left: 7px;
-  background: #e1e9d9;
+  background: var(--secondary-soft);
   padding: 14px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 15px;
   color: #222;
   transition: .3s;
 }
 
 .ticketInput::placeholder {
-  color: rgba(0, 0, 0, .55);
+  color: var(--text-soft);
 }
 
 .ticketInput:focus {
-  background: rgba(255, 255, 255, .75);
+  background: var(--surface);
 }
 
 .ticketButton {
   width: 120px;
   border: none;
-  background: #111;
-  color:#ffffff;
+  background: var(--primary-hover);
+  color: var(--surface);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
   position: relative;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .ticketButton:hover {
-  background: #000;
+  background: var(--primary);
 }
 
 .ticketButton::before {
@@ -231,7 +232,7 @@
   left: 0;
   top: 12px;
   bottom: 12px;
-  border-left: 2px dashed rgba(255, 255, 255, .6);
+  border-left: 2px dashed var(--secondary-soft);
 }
 
 .activeCouponTicket {
@@ -240,9 +241,9 @@
   align-items: stretch;
   margin: 24px 0;
   overflow: hidden;
-  border-radius: 14px ;
-  background: linear-gradient(135deg,#9ce37f 0%,#9ce37f 100%);
-  color: #000000;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, var(--success) 0%, var(--success) 100%);
+  color: var(--surface);
   height: 120px;
 }
 
@@ -252,7 +253,7 @@
   position: absolute;
   width: 28px;
   height: 28px;
-  background: #fff;
+  background: var(--surface);
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
@@ -280,7 +281,8 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--surface);
+  opacity: 0.9;
   margin-bottom: 12px;
   text-transform: uppercase;
 }
@@ -290,31 +292,31 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: #fff;
+  color: var(--surface);
 }
 
 .ticketSavings {
   margin-top: 8px;
   font-size: 14px;
-  color: rgba(255, 255, 255, 0.9);
+  color: var(--surface);
+  opacity: 0.9;
 }
 
 .removeTicketButton {
   width: 120px;
-  border: none;
-  background:#040404;
-  color:#ffffff ;
+  border: 2px solid var(--primary-hover);
+  background: var(--primary-hover);
+  color: var(--surface);
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
   position: relative;
-  transition: .3s;
-  border: 2px solid #000000;
+  transition: 0.3s;
 }
 
 .removeTicketButton:hover {
-  background:#242525;
+  background: var(--primary);
 }
 
 .removeTicketButton::before {
@@ -323,7 +325,7 @@
   left: 0;
   top: 12px;
   bottom: 12px;
-  border-left: 2px dashed #9ce37f;
+  border-left: 2px dashed var(--surface);
 }
 
 /* Default (desktop): normal flow, no special stickiness of its own */
@@ -337,19 +339,19 @@
   align-items: center;
   margin-top: 28px;
   padding-top: 22px;
-  border-top: 2px dashed #cfcfcf;
+  border-top: 2px dashed var(--line);
 }
 
 .grandTotalRow span:first-child {
   font-size: 18px;
   font-weight: 700;
-  color: #222;
+  color: var(--text);
 }
 
 .grandTotalPrice {
   font-size: 22px;
   font-weight: 700;
-  color: #111;
+  color: var(--text);
 }
 
 .checkoutButton {
@@ -357,30 +359,30 @@
   margin-top: 24px;
   padding: 16px;
   border: none;
-  border-radius: 10px;
-  background: #000000;
-  color: #fff;
+  border-radius: var(--radius-sm);
+  background: var(--primary);
+  color: var(--surface);
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
 }
 
 .checkoutButton:hover:not(:disabled) {
-  background: #1b5e20;
+  background: var(--primary-hover);
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(46, 125, 50, .25);
+  box-shadow: var(--shadow-md);
 }
 
 .checkoutButton:active:not(:disabled) {
-  transform: scale(.98);
+  transform: scale(0.98);
 }
 
 .checkoutButton:disabled {
-  background: #d6d6d6;
-  color: #777;
+  background: var(--line);
+  color: var(--text-soft);
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -392,16 +394,15 @@
   gap: 8px;
   margin-top: 18px;
   font-size: 14px;
-  color: #777;
+  color: var(--text-soft);
 }
 
 .securityIcon {
   font-size: 18px;
-  color: #777;
+  color: var(--text-soft);
 }
 
 @media (max-width: 992px) {
-
   .checkoutSidebar {
     position: static;
     margin-top: 5px;
@@ -437,20 +438,19 @@
     top: 0;
     bottom: auto;
     border-left: none;
-    border-top: 2px dashed rgba(255,255,255,.6);
+    border-top: 2px dashed var(--secondary-soft);
   }
 
-  /* Sticky footer: Total + Pay button + security note pinned to bottom
-     while the order summary card is still on screen */
+  /* Sticky footer: Total + Pay button + security note pinned to bottom */
   .stickyFooter {
     position: sticky;
     bottom: 0;
     z-index: 50;
-    background: #fff;
+    background: var(--surface);
     margin: 0 -24px -24px;
     padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
-    box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08);
-    border-top: 1px solid #eee;
+    box-shadow: var(--shadow-md);
+    border-top: 1px solid var(--line);
   }
 
   .grandTotalRow {
@@ -469,7 +469,6 @@
 }
 
 @media (max-width: 768px) {
-
   .orderSummaryCard {
     padding: 20px;
   }
@@ -532,10 +531,9 @@
 }
 
 @media (max-width: 480px) {
-
   .orderSummaryCard {
     padding: 16px;
-    border-radius: 10px;
+    border-radius: var(--radius-md);
   }
 
   .orderSummaryCard h2 {

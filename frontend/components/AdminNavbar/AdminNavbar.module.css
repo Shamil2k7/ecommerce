@@ -49,7 +49,7 @@
   height: 44px;
 
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 
   background: var(--bg);
 
@@ -126,7 +126,7 @@
   min-width: 0;
 
   border: 1px solid var(--line);
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   background: var(--bg);
 
   display: flex;
@@ -208,8 +208,8 @@
 
   border-radius: 50%;
 
-  background: #ef4444;
-  color: #fff;
+  background: var(--danger);
+  color: var(--surface);
 
   display: flex;
   justify-content: center;
@@ -234,7 +234,7 @@
   background: transparent;
   cursor: pointer;
   padding: 6px 8px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   transition: 0.3s;
 }
 
@@ -250,7 +250,7 @@
   border-radius: 50%;
 
   background: var(--primary);
-  color: white;
+  color: var(--surface);
 
   display: flex;
   justify-content: center;
@@ -297,11 +297,11 @@
   background: var(--surface);
 
   border: 1px solid var(--line);
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 
   overflow: hidden;
 
-  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 
   opacity: 0;
   transform: translateY(-8px);
@@ -342,18 +342,16 @@
 }
 
 .logout {
-  color: #ef4444 !important;
+  color: var(--danger) !important;
 }
 
-/* ================= 1200px ================= */
+/* ================= MEDIA QUERIES ================= */
 
 @media (max-width: 1200px) {
   .searchBox {
     max-width: 300px;
   }
 }
-
-/* ================= 992px ================= */
 
 @media (max-width: 992px) {
   .navbar {
@@ -368,8 +366,6 @@
     display: none;
   }
 }
-
-/* ================= 768px ================= */
 
 @media (max-width: 768px) {
   .navbar {
@@ -418,7 +414,6 @@
     right: -5px;
   }
 }
-/* ================= 480px ================= */
 
 @media (max-width: 480px) {
   .navbar {
@@ -457,8 +452,6 @@
     font-size: 14px;
   }
 }
-
-/* ================= 360px ================= */
 
 @media (max-width: 360px) {
   .right {
