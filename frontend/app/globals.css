@@ -47,31 +47,47 @@ button {
 }
 
 :root {
-  --primary: #2E2926;
-  --primary-hover: #1E1A16;
-  --bg: #F7F3EE;
+  /* Brand Colors */
+  --primary: #7B1E3A;
+  --primary-hover: #64182F;
+
+  /* Backgrounds */
+  --bg: #FAFAFA;
   --surface: #FFFFFF;
-  --secondary: #EFDDC8;
-  --secondary-soft: #F7EEE1;
-  --success: #3F9D5E;
-  --success-bg: #E8F5EC;
-  --warning: #D98A2B;
-  --warning-bg: #FBF0DF;
-  --danger: #C24B3F;
-  --danger-bg: #FBEAE7;
-  --line: #E7E0D6;
-  --text: #2E2926;
-  --text-soft: #7A736A;
 
-  --accent: #B23A2E;
-  --accent-hover: #8F2E24;
-  --accent-soft: #FBEAE7;
+  /* Secondary */
+  --secondary: #F8E9ED;
+  --secondary-soft: #FDF5F7;
 
+  /* Accent */
+  --accent: #A02C52;
+  --accent-hover: #7B1E3A;
+  --accent-soft: #F8E9ED;
+
+  /* Status Colors */
+  --success: #22C55E;
+  --success-bg: #DCFCE7;
+
+  --warning: #F59E0B;
+  --warning-bg: #FEF3C7;
+
+  --danger: #EF4444;
+  --danger-bg: #FEE2E2;
+
+  /* Borders */
+  --line: #E5E7EB;
+
+  /* Text */
+  --text: #1F2937;
+  --text-soft: #6B7280;
+
+  /* Radius */
   --radius-lg: 16px;
   --radius-md: 12px;
   --radius-sm: 8px;
   --radius-pill: 999px;
 
-  --shadow-sm: 0 2px 8px rgba(0,0,0,.05);
-  --shadow-md: 0 10px 30px rgba(0,0,0,.08);
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.08);
 }
