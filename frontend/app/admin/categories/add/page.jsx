@@ -107,6 +107,7 @@ export default function AddCategoryPage() {
 
       const res = await fetch(`${API_URL}/api/categories`, {
         method: "POST",
+         credentials: "include",
         body: formData,
       });
 
