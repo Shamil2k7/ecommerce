@@ -41,10 +41,10 @@ const handleImage = (e) => {
 
   img.onload = () => {
   
-    if (img.width < 1600 || img.height < 600) {
+    if (img.width < 1920 || img.height < 600) {
       setErrors((prev) => ({
         ...prev,
-        image: "Banner image must be at least 1600 × 600 pixels.",
+        image: "Banner image must be at least 1920 × 600 pixels.",
       }));
 
       setPreview(null);
