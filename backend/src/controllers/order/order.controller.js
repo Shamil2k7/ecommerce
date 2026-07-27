@@ -85,23 +85,48 @@ export const createOrder = async (req, res) => {
     let coupon = null;
 
     if (cart && cart.couponApplied) {
-      coupon = await Coupon.findById(cart.couponApplied);
+      const couponId = cart.couponApplied._id || cart.couponApplied;
+      coupon = await Coupon.findById(couponId);
 
       console.log("Coupon:", coupon);
 
       if (!coupon) {
+        // Coupon was deleted from DB but still referenced in cart. 
+        // Clear it so the user isn't stuck.
+        cart.couponApplied = null;
+        cart.couponDiscount = 0;
+        await cart.save();
+
         return res.status(404).json({
           success: false,
-          message: "Coupon not found",
+          message: "The applied coupon is no longer valid and has been removed from your cart.",
+        });
+      }
+
+      // Check coupon status
+      if (coupon.status !== "Active") {
+        return res.status(400).json({
+          success: false,
+          message: "Coupon is inactive",
+        });
+      }
+
+      // Check coupon expiry
+      if (new Date() > new Date(coupon.expirydate)) {
+        return res.status(400).json({
+          success: false,
+          message: "Coupon expired",
         });
       }
 
       console.log("Used By:", coupon.usedBy);
       console.log("Current User:", userId);
 
-      const alreadyUsed = coupon.usedBy.some(
-        (id) => id.toString() === userId.toString()
-      );
+      const alreadyUsed = Array.isArray(coupon.usedBy)
+        ? coupon.usedBy.some(
+            (id) => id.toString() === userId.toString()
+          )
+        : false;
 
       console.log("Already Used:", alreadyUsed);
 
@@ -156,64 +181,12 @@ export const createOrder = async (req, res) => {
 
 
     // Update Coupon After Successful Order
-    if (cart && cart.couponApplied) {
-
-      coupon = await Coupon.findById(cart.couponApplied);
-
-      console.log("Coupon:", coupon);
-
-      if (!coupon) {
-        return res.status(404).json({
-          success: false,
-          message: "Coupon not found",
-        });
-      }
-
-
-      // Check coupon status
-      if (coupon.status !== "Active") {
-        return res.status(400).json({
-          success: false,
-          message: "Coupon is inactive",
-        });
-      }
-
-
-      // Check coupon expiry
-      if (new Date() > coupon.expirydate) {
-        return res.status(400).json({
-          success: false,
-          message: "Coupon expired",
-        });
-      }
-
-
-      console.log("Used By:", coupon.usedBy);
-      console.log("Current User:", userId);
-
-
-      // Check already used by user
-      const alreadyUsed = Array.isArray(coupon.usedBy)
-        ? coupon.usedBy.some(
-          (id) => id.toString() === userId.toString()
-        )
-        : false;
-
-
-      if (alreadyUsed) {
-        return res.status(400).json({
-          success: false,
-          message: "You have already used this coupon",
-        });
-      }
-
-
+    if (coupon) {
       // Save coupon usage
       coupon.usedBy.push(userId);
       coupon.usedCount += 1;
 
       await coupon.save();
-
 
       console.log("Coupon usage updated");
     }
