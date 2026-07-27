@@ -1,11 +1,18 @@
+/* ===========================
+        Cart Container
+=========================== */
+
 .cartContainer {
   width: 100%;
   max-width: 1420px;
-  margin: auto;
-  margin-top:  -25px;
+  margin: -25px auto 0;
   padding: 40px 24px;
   min-height: 80vh;
 }
+
+/* ===========================
+        Header
+=========================== */
 
 .cartHeader {
   display: flex;
@@ -19,12 +26,12 @@
   margin: 0;
   font-size: 35px;
   font-weight: 700;
-  color: #090909;
+  color: var(--text);
 }
 
 .cartSubtitle {
   font-size: 16px;
-  color: #6b7280;
+  color: var(--text-soft);
   line-height: 1.6;
   max-width: 600px;
 }
@@ -32,18 +39,22 @@
 .clearCartBtn {
   background: transparent;
   border: none;
-  color: #ef4444;
+  color: var(--danger);
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   text-decoration: underline;
-  transition: color 0.3s ease;
+  transition: opacity 0.3s ease, color 0.3s ease;
   white-space: nowrap;
 }
 
 .clearCartBtn:hover {
-  color: #dc2626;
+  opacity: 0.85;
 }
+
+/* ===========================
+        Content & Layout
+=========================== */
 
 .cartContent {
   display: flex;
@@ -53,13 +64,17 @@
 
 .cartItemsList {
   flex: 1;
-  min-width: 0; /* prevents flex item overflow with long product names */
+  min-width: 0; /* Prevents flex item overflow with long product names */
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* Large tablets / small laptops */
+/* ===========================
+        Responsive
+=========================== */
+
+/* Large Tablets / Small Laptops */
 @media (max-width: 1200px) {
   .cartContainer {
     padding: 32px 20px;
@@ -81,7 +96,7 @@
   }
 }
 
-/* Small tablets / large phones */
+/* Small Tablets / Large Phones */
 @media (max-width: 768px) {
   .cartContainer {
     padding: 24px 16px;
