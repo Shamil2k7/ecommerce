@@ -1,3 +1,7 @@
+/* ===========================
+        Container & Layout
+=========================== */
+
 .container {
   display: flex;
   align-items: center;
@@ -30,6 +34,10 @@
   max-width: 950px;
   align-items: start;
 }
+
+/* ===========================
+        Cards Layout
+=========================== */
 
 .leftCard,
 .rightCard {
@@ -66,7 +74,7 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  background: none;
+  background: transparent;
   border: 1px solid var(--primary);
   color: var(--primary);
   padding: 6px 12px;
@@ -74,13 +82,17 @@
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, transform 0.2s ease;
 }
 
 .editProfileBtn:hover {
   background-color: var(--secondary-soft);
   transform: translateY(-1px);
 }
+
+/* ===========================
+        Details List
+=========================== */
 
 .detailsList {
   display: flex;
@@ -137,7 +149,8 @@
   margin-top: 4px;
 }
 
-/* Empty Address Detail styling */
+/* Empty Address Container */
+
 .emptyAddressContainer {
   display: flex;
   align-items: center;
@@ -157,20 +170,23 @@
 }
 
 .addAddressInlineBtn {
-  background: none;
+  background: transparent;
   border: none;
   color: var(--primary);
   font-size: 13px;
   font-weight: 600;
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: opacity 0.2s ease, text-decoration 0.2s ease;
 }
 
 .addAddressInlineBtn:hover {
   text-decoration: underline;
 }
 
-/* Left Card (Avatar & Actions) */
+/* ===========================
+        Left Card / Avatar
+=========================== */
+
 .imageContainer {
   display: flex;
   flex-direction: column;
@@ -186,13 +202,12 @@
   margin-bottom: 16px;
 }
 
-
 .initialsAvatar {
   width: 100%;
   height: 100%;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
   background-color: var(--primary);
-  color: white;
+  color: var(--surface);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -201,7 +216,6 @@
   border: 4px solid var(--secondary-soft);
   box-shadow: var(--shadow-sm);
 }
-
 
 .userName {
   font-size: 20px;
@@ -239,7 +253,7 @@
   font-weight: 600;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
 }
 
 .actionButton:hover {
@@ -249,25 +263,29 @@
 }
 
 .logoutAction {
-  background-color: #ef4444; 
-  color: white;
-  border: none;
+  background-color: var(--danger-bg);
+  color: var(--danger);
+  border: 1px solid var(--danger-bg);
 }
 
 .logoutAction:hover {
-  background-color: #dc2626;
-  opacity: 1;
+  background-color: var(--danger);
+  color: var(--surface);
+  border-color: var(--danger);
   transform: translateY(-1px);
 }
 
-/* Modals */
+/* ===========================
+        Modals & Overlay
+=========================== */
+
 .modalOverlay {
   position: fixed;
   top: 0;
   left: 0;
   width: 100%;
   height: 100%;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.45);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -310,17 +328,21 @@
 }
 
 .closeBtn {
-  background: none;
+  background: transparent;
   border: none;
   color: var(--text-soft);
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .closeBtn:hover {
   color: var(--text);
 }
 
-/* Forms mapping inside modal */
+/* ===========================
+        Modal Form Inputs
+=========================== */
+
 .formGroup {
   display: flex;
   flex-direction: column;
@@ -346,6 +368,7 @@
   color: var(--text);
   font-size: 14px;
   font-family: inherit;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .modalInput:focus,
@@ -353,6 +376,7 @@
 .addressTextarea:focus {
   outline: none;
   border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
 }
 
 .addressTextarea {
@@ -366,7 +390,10 @@
   margin-top: 24px;
 }
 
-/* Address Manage Layout */
+/* ===========================
+        Address Management
+=========================== */
+
 .addressModalContent {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -420,7 +447,7 @@
   font-size: 11px;
   font-weight: 700;
   padding: 2px 8px;
-  border-radius: 4px;
+  border-radius: var(--radius-sm);
   text-transform: uppercase;
 }
 
@@ -432,12 +459,12 @@
 
 .editAddrBtn,
 .deleteAddrBtn {
-  background: none;
+  background: transparent;
   border: none;
   cursor: pointer;
   padding: 4px;
-  border-radius: 4px;
-  transition: all 0.2s ease;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.2s ease, color 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -452,11 +479,11 @@
 }
 
 .deleteAddrBtn {
-  color: #ef4444;
+  color: var(--danger);
 }
 
 .deleteAddrBtn:hover {
-  background-color: #fee2e2;
+  background-color: var(--danger-bg);
 }
 
 .addrTextVal {
@@ -489,28 +516,29 @@
   height: 40px;
   background-color: var(--primary);
   border: none;
-  color: white;
+  color: var(--surface);
   font-size: 14px;
   font-weight: 600;
   border-radius: var(--radius-md);
   cursor: pointer;
-  transition: opacity 0.2s ease;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
 }
 
 .addAddrBtn:hover {
-  opacity: 0.9;
+  background-color: var(--primary-hover);
 }
 
 .cancelEditAddrBtn {
   width: 100%;
   height: 38px;
-  background: none;
+  background: transparent;
   border: 1px solid var(--line);
   color: var(--text-soft);
   font-size: 13px;
   border-radius: var(--radius-md);
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .cancelEditAddrBtn:hover {
@@ -520,12 +548,13 @@
 
 .cancelBtn {
   padding: 8px 16px;
-  background: none;
+  background: transparent;
   border: 1px solid var(--line);
   color: var(--text-soft);
   border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease, color 0.2s ease;
 }
 
 .cancelBtn:hover {
@@ -537,17 +566,21 @@
   padding: 8px 16px;
   background-color: var(--primary);
   border: none;
-  color: white;
+  color: var(--surface);
   border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
 
 .saveBtn:hover {
-  opacity: 0.9;
+  background-color: var(--primary-hover);
 }
 
-/* Toast Container */
+/* ===========================
+        Toast Notification
+=========================== */
+
 .toastContainer {
   position: fixed;
   bottom: 24px;
@@ -557,14 +590,18 @@
 }
 
 .toast {
-  background-color: #10b981; 
-  color: white;
+  background-color: var(--success);
+  color: var(--surface);
   padding: 12px 20px;
   border-radius: var(--radius-md);
   font-size: 14px;
   font-weight: 600;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);
+  box-shadow: var(--shadow-md);
 }
+
+/* ===========================
+        Animations
+=========================== */
 
 @keyframes slideUp {
   from {
@@ -586,14 +623,16 @@
   }
 }
 
-/* Responsive Media Queries */
+/* ===========================
+        Responsive
+=========================== */
 
 @media (max-width: 1024px) {
   .profileGrid {
     grid-template-columns: 1fr 1.2fr;
     gap: 20px;
   }
-  
+
   .leftCard,
   .rightCard {
     padding: 28px;
@@ -605,7 +644,7 @@
     grid-template-columns: 1fr;
     gap: 24px;
   }
-  
+
   .leftCard,
   .rightCard {
     padding: 30px;
