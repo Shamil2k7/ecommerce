@@ -129,7 +129,7 @@ export default function VerifyOtpPage() {
       setTimeLeft(300);
       setSuccessMsg("A new OTP has been sent to your email.");
 
-    document.getElementById("otp-0")?.focus();
+      document.getElementById("otp-0")?.focus();
     } else {
       setErrorMsg(result.message);
     }
@@ -199,8 +199,7 @@ export default function VerifyOtpPage() {
           <p
             style={{
               textAlign: "center",
-              marginBottom: "20px",
-              color: timeLeft > 60 ? "#100062" : "#ef4444",
+              marginBottom: "20px",              color: timeLeft > 60 ? "#3b312c" : "#dc2626",
               fontWeight: "600",
               fontSize: "14px",
             }}
@@ -208,7 +207,7 @@ export default function VerifyOtpPage() {
             OTP expires in: {minutes}:{seconds}
           </p>
 
-          
+
           <button
             type="submit"
             className={styles.verifyBtn}

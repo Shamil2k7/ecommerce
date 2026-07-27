@@ -23,6 +23,13 @@ const protect = async (req, res, next) => {
       });
     }
 
+    if (user.isBlocked) {
+      return res.status(403).json({
+        success: false,
+        message: "Your account has been blocked",
+      });
+    }
+
     req.user = user;
 
     next();

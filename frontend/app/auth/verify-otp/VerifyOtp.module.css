@@ -1,6 +1,6 @@
 .container {
   min-height: 100vh;
-  background: #f8fafc;
+  background: #f5f1ea;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -21,14 +21,14 @@
   align-items: center;
   gap: 6px;
   text-decoration: none;
-  color: #475569;
+  color: #6b5f57;
   font-size: 14px;
   margin-bottom: 24px;
   transition: color 0.2s;
 }
 
 .backLink:hover {
-  color: #4f46e5;
+  color: #3b312c;
 }
 
 .header {
@@ -41,8 +41,8 @@
   height: 70px;
   margin: 0 auto 18px;
   border-radius: 50%;
-  background: #eef2ff;
-  color: #4f46e5;
+  background: #f3ece3;
+  color: #3b312c;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -50,17 +50,17 @@
 
 .header h1 {
   margin-bottom: 10px;
-  color: #1e293b;
+  color: #3b312c;
 }
 
 .header p {
-  color: #64748b;
+  color: #6b5f57;
   font-size: 15px;
   margin-bottom: 6px;
 }
 
 .header strong {
-  color: #111827;
+  color: #1f1f1f;
   font-size: 15px;
   word-break: break-word;
 }
@@ -95,26 +95,27 @@
 .otpInput {
   width: 56px;
   height: 58px;
-  border: 2px solid #d1d5db;
+  border: 2px solid #d6cfc6;
   border-radius: 10px;
   text-align: center;
   font-size: 22px;
   font-weight: 600;
   outline: none;
-  transition: 0.2s;
+  transition: all 0.2s ease;
+  background: #fff;
 }
 
 .otpInput:focus {
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.15);
+  border-color: #3b312c;
+  box-shadow: 0 0 0 3px rgba(59, 49, 44, 0.15);
 }
 
 .verifyBtn {
   width: 100%;
   border: none;
   outline: none;
-  background: #4f46e5;
-  color: white;
+  background: #3b312c;
+  color: #fff;
   font-size: 15px;
   font-weight: 600;
   padding: 14px;
@@ -124,11 +125,11 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
-  transition: 0.2s;
+  transition: background 0.2s ease;
 }
 
 .verifyBtn:hover:not(:disabled) {
-  background: #4338ca;
+  background: #2d2521;
 }
 
 .verifyBtn:disabled {
@@ -146,7 +147,7 @@
 }
 
 .footer p {
-  color: #64748b;
+  color: #6b5f57;
   font-size: 14px;
   margin-bottom: 10px;
 }
@@ -154,13 +155,15 @@
 .resendBtn {
   background: transparent;
   border: none;
-  color: #4f46e5;
+  color: #3b312c;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
+  transition: color 0.2s ease;
 }
 
 .resendBtn:hover:not(:disabled) {
+  color: #2d2521;
   text-decoration: underline;
 }
 
