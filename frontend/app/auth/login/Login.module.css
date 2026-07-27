@@ -1,7 +1,3 @@
-/* ===========================
-        Container & Card
-=========================== */
-
 .container {
   min-height: 100dvh;
   display: flex;
@@ -31,10 +27,6 @@
   display: flex;
   flex-direction: column;
 }
-
-/* ===========================
-        Header & Nav
-=========================== */
 
 .backHome {
   display: inline-flex;
@@ -69,10 +61,6 @@
   color: var(--text-soft);
   font-size: 15px;
 }
-
-/* ===========================
-        Form & Inputs
-=========================== */
 
 .form {
   display: flex;
@@ -156,10 +144,6 @@
   color: var(--primary);
 }
 
-/* ===========================
-        Options & Actions
-=========================== */
-
 .options {
   display: flex;
   justify-content: space-between;
@@ -219,10 +203,6 @@
   cursor: not-allowed;
 }
 
-/* ===========================
-        Divider & Footer
-=========================== */
-
 .divider {
   display: flex;
   align-items: center;
@@ -259,11 +239,6 @@
   text-decoration: underline;
 }
 
-/* ===========================
-        Responsive
-=========================== */
-
-/* Tablets */
 @media (max-width: 768px) {
   .container {
     padding: 20px;
@@ -278,7 +253,6 @@
   }
 }
 
-/* Mobile */
 @media (max-width: 600px) {
   .container {
     padding: 16px;
@@ -323,7 +297,6 @@
   }
 }
 
-/* Small Phones */
 @media (max-width: 480px) {
   .container {
     padding: 12px;
@@ -370,7 +343,6 @@
   }
 }
 
-/* Extra Small */
 @media (max-width: 360px) {
   .formSection {
     padding: 18px 14px;

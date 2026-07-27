@@ -6,82 +6,80 @@ import styles from "./GoogleLoginButton.module.css";
 import { Loader2 } from "lucide-react";
 import { toast } from "react-toastify";
 
+const GOOGLE_CLIENT_ID =
+  process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID ||
+  "938827461023-dummyclientid.apps.googleusercontent.com";
+
 export default function GoogleLoginButton() {
   const { googleLogin } = useAuth();
-  const [googleLoaded, setGoogleLoaded] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [authError, setAuthError] = useState("");
-
-  const clientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID || "938827461023-dummyclientid.apps.googleusercontent.com";
+  const [error, setError] = useState("");
 
   useEffect(() => {
-    let interval;
-
-    // Wait for the Google client script to load
     const checkScript = () => {
       if (window.google?.accounts) {
-        setGoogleLoaded(true);
-        clearInterval(interval);
+        setIsLoaded(true);
+        return true;
       }
+      return false;
     };
 
-    checkScript();
-    interval = setInterval(checkScript, 500);
+    if (checkScript()) return;
+
+    const interval = setInterval(() => {
+      if (checkScript()) {
+        clearInterval(interval);
+      }
+    }, 500);
 
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
-    if (googleLoaded) {
-      initializeButton();
-    }
-  }, [googleLoaded]);
+    if (!isLoaded) return;
 
-  // Initializing the Google Sign-In button
-  const initializeButton = () => {
     try {
       window.google.accounts.id.initialize({
-        client_id: clientId,
-        callback: handleCredentialResponse,
+        client_id: GOOGLE_CLIENT_ID,
+        callback: handleGoogleResponse,
       });
 
-      window.google.accounts.id.renderButton(
-        document.getElementById("google-signin-btn-container"),
-        {
+      const container = document.getElementById("google-signin-btn-container");
+      if (container) {
+        window.google.accounts.id.renderButton(container, {
           theme: "outline",
           size: "large",
           width: "100%",
           text: "continue_with",
           shape: "rectangular",
-        }
-      );
+        });
+      }
     } catch (err) {
       console.error("Google button initialization failed:", err);
     }
-  };
+  }, [isLoaded]);
 
-  // Handling the Google oauth token response
-  const handleCredentialResponse = async (response) => {
-    if (!response.credential) return;
+  const handleGoogleResponse = async (response) => {
+    if (!response?.credential) return;
 
     setLoading(true);
-    setAuthError("");
+    setError("");
 
     try {
-      const result = await googleLogin(response.credential);
-      if (result.success) {
+      const res = await googleLogin(response.credential);
+      if (res?.success) {
         window.location.reload();
       } else {
-        setAuthError(result.message || "Authentication failed");
+        setError(res?.message || "Authentication failed");
       }
-    } catch (error) {
-      setAuthError("An error occurred during Google sign in");
+    } catch (err) {
+      setError("An error occurred during Google sign in");
     } finally {
       setLoading(false);
     }
   };
 
-  // Displaying fallback handler when script is unavailable
   const handleFallbackClick = () => {
     toast.error(
       "Google Sign-In is unavailable. Ensure NEXT_PUBLIC_GOOGLE_CLIENT_ID is set in your .env file."
@@ -90,7 +88,7 @@ export default function GoogleLoginButton() {
 
   return (
     <div className={styles.wrapper}>
-      {authError && <div className={styles.errorText}>{authError}</div>}
+      {error && <div className={styles.errorText}>{error}</div>}
 
       {loading && (
         <div className={styles.spinnerWrapper}>
@@ -102,10 +100,10 @@ export default function GoogleLoginButton() {
       <div
         id="google-signin-btn-container"
         className={styles.googleContainer}
-        style={{ display: googleLoaded && !loading ? "block" : "none" }}
+        style={{ display: isLoaded && !loading ? "block" : "none" }}
       />
 
-      {!googleLoaded && !loading && (
+      {!isLoaded && !loading && (
         <button
           type="button"
           onClick={handleFallbackClick}
