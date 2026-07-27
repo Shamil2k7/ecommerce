@@ -1,6 +1,6 @@
 .container {
   padding: 30px;
-  background: #f8fafc;
+  background: var(--bg);
   min-height: 100vh;
 }
 
@@ -15,21 +15,26 @@
   margin: 10px 0 5px;
   font-size: 30px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text);
 }
 
 .header p {
-  color: #6b7280;
+  color: var(--text-soft);
 }
 
 .back {
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #2563eb;
+  color: var(--primary);
   text-decoration: none;
   font-weight: 600;
   margin-bottom: 8px;
+  transition: 0.3s ease;
+}
+
+.back:hover {
+  color: var(--primary-hover);
 }
 
 .grid {
@@ -39,17 +44,18 @@
 }
 
 .card {
-  background: #fff;
-  border-radius: 14px;
+  background: var(--surface);
+  border-radius: var(--radius-lg);
   padding: 24px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--line);
   margin-bottom: 24px;
 }
 
 .card h3 {
   margin: 0 0 20px;
   font-size: 20px;
-  color: #111827;
+  color: var(--text);
 }
 
 .field {
@@ -61,7 +67,7 @@
 .field label {
   font-weight: 600;
   margin-bottom: 8px;
-  color: #374151;
+  color: var(--text);
 }
 
 .field input,
@@ -69,19 +75,21 @@
 .card select {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
   outline: none;
   font-size: 15px;
-  transition: 0.3s;
+  background: var(--surface);
+  color: var(--text);
+  transition: 0.3s ease;
   box-sizing: border-box;
 }
 
 .field input:focus,
 .field textarea:focus,
 .card select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
 }
 
 .field textarea {
@@ -94,31 +102,37 @@
   display: block;
   width: 100%;
   height: 250px;
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
   overflow: hidden;
   cursor: pointer;
+  background: var(--bg);
+  transition: 0.3s ease;
+}
+
+.upload:hover {
+  border-color: var(--primary);
 }
 
 .upload img {
   width: 100%;
   height: 100%;
   object-fit: contain;
-  background: #f3f4f6;
+  background: var(--bg);
 }
 
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(0, 0, 0, 0.55);
-  color: white;
+  background: rgba(31, 41, 55, 0.75);
+  color: var(--surface);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   gap: 10px;
   opacity: 0;
-  transition: 0.3s;
+  transition: 0.3s ease;
   font-weight: 600;
 }
 
@@ -138,21 +152,21 @@
   justify-content: center;
   gap: 8px;
   border: none;
-  border-radius: 10px;
+  border-radius: var(--radius-md);
   padding: 12px;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
-  transition: 0.25s;
+  transition: 0.25s ease;
 }
 
 .saveBtn {
-  background: #2563eb;
-  color: white;
+  background: var(--primary);
+  color: var(--surface);
 }
 
 .saveBtn:hover {
-  background: #1d4ed8;
+  background: var(--primary-hover);
 }
 
 .saveBtn:disabled {
@@ -161,22 +175,26 @@
 }
 
 .cancelBtn {
-  background: #f3f4f6;
-  color: #374151;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--line);
 }
 
 .cancelBtn:hover {
-  background: #e5e7eb;
+  background: var(--secondary-soft);
 }
 
 .deleteBtn {
-  background: #dc2626;
-  color: white;
+  background: var(--danger);
+  color: var(--surface);
 }
 
 .deleteBtn:hover {
-  background: #b91c1c;
+  background: #dc2626;
+  opacity: 0.9;
 }
+
+/* ================= RESPONSIVE ================= */
 
 @media (max-width: 900px) {
   .grid {

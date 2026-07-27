@@ -1,8 +1,12 @@
 .container {
   padding: 30px;
-  background: #f8fafc;
+  background: var(--bg);
   min-height: 100vh;
 }
+
+/* ===========================
+   Header
+=========================== */
 
 .header {
   margin-bottom: 30px;
@@ -12,33 +16,44 @@
   display: inline-flex;
   align-items: center;
   gap: 8px;
-  color: #2563eb;
+  color: var(--primary);
   text-decoration: none;
   font-size: 15px;
+  font-weight: 600;
   margin-bottom: 15px;
+  transition: color 0.2s ease;
 }
 
 .back:hover {
-  color: #1d4ed8;
+  color: var(--primary-hover);
 }
 
 .header h1 {
   font-size: 30px;
   font-weight: 700;
-  color: #111827;
+  color: var(--text);
 }
 
 .header p {
   margin-top: 6px;
-  color: #6b7280;
+  color: var(--text-soft);
 }
 
+/* ===========================
+   Card
+=========================== */
+
 .card {
-  background: #fff;
-  border-radius: 12px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   padding: 25px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-sm);
 }
+
+/* ===========================
+   Form Fields
+=========================== */
 
 .field {
   display: flex;
@@ -49,25 +64,31 @@
 .field label {
   margin-bottom: 8px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text);
 }
 
 .field input,
 .field select {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
   font-size: 15px;
   outline: none;
-  transition: 0.2s;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
 }
 
 .field input:focus,
 .field select:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
 }
+
+/* ===========================
+   Actions
+=========================== */
 
 .actions {
   display: flex;
@@ -76,36 +97,39 @@
   margin-top: 30px;
 }
 
-.cancelBtn {
+.cancelBtn,
+.saveBtn {
   padding: 12px 24px;
-  background: #e5e7eb;
   border: none;
-  border-radius: 8px;
+  border-radius: var(--radius-md);
   cursor: pointer;
   font-size: 15px;
   font-weight: 600;
-  transition: 0.3s;
+  transition: background 0.3s ease, color 0.3s ease;
+}
+
+.cancelBtn {
+  background: var(--bg);
+  border: 1px solid var(--line);
+  color: var(--text);
 }
 
 .cancelBtn:hover {
-  background: #d1d5db;
+  background: var(--secondary-soft);
 }
 
 .saveBtn {
-  padding: 12px 24px;
-  background: #2563eb;
-  color: white;
-  border: none;
-  border-radius: 8px;
-  cursor: pointer;
-  font-size: 15px;
-  font-weight: 600;
-  transition: 0.3s;
+  background: var(--primary);
+  color: var(--surface);
 }
 
 .saveBtn:hover {
-  background: #1d4ed8;
+  background: var(--primary-hover);
 }
+
+/* ===========================
+   Responsive
+=========================== */
 
 @media (max-width: 768px) {
   .container {

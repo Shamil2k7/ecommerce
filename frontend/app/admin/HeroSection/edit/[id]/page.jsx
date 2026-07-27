@@ -10,39 +10,42 @@ import styles from "./editHero.module.css";
 export default function EditHeroSection() {
   const router = useRouter();
   const params = useParams();
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
+  // State
   const [loading, setLoading] = useState(false);
   const [fetching, setFetching] = useState(true);
-
   const [preview, setPreview] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const [hero, setHero] = useState({
     brand: "",
-    offer: "",
-    subOffer: "",
     image: "",
     displayOrder: 1,
     status: "Active",
   });
 
-  const [errors, setErrors] = useState({});
-
+  // Fetch hero on page load
   useEffect(() => {
-    fetchHero();
-  }, []);
+    if (params.id) {
+      fetchHero();
+    }
+  }, [params.id]);
 
+  // Fetch Hero
   const fetchHero = async () => {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/hero-sections/${params.id}`
+        `${API}/api/marketing/hero-sections/${params.id}`,
+        {
+          withCredentials: true,
+        }
       );
 
       const data = res.data.hero;
 
       setHero({
         brand: data.brand || "",
-        offer: data.offer || "",
-        subOffer: data.subOffer || "",
         image: data.image || "",
         displayOrder: data.displayOrder || 1,
         status: data.status || "Active",
@@ -50,50 +53,51 @@ export default function EditHeroSection() {
 
       setPreview(data.image);
     } catch (error) {
-      alert("Failed to fetch Hero Section");
+      console.log(error);
+
+      if (error.response?.status === 401) {
+        alert("Session expired. Please login again.");
+        router.push("/admin/login");
+        return;
+      }
+
+      alert("Failed to fetch Hero Section.");
       router.push("/admin/HeroSection");
     } finally {
       setFetching(false);
     }
   };
 
+  // Handle Image Upload
   const handleImage = (e) => {
     const file = e.target.files[0];
 
     if (!file) return;
 
     if (!file.type.startsWith("image/")) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "Only image files are allowed",
-      }));
+      setErrors({ image: "Only image files are allowed." });
       return;
     }
 
     if (file.size > 5 * 1024 * 1024) {
-      setErrors((prev) => ({
-        ...prev,
-        image: "Image size must be less than 5MB",
-      }));
+      setErrors({ image: "Image size must be less than 5MB." });
       return;
     }
 
+    const imageURL = URL.createObjectURL(file);
     const img = new Image();
 
     img.onload = () => {
       if (img.width < 1600 || img.height < 500) {
-        setErrors((prev) => ({
-          ...prev,
-          image: "Image should be minimum 1600 x 500 pixels",
-        }));
+        setErrors({
+          image: "Image should be at least 1600 × 500 pixels.",
+        });
         return;
       }
 
-      setPreview(URL.createObjectURL(file));
+      setPreview(imageURL);
 
       const reader = new FileReader();
-
-      reader.readAsDataURL(file);
 
       reader.onloadend = () => {
         setHero((prev) => ({
@@ -106,11 +110,14 @@ export default function EditHeroSection() {
           image: "",
         }));
       };
+
+      reader.readAsDataURL(file);
     };
 
-    img.src = URL.createObjectURL(file);
+    img.src = imageURL;
   };
 
+  // Handle Input Change
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -125,24 +132,29 @@ export default function EditHeroSection() {
     }));
   };
 
+  // Validation
   const validate = () => {
     const newErrors = {};
 
-    if (!hero.brand.trim())
-      newErrors.brand = "Brand is required";
+    if (!hero.brand.trim()) {
+      newErrors.brand = "Brand is required.";
+    }
 
-    if (!hero.image)
-      newErrors.image = "Hero image is required";
+    if (!hero.image) {
+      newErrors.image = "Hero image is required.";
+    }
 
-    if (hero.displayOrder < 1)
+    if (hero.displayOrder < 1) {
       newErrors.displayOrder =
-        "Display Order must be greater than 0";
+        "Display Order must be greater than 0.";
+    }
 
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
   };
 
+  // Submit Update
   const handleSubmit = async () => {
     if (!validate()) return;
 
@@ -150,17 +162,32 @@ export default function EditHeroSection() {
       setLoading(true);
 
       const res = await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/hero-sections/${params.id}`,
-        hero
+        `${API}/api/marketing/hero-sections/${params.id}`,
+        {
+          brand: hero.brand.trim(),
+          image: hero.image,
+          displayOrder: hero.displayOrder,
+          status: hero.status,
+        },
+        {
+          withCredentials: true,
+        }
       );
 
-      alert(res.data.message);
-
+      alert(res.data.message || "Hero updated successfully.");
       router.push("/admin/HeroSection");
     } catch (error) {
+      console.log(error);
+
+      if (error.response?.status === 401) {
+        alert("Unauthorized. Please login again.");
+        router.push("/admin/login");
+        return;
+      }
+
       alert(
         error.response?.data?.message ||
-          "Failed to update Hero Section"
+          "Failed to update Hero Section."
       );
     } finally {
       setLoading(false);
@@ -172,166 +199,123 @@ export default function EditHeroSection() {
   }
 
   return (
-  <section className={styles.container}>
-    <div className={styles.header}>
-      <Link
-        href="/admin/HeroSection"
-        className={styles.backBtn}
-      >
-        <ArrowLeft size={18} />
-        Back to Hero Sections
-      </Link>
+    <section className={styles.container}>
+      <div className={styles.header}>
+        <Link
+          href="/admin/HeroSection"
+          className={styles.backBtn}
+        >
+          <ArrowLeft size={18} />
+          Back to Hero Sections
+        </Link>
 
-      <h1 className={styles.title}>
-        Edit Hero Section
-      </h1>
+        <h1 className={styles.title}>Edit Hero Section</h1>
 
-      <p className={styles.subtitle}>
-        Update Hero Banner
-      </p>
-    </div>
-
-    <div className={styles.formCard}>
-      {/* Brand */}
-      <div className={styles.formGroup}>
-        <label>Brand</label>
-
-        <input
-          className={styles.input}
-          type="text"
-          name="brand"
-          value={hero.brand}
-          onChange={handleChange}
-          placeholder="Enter Brand Name"
-        />
-
-        {errors.brand && (
-          <p className={styles.error}>
-            {errors.brand}
-          </p>
-        )}
+        <p className={styles.subtitle}>
+          Update Hero Banner
+        </p>
       </div>
 
-      {/* Hero Image */}
-      <div className={styles.formGroup}>
-        <div className={styles.imageHeader}>
-          <label>Hero Image</label>
-
-          <button
-            type="button"
-            className={styles.infoBtn}
-            onClick={() =>
-              alert(
-                "Hero Image Requirements\n\n" +
-                  "• Minimum Size: 1600 × 500 pixels\n" +
-                  "• Recommended Size: 1920 × 600 pixels\n" +
-                  "• Aspect Ratio: 16:5\n" +
-                  "• Formats: JPG, PNG, WebP\n" +
-                  "• Maximum File Size: 5 MB"
-              )
-            }
-          >
-            Image Requirements
-          </button>
-        </div>
-
-        <label
-          className={`${styles.uploadBox} ${
-            errors.image ? styles.errorUpload : ""
-          }`}
-        >
-          {preview ? (
-            <img
-              src={preview}
-              alt="Hero Preview"
-            />
-          ) : (
-            <>
-              <Upload size={40} />
-              <span>Upload Hero Image</span>
-            </>
-          )}
+      <div className={styles.formCard}>
+        {/* Brand */}
+        <div className={styles.formGroup}>
+          <label>Brand</label>
 
           <input
-            hidden
-            type="file"
-            accept="image/*"
-            onChange={handleImage}
+            className={styles.input}
+            type="text"
+            name="brand"
+            value={hero.brand}
+            onChange={handleChange}
+            placeholder="Enter Brand Name"
           />
-        </label>
 
-        {errors.image && (
-          <p className={styles.error}>
-            {errors.image}
-          </p>
-        )}
+          {errors.brand && (
+            <p className={styles.error}>{errors.brand}</p>
+          )}
+        </div>
+
+        {/* Image */}
+        <div className={styles.formGroup}>
+          <label>Hero Image</label>
+
+          <label className={styles.uploadBox}>
+            {preview ? (
+              <img src={preview} alt="Hero Preview" />
+            ) : (
+              <>
+                <Upload size={40} />
+                <span>Upload Hero Image</span>
+              </>
+            )}
+
+            <input
+              hidden
+              type="file"
+              accept="image/*"
+              onChange={handleImage}
+            />
+          </label>
+
+          {errors.image && (
+            <p className={styles.error}>{errors.image}</p>
+          )}
+        </div>
+
+        {/* Display Order */}
+        <div className={styles.formGroup}>
+          <label>Display Order</label>
+
+          <input
+            className={styles.input}
+            type="number"
+            min="1"
+            name="displayOrder"
+            value={hero.displayOrder}
+            onChange={handleChange}
+          />
+
+          {errors.displayOrder && (
+            <p className={styles.error}>
+              {errors.displayOrder}
+            </p>
+          )}
+        </div>
+
+        {/* Status */}
+        <div className={styles.formGroup}>
+          <label>Status</label>
+
+          <select
+            className={styles.select}
+            name="status"
+            value={hero.status}
+            onChange={handleChange}
+          >
+            <option value="Active">Active</option>
+            <option value="Inactive">Inactive</option>
+          </select>
+        </div>
+
+        {/* Buttons */}
+        <div className={styles.buttonGroup}>
+          <button
+            className={styles.cancelBtn}
+            onClick={() => router.push("/admin/HeroSection")}
+            disabled={loading}
+          >
+            Cancel
+          </button>
+
+          <button
+            className={styles.saveBtn}
+            onClick={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? "Updating..." : "Update Hero Section"}
+          </button>
+        </div>
       </div>
-
-      {/* Display Order */}
-      <div className={styles.formGroup}>
-        <label>Display Order</label>
-
-        <input
-          className={styles.input}
-          type="number"
-          name="displayOrder"
-          min="1"
-          value={hero.displayOrder}
-          onChange={handleChange}
-        />
-
-        {errors.displayOrder && (
-          <p className={styles.error}>
-            {errors.displayOrder}
-          </p>
-        )}
-      </div>
-
-      {/* Status */}
-      <div className={styles.formGroup}>
-        <label>Status</label>
-
-        <select
-          className={styles.select}
-          name="status"
-          value={hero.status}
-          onChange={handleChange}
-        >
-          <option value="Active">
-            Active
-          </option>
-
-          <option value="Inactive">
-            Inactive
-          </option>
-        </select>
-      </div>
-
-      {/* Buttons */}
-      <div className={styles.buttonGroup}>
-        <button
-          type="button"
-          className={styles.cancelBtn}
-          onClick={() =>
-            router.push("/admin/HeroSection")
-          }
-          disabled={loading}
-        >
-          Cancel
-        </button>
-
-        <button
-          type="button"
-          className={styles.saveBtn}
-          onClick={handleSubmit}
-          disabled={loading}
-        >
-          {loading
-            ? "Updating..."
-            : "Update Hero Section"}
-        </button>
-      </div>
-    </div>
-  </section>
-);
+    </section>
+  );
 }

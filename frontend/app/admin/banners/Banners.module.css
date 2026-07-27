@@ -29,13 +29,13 @@
   gap: 10px;
 
   background: var(--primary);
-  color: white;
+  color: var(--surface);
 
   border-radius: var(--radius-md);
 
   font-weight: 600;
 
-  transition: .3s;
+  transition: 0.3s ease;
 }
 
 .addBtn:hover {
@@ -48,7 +48,7 @@
 
   height: 48px;
 
-  background: white;
+  background: var(--surface);
 
   border: 1px solid var(--line);
 
@@ -66,10 +66,11 @@
   border: none;
   outline: none;
   background: transparent;
+  color: var(--text);
 }
 
 .table {
-  background: white;
+  background: var(--surface);
 
   border: 1px solid var(--line);
 
@@ -84,13 +85,14 @@
 }
 
 .table th {
-  background: #faf8f6;
+  background: var(--bg);
 
   padding: 18px;
 
   text-align: left;
 
   border-bottom: 1px solid var(--line);
+  color: var(--text);
 }
 
 .table td {
@@ -99,6 +101,7 @@
   border-bottom: 1px solid var(--line);
 
   white-space: nowrap;
+  color: var(--text);
 }
 
 .table tbody tr:hover {
@@ -111,7 +114,7 @@
 
   object-fit: cover;
 
-  border-radius: 12px;
+  border-radius: var(--radius-md);
 
   border: 1px solid var(--line);
 }
@@ -127,7 +130,7 @@
 
   padding: 8px 14px;
 
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
 
   font-size: 13px;
 
@@ -158,21 +161,23 @@
   justify-content: center;
   align-items: center;
 
-  border-radius: 10px;
+  border-radius: var(--radius-sm);
 
   background: var(--bg);
+  color: var(--text);
 
-  transition: .3s;
+  transition: 0.3s ease;
 }
 
 .actions button:hover,
 .actionBtn:hover {
   background: var(--primary);
-  color: white;
+  color: var(--surface);
 }
 
-@media (max-width:1024px) {
+/* ================= RESPONSIVE ================= */
 
+@media (max-width: 1024px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
@@ -182,11 +187,9 @@
   .searchBox {
     width: 100%;
   }
-
 }
 
-@media (max-width:768px) {
-
+@media (max-width: 768px) {
   .header h1 {
     font-size: 28px;
   }
@@ -201,11 +204,9 @@
     width: 120px;
     height: 70px;
   }
-
 }
 
-@media (max-width:480px) {
-
+@media (max-width: 480px) {
   .header h1 {
     font-size: 24px;
   }
@@ -214,5 +215,4 @@
     width: 100%;
     justify-content: center;
   }
-
 }

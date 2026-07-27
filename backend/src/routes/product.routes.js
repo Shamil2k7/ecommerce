@@ -111,7 +111,7 @@ router
   )
   .delete(protect, isAdminOrStaff, deleteCategory);
 
-router.post("/products/:productId/review", addReview);
+router.post("/products/:productId/review", protect, addReview);
 /* =====================================================
                     BRANDS
 ===================================================== */
