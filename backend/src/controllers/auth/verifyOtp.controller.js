@@ -13,15 +13,15 @@ const verifyOtp = async (req, res) => {
   }
 
   const formattedEmail = email.trim().toLowerCase();
+
   const hashedOtp = crypto
     .createHash("sha256")
     .update(otp.toString().trim())
     .digest("hex");
 
   try {
-    const user = await User.findOne({
-      email: formattedEmail,
-    });
+    // Check password reset OTP
+    const user = await User.findOne({ email: formattedEmail });
 
     if (user) {
       if (user.resetPasswordToken !== hashedOtp) {
@@ -44,38 +44,40 @@ const verifyOtp = async (req, res) => {
       });
     }
 
-    const record = registrationOtps.get(formattedEmail);
+    // Check registration OTP
+    const otpData = registrationOtps.get(formattedEmail);
 
-    if (!record) {
+    if (!otpData) {
       return res.status(400).json({
         success: false,
         message: "Invalid or expired OTP",
       });
     }
 
-    if (record.expiresAt < Date.now()) {
+    if (otpData.expiresAt < Date.now()) {
       registrationOtps.delete(formattedEmail);
+
       return res.status(400).json({
         success: false,
         message: "OTP has expired",
       });
     }
 
-    if (record.hashedOtp !== hashedOtp) {
+    if (otpData.hashedOtp !== hashedOtp) {
       return res.status(400).json({
         success: false,
         message: "Invalid OTP",
       });
     }
 
-    record.isVerified = true;
+    otpData.isVerified = true;
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
-      message: "Email verified successfully.",
+      message: "Email verified successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

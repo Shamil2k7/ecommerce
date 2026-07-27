@@ -6,12 +6,12 @@ const getUsers = async (req, res) => {
       "_id fullName email phone role profileImage department address status isVerified isBlocked createdAt updatedAt"
     );
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       users,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
