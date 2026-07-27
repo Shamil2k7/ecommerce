@@ -9,16 +9,13 @@ export const getAbout = async (req, res) => {
     let about = await About.findOne();
 
     // Create default document if none exists
-    if (!about) {
+     if (!about) {
       about = await About.create({
-        heroTitle: "About Our Store",
-        heroSubtitle:
-          "Delivering quality products with trust and innovation.",
+        title: "About Our Store",
+        subtitle: "Delivering quality products with trust and innovation.",
         storyTitle: "Our Story",
-        story: "",
-        missionTitle: "Our Mission",
+        storyDescription: "",
         mission: "",
-        visionTitle: "Our Vision",
         vision: "",
       });
     }
@@ -258,4 +255,19 @@ export const deleteTeam = async (req, res) => {
       message: err.message,
     });
   }
+};
+
+export const uploadImage = (req, res) => {
+  if (!req.file) {
+    return res.status(400).json({
+      success: false,
+      message: "No file uploaded",
+    });
+  }
+
+  res.status(200).json({
+    success: true,
+    url: req.file.path,        // Cloudinary URL
+    public_id: req.file.filename,
+  });
 };

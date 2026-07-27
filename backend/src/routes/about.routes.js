@@ -9,10 +9,13 @@ import {
   deleteStat,
   addTeam,
   deleteTeam,
+  uploadImage,
 } from "../controllers/about/about.controller.js";
 
 import protect from "../middlewares/auth.middleware.js";
 import { isAdminOrStaff } from "../middlewares/role.middleware.js";
+import upload from "../config/multer.js";
+
 
 const router = express.Router();
 
@@ -97,5 +100,7 @@ router.delete(
   isAdminOrStaff,
   deleteTeam
 );
+
+router.post("/image", protect, isAdminOrStaff, upload.single("image"), uploadImage);
 
 export default router;
