@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ProductCard from "@/components/ProductCard/ProductCard";
 import styles from "./Wishlist.module.css";
+import TopProducts from "@/components/TopProducts/TopProducts";
 
 export default function WishlistPage() {
   const API =
@@ -88,6 +89,8 @@ export default function WishlistPage() {
           </p>
         </div>
       )}
+            <TopProducts />
+      
     </section>
   );
 }
