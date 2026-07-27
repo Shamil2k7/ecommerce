@@ -51,7 +51,10 @@ export default function PoliciesPage() {
 
       const res = await axios.put(
         `${API}/api/policies`,
-        formData
+        formData,
+        {
+          withCredentials: true,
+        }
       );
 
       if (res.data.success) {

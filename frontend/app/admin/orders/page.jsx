@@ -183,7 +183,7 @@ export default function OrdersPage() {
         <div>
           <h1>Orders</h1>
           <p>Manage customer orders</p>
-          
+
         </div>
       </div>
       <div className={styles.controls}>
@@ -198,7 +198,7 @@ export default function OrdersPage() {
             onChange={(e) => setSearch(e.target.value)}
           />
         </div>
-        
+
         <div className={styles.filterContainer}>
           <label htmlFor="statusFilter">Status:</label>
 
@@ -219,11 +219,11 @@ export default function OrdersPage() {
           </select>
         </div>
         <button
-            onClick={exportOrders}
-            className={styles.exportBtn}
-          >
-            Export Excel
-          </button>
+          onClick={exportOrders}
+          className={styles.exportBtn}
+        >
+          Export Excel
+        </button>
       </div>
 
 
@@ -363,30 +363,168 @@ export default function OrdersPage() {
         </table>
       </div>
 
-      {selectedOrder && (
-        <div
-          className={styles.modalOverlay}
+{selectedOrder && (
+  <div
+    className={styles.modalOverlay}
+    onClick={() => setSelectedOrder(null)}
+  >
+    <div
+      className={styles.modal}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div className={styles.modalHeader}>
+        <h2>Order Details</h2>
+
+        <button
+          className={styles.closeBtn}
           onClick={() => setSelectedOrder(null)}
         >
-          <div
-            className={styles.modal}
-            onClick={(e) => e.stopPropagation()}
-          >
-            <div className={styles.modalHeader}>
-              <h2>Order Details</h2>
+          ✕
+        </button>
+      </div>
 
-              <button
-                className={styles.closeBtn}
-                onClick={() => setSelectedOrder(null)}
-              >
-                ✕
-              </button>
-            </div>
+      <div className={styles.modalBody}>
+        <div className={styles.infoGrid}>
+          <div className={styles.infoCard}>
+            <h3>Customer Information</h3>
 
-            {/* Your modal content remains unchanged */}
+            <p>
+              <strong>Name:</strong>{" "}
+              {selectedOrder.shippingAddress?.fullName}
+            </p>
+
+            <p>
+              <strong>Phone:</strong>{" "}
+              {selectedOrder.shippingAddress?.phone}
+            </p>
+
+            <p>
+              <strong>Email:</strong>{" "}
+              {selectedOrder.userId?.email || "N/A"}
+            </p>
+
+            <p>
+              <strong>Address:</strong>{" "}
+              {selectedOrder.shippingAddress?.address}
+            </p>
+
+            <p>
+              <strong>City:</strong>{" "}
+              {selectedOrder.shippingAddress?.city}
+            </p>
+
+            <p>
+              <strong>State:</strong>{" "}
+              {selectedOrder.shippingAddress?.state}
+            </p>
+
+            <p>
+              <strong>Pincode:</strong>{" "}
+              {selectedOrder.shippingAddress?.pincode}
+            </p>
+          </div>
+
+          <div className={styles.infoCard}>
+            <h3>Order Information</h3>
+
+            <p>
+              <strong>Order No:</strong>{" "}
+              #{selectedOrder.orderNumber}
+            </p>
+
+            <p>
+              <strong>Payment:</strong>{" "}
+              {selectedOrder.paymentMethod}
+            </p>
+
+            <p>
+              <strong>Payment Status:</strong>{" "}
+              {selectedOrder.paymentStatus}
+            </p>
+
+            <p>
+              <strong>Order Status:</strong>{" "}
+              {selectedOrder.orderStatus}
+            </p>
+
+            <p>
+              <strong>Subtotal:</strong> ₹
+              {selectedOrder.subTotal}
+            </p>
+
+            <p>
+              <strong>Discount:</strong> ₹
+              {selectedOrder.discount}
+            </p>
+
+            <p>
+              <strong>Tax:</strong> ₹
+              {selectedOrder.tax}
+            </p>
+
+            <p>
+              <strong>Shipping:</strong> ₹
+              {selectedOrder.shipping}
+            </p>
+
+            <p className={styles.total}>
+              Total : ₹{selectedOrder.totalAmount}
+            </p>
           </div>
         </div>
-      )}
+
+        <h3 className={styles.productHeading}>
+          Ordered Products
+        </h3>
+
+        {selectedOrder.products?.map((product, index) => (
+          <div
+            key={index}
+            className={styles.productItem}
+          >
+            <img
+              src={product.image || "/images/no-image.png"}
+              alt={product.name}
+              className={styles.productImage}
+            />
+
+            <div className={styles.productInfo}>
+              <h4>{product.name}</h4>
+
+              <p>
+                <strong>Price:</strong> ₹{product.price}
+              </p>
+
+              <p>
+                <strong>Quantity:</strong>{" "}
+                {product.quantity}
+              </p>
+
+              <p>
+                <strong>Subtotal:</strong> ₹
+                {product.subtotal}
+              </p>
+
+              {product.color && (
+                <p>
+                  <strong>Color:</strong>{" "}
+                  {product.color}
+                </p>
+              )}
+
+              {product.size && (
+                <p>
+                  <strong>Size:</strong>{" "}
+                  {product.size}
+                </p>
+              )}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+)}
 
       <div className={styles.pagination}>
         <button>Previous</button>
