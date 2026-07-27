@@ -10,7 +10,6 @@
   padding: 28px;
 }
 
-
 .orderSummaryCard h2 {
   font-size: 28px;
   font-weight: 700;
@@ -58,7 +57,6 @@
   background: #999;
 }
 
-
 .orderItem {
   display: flex;
   justify-content: space-between;
@@ -71,7 +69,6 @@
 .orderItem:last-child {
   border-bottom: none;
 }
-
 
 .orderItemInfo {
   flex: 1;
@@ -100,14 +97,12 @@
   white-space: nowrap;
 }
 
-
 .sectionDivider {
   width: 100%;
   height: 1px;
   background: #ececec;
   margin: 24px 0;
 }
-
 
 .priceRow {
   display: flex;
@@ -132,7 +127,6 @@
   color: #111;
 }
 
-
 .discountRow {
   color: #2e7d32;
 }
@@ -150,10 +144,8 @@
   overflow: hidden;
   border-radius: 14px;
   height: 120px;
-
   background: linear-gradient(135deg,#90AD72 0%, #90AD72 100%);
 }
-
 
 .couponTicket::before,
 .couponTicket::after {
@@ -206,7 +198,6 @@
   font-size: 15px;
   color: #222;
   transition: .3s;
-
 }
 
 .ticketInput::placeholder {
@@ -216,7 +207,6 @@
 .ticketInput:focus {
   background: rgba(255, 255, 255, .75);
 }
-
 
 .ticketButton {
   width: 120px;
@@ -235,7 +225,6 @@
   background: #000;
 }
 
-
 .ticketButton::before {
   content: "";
   position: absolute;
@@ -244,7 +233,6 @@
   bottom: 12px;
   border-left: 2px dashed rgba(255, 255, 255, .6);
 }
-
 
 .activeCouponTicket {
   position: relative;
@@ -397,7 +385,6 @@
   box-shadow: none;
 }
 
-
 .checkoutSecurity {
   display: flex;
   align-items: center;
@@ -412,7 +399,6 @@
   font-size: 18px;
   color: #777;
 }
-
 
 @media (max-width: 992px) {
 
@@ -544,7 +530,6 @@
     padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
   }
 }
-
 
 @media (max-width: 480px) {
 
