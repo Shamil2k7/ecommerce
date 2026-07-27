@@ -72,12 +72,12 @@
 
 /* ===========================
         Responsive
-=========================== */
 
 /* Large Tablets / Small Laptops */
 @media (max-width: 1200px) {
   .cartContainer {
     padding: 32px 20px;
+    margin-top: 1px;
   }
 
   .cartContent {
