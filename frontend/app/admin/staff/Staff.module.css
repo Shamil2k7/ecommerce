@@ -1,65 +1,12 @@
-.staff {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  min-width: 0;
-}
-
-.staff span {
-  display: block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-
-}
-
-.staff img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-  flex-shrink: 0;
-}
-
-
-.staffInfo {
-  display: flex;
-  gap: 12px;
-  min-width: 0;
-}
-
-
-.staffName {
-  font-weight: 600;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.staffCell {
-  min-width: 260px;
-}
-
-.actionBtn {
-  width: 38px;
-  height: 38px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  border-radius: 10px;
-  background: var(--bg);
-  transition: .3s;
-}
-
-.actionBtn:hover {
-  background: var(--primary);
-  color: white;
-}
 .container {
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
+
+/* ===========================
+        Header
+=========================== */
 
 .header {
   display: flex;
@@ -69,12 +16,17 @@
 
 .header h1 {
   font-size: 32px;
+  color: var(--text);
 }
 
 .header p {
   margin-top: 6px;
   color: var(--text-soft);
 }
+
+/* ===========================
+        Add Button
+=========================== */
 
 .addBtn {
   height: 48px;
@@ -83,14 +35,21 @@
   align-items: center;
   gap: 10px;
   background: var(--primary);
-  color: white;
+  color: var(--surface);
+  border: none;
   border-radius: var(--radius-md);
   font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .addBtn:hover {
   background: var(--primary-hover);
 }
+
+/* ===========================
+        Search Box
+=========================== */
 
 .searchBox {
   width: 400px;
@@ -100,7 +59,7 @@
   align-items: center;
   gap: 12px;
   padding: 0 16px;
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
 }
@@ -109,10 +68,69 @@
   flex: 1;
   border: none;
   outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
 }
 
+.searchBox input::placeholder {
+  color: var(--text-soft);
+}
+
+/* ===========================
+        Staff / Customer Details
+=========================== */
+
+.staff,
+.customer {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-width: 0;
+}
+
+.staff img,
+.customer img {
+  width: 48px;
+  height: 48px;
+  border-radius: var(--radius-pill);
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid var(--line);
+}
+
+.staff span {
+  display: block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.staffInfo {
+  display: flex;
+  gap: 12px;
+  min-width: 0;
+}
+
+.staffName {
+  font-weight: 600;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.staffCell {
+  min-width: 260px;
+}
+
+/* ===========================
+        Table Area
+=========================== */
+
 .table {
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow-x: auto;
@@ -125,6 +143,14 @@
   table-layout: auto;
 }
 
+.table th {
+  background: var(--bg);
+  color: var(--text);
+  text-align: left;
+  font-weight: 600;
+  font-size: 14px;
+}
+
 .table th,
 .table td {
   padding: 18px;
@@ -132,67 +158,18 @@
   white-space: nowrap;
   overflow: visible;
   text-overflow: unset;
+  color: var(--text);
+}
+
+.table tbody tr {
+  transition: background-color 0.25s ease;
 }
 
 .table tbody tr:hover {
   background: var(--secondary-soft);
 }
 
-.customer {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.customer img {
-  width: 48px;
-  height: 48px;
-  border-radius: 50%;
-  object-fit: cover;
-}
-
-.active,
-.inactive {
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  min-width: 90px;
-  padding: 7px 14px;
-  border-radius: 999px;
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.active {
-  background: var(--success-bg);
-  color: var(--success);
-}
-
-.inactive {
-  background: var(--danger-bg);
-  color: var(--danger);
-}
-
-.actions {
-  display: flex;
-  gap: 8px;
-}
-
-.actions button {
-  width: 38px;
-  height: 38px;
-  border-radius: 10px;
-  background: var(--bg);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.actions button:hover {
-  background: var(--primary);
-  color: white;
-}
-
+/* Column Widths */
 
 .table th:nth-child(2),
 .table td:nth-child(2) {
@@ -225,7 +202,67 @@
   width: 120px;
 }
 
-@media (max-width:1024px) {
+/* ===========================
+        Status Badges
+=========================== */
+
+.active,
+.inactive {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 90px;
+  padding: 7px 14px;
+  border-radius: var(--radius-pill);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.active {
+  background: var(--success-bg);
+  color: var(--success);
+}
+
+.inactive {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+
+/* ===========================
+        Action Buttons
+=========================== */
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.actionBtn,
+.actions button {
+  width: 38px;
+  height: 38px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: none;
+  border-radius: var(--radius-sm);
+  background: var(--bg);
+  color: var(--text);
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.actionBtn:hover,
+.actions button:hover {
+  background: var(--primary);
+  color: var(--surface);
+}
+
+/* ===========================
+        Responsive
+=========================== */
+
+@media (max-width: 1024px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
@@ -237,7 +274,7 @@
   }
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
   .header h1 {
     font-size: 28px;
   }
@@ -249,7 +286,7 @@
   }
 }
 
-@media (max-width:480px) {
+@media (max-width: 480px) {
   .addBtn {
     width: 100%;
     justify-content: center;
@@ -259,9 +296,9 @@
     font-size: 24px;
   }
 
-  .customer img {
+  .customer img,
+  .staff img {
     width: 40px;
     height: 40px;
   }
 }
-

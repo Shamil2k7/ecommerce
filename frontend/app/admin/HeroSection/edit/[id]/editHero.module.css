@@ -4,6 +4,10 @@
   padding: 20px;
 }
 
+/* ===========================
+        Header
+=========================== */
+
 .header {
   margin-bottom: 25px;
 }
@@ -13,32 +17,38 @@
   align-items: center;
   gap: 8px;
   text-decoration: none;
-  color: #000;
+  color: var(--text);
   font-weight: 600;
   margin-bottom: 15px;
+  transition: color 0.25s ease;
 }
 
 .backBtn:hover {
-  color: #115e59;
+  color: var(--primary-hover);
 }
 
 .title {
   font-size: 32px;
   font-weight: 700;
-  color: #1f2937;
+  color: var(--text);
 }
 
 .subtitle {
   margin-top: 8px;
-  color: #6b7280;
+  color: var(--text-soft);
   font-size: 15px;
 }
 
+/* ===========================
+        Card & Form
+=========================== */
+
 .formCard {
-  background: #fff;
-  border-radius: 14px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   padding: 30px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .formGroup {
@@ -49,106 +59,33 @@
   display: block;
   margin-bottom: 8px;
   font-weight: 600;
-  color: #374151;
+  color: var(--text);
 }
+
+/* Inputs & Selects */
 
 .input,
 .select {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid #d1d5db;
-  border-radius: 8px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
   outline: none;
   font-size: 15px;
-  transition: 0.25s;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
 }
 
 .input:focus,
 .select:focus {
-  border-color:#000;
-  box-shadow: 0 0 0 3px rgba(15, 118, 110, 0.15);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
 }
 
-.uploadBox {
-  width: 100%;
-  min-height: 260px;
-  border: 2px dashed #d1d5db;
-  border-radius: 12px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  cursor: pointer;
-  overflow: hidden;
-  transition: 0.3s;
-  background: #fafafa;
-}
-
-.uploadBox:hover {
-  border-color: #000;
-  background: #f0fdfa;
-}
-
-.uploadBox span {
-  margin-top: 10px;
-  color: #6b7280;
-  font-size: 15px;
-}
-
-.uploadBox img {
-  width: 100%;
-  height: 100%;
-  max-height: 350px;
-  object-fit: cover;
-}
-
-.error {
-  color: #dc2626;
-  font-size: 14px;
-  margin-top: 6px;
-}
-
-.buttonGroup {
-  display: flex;
-  justify-content: flex-end;
-  gap: 15px;
-  margin-top: 30px;
-}
-
-.cancelBtn {
-  padding: 12px 24px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  color: #374151;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.25s;
-}
-
-.cancelBtn:hover {
-  background: #f3f4f6;
-}
-
-.saveBtn {
-  padding: 12px 24px;
-  border: none;
-  background:#000;
-  color: #fff;
-  border-radius: 8px;
-  cursor: pointer;
-  font-weight: 600;
-  transition: 0.25s;
-}
-
-.saveBtn:hover:not(:disabled) {
-  background: #000;
-}
-
-.saveBtn:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
+/* ===========================
+        Image Upload
+=========================== */
 
 .imageHeader {
   display: flex;
@@ -159,24 +96,112 @@
 
 .infoBtn {
   padding: 7px 14px;
-  border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #fff8e1;
-  color: #a16207;
+  border: 1px solid var(--warning);
+  border-radius: var(--radius-md);
+  background: var(--warning-bg);
+  color: var(--warning);
   font-size: 13px;
   font-weight: 500;
   cursor: pointer;
-  transition: 0.3s;
+  transition: background 0.3s ease, border-color 0.3s ease;
 }
 
 .infoBtn:hover {
-  background: #fef3c7;
-  border-color: #f59e0b;
+  background: var(--secondary-soft);
+}
+
+.uploadBox {
+  width: 100%;
+  min-height: 260px;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-lg);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  cursor: pointer;
+  overflow: hidden;
+  transition: border-color 0.3s ease, background 0.3s ease;
+  background: var(--bg);
+}
+
+.uploadBox:hover {
+  border-color: var(--primary);
+  background: var(--secondary-soft);
+}
+
+.uploadBox span {
+  margin-top: 10px;
+  color: var(--text-soft);
+  font-size: 15px;
+}
+
+.uploadBox img {
+  width: 100%;
+  height: 100%;
+  max-height: 350px;
+  object-fit: cover;
 }
 
 .errorUpload {
-  border: 2px solid #ef4444;
+  border: 2px dashed var(--danger) !important;
 }
+
+.error {
+  color: var(--danger);
+  font-size: 14px;
+  margin-top: 6px;
+}
+
+/* ===========================
+        Buttons
+=========================== */
+
+.buttonGroup {
+  display: flex;
+  justify-content: flex-end;
+  gap: 15px;
+  margin-top: 30px;
+}
+
+.cancelBtn {
+  padding: 12px 24px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.25s ease, color 0.25s ease;
+}
+
+.cancelBtn:hover {
+  background: var(--secondary-soft);
+}
+
+.saveBtn {
+  padding: 12px 24px;
+  border: none;
+  background: var(--primary);
+  color: var(--surface);
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.25s ease;
+}
+
+.saveBtn:hover:not(:disabled) {
+  background: var(--primary-hover);
+}
+
+.saveBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ===========================
+        Responsive
+=========================== */
 
 @media (max-width: 768px) {
   .container {
