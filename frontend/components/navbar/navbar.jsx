@@ -14,8 +14,18 @@ import {
 } from "react-icons/io5";
 
 import { CiHeart, CiUser } from "react-icons/ci";
+import { useCart } from "../../context/CartContext";
 
 export default function Navbar() {
+  const { cart } = useCart();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  const cartItemCount = cart?.products?.reduce((acc, item) => acc + item.quantity, 0) || 0;
+
   const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [menuOpen, setMenuOpen] = useState(false);
@@ -181,7 +191,7 @@ export default function Navbar() {
             <Link href="/cart" className={styles.iconItem}>
               <div className={styles.cart}>
                 <IoCartOutline />
-                <span className={styles.badge}>0</span>
+                <span className={styles.badge}>{mounted ? cartItemCount : 0}</span>
               </div>
             </Link>
           </div>
@@ -194,7 +204,7 @@ export default function Navbar() {
 
             <Link href="/cart" className={styles.mobileCart}>
               <IoCartOutline />
-              <span className={styles.badge}>0</span>
+              <span className={styles.badge}>{mounted ? cartItemCount : 0}</span>
             </Link>
           </div>
         </div>
