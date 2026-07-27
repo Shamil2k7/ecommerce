@@ -2,27 +2,17 @@ import Banner from "../../models/Banner.js";
 import cloudinary from "../../config/cloudinary.js";
 
 // create
-
 export const createBanner = async (req, res) => {
   try {
-    // console.log("Create Banner API Called");
+
 
     const { image, displayOrder, status } = req.body;
-
-    // console.log("Request Body:", req.body);
-
     const result = await cloudinary.uploader.upload(image);
-
-    // console.log("Cloudinary Response:", result);
-
     const banner = await Banner.create({
       image: result.secure_url,
       displayOrder,
       status,
     });
-
-    // console.log("Banner Saved:", banner);
-
     res.status(201).json({
       message: "Banner created successfully",
       banner,
@@ -39,11 +29,7 @@ export const createBanner = async (req, res) => {
 
 export const getAllBanners = async (req, res) => {
   try {
-    // console.log("Get All Banners API Called");
-
     const banners = await Banner.find();
-
-    // console.log("Banners:", banners);
 
     res.status(200).json({
       banners,
@@ -60,12 +46,8 @@ export const getAllBanners = async (req, res) => {
 
 export const getBannerById = async (req, res) => {
   try {
-    // console.log("Get Banner By ID API Called");
-    // console.log("Banner ID:", req.params.id);
-
     const banner = await Banner.findById(req.params.id);
 
-    // console.log("Banner:", banner);
 
     res.status(200).json({
       banner,
@@ -82,21 +64,12 @@ export const getBannerById = async (req, res) => {
 
 export const updateBanner = async (req, res) => {
   try {
-    // console.log("Update Banner API Called");
-    // console.log("Banner ID:", req.params.id);
-    // console.log("Request Body:", req.body);
 
     const { image, displayOrder, status } = req.body;
 
     const banner = await Banner.findById(req.params.id);
-
-    // console.log("Old Banner:", banner);
-
     if (image) {
       const result = await cloudinary.uploader.upload(image);
-
-      // console.log("New Cloudinary Image:", result);
-
       banner.image = result.secure_url;
     }
 
@@ -104,8 +77,6 @@ export const updateBanner = async (req, res) => {
     banner.status = status;
 
     await banner.save();
-
-    // console.log("Updated Banner:", banner);
 
     res.status(200).json({
       message: "Banner updated successfully",
@@ -123,8 +94,6 @@ export const updateBanner = async (req, res) => {
 
 export const deleteBanner = async (req, res) => {
   try {
-    // console.log("Delete Banner API Called");
-    // console.log("Banner ID:", req.params.id);
 
     await Banner.findByIdAndDelete(req.params.id);
 

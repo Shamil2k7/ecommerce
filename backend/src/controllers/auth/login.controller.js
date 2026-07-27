@@ -39,6 +39,15 @@ const login = async (req, res) => {
       });
     }
 
+  // inactive staff from logging in not work 
+
+    if (user.role === "staff" && user.status === "Inactive") {
+      return res.status(403).json({
+        success: false,
+        message: "Your account is inactive. Please contact the administrator.",
+      });
+    }
+
     createToken(res, user._id);
 
     res.status(200).json({

@@ -8,9 +8,10 @@ import axios from "axios";
 import styles from "../../add/AddCoupon.module.css";
 
 export default function EditCouponPage() {
+
   const { id } = useParams();
   const router = useRouter();
-
+  const API = process.env.NEXT_PUBLIC_API_URL;
   const [coupon, setCoupon] = useState({
     name: "",
     code: "",
@@ -21,275 +22,315 @@ export default function EditCouponPage() {
     expirydate: "",
     status: "Active",
   });
-  const [errors, setErrors] = useState({
-    name: "",
-    code: "",
-    discount: "",
-    minimumOrderAmount: "",
-    maximumDiscount: "",
-    usageLimit: "",
-    expirydate: "",
-  });
 
+
+  const [errors, setErrors] = useState({});
   useEffect(() => {
-    fetchCoupon();
-  }, []);
 
+    if (id) {
+      fetchCoupon();
+    }
+
+  }, [id]);
   const fetchCoupon = async () => {
     try {
+
+      console.log("Fetching ID:", id);
+
+
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`,
+        `${API}/api/marketing/coupons/${id}`,
         {
           withCredentials: true,
         }
       );
 
+
+      console.log(
+        "API DATA:",
+        res.data
+      );
+      // supports both response types
+      const data = res.data.coupon || res.data;
       setCoupon({
-        ...res.data,
-        expirydate: res.data.expirydate?.split("T")[0],
+
+        name: data.name || "",
+
+        code: data.code || "",
+
+        discount: data.discount ?? "",
+
+        minimumOrderAmount:
+          data.minimumOrderAmount ?? "",
+
+        maximumDiscount:
+          data.maximumDiscount ?? "",
+        usageLimit:
+          data.usageLimit ?? "",
+        expirydate: data.expirydate
+          ? new Date(data.expirydate)
+            .toISOString()
+            .split("T")[0]
+          : "",
+        status: data.status || "Active"
+
       });
-    } catch (error) {
-      console.log(error);
     }
+    catch (error) {
+
+      console.log(
+        "Fetch Coupon Error:",
+        error.response?.data || error.message
+      );
+
+    }
+
   };
+  const handleChange = (e) => {
+
+    const { name, value } = e.target;
+
+
+    setCoupon(prev => ({
+
+      ...prev,
+
+      [name]:
+        name === "code"
+          ? value.toUpperCase()
+          : value
+
+    }));
+    setErrors(prev => ({
+
+      ...prev,
+
+      [name]: ""
+
+    }));
+
+  };
+
   const validateForm = () => {
-    const newErrors = {};
+    let newErrors = {};
 
-    if (!coupon.name.trim()) {
-      newErrors.name = "Coupon Name is required";
-    }
+    if (!coupon.name.trim())
+      newErrors.name = "Coupon name is required";
 
-    if (!coupon.code.trim()) {
-      newErrors.code = "Coupon Code is required";
-    }
 
+    if (!coupon.code.trim())
+      newErrors.code = "Coupon code is required";
     if (!coupon.discount) {
       newErrors.discount = "Discount is required";
-    } else if (
+    }
+    else if (
       Number(coupon.discount) <= 0 ||
       Number(coupon.discount) > 100
     ) {
-      newErrors.discount = "Discount must be between 1 and 100";
+      newErrors.discount =
+        "Discount must be between 1 and 100";
+    }
+    if (coupon.minimumOrderAmount === "") {
+      newErrors.minimumOrderAmount =
+        "Minimum order amount is required";
+    }
+    if (coupon.maximumDiscount === "") {
+      newErrors.maximumDiscount =
+        "Maximum discount is required";
+    }
+    if (!coupon.usageLimit) {
+
+      newErrors.usageLimit =
+        "Usage limit is required";
+
     }
 
-    if (!coupon.minimumOrderAmount) {
-      newErrors.minimumOrderAmount =
-        "Minimum Order Amount is required";
-    } else if (Number(coupon.minimumOrderAmount) < 0) {
-      newErrors.minimumOrderAmount =
-        "Minimum Order Amount cannot be negative";
-    }
 
-    if (!coupon.maximumDiscount) {
-      newErrors.maximumDiscount =
-        "Maximum Discount is required";
-    } else if (Number(coupon.maximumDiscount) < 0) {
-      newErrors.maximumDiscount =
-        "Maximum Discount cannot be negative";
-    }
 
     if (!coupon.expirydate) {
-      newErrors.expirydate = "Expiry Date is required";
-    } else {
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
 
-      const expiry = new Date(coupon.expirydate);
+      newErrors.expirydate =
+        "Expiry date is required";
 
-      if (expiry < today) {
-        newErrors.expirydate =
-          "Expiry Date cannot be in the past";
-      }
     }
 
-    if (!coupon.usageLimit) {
-      newErrors.usageLimit = "Usage Limit is required";
-    } else if (Number(coupon.usageLimit) <= 0) {
-      newErrors.usageLimit =
-        "Usage Limit must be greater than 0";
-    }
+
 
     setErrors(newErrors);
 
+
     return Object.keys(newErrors).length === 0;
-  };
-  const handleChange = (e) => {
-    const { name, value } = e.target;
 
-    setCoupon((prev) => ({
-      ...prev,
-      [name]: name === "code" ? value.toUpperCase() : value,
-    }));
-
-    setErrors((prev) => ({
-      ...prev,
-      [name]: "",
-    }));
   };
+
+
+
+
+
   const handleUpdate = async () => {
-    if (!validateForm()) return;
+
+
+    if (!validateForm())
+      return;
+
+
 
     try {
+
+
       await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/marketing/coupons/${id}`,
+
+        `${API}/api/marketing/coupons/${id}`,
+
         coupon,
+
         {
-  withCredentials: true,
-}
+          withCredentials: true
+        }
+
       );
 
-      alert("Coupon Updated Successfully");
 
-      router.push("/admin/coupons");
-    } catch (error) {
+      alert(
+        "Coupon updated successfully"
+      );
+
+
+      router.push(
+        "/admin/coupons"
+      );
+
+
+    }
+    catch (error) {
+
       console.log(error);
 
       alert(
         error.response?.data?.message ||
-        "Update Failed"
+        "Update failed"
       );
+
     }
+
+
   };
+
+
+
+
+
   return (
+
     <section className={styles.container}>
+
+
       <div className={styles.header}>
+
         <div>
-          <Link href="/admin/coupons" className={styles.back}>
+
+          <Link
+            href="/admin/coupons"
+            className={styles.back}
+          >
+
             <ArrowLeft size={18} />
+
             Back to Coupons
+
           </Link>
 
-          <h1>Edit Coupon</h1>
-          <p>Update coupon information</p>
+
+          <h1>
+            Edit Coupon
+          </h1>
+
+
+          <p>
+            Update coupon information
+          </p>
+
+
         </div>
+
       </div>
 
+
+
       <div className={styles.card}>
+
+
+        {[
+          ["Coupon Name", "name", "text"],
+          ["Coupon Code", "code", "text"],
+          ["Discount (%)", "discount", "number"],
+          ["Minimum Order Amount", "minimumOrderAmount", "number"],
+          ["Maximum Discount", "maximumDiscount", "number"],
+          ["Usage Limit", "usageLimit", "number"]
+
+        ].map(([label, name, type]) => (
+
+
+          <div
+            className={styles.field}
+            key={name}
+          >
+            <label>
+
+
+              {label}
+            </label>
+            <input
+              type={type}
+              name={name}
+              value={coupon[name] || ""}
+              onChange={handleChange}
+            />
+            {
+              errors[name] &&
+              <p className={styles.error}>
+                {errors[name]}
+              </p>
+            }
+          </div>
+        ))}
         <div className={styles.field}>
-          <input
-            type="text"
-            name="name"
-            value={coupon.name}
-            onChange={handleChange}
-            className={errors.name ? styles.errorInput : ""}
-          />
+          <label>
+            Expiry Date
+          </label>
 
-          {errors.name && (
-            <p className={styles.error}>{errors.name}</p>
-          )}
-        </div>
-
-        <div className={styles.field}>
-          <label>Coupon Code</label>
-          <input
-            type="text"
-            name="code"
-            value={coupon.code}
-            onChange={handleChange}
-            className={errors.code ? styles.errorInput : ""}
-          />
-
-          {errors.code && (
-            <p className={styles.error}>{errors.code}</p>
-          )}
-        </div>
-
-        <div className={styles.field}>
-          <label>Discount (%)</label>
-          <input
-            type="number"
-            name="discount"
-            value={coupon.discount}
-            onChange={handleChange}
-            className={errors.discount ? styles.errorInput : ""}
-          />
-
-          {errors.discount && (
-            <p className={styles.error}>{errors.discount}</p>
-          )}
-        </div>
-
-        <div className={styles.field}>
-          <label>Minimum Order Amount</label>
-          <input
-            type="number"
-            name="minimumOrderAmount"
-            value={coupon.minimumOrderAmount}
-            onChange={handleChange}
-            className={errors.minimumOrderAmount ? styles.errorInput : ""}
-          />
-
-          {errors.minimumOrderAmount && (
-            <p className={styles.error}>
-              {errors.minimumOrderAmount}
-            </p>
-          )}
-        </div>
-
-        <div className={styles.field}>
-          <label>Maximum Discount</label>
-          <input
-            type="number"
-            name="maximumDiscount"
-            value={coupon.maximumDiscount}
-            onChange={handleChange}
-            className={errors.maximumDiscount ? styles.errorInput : ""}
-          />
-
-          {errors.maximumDiscount && (
-            <p className={styles.error}>
-              {errors.maximumDiscount}
-            </p>
-          )}
-        </div>
-
-        <div className={styles.field}>
-          <label>Usage Limit</label>
-          <input
-            type="number"
-            name="usageLimit"
-            value={coupon.usageLimit}
-            onChange={handleChange}
-            className={errors.usageLimit ? styles.errorInput : ""}
-          />
-
-          {errors.usageLimit && (
-            <p className={styles.error}>
-              {errors.usageLimit}
-            </p>
-          )}
-        </div>
-
-        <div className={styles.field}>
-          <label>Expiry Date</label>
           <input
             type="date"
             name="expirydate"
-            value={coupon.expirydate}
+            value={coupon.expirydate || ""}
             onChange={handleChange}
-            className={errors.expirydate ? styles.errorInput : ""}
           />
 
-          {errors.expirydate && (
+          {
+            errors.expirydate &&
             <p className={styles.error}>
               {errors.expirydate}
             </p>
-          )}
+          }
+
         </div>
-
         <div className={styles.field}>
-          <label>Status</label>
-
+          <label>
+            Status
+          </label>
           <select
             name="status"
             value={coupon.status}
             onChange={handleChange}
           >
-            <option value="Active">Active</option>
-            <option value="Inactive">Inactive</option>
+            <option value="Active">
+              Active
+            </option>
+            <option value="Inactive">
+              Inactive
+            </option>
           </select>
         </div>
-
         <div className={styles.actions}>
           <button
             className={styles.cancelBtn}
@@ -297,7 +338,6 @@ export default function EditCouponPage() {
           >
             Cancel
           </button>
-
           <button
             className={styles.saveBtn}
             onClick={handleUpdate}

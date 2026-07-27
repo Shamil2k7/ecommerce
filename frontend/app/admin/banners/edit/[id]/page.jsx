@@ -29,25 +29,39 @@ export default function EditBannerPage() {
     }
   }, [id]);
 
-  const getBanner = async () => {
-    try {
-      const res = await axios.get(
-        `${API}/api/marketing/banners/${id}`,
-        {
-          withCredentials: true,
-        }
-      );
+ const getBanner = async () => {
+  try {
+    const response = await axios.get(
+      `${API}/api/marketing/banners/${id}`,
+      {
+        withCredentials: true,
+      }
+    );
 
-      setBanner({
-        image: res.data.banner.image,
-        displayOrder: res.data.banner.displayOrder,
-        status: res.data.banner.status,
-      });
-    } catch (error) {
-      console.error(error);
-      alert(error.response?.data?.message || "Failed to load banner");
+    const bannerData = response.data.banner;
+
+    if (!bannerData) {
+      alert("Banner not found");
+      router.push("/admin/banners");
+      return;
     }
-  };
+
+    setBanner({
+      image: bannerData.image,
+      displayOrder: bannerData.displayOrder,
+      status: bannerData.status,
+    });
+  } catch (err) {
+    console.error("Error loading banner:", err);
+
+    alert(
+      err.response?.data?.message ||
+      "Unable to load banner."
+    );
+  }
+};
+
+
   const handleImage = (e) => {
     const file = e.target.files[0];
 

@@ -4,9 +4,7 @@ import cloudinary from "../../config/cloudinary.js";
 import User from "../../models/userModels.js";
 
 
-// ===============================
-// CREATE STAFF
-// ===============================
+//create staff all
 export const createStaff = async (req, res) => {
   try {
     const {
@@ -64,9 +62,7 @@ export const createStaff = async (req, res) => {
   }
 };
 
-// ===============================
-// GET ALL STAFF
-// ===============================
+//get staff
 export const getAllStaff = async (req, res) => {
   try {
     const users = await User.find({ role: "staff" })
@@ -86,9 +82,7 @@ export const getAllStaff = async (req, res) => {
   }
 };
 
-// ===============================
-// GET SINGLE STAFF
-// ===============================
+//single staff get
 export const getSingleStaff = async (req, res) => {
   try {
     const user = await User.findOne({
@@ -115,9 +109,7 @@ export const getSingleStaff = async (req, res) => {
   }
 };
 
-// ===============================
-// UPDATE STAFF
-// ===============================
+//update staff
 export const updateStaff = async (req, res) => {
   try {
     const user = await User.findOne({
@@ -200,9 +192,7 @@ export const updateStaff = async (req, res) => {
   }
 };
 
-// ===============================
-// DELETE STAFF
-// ===============================
+//delete staff
 export const deleteStaff = async (req, res) => {
   try {
     const user = await User.findOne({

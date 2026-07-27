@@ -1,11 +1,16 @@
 import React, { useState } from "react";
 import { FiHeart, FiTrash2, FiShoppingBag } from "react-icons/fi";
 import { useRouter } from "next/navigation";
+import axios from "axios";
+import { toast } from "react-toastify";
 import styles from "./CartItem.module.css";
 
 const CartItem = ({ item, updateQuantity, removeItem }) => {
   const router = useRouter();
   const [isSwiped, setIsSwiped] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
+  
+  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   const discount =
     item.originalPrice > item.price
@@ -25,6 +30,29 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
     if (item.color) query.set("color", item.color);
     if (item.size) query.set("size", item.size);
     router.push(`/checkout?${query.toString()}`);
+  };
+
+  const handleSaveForLater = async (e) => {
+    e.stopPropagation();
+    try {
+      setIsSaving(true);
+      await axios.post(
+        `${API}/api/wishlist/${productId}`,
+        {},
+        { withCredentials: true }
+      );
+      toast.success("Saved for later");
+    } catch (err) {
+      if (err.response?.status === 400 && err.response?.data?.message === "Product already in wishlist") {
+        toast.success("Already in wishlist");
+      } else if (err.response?.status === 401) {
+        toast.error("Please login to save for later");
+      } else {
+        toast.error(err.response?.data?.message || "Something went wrong");
+      }
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
@@ -88,9 +116,9 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
         </div>
 
         <div className={styles.actionBar}>
-          <button className={styles.actionBtn}>
+          <button className={styles.actionBtn} onClick={handleSaveForLater} disabled={isSaving}>
             <FiHeart className={styles.actionIcon} />
-            Save for later
+            {isSaving ? "Saving..." : "Save for later"}
           </button>
           <button
             className={`${styles.actionBtn} ${styles.removeBtn}`}
@@ -172,7 +200,8 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
               <div className={styles.mobileActions}>
                 <button
                   className={styles.mobileIconBtn}
-                  onClick={(e) => e.stopPropagation()}
+                  onClick={handleSaveForLater}
+                  disabled={isSaving}
                   aria-label="Save for later"
                 >
                   <FiHeart />

@@ -8,7 +8,9 @@ import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
 
 import DeliveryAddress from "../../components/Checkout/DeliveryAddress/DeliveryAddress";
+import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
 import { toast } from "react-toastify";
+import styles from "./Checkout.module.css";
 
 function CheckoutContent() {
   const router = useRouter();
@@ -68,13 +70,14 @@ function CheckoutContent() {
     const shippingAddress = {
       fullName: user.fullName || "Guest",
       phone: user.phone || "0000000000",
-      address: address?.text || "",
-      city: "N/A",
-      state: "N/A",
-      pincode: "N/A",
-      country: "India",
+      address: addr?.text || addr?.address || "",
+      city: addr?.city || "N/A",
+      state: addr?.state || "N/A",
+      pincode: addr?.pincode || "N/A",
+      country: addr?.country || "India",
     };
 
+    
     const apiUrl =
       process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
@@ -110,7 +113,7 @@ function CheckoutContent() {
         return;
       }
       
-      const hasError = results.find((r) => !r.success);
+      const hasError = orderResults.find((r) => !r.success);
       
       if (hasError) {
         toast.error(hasError.message || "Error placing one or more orders.");
