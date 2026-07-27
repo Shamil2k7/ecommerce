@@ -12,6 +12,7 @@
 
 .header h1 {
   font-size: 32px;
+  color: var(--text);
 }
 
 .header p {
@@ -26,9 +27,12 @@
   align-items: center;
   gap: 10px;
   background: var(--primary);
-  color: white;
+  color: var(--surface);
+  border: none;
   border-radius: var(--radius-md);
   font-weight: 600;
+  cursor: pointer;
+  transition: background 0.25s ease;
 }
 
 .addBtn:hover {
@@ -43,7 +47,7 @@
   align-items: center;
   gap: 12px;
   padding: 0 16px;
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
 }
@@ -52,10 +56,17 @@
   flex: 1;
   border: none;
   outline: none;
+  background: transparent;
+  color: var(--text);
+  font-size: 15px;
+}
+
+.searchBox input::placeholder {
+  color: var(--text-soft);
 }
 
 .table {
-  background: white;
+  background: var(--surface);
   border: 1px solid var(--line);
   border-radius: var(--radius-lg);
   overflow-x: auto;
@@ -67,16 +78,23 @@
 }
 
 .table th {
-  background: #faf8f6;
+  background: var(--bg);
   padding: 18px;
   text-align: left;
+  color: var(--text);
   border-bottom: 1px solid var(--line);
+  font-size: 14px;
 }
 
 .table td {
   padding: 18px;
+  color: var(--text);
   border-bottom: 1px solid var(--line);
   white-space: nowrap;
+}
+
+.table tbody tr {
+  transition: background 0.25s ease;
 }
 
 .table tbody tr:hover {
@@ -92,8 +110,9 @@
 .customer img {
   width: 48px;
   height: 48px;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
   object-fit: cover;
+  border: 1px solid var(--line);
 }
 
 .actions {
@@ -104,7 +123,7 @@
 .actions button {
   height: 34px;
   padding: 0 14px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   font-size: 13px;
   font-weight: 600;
   display: flex;
@@ -112,7 +131,7 @@
   justify-content: center;
   gap: 6px;
   cursor: pointer;
-  transition: opacity 0.15s;
+  transition: background 0.25s ease, color 0.25s ease, opacity 0.15s ease;
 }
 
 .actions button:disabled {
@@ -129,7 +148,7 @@
 
 .blockBtn:hover:not(:disabled) {
   background: var(--danger);
-  color: white;
+  color: var(--surface);
 }
 
 /* Unblock button — green */
@@ -141,10 +160,14 @@
 
 .unblockBtn:hover:not(:disabled) {
   background: var(--success);
-  color: white;
+  color: var(--surface);
 }
 
-@media (max-width:1024px) {
+/* ===========================
+        Responsive
+=========================== */
+
+@media (max-width: 1024px) {
   .header {
     flex-direction: column;
     align-items: flex-start;
@@ -156,7 +179,7 @@
   }
 }
 
-@media (max-width:768px) {
+@media (max-width: 768px) {
   .header h1 {
     font-size: 28px;
   }
@@ -168,7 +191,7 @@
   }
 }
 
-@media (max-width:480px) {
+@media (max-width: 480px) {
   .addBtn {
     width: 100%;
     justify-content: center;
@@ -183,4 +206,3 @@
     height: 40px;
   }
 }
-

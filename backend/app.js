@@ -23,6 +23,9 @@ import staffRoutes from "./src/routes/staff.routes.js";
 import settingsRoutes from "./src/routes/settingsRoutes.js";
 import cartRoutes from "./src/routes/cart.routes.js";
 import policyRoutes from "./src/routes/policy.routes.js";
+import wishlistRoutes from "./src/routes/wishlist.routes.js";
+import contactRoutes from "./src/routes/contact.routes.js";
+import aboutRoutes from "./src/routes/about.routes.js";
 const app = express();
 
 // Database
@@ -31,7 +34,7 @@ connectDB();
 // Middlewares
 app.use(
   cors({
-    origin: process.env.FRONTEND_URL || "http://localhost:3000",
+    origin: process.env.FRONTEND_URL ,
     credentials: true,
   })
 );
@@ -58,7 +61,10 @@ app.use("/api/settings", settingsRoutes);
 app.use("/api/cart", cartRoutes);
 app.use("/api/staff", staffRoutes);
 app.use("/api/policies", policyRoutes);
-// Home Route
+app.use("/api/wishlist", wishlistRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/about", aboutRoutes);
+
 app.get("/", (req, res) => {
   res.send("A simple Node App is running on this server");
 });

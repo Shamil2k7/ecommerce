@@ -4,15 +4,16 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import axios from "axios";
 import { Plus, Pencil, Trash2 } from "lucide-react";
-import styles from "./HeroSection.module.css";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import styles from "./HeroSection.module.css";
 
 export default function HeroSectionsPage() {
   const [heroSections, setHeroSections] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 
   useEffect(() => {
     fetchHeroSections();
@@ -21,41 +22,64 @@ export default function HeroSectionsPage() {
   const fetchHeroSections = async () => {
     try {
       const res = await axios.get(
-        `${API}/api/marketing/hero-sections`
+        `${API}/api/marketing/hero-sections`,
+        {
+          withCredentials: true,
+        }
       );
 
       setHeroSections(res.data.heroSections || []);
     } catch (err) {
-      console.log(err);
-      toast.error("Failed to load Hero Sections");
+      console.error(err);
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to load Hero Sections"
+      );
     } finally {
       setLoading(false);
     }
   };
 
   const deleteHero = async (id) => {
-    const confirmResult = await Swal.fire({
+    const result = await Swal.fire({
       title: "Delete Hero Section?",
-      text: "Are you sure you want to delete this Hero Section?",
+      text: "This action cannot be undone.",
       icon: "warning",
       showCancelButton: true,
+      confirmButtonText: "Delete",
+      cancelButtonText: "Cancel",
       confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it",
-      cancelButtonText: "Cancel"
     });
 
-    if (!confirmResult.isConfirmed) return;
+    if (!result.isConfirmed) return;
 
     try {
-      await axios.delete(
-        `${API}/api/marketing/hero-sections/${id}`
+      console.log("Deleting:", id);
+
+      const res = await axios.delete(
+        `${API}/api/marketing/hero-sections/${id}`,
+        {
+          withCredentials: true,
+        }
       );
 
-      toast.success("Hero Section deleted successfully!");
-      fetchHeroSections();
+      console.log(res.data);
+
+      setHeroSections((prev) =>
+        prev.filter((hero) => hero._id !== id)
+      );
+
+      toast.success(
+        res.data.message ||
+          "Hero Section deleted successfully!"
+      );
     } catch (err) {
-      toast.error("Delete failed");
+      console.error(err);
+
+      toast.error(
+        err.response?.data?.message ||
+          "Failed to delete Hero Section"
+      );
     }
   };
 
@@ -68,15 +92,13 @@ export default function HeroSectionsPage() {
       <div className={styles.header}>
         <h1>Hero Sections</h1>
 
-        <div className={styles.actions}>
-          <Link
-            href="/admin/HeroSection/add"
-            className={styles.addBtn}
-          >
-            <Plus size={18} />
-            Add Hero Section
-          </Link>
-        </div>
+        <Link
+          href="/admin/HeroSection/add"
+          className={styles.addBtn}
+        >
+          <Plus size={18} />
+          Add Hero Section
+        </Link>
       </div>
 
       <div className={styles.tableWrapper}>
@@ -92,7 +114,16 @@ export default function HeroSectionsPage() {
           </thead>
 
           <tbody>
-            {heroSections.length > 0 ? (
+            {heroSections.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={5}
+                  style={{ textAlign: "center" }}
+                >
+                  No Hero Sections Found
+                </td>
+              </tr>
+            ) : (
               heroSections.map((hero) => (
                 <tr key={hero._id}>
                   <td>
@@ -129,6 +160,7 @@ export default function HeroSectionsPage() {
                       </Link>
 
                       <button
+                        type="button"
                         className={styles.delete}
                         onClick={() => deleteHero(hero._id)}
                       >
@@ -138,12 +170,6 @@ export default function HeroSectionsPage() {
                   </td>
                 </tr>
               ))
-            ) : (
-              <tr>
-                <td colSpan="5" style={{ textAlign: "center" }}>
-                  No Hero Sections Found
-                </td>
-              </tr>
             )}
           </tbody>
         </table>

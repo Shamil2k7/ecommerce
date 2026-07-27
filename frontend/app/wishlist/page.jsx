@@ -1,63 +1,68 @@
 "use client";
 
+import { useEffect, useState } from "react";
+import axios from "axios";
 import ProductCard from "@/components/ProductCard/ProductCard";
 import styles from "./Wishlist.module.css";
 
-const wishlist = [
-  {
-    id: 1,
-    name: "iPhone 16 Pro",
-    category: "Electronics",
-    image: "/products/iphone.jpg",
-    price: 129999,
-    oldPrice: 139999,
-    discount: 10,
-    rating: 4.9,
-    reviews: 214,
-  },
-  {
-    id: 2,
-    name: "Nike Air Max",
-    category: "Shoes",
-    image: "/products/shoe.jpg",
-    price: 8499,
-    oldPrice: 9999,
-    discount: 15,
-    rating: 4.8,
-    reviews: 118,
-  },
-  {
-    id: 3,
-    name: "Sony WH-1000XM5",
-    category: "Electronics",
-    image: "/products/headphone.jpg",
-    price: 27999,
-    oldPrice: 31999,
-    discount: 12,
-    rating: 4.7,
-    reviews: 95,
-  },
-  {
-    id: 4,
-    name: "Apple Watch Series 10",
-    category: "Wearables",
-    image: "/products/watch.jpg",
-    price: 44999,
-    oldPrice: 49999,
-    discount: 10,
-    rating: 4.9,
-    reviews: 132,
-  },
-];
-
 export default function WishlistPage() {
+  const API =
+    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+
+  const [wishlist, setWishlist] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchWishlist();
+  }, []);
+
+  const fetchWishlist = async () => {
+    try {
+      const { data } = await axios.get(`${API}/api/wishlist`, {
+        withCredentials: true, // if using cookies
+        // headers: {
+        //   Authorization: `Bearer ${token}`,
+        // },
+      });
+
+      const products = data.wishlist.map((item) => ({
+        id: item.product._id,
+        name: item.product.name,
+        image:
+          item.product.images?.[0]?.url ||
+          item.product.image ||
+          "/products/default.png",
+        price: item.product.price,
+        oldPrice: item.product.oldPrice,
+        discount: item.product.discount || 0,
+        rating: item.product.rating || 0,
+        reviews: item.product.numReviews || 0,
+        category: item.product.category?.name || "Uncategorized",
+        brand: item.product.brand?.name,
+        stock: item.product.stock,
+      }));
+
+      setWishlist(products);
+    } catch (error) {
+      console.log(error.response?.data || error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  if (loading) {
+    return (
+      <section className={styles.container}>
+        <h2>Loading Wishlist...</h2>
+      </section>
+    );
+  }
+
   return (
     <section className={styles.container}>
       <div className={styles.header}>
         <h1>My Wishlist</h1>
-        <p>
-          Save your favourite products and buy them later.
-        </p>
+        <p>Save your favourite products and buy them later.</p>
       </div>
 
       {wishlist.length > 0 ? (
@@ -79,8 +84,7 @@ export default function WishlistPage() {
           <h2>Your Wishlist is Empty</h2>
 
           <p>
-            Start adding products you love to your
-            wishlist.
+            Start adding products you love to your wishlist.
           </p>
         </div>
       )}

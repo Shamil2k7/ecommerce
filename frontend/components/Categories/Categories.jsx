@@ -18,10 +18,10 @@ export default function Categories() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    getCategories();
+    fetchCategories();
   }, []);
 
-  const getCategories = async () => {
+  const fetchCategories = async () => {
     try {
       const response = await fetch(`${API}/api/categories`, {
         cache: "no-store",
@@ -30,14 +30,19 @@ export default function Categories() {
       const result = await response.json();
 
       if (result.success) {
-        const activeCategories = result.data.filter((item) => {
-          return !item.parentCategory && item.isActive;
-        });
+        const activeCategories = [];
+
+        for (const category of result.data) {
+          if (category.parentCategory) continue;
+          if (!category.isActive) continue;
+
+          activeCategories.push(category);
+        }
 
         setCategories(activeCategories);
       }
     } catch (error) {
-      console.error("Error fetching categories:", error);
+      console.error("Failed to load categories:", error);
     } finally {
       setLoading(false);
     }
@@ -46,29 +51,42 @@ export default function Categories() {
   const sliderCategories = useMemo(() => {
     if (categories.length === 0) return [];
 
-    let items = [...categories];
+    const list = [];
 
-    while (items.length < 20) {
-      items = [...items, ...categories];
+    while (list.length < 24) {
+      for (const category of categories) {
+        list.push(category);
+
+        if (list.length >= 24) {
+          break;
+        }
+      }
     }
 
-    return items;
+    return list;
   }, [categories]);
 
   if (loading) return null;
+
   if (sliderCategories.length === 0) return null;
 
   return (
     <section className={styles.categories}>
       <div className={styles.container}>
+        {/* Heading */}
+
+        <div className={styles.header}>
+          <Link href="/products" className={styles.viewAll}>
+            View All →
+          </Link>
+        </div>
+
+        {/* Slider */}
         <Swiper
           modules={[Autoplay]}
-          loop={true}
-          speed={1000}
-          grabCursor={true}
-          observer={true}
-          observeParents={true}
-          watchOverflow={false}
+          loop
+          speed={2000}
+          grabCursor
           autoplay={{
             delay: 0,
             disableOnInteraction: false,
@@ -76,32 +94,28 @@ export default function Categories() {
           }}
           breakpoints={{
             0: {
-              slidesPerView: 2.3,
-              spaceBetween: 10,
-            },
-            480: {
-              slidesPerView: 3,
-              spaceBetween: 10,
-            },
-            576: {
-              slidesPerView: 4,
+              slidesPerView: 2,
               spaceBetween: 12,
             },
-            768: {
-              slidesPerView: 5,
+            480: {
+              slidesPerView: 2.5,
               spaceBetween: 14,
             },
-            992: {
-              slidesPerView: 6,
+            640: {
+              slidesPerView: 3,
               spaceBetween: 16,
             },
-            1200: {
-              slidesPerView: 7,
+            768: {
+              slidesPerView: 4,
               spaceBetween: 18,
             },
-            1400: {
-              slidesPerView: 8,
+            992: {
+              slidesPerView: 5,
               spaceBetween: 20,
+            },
+            1200: {
+              slidesPerView: 6,
+              spaceBetween: 24,
             },
           }}
         >
@@ -109,20 +123,22 @@ export default function Categories() {
             <SwiperSlide key={`${category._id}-${index}`}>
               <Link
                 href={`/products?category=${category.slug}`}
-                className={styles.card}
+                className={styles.category}
               >
-                <div className={styles.imageBox}>
-                  <Image
-                    src={category.image?.url || "/placeholder-category.jpg"}
-                    alt={category.name}
-                    fill
-                    className={styles.image}
-                    sizes="(max-width:768px) 90px, 140px"
-                    priority={index < 8}
-                  />
+                <div className={styles.card}>
+                  <div className={styles.imageBox}>
+                    <Image
+                      src={category.image?.url || "/placeholder-category.png"}
+                      alt={category.name}
+                      fill
+                      className={styles.image}
+                      sizes="250px"
+                    />
+                  </div>
                 </div>
 
-                <h3>{category.name}</h3>
+                <h3 className={styles.title}>{category.name}</h3>
+
               </Link>
             </SwiperSlide>
           ))}

@@ -115,33 +115,64 @@ export const getProductById = asyncHandler(async (req, res) => {
     );
 });
 
+
 export const getTopRatedProducts = async (req, res) => {
   try {
-    const limit = Number(req.query.limit) || 10;
-
-    const products = await Product.find({
-      isActive: true,
-      ratingsCount: { $gt: 0 },
-    })
+    const products = await Product.find({ isActive: true })
       .populate("category", "name")
       .populate("brand", "name")
-      .sort({
-        ratingsAverage: -1,
-        ratingsCount: -1,
-      })
-      .limit(limit);
+      .sort({ ratingsAverage: -1 })
+      .limit(8);
+
+    const formattedProducts = products.map((product) => {
+      const image =
+        product.images.find((img) => img.isPrimary)?.url ||
+        product.images[0]?.url ||
+        "/images/headphone.png";
+
+      const discount =
+        product.discountPrice > 0
+          ? Math.round(
+              ((product.price - product.discountPrice) / product.price) * 100
+            )
+          : 0;
+
+      return {
+        id: product._id,
+        _id: product._id,
+
+        name: product.name,
+        slug: product.slug,
+
+        image,
+        images: product.images,
+
+        category: product.category,
+        brand: product.brand,
+
+        price: product.discountPrice || product.price,
+        oldPrice:
+          product.discountPrice > 0 ? product.price : null,
+
+        discount,
+
+        rating: product.ratingsAverage,
+        reviews: product.reviews,
+
+        stock: product.stock,
+      };
+    });
 
     res.status(200).json({
       success: true,
-      count: products.length,
-      products,
+      products: formattedProducts,
     });
   } catch (error) {
     console.error(error);
 
     res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Failed to fetch top rated products",
     });
   }
 };
@@ -286,12 +317,11 @@ export const addReview = async (req, res) => {
 
     const userId = req.user._id;
 
-    // Check if user purchased this product
     const order = await Order.findOne({
       userId,
-      status: "Delivered",
-      "products.product": productId,
-    });
+      orderStatus: "Delivered",
+      "products.productId": productId,
+    }); 
 
     if (!order) {
       return res.status(403).json({

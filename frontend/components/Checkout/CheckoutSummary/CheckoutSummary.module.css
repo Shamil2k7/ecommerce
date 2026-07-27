@@ -10,7 +10,6 @@
   padding: 28px;
 }
 
-
 .orderSummaryCard h2 {
   font-size: 28px;
   font-weight: 700;
@@ -25,7 +24,7 @@
   width: 100%;
   height: 4px;
   margin-top: 12px;
-  border-radius: 20px;
+  /* border-radius: 20px; */
   background: linear-gradient(
     to right,
     #111 80%,
@@ -46,18 +45,17 @@
 
 .orderItems::-webkit-scrollbar-track {
   background: #f3f3f3;
-  border-radius: 20px;
+  /* border-radius: 20px; */
 }
 
 .orderItems::-webkit-scrollbar-thumb {
   background: #bcbcbc;
-  border-radius: 20px;
+  /* border-radius: 20px; */
 }
 
 .orderItems::-webkit-scrollbar-thumb:hover {
   background: #999;
 }
-
 
 .orderItem {
   display: flex;
@@ -71,7 +69,6 @@
 .orderItem:last-child {
   border-bottom: none;
 }
-
 
 .orderItemInfo {
   flex: 1;
@@ -100,14 +97,12 @@
   white-space: nowrap;
 }
 
-
 .sectionDivider {
   width: 100%;
   height: 1px;
   background: #ececec;
   margin: 24px 0;
 }
-
 
 .priceRow {
   display: flex;
@@ -132,7 +127,6 @@
   color: #111;
 }
 
-
 .discountRow {
   color: #2e7d32;
 }
@@ -150,13 +144,8 @@
   overflow: hidden;
   border-radius: 14px;
   height: 120px;
-
   background: linear-gradient(135deg,#90AD72 0%, #90AD72 100%);
-  /* background: linear-gradient(135deg, #ffd95a 0%, #ffbf00 100%); */
-
-  /* box-shadow: 0 12px 25px rgba(0, 0, 0, 0.08); */
 }
-
 
 .couponTicket::before,
 .couponTicket::after {
@@ -209,7 +198,6 @@
   font-size: 15px;
   color: #222;
   transition: .3s;
-
 }
 
 .ticketInput::placeholder {
@@ -219,7 +207,6 @@
 .ticketInput:focus {
   background: rgba(255, 255, 255, .75);
 }
-
 
 .ticketButton {
   width: 120px;
@@ -238,7 +225,6 @@
   background: #000;
 }
 
-
 .ticketButton::before {
   content: "";
   position: absolute;
@@ -247,7 +233,6 @@
   bottom: 12px;
   border-left: 2px dashed rgba(255, 255, 255, .6);
 }
-
 
 .activeCouponTicket {
   position: relative;
@@ -341,6 +326,10 @@
   border-left: 2px dashed #9ce37f;
 }
 
+.stickyFooter {
+  position: static;
+}
+
 .grandTotalRow {
   display: flex;
   justify-content: space-between;
@@ -381,7 +370,7 @@
 .checkoutButton:hover:not(:disabled) {
   background: #1b5e20;
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(46, 125, 50, .25);
+  /* box-shadow: 0 8px 20px rgba(46, 125, 50, .25); */
 }
 
 .checkoutButton:active:not(:disabled) {
@@ -394,7 +383,6 @@
   cursor: not-allowed;
   box-shadow: none;
 }
-
 
 .checkoutSecurity {
   display: flex;
@@ -410,7 +398,6 @@
   font-size: 18px;
   color: #777;
 }
-
 
 @media (max-width: 992px) {
 
@@ -431,17 +418,17 @@
     font-size: 26px;
   }
 
-  .couponTicket,
+  /* .couponTicket,
   .activeCouponTicket {
     flex-direction: column;
-  }
+  } */
 
-  .ticketButton,
+  /* .ticketButton,
   .removeTicketButton {
     width: 100%;
     height: 56px;
-  }
-
+  } */
+/* 
   .ticketButton::before,
   .removeTicketButton::before {
     left: 15px;
@@ -450,6 +437,32 @@
     bottom: auto;
     border-left: none;
     border-top: 2px dashed rgba(255,255,255,.6);
+  } */
+
+  
+  .stickyFooter {
+    position: sticky;
+    bottom: 0;
+    z-index: 50;
+    background: #fff;
+    margin: 0 -24px -24px;
+    padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
+    /* box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08); */
+    border-top: 1px solid #eee;
+  }
+
+  .grandTotalRow {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+
+  .checkoutButton {
+    margin-top: 14px;
+  }
+
+  .checkoutSecurity {
+    margin-top: 10px;
   }
 }
 
@@ -495,7 +508,7 @@
   .grandTotalPrice {
     font-size: 24px;
   }
-
+/* 
   .ticketLeft,
   .ticketSuccessLeft {
     padding: 18px;
@@ -503,20 +516,24 @@
 
   .ticketCouponCode {
     font-size: 22px;
-  }
+  } */
 
   .checkoutButton {
     padding: 15px;
     font-size: 14px;
   }
-}
 
+  .stickyFooter {
+    margin: 0 -20px -20px;
+    padding: 12px 20px calc(12px + env(safe-area-inset-bottom));
+  }
+}
 
 @media (max-width: 480px) {
 
   .orderSummaryCard {
     padding: 16px;
-    border-radius: 10px;
+    /* border-radius: 10px; */
   }
 
   .orderSummaryCard h2 {
@@ -576,5 +593,10 @@
 
   .securityIcon {
     font-size: 16px;
+  }
+
+  .stickyFooter {
+    margin: 0 -16px -16px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
   }
 }

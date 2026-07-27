@@ -24,11 +24,11 @@
   font-size: 14px;
   font-weight: 600;
   cursor: pointer;
-  transition: .3s;
+  transition: 0.3s ease;
 }
 
 .clearBtn:hover {
-  color: #a5352b;
+  color: var(--primary);
 }
 
 .filterSection {
@@ -58,7 +58,7 @@
   cursor: pointer;
   color: var(--text-soft);
   font-size: 15px;
-  transition: .3s;
+  transition: 0.3s ease;
 }
 
 .checkbox:hover,
@@ -102,9 +102,11 @@
   height: 48px;
   border-radius: var(--radius-md);
   background: var(--primary);
-  color: white;
+  color: var(--surface);
   font-weight: 600;
-  transition: .3s;
+  transition: 0.3s ease;
+  border: none;
+  cursor: pointer;
 }
 
 .applyBtn:hover {
@@ -115,78 +117,8 @@
   display: none;
 }
 
-/* Tablet */
-
-@media (max-width: 992px) {
-
-  .sidebar {
-    position: static;
-    margin-bottom: 25px;
-  }
-
-}
-
-/* Mobile */
-
-@media (max-width: 768px) {
-
-  .sidebar {
-    padding: 20px;
-    border-radius: var(--radius-md);
-  }
-
-  .header h3 {
-    font-size: 20px;
-  }
-
-  .filterSection h4 {
-    font-size: 15px;
-  }
-
-  .checkbox,
-  .radio {
-    font-size: 14px;
-    margin-bottom: 12px;
-  }
-
-}
-
-/* Small Mobile */
-
-@media (max-width: 480px) {
-
-  .sidebar {
-    padding: 16px;
-  }
-
-  .header {
-    margin-bottom: 20px;
-  }
-
-  .header h3 {
-    font-size: 18px;
-  }
-
-  .filterSection {
-    margin-bottom: 22px;
-    padding-bottom: 18px;
-  }
-
-  .checkbox,
-  .radio {
-    gap: 10px;
-    font-size: 13px;
-  }
-
-  .checkbox input,
-  .radio input {
-    width: 16px;
-    height: 16px;
-  }
-
-}
-
 /* ---------- Category Hierarchical Tree ---------- */
+
 .categoryTree {
   display: flex;
   flex-direction: column;
@@ -216,4 +148,68 @@
 .childName {
   font-size: 14px;
   color: var(--text-soft);
-}
+}
+
+/* ================= RESPONSIVE ================= */
+
+/* Tablet */
+@media (max-width: 992px) {
+  .sidebar {
+    position: static;
+    margin-bottom: 25px;
+  }
+}
+
+/* Mobile */
+@media (max-width: 768px) {
+  .sidebar {
+    padding: 20px;
+    border-radius: var(--radius-md);
+  }
+
+  .header h3 {
+    font-size: 20px;
+  }
+
+  .filterSection h4 {
+    font-size: 15px;
+  }
+
+  .checkbox,
+  .radio {
+    font-size: 14px;
+    margin-bottom: 12px;
+  }
+}
+
+/* Small Mobile */
+@media (max-width: 480px) {
+  .sidebar {
+    padding: 16px;
+  }
+
+  .header {
+    margin-bottom: 20px;
+  }
+
+  .header h3 {
+    font-size: 18px;
+  }
+
+  .filterSection {
+    margin-bottom: 22px;
+    padding-bottom: 18px;
+  }
+
+  .checkbox,
+  .radio {
+    gap: 10px;
+    font-size: 13px;
+  }
+
+  .checkbox input,
+  .radio input {
+    width: 16px;
+    height: 16px;
+  }
+}

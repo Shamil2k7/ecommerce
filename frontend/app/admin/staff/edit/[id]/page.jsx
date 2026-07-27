@@ -9,10 +9,8 @@ import styles from "../../add/AddStaff.module.css";
 export default function EditStaffPage() {
   const { id } = useParams();
   const router = useRouter();
-
   const [loading, setLoading] = useState(false);
   const [pageLoading, setPageLoading] = useState(true);
-
   const [image, setImage] = useState(null);
 
   const [staff, setStaff] = useState({
@@ -79,9 +77,8 @@ export default function EditStaffPage() {
     }));
   };
 
-  // ==========================
-  // Handle Image
-  // ==========================
+
+  // handles images uploaded
 
   const handleImage = (e) => {
     const file = e.target.files[0];
@@ -96,9 +93,8 @@ export default function EditStaffPage() {
     }));
   };
 
-  // ==========================
-  // Update Staff
-  // ==========================
+
+  // updated staffes form submits
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -149,10 +145,9 @@ export default function EditStaffPage() {
     }
   };
 
-  // ==========================
-  // Delete Staff
-  // ==========================
-
+ 
+  // delete staffs handel 
+ 
   const handleDelete = async () => {
     const confirmDelete = window.confirm(
       "Are you sure you want to delete this staff?"
@@ -209,7 +204,7 @@ export default function EditStaffPage() {
       </div>
 
       <form className={styles.grid} onSubmit={handleSubmit}>
-        {/* Left Side */}
+        {/* left side  all codes  */}
 
         <div className={styles.card}>
           <h3>Staff Information</h3>
@@ -290,7 +285,7 @@ export default function EditStaffPage() {
           </div>
         </div>
 
-        {/* Right Side */}
+        {/* right side  all codes  */}
 
         <div>
           <div className={styles.card}>

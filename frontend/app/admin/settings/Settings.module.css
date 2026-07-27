@@ -1,12 +1,12 @@
 /* ===========================
-   Wrapper
+    Wrapper
 =========================== */
 
 .wrapper {
   width: 100%;
   min-height: 100vh;
   padding: clamp(12px, 3vw, 32px);
-  background: #f8f5ef;
+  background: var(--bg);
   box-sizing: border-box;
 }
 
@@ -19,23 +19,24 @@
   font-size: clamp(1.4rem, 4vw, 2rem);
   line-height: 1.2;
   font-weight: 700;
-  color: #222;
+  color: var(--text);
 }
 
 .settingsDescription {
   margin-top: 6px;
-  color: #7a746d;
+  color: var(--text-soft);
   font-size: clamp(0.85rem, 2vw, 0.95rem);
 }
 
 /* ===========================
-   Card
+    Card
 =========================== */
 
 .card {
-  background: #fff;
-  border: 1px solid #e8e2dc;
-  border-radius: clamp(14px, 2vw, 22px);
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
   overflow: hidden;
 }
 
@@ -46,18 +47,18 @@
   flex-wrap: wrap;
   gap: 16px;
   padding: clamp(16px, 3vw, 28px) clamp(16px, 3vw, 30px);
-  border-bottom: 1px solid #ece6df;
+  border-bottom: 1px solid var(--line);
 }
 
 .cardHeader h2 {
   margin: 0;
   font-size: clamp(1.1rem, 2.4vw, 1.5rem);
-  color: #222;
+  color: var(--text);
 }
 
 .cardHeader p {
   margin-top: 5px;
-  color: #817972;
+  color: var(--text-soft);
   font-size: clamp(0.85rem, 1.6vw, 0.95rem);
 }
 
@@ -66,24 +67,24 @@
 }
 
 /* ===========================
-   Save Button
+    Save Button
 =========================== */
 
 .saveBtn {
   border: none;
-  background: #1f1a17;
-  color: #fff;
+  background: var(--primary);
+  color: var(--surface);
   padding: 12px 22px;
   font-size: 14px;
-  border-radius: 999px;
+  border-radius: var(--radius-pill);
   cursor: pointer;
   font-weight: 600;
-  transition: 0.25s;
+  transition: background-color 0.25s ease, opacity 0.25s ease;
   white-space: nowrap;
 }
 
 .saveBtn:hover {
-  background: #000;
+  background: var(--primary-hover);
 }
 
 .saveBtn:disabled {
@@ -92,7 +93,7 @@
 }
 
 /* ===========================
-   Form Layout
+    Form Layout
 =========================== */
 
 .form {
@@ -110,7 +111,7 @@
 .formGroup label {
   font-size: clamp(0.85rem, 1.5vw, 0.95rem);
   font-weight: 600;
-  color: #222;
+  color: var(--text);
   margin-bottom: 10px;
 }
 
@@ -118,28 +119,30 @@
   width: 100%;
   min-height: 120px;
   padding: 16px;
-  border: 1px solid #e5ddd4;
-  border-radius: 14px;
-  background: #f8f5ef;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text);
   resize: vertical;
   font-family: inherit;
   font-size: 15px;
   outline: none;
-  transition: 0.25s;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
   box-sizing: border-box;
 }
 
 .textarea:focus {
-  background: #fff;
-  border-color: #222;
+  background: var(--surface);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
+}
+
+.textarea::placeholder {
+  color: var(--text-soft);
 }
 
 /* ===========================
-   Upload Fields
-   (flex-based row that wraps
-   gracefully at any width,
-   instead of a fixed grid
-   template)
+    Upload Fields
 =========================== */
 
 .uploadRow {
@@ -161,9 +164,9 @@
   width: clamp(50px, 10vw, 70px);
   height: clamp(50px, 10vw, 70px);
   object-fit: contain;
-  border-radius: 12px;
-  border: 1px solid #e5ddd4;
-  background: #fff;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--line);
+  background: var(--surface);
   padding: 6px;
   box-sizing: border-box;
 }
@@ -177,68 +180,88 @@
   flex: 1 1 200px;
   min-width: 180px;
   min-height: 60px;
-  border: 2px dashed #ddd3c7;
-  border-radius: 14px;
-  background: #f8f5ef;
+  border: 2px dashed var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg);
+  color: var(--text-soft);
   padding: 14px;
   cursor: pointer;
   box-sizing: border-box;
   font-size: clamp(0.8rem, 1.5vw, 0.9rem);
+  transition: border-color 0.25s ease, background-color 0.25s ease;
+}
+
+.fileInput:hover {
+  border-color: var(--primary);
+  background: var(--secondary-soft);
 }
 
 .fileInput::file-selector-button {
-  background: #211d1b;
-  color: white;
+  background: var(--primary);
+  color: var(--surface);
   border: none;
   padding: 9px 16px;
-  border-radius: 8px;
+  border-radius: var(--radius-sm);
   cursor: pointer;
   margin-right: 12px;
+  font-weight: 600;
+  transition: background-color 0.25s ease;
+}
+
+.fileInput::file-selector-button:hover {
+  background: var(--primary-hover);
 }
 
 /* ===========================
-   Text Inputs
+    Text Inputs
 =========================== */
 
 .formGroup input[type="text"],
 .formGroup input[type="email"] {
   width: 100%;
   height: 52px;
-  border: 1px solid #e5ddd4;
-  border-radius: 14px;
-  background: #f8f5ef;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--bg);
   padding: 0 18px;
   font-size: 15px;
-  color: #222;
+  color: var(--text);
   outline: none;
-  transition: 0.25s;
+  transition: border-color 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
   box-sizing: border-box;
 }
 
 .formGroup input[type="text"]:focus,
 .formGroup input[type="email"]:focus {
-  background: #fff;
-  border-color: #222;
+  background: var(--surface);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
+}
+
+.formGroup input::placeholder {
+  color: var(--text-soft);
 }
 
 .removeBtn {
   padding: 8px 14px;
   border: none;
-  border-radius: 8px;
-  background: #dc2626;
-  color: #fff;
+  border-radius: var(--radius-sm);
+  background: var(--danger-bg);
+  color: var(--danger);
   cursor: pointer;
   font-size: 13px;
-  transition: 0.2s;
+  font-weight: 600;
+  transition: background-color 0.2s ease, color 0.2s ease;
   white-space: nowrap;
 }
 
 .removeBtn:hover {
-  background: #b91c1c;
+  background: var(--danger);
+  color: var(--surface);
 }
 
 /* ===========================
-   Tablet
+    Tablet
 =========================== */
 
 @media (max-width: 992px) {
@@ -253,7 +276,7 @@
 }
 
 /* ===========================
-   Mobile
+    Mobile
 =========================== */
 
 @media (max-width: 768px) {
@@ -271,7 +294,7 @@
 }
 
 /* ===========================
-   Small Mobile
+    Small Mobile
 =========================== */
 
 @media (max-width: 480px) {

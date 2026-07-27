@@ -39,14 +39,6 @@ export default function CartPage() {
           </p>
         </div>
 
-        {/*
-        <button
-          onClick={clearCart}
-          className={styles.clearCartBtn}
-        >
-          Clear Cart
-        </button>
-        */}
       </div>
 
       <div className={styles.cartContent}>

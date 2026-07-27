@@ -6,7 +6,7 @@
   display: flex;
   flex-direction: column;
   height: 100%;
-  transition: all .3s ease;
+  transition: all 0.3s ease;
   box-shadow: var(--shadow-sm);
 }
 
@@ -20,7 +20,7 @@
 .imageContainer {
   position: relative;
   height: 220px;
-  background: #fff;
+  background: var(--surface);
   display: flex;
   justify-content: center;
   align-items: center;
@@ -32,10 +32,8 @@
   max-width: 170px;
   max-height: 170px;
   object-fit: contain;
-  transition: .35s ease;
+  transition: 0.35s ease;
 }
-
-
 
 /* ================= BADGES ================= */
 
@@ -44,7 +42,7 @@
   top: 14px;
   left: 14px;
   background: var(--accent);
-  color: #fff;
+  color: var(--surface);
   padding: 5px 10px;
   border-radius: var(--radius-pill);
   font-size: 11px;
@@ -57,14 +55,14 @@
   right: 14px;
   width: 36px;
   height: 36px;
-  border-radius: 50%;
+  border-radius: var(--radius-pill);
   background: var(--surface);
   color: var(--text-soft);
   display: flex;
   align-items: center;
   justify-content: center;
   box-shadow: var(--shadow-sm);
-  transition: .25s;
+  transition: 0.25s ease;
 }
 
 .wishlist:hover {
@@ -98,7 +96,7 @@
   overflow: hidden;
 
   min-height: 46px;
-  transition: .2s;
+  transition: 0.2s ease;
 }
 
 .title:hover {
@@ -158,7 +156,7 @@
   height: 46px;
   border-radius: var(--radius-sm);
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
   font-size: 15px;
   font-weight: 600;
 
@@ -167,7 +165,7 @@
   justify-content: center;
   gap: 8px;
 
-  transition: .25s;
+  transition: 0.25s ease;
 }
 
 .cartButton:hover {
@@ -176,80 +174,74 @@
 
 /* ================= RESPONSIVE ================= */
 
-@media (max-width:1024px){
-
-  .imageContainer{
-    height:190px;
+@media (max-width: 1024px) {
+  .imageContainer {
+    height: 190px;
   }
 
-  .image{
-    max-width:150px;
-    max-height:150px;
+  .image {
+    max-width: 150px;
+    max-height: 150px;
   }
-
 }
 
-@media (max-width:768px){
-
-  .content{
-    padding:14px;
+@media (max-width: 768px) {
+  .content {
+    padding: 14px;
   }
 
-  .imageContainer{
-    height:170px;
+  .imageContainer {
+    height: 170px;
   }
 
-  .title{
-    font-size:15px;
-    min-height:42px;
+  .title {
+    font-size: 15px;
+    min-height: 42px;
   }
 
-  .price{
-    font-size:20px;
+  .price {
+    font-size: 20px;
   }
 
-  .cartButton{
-    height:44px;
-    font-size:14px;
+  .cartButton {
+    height: 44px;
+    font-size: 14px;
   }
-
 }
 
-@media (max-width:480px){
-
-  .imageContainer{
-    height:150px;
-    padding:18px;
+@media (max-width: 480px) {
+  .imageContainer {
+    height: 150px;
+    padding: 18px;
   }
 
-  .image{
-    max-width:110px;
-    max-height:110px;
+  .image {
+    max-width: 110px;
+    max-height: 110px;
   }
 
-  .content{
-    padding:12px;
+  .content {
+    padding: 12px;
   }
 
-  .title{
-    font-size:14px;
+  .title {
+    font-size: 14px;
   }
 
-  .category{
-    font-size:12px;
+  .category {
+    font-size: 12px;
   }
 
-  .price{
-    font-size:18px;
+  .price {
+    font-size: 18px;
   }
 
-  .oldPrice{
-    font-size:13px;
+  .oldPrice {
+    font-size: 13px;
   }
 
-  .cartButton{
-    height:40px;
-    font-size:13px;
+  .cartButton {
+    height: 40px;
+    font-size: 13px;
   }
-
 }

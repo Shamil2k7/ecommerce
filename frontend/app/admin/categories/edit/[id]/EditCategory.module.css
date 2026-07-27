@@ -21,7 +21,7 @@
   margin-bottom: 14px;
   color: var(--text-soft);
   font-weight: 600;
-  transition: .3s;
+  transition: color 0.3s ease;
 }
 
 .back:hover {
@@ -95,9 +95,10 @@
   padding: 13px 15px;
   border: 1px solid var(--line);
   border-radius: var(--radius-md);
-  background: white;
+  background: var(--surface);
+  color: var(--text);
   font-size: 15px;
-  transition: .25s;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease;
   outline: none;
 }
 
@@ -106,7 +107,7 @@
 .field select:focus,
 .card select:focus {
   border-color: var(--primary);
-  box-shadow: 0 0 0 3px rgba(46,41,38,.08);
+  box-shadow: 0 0 0 3px var(--secondary-soft);
 }
 
 .field textarea {
@@ -126,7 +127,13 @@
   overflow: hidden;
   border-radius: var(--radius-md);
   border: 2px dashed var(--line);
+  background: var(--bg);
   cursor: pointer;
+  transition: border-color 0.3s ease;
+}
+
+.upload:hover {
+  border-color: var(--primary);
 }
 
 .upload img {
@@ -138,8 +145,8 @@
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(46,41,38,.65);
-  color: white;
+  background: rgba(31, 41, 55, 0.75);
+  color: var(--surface);
 
   display: flex;
   flex-direction: column;
@@ -148,7 +155,7 @@
   gap: 10px;
 
   opacity: 0;
-  transition: .3s;
+  transition: opacity 0.3s ease;
 }
 
 .upload:hover .overlay {
@@ -171,12 +178,14 @@
   border-radius: var(--radius-md);
   font-size: 15px;
   font-weight: 600;
-  transition: .25s;
+  transition: background 0.25s ease, color 0.25s ease;
+  cursor: pointer;
 }
 
 .saveBtn {
+  border: none;
   background: var(--primary);
-  color: white;
+  color: var(--surface);
 }
 
 .saveBtn:hover {
@@ -185,7 +194,8 @@
 
 .cancelBtn {
   border: 1px solid var(--line);
-  background: white;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .cancelBtn:hover {
@@ -197,6 +207,7 @@
   justify-content: center;
   align-items: center;
   gap: 8px;
+  border: none;
 
   background: var(--danger-bg);
   color: var(--danger);
@@ -204,23 +215,20 @@
 
 .deleteBtn:hover {
   background: var(--danger);
-  color: white;
+  color: var(--surface);
 }
 
 /* ===========================
    Responsive
 =========================== */
 
-@media (max-width:992px) {
-
+@media (max-width: 992px) {
   .grid {
     grid-template-columns: 1fr;
   }
-
 }
 
-@media (max-width:768px) {
-
+@media (max-width: 768px) {
   .header h1 {
     font-size: 28px;
   }
@@ -228,11 +236,9 @@
   .card {
     padding: 20px;
   }
-
 }
 
-@media (max-width:480px) {
-
+@media (max-width: 480px) {
   .header h1 {
     font-size: 24px;
   }
@@ -244,5 +250,4 @@
   .upload {
     height: 220px;
   }
-
 }

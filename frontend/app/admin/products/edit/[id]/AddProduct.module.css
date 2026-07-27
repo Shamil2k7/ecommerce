@@ -7,7 +7,7 @@
   margin-bottom: 16px;
   color: var(--text-soft);
   font-weight: 600;
-  transition: .3s;
+  transition: color 0.3s ease;
 }
 
 .back:hover {
@@ -39,14 +39,16 @@
   background: var(--danger-bg);
   color: var(--danger);
 
+  border: none;
   border-radius: var(--radius-md);
 
   font-weight: 600;
+  cursor: pointer;
 
-  transition: .3s;
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .delete:hover {
   background: var(--danger);
-  color: white;
+  color: var(--surface);
 }

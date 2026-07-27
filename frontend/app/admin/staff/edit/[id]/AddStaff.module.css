@@ -1,8 +1,16 @@
+/* ===========================
+        Upload & Overlay
+=========================== */
+
+.upload {
+  position: relative;
+}
+
 .overlay {
   position: absolute;
   inset: 0;
-  background: rgba(46, 41, 38, 0.65);
-  color: white;
+  background: var(--overlay-bg, rgba(0, 0, 0, 0.65));
+  color: var(--surface);
 
   display: flex;
   flex-direction: column;
@@ -11,33 +19,35 @@
   gap: 10px;
 
   opacity: 0;
-  transition: 0.3s;
-}
-
-.upload {
-  position: relative;
+  transition: opacity 0.3s ease;
 }
 
 .upload:hover .overlay {
   opacity: 1;
 }
 
+/* ===========================
+        Delete Button
+=========================== */
+
 .deleteBtn {
   flex: 1;
   height: 48px;
+  border: none;
   border-radius: var(--radius-md);
   background: var(--danger-bg);
   color: var(--danger);
   font-weight: 600;
+  font-size: 15px;
   display: flex;
   justify-content: center;
   align-items: center;
   gap: 8px;
-  transition: 0.3s;
+  cursor: pointer;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .deleteBtn:hover {
   background: var(--danger);
-  color: white;
+  color: var(--surface);
 }
-

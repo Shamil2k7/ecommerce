@@ -25,7 +25,7 @@
   width: 50px;
   height: 50px;
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
   border-radius: var(--radius-md);
   display: flex;
   align-items: center;
@@ -60,7 +60,7 @@
   padding: 0 16px;
   border-radius: var(--radius-md);
   color: var(--text-soft);
-  transition: all .25s ease;
+  transition: all 0.25s ease;
   margin-bottom: 8px;
   font-weight: 500;
 }
@@ -72,13 +72,13 @@
 
 .active {
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
   box-shadow: var(--shadow-md);
 }
 
 .active:hover {
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
 }
 
 .link svg {
@@ -105,12 +105,12 @@
   gap: 10px;
 
   font-weight: 600;
-  transition: .3s;
+  transition: 0.3s;
 }
 
 .logout:hover {
   background: var(--danger);
-  color: white;
+  color: var(--surface);
 }
 
 /* Scrollbar */
@@ -120,13 +120,14 @@
 }
 
 .sidebar::-webkit-scrollbar-thumb {
-  background: #d7d7d7;
-  border-radius: 20px;
+  background: var(--line);
+  border-radius: var(--radius-pill);
 }
 
 .sidebar::-webkit-scrollbar-track {
   background: transparent;
 }
+
 /* Dropdown */
 
 .dropdownBtn {
@@ -166,17 +167,17 @@
 
 .activeDropdown {
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
   box-shadow: var(--shadow-md);
 }
 
 .activeDropdown:hover {
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
 }
 
 .activeDropdown svg {
-  color: #fff;
+  color: var(--surface);
 }
 
 /* Sub Menu */
@@ -211,13 +212,13 @@
 
 .subLink.active {
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
   box-shadow: var(--shadow-md);
 }
 
 .subLink.active:hover {
   background: var(--primary);
-  color: #fff;
+  color: var(--surface);
 }
 
 /* Laptop */
@@ -289,7 +290,7 @@
     top: 0;
     width: 260px;
     transform: translateX(-100%);
-    transition: transform .3s ease;
+    transition: transform 0.3s ease;
     z-index: 999;
   }
 
@@ -312,4 +313,4 @@
   .logout {
     justify-content: center;
   }
-}   
+}

@@ -1,5 +1,5 @@
-import Wishlist from "../../models/wishlist.model.js";
 import Product from "../../models/product.model.js";
+import Wishlist from "../../models/Wishlist.js";
 
 // ===========================================
 // Add to Wishlist
@@ -44,6 +44,7 @@ export const addToWishlist = async (req, res) => {
       wishlist,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -82,6 +83,7 @@ export const getWishlist = async (req, res) => {
       wishlist,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -115,6 +117,7 @@ export const removeWishlist = async (req, res) => {
       message: "Removed from wishlist",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -129,6 +132,9 @@ export const removeWishlist = async (req, res) => {
 
 export const checkWishlist = async (req, res) => {
   try {
+    console.log("req.user:", req.user);
+    console.log("productId:", req.params.productId);
+
     const { productId } = req.params;
 
     const wishlist = await Wishlist.findOne({
@@ -141,6 +147,7 @@ export const checkWishlist = async (req, res) => {
       wishlisted: !!wishlist,
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,
@@ -183,6 +190,7 @@ export const toggleWishlist = async (req, res) => {
       message: "Added to wishlist",
     });
   } catch (error) {
+    console.error(error);
     res.status(500).json({
       success: false,
       message: error.message,

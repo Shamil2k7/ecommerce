@@ -1,0 +1,331 @@
+.contact {
+  width: 100%;
+  background: #f8fafc;
+  min-height: 100vh;
+}
+
+/* Hero */
+
+.hero {
+  max-width: 1420px;
+  margin: auto;
+  padding: 50px 24px 20px;
+}
+
+.hero h1 {
+  font-size: 35px;
+  font-weight: 700;
+  color: #090909;
+  margin-bottom: 10px;
+}
+
+.hero p {
+  font-size: 16px;
+  color: #6b7280;
+  max-width: 650px;
+  line-height: 1.7;
+}
+
+/* Main Layout */
+
+.container {
+  max-width: 1420px;
+  margin: auto;
+  padding: 20px 24px 50px;
+
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 32px;
+}
+
+/* Left Card */
+
+.info {
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+
+.info h2 {
+  margin-bottom: 25px;
+  font-size: 28px;
+  color: #111827;
+}
+
+.card {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+
+  padding: 18px;
+  margin-bottom: 16px;
+
+  border: 1px solid #e5e7eb;
+  border-radius: 14px;
+
+  transition: .3s;
+}
+
+.card:hover {
+  border-color: #2563eb;
+  transform: translateY(-3px);
+}
+
+.card svg {
+  color: #2563eb;
+  width: 22px;
+  height: 22px;
+  flex-shrink: 0;
+}
+
+.card h4 {
+  margin-bottom: 5px;
+  color: #111827;
+  font-size: 17px;
+}
+
+.card p {
+  color: #6b7280;
+  line-height: 1.6;
+}
+
+/* Social */
+
+.socials {
+  display: flex;
+  gap: 12px;
+  margin-top: 25px;
+}
+
+.socials a {
+  width: 46px;
+  height: 46px;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  background: #f3f4f6;
+  color: #2563eb;
+
+  border-radius: 50%;
+  transition: .3s;
+}
+
+.socials a:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* Right Card */
+
+.formBox {
+  background: #fff;
+  border-radius: 18px;
+  padding: 30px;
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+
+.formBox h2 {
+  font-size: 28px;
+  margin-bottom: 25px;
+  color: #111827;
+}
+
+.formBox form {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.formBox input,
+.formBox textarea {
+  width: 100%;
+  padding: 15px;
+
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+
+  font-size: 15px;
+  font-family: inherit;
+
+  outline: none;
+  transition: .3s;
+}
+
+.formBox input:focus,
+.formBox textarea:focus {
+  border-color: #2563eb;
+  box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+}
+
+.formBox textarea {
+  resize: vertical;
+  min-height: 160px;
+}
+
+.formBox button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background: #2563eb;
+  color: white;
+
+  border: none;
+  border-radius: 10px;
+
+  padding: 15px;
+
+  font-size: 16px;
+  font-weight: 600;
+
+  cursor: pointer;
+  transition: .3s;
+}
+
+.formBox button:hover {
+  background: #1d4ed8;
+}
+
+.formBox button:disabled {
+  opacity: .7;
+  cursor: not-allowed;
+}
+
+/* Google Map */
+
+.map {
+  max-width: 1420px;
+  margin: auto;
+  padding: 0 24px 60px;
+}
+
+.map iframe {
+  width: 100%;
+  height: 450px;
+
+  border: none;
+  border-radius: 18px;
+
+  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+}
+
+/* Loading */
+
+.loading {
+  height: 70vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 24px;
+  font-weight: 600;
+}
+
+/* ========================= */
+/* Responsive */
+/* ========================= */
+
+@media (max-width:1200px){
+
+  .container{
+    gap:24px;
+  }
+
+}
+
+@media (max-width:992px){
+
+  .container{
+    grid-template-columns:1fr;
+  }
+
+}
+
+@media (max-width:768px){
+
+  .hero{
+    padding:35px 18px 15px;
+  }
+
+  .hero h1{
+    font-size:30px;
+  }
+
+  .hero p{
+    font-size:15px;
+  }
+
+  .container{
+    padding:18px;
+  }
+
+  .info,
+  .formBox{
+    padding:24px;
+  }
+
+  .info h2,
+  .formBox h2{
+    font-size:24px;
+  }
+
+  .map{
+    padding:0 18px 40px;
+  }
+
+  .map iframe{
+    height:320px;
+  }
+
+}
+
+@media (max-width:480px){
+
+  .hero{
+    padding:25px 15px 10px;
+  }
+
+  .hero h1{
+    font-size:24px;
+  }
+
+  .hero p{
+    font-size:14px;
+  }
+
+  .container{
+    padding:15px;
+  }
+
+  .info,
+  .formBox{
+    padding:18px;
+  }
+
+  .card{
+    padding:15px;
+  }
+
+  .socials{
+    justify-content:center;
+    flex-wrap:wrap;
+  }
+
+  .socials a{
+    width:42px;
+    height:42px;
+  }
+
+  .map{
+    padding:0 15px 30px;
+  }
+
+  .map iframe{
+    height:250px;
+  }
+
+}

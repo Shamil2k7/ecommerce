@@ -1,16 +1,15 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Link from "next/link";
 import styles from "./Hero.module.css";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-const AUTO_SLIDE = 4000;
+const AUTO_SLIDE = 3000;
 export default function Hero() {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
   const API = process.env.NEXT_PUBLIC_API_URL;
-  // Fetch Hero Sections
+ 
   const fetchHeroSections = async () => {
 
     try {
@@ -35,7 +34,7 @@ export default function Hero() {
   useEffect(() => {
     fetchHeroSections();
   }, []);
-  // Next slide
+  // Next-slide
 
   const nextSlide = () => {
 
@@ -46,7 +45,7 @@ export default function Hero() {
     );
 
   };
-  // Previous slide
+  // Previous-slide
 
   const prevSlide = () => {
 
@@ -57,7 +56,7 @@ export default function Hero() {
     );
 
   };
-  // Auto slider
+  // Auto-slider
 
   useEffect(() => {
 
@@ -107,13 +106,11 @@ export default function Hero() {
                   className={styles.slide}
                   key={slide._id}
                 >
-                  <Link href="/products">
-                    <img
-                      src={slide.image}
-                      alt="Hero Banner"
-                      className={styles.bannerImage}
-                    />
-                  </Link>
+                  <img
+                    src={slide.image}
+                    alt="Hero Banner"
+                    className={styles.bannerImage}
+                  />
                 </div>
               ))
             }
