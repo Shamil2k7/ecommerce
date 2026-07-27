@@ -1,7 +1,7 @@
 .hero {
   width: 100%;
   overflow: hidden;
-  background: #fff;
+  background: var(--surface);
 }
 
 .carouselWrapper {
@@ -16,7 +16,7 @@
 
 .sliderTrack {
   display: flex;
-  transition: transform .6s ease-in-out;
+  transition: transform 0.6s ease-in-out;
 }
 
 .slide {
@@ -26,16 +26,15 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  background: #fff;
+  background: var(--surface);
 }
 
 .slide img {
   width: 100%;
   height: 100%;
-  object-fit: contain;   /* removed zoom */
+  object-fit: contain;
   display: block;
 }
-
 
 /* Arrows */
 
@@ -46,14 +45,16 @@
   width: 46px;
   height: 46px;
   border: none;
-  border-radius: 50%;
-  background: rgba(255,255,255,.95);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text);
   cursor: pointer;
   display: flex;
   justify-content: center;
   align-items: center;
   z-index: 20;
-  box-shadow: 0 5px 20px rgba(0,0,0,.15);
+  box-shadow: var(--shadow-md);
+  transition: background 0.3s ease, color 0.3s ease;
 }
 
 .leftArrow {
@@ -65,10 +66,9 @@
 }
 
 .arrow:hover {
-  background: #4A0A10;
-  color: #fff;
+  background: var(--primary);
+  color: var(--surface);
 }
-
 
 /* Dots */
 
@@ -85,68 +85,59 @@
 .dot {
   width: 10px;
   height: 10px;
-  border-radius: 50%;
-  background: rgba(255,255,255,.6);
+  border-radius: var(--radius-pill);
+  background: var(--secondary-soft);
   cursor: pointer;
+  transition: width 0.3s ease, background 0.3s ease;
 }
 
 .active {
-  background: #fff;
+  background: var(--surface);
   width: 28px;
-  border-radius: 30px;
+  border-radius: var(--radius-pill);
 }
 
+/* ================= RESPONSIVE ================= */
 
 /* Tablet */
-
-@media(max-width:992px){
-
+@media (max-width: 992px) {
   .slide {
     height: 340px;
   }
 
   .arrow {
-    width:42px;
-    height:42px;
+    width: 42px;
+    height: 42px;
   }
-
 }
 
-
 /* Mobile */
-
-@media(max-width:768px){
-
+@media (max-width: 768px) {
   .slide {
-    height:220px;
+    height: 220px;
   }
 
   .arrow {
-    display:none;
+    display: none;
   }
 
   .dots {
-    bottom:12px;
+    bottom: 12px;
   }
-
 }
 
-
 /* Small Mobile */
-
-@media(max-width:480px){
-
+@media (max-width: 480px) {
   .slide {
-    height:170px;
+    height: 170px;
   }
 
   .dot {
-    width:8px;
-    height:8px;
+    width: 8px;
+    height: 8px;
   }
 
   .active {
-    width:22px;
+    width: 22px;
   }
-
 }
