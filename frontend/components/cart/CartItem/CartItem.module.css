@@ -2,8 +2,8 @@
   display: flex;
   gap: 20px;
   padding: 20px;
-  background: var(--surface);
-  border-bottom: 1px solid var(--line);
+  background: #fff;
+  border-bottom: 1px solid #e5e7eb;
   margin-bottom: -16px;
 }
 
@@ -31,13 +31,13 @@
 .itemName {
   font-size: 18px;
   font-weight: 500;
-  color: var(--text);
+  color: #212121;
   margin-bottom: 8px;
   transition: 0.3s;
 }
 
 .itemName:hover {
-  color: var(--accent);
+  color: #2874f0;
   cursor: pointer;
 }
 
@@ -48,7 +48,7 @@
 }
 
 .itemVariant span {
-  color: var(--text-soft);
+  color: #878787;
   font-size: 14px;
 }
 
@@ -60,16 +60,16 @@
 }
 
 .ratingBadge {
-  background: var(--success);
-  color: var(--surface);
+  background: #388e3c;
+  color: #fff;
   padding: 3px 8px;
-  border-radius: var(--radius-sm);
+  border-radius: 4px;
   font-size: 13px;
   font-weight: 600;
 }
 
 .reviewCount {
-  color: var(--text-soft);
+  color: #878787;
   font-size: 14px;
 }
 
@@ -82,13 +82,13 @@
 }
 
 .offer {
-  color: var(--success);
+  color: #388e3c;
   font-size: 15px;
   font-weight: 600;
 }
 
 .itemOriginalPrice {
-  color: var(--text-soft);
+  color: #878787;
   text-decoration: line-through;
   font-size: 18px;
 }
@@ -96,11 +96,11 @@
 .itemPrice {
   font-size: 23px;
   font-weight: 600;
-  color: var(--text);
+  color: #212121;
 }
 
 .upiOffer {
-  color: var(--accent);
+  color: #2874f0;
   font-size: 15px;
   margin-bottom: 3px;
 }
@@ -108,8 +108,8 @@
 .quantityControl {
   display: flex;
   align-items: center;
-  border: 1px solid var(--line);
-  border-radius: var(--radius-sm);
+  border: 1px solid #dcdcdc;
+  border-radius: 4px;
   overflow: hidden;
 }
 
@@ -117,16 +117,15 @@
   width: 40px;
   height: 40px;
   border: none;
-  background: var(--bg);
-  color: var(--text);
+  background: #f5f5f5;
   font-size: 20px;
   cursor: pointer;
   transition: 0.3s;
 }
 
 .qtyBtn:hover:not(:disabled) {
-  background: var(--primary);
-  color: var(--surface);
+  background: #2874f0;
+  color: #fff;
 }
 
 .qtyBtn:disabled {
@@ -139,7 +138,6 @@
   text-align: center;
   font-size: 16px;
   font-weight: 600;
-  color: var(--text);
 }
 
 .actionBar {
@@ -147,7 +145,7 @@
   align-items: center;
   margin-top: auto;
   margin-bottom: -18px;
-  border-top: 1px solid var(--line);
+  border-top: 1px solid #ededed;
 }
 
 .actionBtn {
@@ -157,10 +155,10 @@
   justify-content: center;
   gap: 8px;
   padding: 18px 12px;
-  background: var(--surface);
+  background: #fff;
   border: none;
-  border-right: 1px solid var(--line);
-  color: var(--text-soft);
+  border-right: 1px solid #ededed;
+  color: #555;
   font-size: 15px;
   font-weight: 600;
   cursor: pointer;
@@ -177,29 +175,29 @@
 }
 
 .actionBtn:hover {
-  color: var(--accent);
+  color: #2874f0;
 }
 
 .actionBtn:hover .actionIcon {
-  color: var(--accent);
+  color: #2874f0;
   transform: scale(1.1);
 }
 
 .removeBtn:hover {
-  color: var(--danger) !important;
+  color: #e53935 !important;
 }
 
 .removeBtn:hover .actionIcon {
-  color: var(--danger) !important;
+  color: #e53935 !important;
   transform: scale(1.1);
 }
 
 .buyBtn:hover {
-  color: var(--success);
+  color: #16a34a;
 }
 
 .buyBtn:hover .actionIcon {
-  color: var(--success);
+  color: #16a34a;
   transform: scale(1.1);
 }
 
@@ -207,7 +205,6 @@
   display: none;
 }
 
-/* ================= RESPONSIVE ================= */
 
 @media (max-width: 1024px) and (min-width: 601px) {
   .cartItem {
@@ -285,6 +282,7 @@
   }
 }
 
+
 @media (max-width: 600px) {
   .leftSection,
   .itemDetails {
@@ -296,10 +294,12 @@
     width: 100%;
     max-width: 100%;
     border: none;
-    margin-bottom: -5px;
+    /* border-radius: 16px; */
+    /* margin: 0 12px 12px 12px; */
+  margin-bottom: -5px;
 
     background: transparent;
-    box-shadow: var(--shadow-sm);
+    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.06); */
     box-sizing: border-box;
   }
 
@@ -307,7 +307,8 @@
     display: block;
     position: relative;
     overflow: hidden;
-    border: 1px solid var(--line);
+    /* border-radius: 16px; */
+    border: 1px solid #ececec;
     width: 100%;
   }
 
@@ -315,7 +316,7 @@
     display: flex;
     gap: 12px;
     padding: 14px;
-    background: var(--surface);
+    background: #fff;
     position: relative;
     z-index: 2;
     transition: transform 0.28s ease;
@@ -330,9 +331,9 @@
     width: 64px;
     height: 64px;
     object-fit: cover;
-    border-radius: var(--radius-sm);
+    border-radius: 8px;
     flex-shrink: 0;
-    background: var(--bg);
+    background: #f5f5f5;
   }
 
   .mobileInfo {
@@ -346,7 +347,7 @@
   .mobileName {
     font-size: 14px;
     font-weight: 600;
-    color: var(--text);
+    color: #212121;
     line-height: 1.35;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -362,7 +363,7 @@
 
   .mobileVariant span {
     font-size: 11px;
-    color: var(--text-soft);
+    color: #878787;
   }
 
   .mobileRating {
@@ -372,17 +373,17 @@
   }
 
   .mobileRatingBadge {
-    background: var(--success);
-    color: var(--surface);
+    background: #388e3c;
+    color: #fff;
     padding: 1px 6px;
-    border-radius: var(--radius-sm);
+    border-radius: 4px;
     font-size: 10px;
     font-weight: 600;
   }
 
   .mobileReviewCount {
     font-size: 11px;
-    color: var(--text-soft);
+    color: #878787;
   }
 
   .mobilePriceRow {
@@ -395,29 +396,29 @@
   .mobilePrice {
     font-size: 16px;
     font-weight: 700;
-    color: var(--text);
+    color: #212121;
   }
 
   .mobileOriginalPrice {
     font-size: 12px;
-    color: var(--text-soft);
+    color: #878787;
     text-decoration: line-through;
   }
 
   .mobileDiscount {
     font-size: 11px;
     font-weight: 600;
-    color: var(--success);
+    color: #388e3c;
   }
 
   .mobileUpi {
     font-size: 11px;
-    color: var(--accent);
+    color: #2874f0;
   }
 
   .mobileStock {
     font-size: 11px;
-    color: var(--text-soft);
+    color: #666;
   }
 
   .mobileFooter {
@@ -430,8 +431,8 @@
   .mobileQty {
     display: flex;
     align-items: center;
-    border: 1px solid var(--line);
-    border-radius: var(--radius-sm);
+    border: 1px solid #dcdcdc;
+    border-radius: 6px;
     overflow: hidden;
   }
 
@@ -439,8 +440,7 @@
     width: 26px;
     height: 26px;
     border: none;
-    background: var(--bg);
-    color: var(--text);
+    background: #f5f5f5;
     font-size: 15px;
     cursor: pointer;
   }
@@ -455,7 +455,6 @@
     text-align: center;
     font-size: 13px;
     font-weight: 600;
-    color: var(--text);
   }
 
   .mobileActions {
@@ -466,10 +465,10 @@
   .mobileIconBtn {
     width: 30px;
     height: 30px;
-    border-radius: var(--radius-sm);
-    border: 1px solid var(--line);
-    background: var(--surface);
-    color: var(--text-soft);
+    border-radius: 5px;
+    border: 1px solid #ececec;
+    background: #fff;
+    color: #555;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -478,8 +477,8 @@
   }
 
   .mobileIconBtn:active {
-    color: var(--accent);
-    border-color: var(--accent);
+    color: #2874f0;
+    border-color: #2874f0;
   }
 
   .mobileDeleteBtn {
@@ -488,9 +487,9 @@
     right: 0;
     width: 76px;
     height: 100%;
-    background: var(--danger);
+    background: #e53935;
     border: none;
-    color: var(--surface);
+    color: #fff;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -506,6 +505,7 @@
     font-weight: 600;
   }
 }
+
 
 @media (max-width: 360px) {
   .cartItem {

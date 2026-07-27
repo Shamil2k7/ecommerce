@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 import { FiHeart, FiTrash2, FiShoppingBag } from "react-icons/fi";
 import { useRouter } from "next/navigation";
@@ -10,7 +11,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
   const [isSwiped, setIsSwiped] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
   
-  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   const discount =
     item.originalPrice > item.price
@@ -184,7 +185,7 @@ const CartItem = ({ item, updateQuantity, removeItem }) => {
                   }
                   disabled={item.quantity <= 1}
                 >
-                  −
+                  -
                 </button>
                 <span>{item.quantity}</span>
                 <button

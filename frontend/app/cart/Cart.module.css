@@ -53,16 +53,16 @@
 
 .cartItemsList {
   flex: 1;
-  min-width: 0; /* prevents flex item overflow with long product names */
+  min-width: 0; 
   display: flex;
   flex-direction: column;
   gap: 24px;
 }
 
-/* Large tablets / small laptops */
 @media (max-width: 1200px) {
   .cartContainer {
     padding: 32px 20px;
+    margin-top: 1px;
   }
 
   .cartContent {

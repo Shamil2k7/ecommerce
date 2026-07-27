@@ -5,18 +5,17 @@
 
 .orderSummaryCard {
   width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--line);
+  background: #ffffff;
+  border: 1px solid #ececec;
   padding: 28px;
-  border-radius: var(--radius-lg);
 }
 
 .orderSummaryCard h2 {
   font-size: 28px;
   font-weight: 700;
-  color: var(--text);
+  color: #222;
   margin-bottom: 24px;
-  letter-spacing: 0.3px;
+  letter-spacing: .3px;
 }
 
 .orderSummaryCard h2::after {
@@ -25,11 +24,11 @@
   width: 100%;
   height: 4px;
   margin-top: 12px;
-  border-radius: var(--radius-pill);
+  /* border-radius: 20px; */
   background: linear-gradient(
     to right,
-    var(--primary) 80%,
-    var(--line) 80%
+    #111 80%,
+    #ececec 80%
   );
 }
 
@@ -45,17 +44,17 @@
 }
 
 .orderItems::-webkit-scrollbar-track {
-  background: var(--bg);
-  border-radius: var(--radius-pill);
+  background: #f3f3f3;
+  /* border-radius: 20px; */
 }
 
 .orderItems::-webkit-scrollbar-thumb {
-  background: var(--line);
-  border-radius: var(--radius-pill);
+  background: #bcbcbc;
+  /* border-radius: 20px; */
 }
 
 .orderItems::-webkit-scrollbar-thumb:hover {
-  background: var(--text-soft);
+  background: #999;
 }
 
 .orderItem {
@@ -64,7 +63,7 @@
   align-items: flex-start;
   gap: 16px;
   padding: 16px 0;
-  border-bottom: 1px dashed var(--line);
+  border-bottom: 1px dashed #d9d9d9;
 }
 
 .orderItem:last-child {
@@ -80,7 +79,7 @@
   display: block;
   font-size: 16px;
   font-weight: 600;
-  color: var(--text);
+  color: #222;
   line-height: 1.4;
   margin-bottom: 6px;
 }
@@ -88,20 +87,20 @@
 .orderItemMeta {
   display: inline-block;
   font-size: 13px;
-  color: var(--text-soft);
+  color: #777;
 }
 
 .orderItemPrice {
   font-size: 16px;
   font-weight: 700;
-  color: var(--text);
+  color: #111;
   white-space: nowrap;
 }
 
 .sectionDivider {
   width: 100%;
   height: 1px;
-  background: var(--line);
+  background: #ececec;
   margin: 24px 0;
 }
 
@@ -111,8 +110,8 @@
   align-items: center;
   padding: 15px 0;
   font-size: 15px;
-  color: var(--text-soft);
-  border-bottom: 1px dashed var(--line);
+  color: #444;
+  border-bottom: 1px dashed #d8d8d8;
 }
 
 .priceRow:last-of-type {
@@ -125,15 +124,15 @@
 
 .priceRow span:last-child {
   font-weight: 600;
-  color: var(--text);
+  color: #111;
 }
 
 .discountRow {
-  color: var(--success);
+  color: #2e7d32;
 }
 
 .discountRow span:last-child {
-  color: var(--success);
+  color: #2e7d32;
   font-weight: 700;
 }
 
@@ -143,7 +142,7 @@
   align-items: stretch;
   margin: 24px 0;
   overflow: hidden;
-  border-radius: var(--radius-md);
+  border-radius: 14px;
   height: 120px;
   background: linear-gradient(135deg,#90AD72 0%, #90AD72 100%);
 }
@@ -154,7 +153,7 @@
   position: absolute;
   width: 28px;
   height: 28px;
-  background: var(--surface);
+  background: #fff;
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
@@ -182,7 +181,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: var(--surface);
+  color: #ffffff;
   margin-bottom: 12px;
   margin-left: 11px;
   text-transform: uppercase;
@@ -193,37 +192,37 @@
   border: none;
   outline: none;
   margin-left: 7px;
-  background: var(--secondary-soft);
+  background: #e1e9d9;
   padding: 14px 16px;
-  border-radius: var(--radius-sm);
+  border-radius: 8px;
   font-size: 15px;
   color: #222;
   transition: .3s;
 }
 
 .ticketInput::placeholder {
-  color: var(--text-soft);
+  color: rgba(0, 0, 0, .55);
 }
 
 .ticketInput:focus {
-  background: var(--surface);
+  background: rgba(255, 255, 255, .75);
 }
 
 .ticketButton {
   width: 120px;
   border: none;
-  background: var(--primary-hover);
-  color: var(--surface);
+  background: #111;
+  color:#ffffff;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
   position: relative;
-  transition: 0.3s;
+  transition: .3s;
 }
 
 .ticketButton:hover {
-  background: var(--primary);
+  background: #000;
 }
 
 .ticketButton::before {
@@ -232,7 +231,7 @@
   left: 0;
   top: 12px;
   bottom: 12px;
-  border-left: 2px dashed var(--secondary-soft);
+  border-left: 2px dashed rgba(255, 255, 255, .6);
 }
 
 .activeCouponTicket {
@@ -241,9 +240,9 @@
   align-items: stretch;
   margin: 24px 0;
   overflow: hidden;
-  border-radius: var(--radius-md);
-  background: linear-gradient(135deg, var(--success) 0%, var(--success) 100%);
-  color: var(--surface);
+  border-radius: 14px ;
+  background: linear-gradient(135deg,#9ce37f 0%,#9ce37f 100%);
+  color: #000000;
   height: 120px;
 }
 
@@ -253,7 +252,7 @@
   position: absolute;
   width: 28px;
   height: 28px;
-  background: var(--surface);
+  background: #fff;
   border-radius: 50%;
   top: 50%;
   transform: translateY(-50%);
@@ -281,8 +280,7 @@
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 3px;
-  color: var(--surface);
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
   margin-bottom: 12px;
   text-transform: uppercase;
 }
@@ -292,31 +290,31 @@
   font-size: 24px;
   font-weight: 700;
   letter-spacing: 2px;
-  color: var(--surface);
+  color: #fff;
 }
 
 .ticketSavings {
   margin-top: 8px;
   font-size: 14px;
-  color: var(--surface);
-  opacity: 0.9;
+  color: rgba(255, 255, 255, 0.9);
 }
 
 .removeTicketButton {
   width: 120px;
-  border: 2px solid var(--primary-hover);
-  background: var(--primary-hover);
-  color: var(--surface);
+  border: none;
+  background:#040404;
+  color:#ffffff ;
   font-size: 14px;
   font-weight: 700;
   letter-spacing: 2px;
   cursor: pointer;
   position: relative;
-  transition: 0.3s;
+  transition: .3s;
+  border: 2px solid #000000;
 }
 
 .removeTicketButton:hover {
-  background: var(--primary);
+  background:#242525;
 }
 
 .removeTicketButton::before {
@@ -325,10 +323,9 @@
   left: 0;
   top: 12px;
   bottom: 12px;
-  border-left: 2px dashed var(--surface);
+  border-left: 2px dashed #9ce37f;
 }
 
-/* Default (desktop): normal flow, no special stickiness of its own */
 .stickyFooter {
   position: static;
 }
@@ -339,19 +336,19 @@
   align-items: center;
   margin-top: 28px;
   padding-top: 22px;
-  border-top: 2px dashed var(--line);
+  border-top: 2px dashed #cfcfcf;
 }
 
 .grandTotalRow span:first-child {
   font-size: 18px;
   font-weight: 700;
-  color: var(--text);
+  color: #222;
 }
 
 .grandTotalPrice {
   font-size: 22px;
   font-weight: 700;
-  color: var(--text);
+  color: #111;
 }
 
 .checkoutButton {
@@ -359,30 +356,30 @@
   margin-top: 24px;
   padding: 16px;
   border: none;
-  border-radius: var(--radius-sm);
-  background: var(--primary);
-  color: var(--surface);
+  border-radius: 10px;
+  background: #000000;
+  color: #fff;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all .3s ease;
 }
 
 .checkoutButton:hover:not(:disabled) {
-  background: var(--primary-hover);
+  background: #1b5e20;
   transform: translateY(-2px);
-  box-shadow: var(--shadow-md);
+  /* box-shadow: 0 8px 20px rgba(46, 125, 50, .25); */
 }
 
 .checkoutButton:active:not(:disabled) {
-  transform: scale(0.98);
+  transform: scale(.98);
 }
 
 .checkoutButton:disabled {
-  background: var(--line);
-  color: var(--text-soft);
+  background: #d6d6d6;
+  color: #777;
   cursor: not-allowed;
   box-shadow: none;
 }
@@ -394,15 +391,16 @@
   gap: 8px;
   margin-top: 18px;
   font-size: 14px;
-  color: var(--text-soft);
+  color: #777;
 }
 
 .securityIcon {
   font-size: 18px;
-  color: var(--text-soft);
+  color: #777;
 }
 
 @media (max-width: 992px) {
+
   .checkoutSidebar {
     position: static;
     margin-top: 5px;
@@ -420,17 +418,17 @@
     font-size: 26px;
   }
 
-  .couponTicket,
+  /* .couponTicket,
   .activeCouponTicket {
     flex-direction: column;
-  }
+  } */
 
-  .ticketButton,
+  /* .ticketButton,
   .removeTicketButton {
     width: 100%;
     height: 56px;
-  }
-
+  } */
+/* 
   .ticketButton::before,
   .removeTicketButton::before {
     left: 15px;
@@ -438,19 +436,19 @@
     top: 0;
     bottom: auto;
     border-left: none;
-    border-top: 2px dashed var(--secondary-soft);
-  }
+    border-top: 2px dashed rgba(255,255,255,.6);
+  } */
 
-  /* Sticky footer: Total + Pay button + security note pinned to bottom */
+  
   .stickyFooter {
     position: sticky;
     bottom: 0;
     z-index: 50;
-    background: var(--surface);
+    background: #fff;
     margin: 0 -24px -24px;
     padding: 14px 24px calc(14px + env(safe-area-inset-bottom));
-    box-shadow: var(--shadow-md);
-    border-top: 1px solid var(--line);
+    /* box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.08); */
+    border-top: 1px solid #eee;
   }
 
   .grandTotalRow {
@@ -469,6 +467,7 @@
 }
 
 @media (max-width: 768px) {
+
   .orderSummaryCard {
     padding: 20px;
   }
@@ -509,7 +508,7 @@
   .grandTotalPrice {
     font-size: 24px;
   }
-
+/* 
   .ticketLeft,
   .ticketSuccessLeft {
     padding: 18px;
@@ -517,7 +516,7 @@
 
   .ticketCouponCode {
     font-size: 22px;
-  }
+  } */
 
   .checkoutButton {
     padding: 15px;
@@ -531,9 +530,10 @@
 }
 
 @media (max-width: 480px) {
+
   .orderSummaryCard {
     padding: 16px;
-    border-radius: var(--radius-md);
+    /* border-radius: 10px; */
   }
 
   .orderSummaryCard h2 {

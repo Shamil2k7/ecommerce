@@ -19,7 +19,8 @@ export default function CheckoutSummary({
     const fetchCoupons = async () => {
       try {
         const { data } = await axios.get(`${API}/api/marketing/coupons`);
-        const activeCoupons = data.filter(
+        const couponsList = data.coupons || (Array.isArray(data) ? data : []);
+        const activeCoupons = couponsList.filter(
           (c) => c.status === "Active" && new Date(c.expirydate) > new Date()
         );
         if (activeCoupons.length > 0) {
