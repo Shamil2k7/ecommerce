@@ -160,7 +160,7 @@ export default function ProfilePage() {
             addr._id === editingAddressId ? data.address : addr
           );
           setAddresses(updated);
-          
+
         }
         setEditingAddressId(null);
       } else {
@@ -175,7 +175,7 @@ export default function ProfilePage() {
         const data = await response.json();
         if (data.success) {
           setAddresses([...addresses, data.address]);
-         
+
         }
       }
     } catch (error) {
@@ -205,7 +205,7 @@ export default function ProfilePage() {
       if (data.success) {
         const updated = addresses.filter((addr) => addr._id !== id);
         setAddresses(updated);
-       
+
       }
     } catch (error) {
       console.error("Error deleting address:", error);
@@ -247,6 +247,10 @@ export default function ProfilePage() {
     })
     : "";
 
+  const homeAddress = addresses.find(
+    (addr) => addr.label && addr.label.toLowerCase() === "home"
+  );
+
   return (
     <section className={styles.container}>
       <div className={styles.profileGrid}>
@@ -271,7 +275,7 @@ export default function ProfilePage() {
               <span>Manage Addresses</span>
             </button>
 
-            
+
 
             <button className={`${styles.actionButton} ${styles.logoutAction}`} onClick={handleLogout}>
               <LogOut size={18} />
@@ -280,7 +284,7 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        
+
         <div className={styles.rightCard}>
           <div className={styles.cardHeader}>
             <h2 className={styles.sectionTitle}>Profile Details</h2>
@@ -320,7 +324,7 @@ export default function ProfilePage() {
                 <div className={styles.value}>{profilePhone}</div>
               </div>
             )}
-{/* 
+            {/* 
             {user.role && (
               <div className={styles.detailRow}>
                 <div className={styles.labelInfo}>
@@ -343,23 +347,21 @@ export default function ProfilePage() {
               </div>
             )}
 
-         {addresses.length > 0 &&
-  addresses.map((addr) => (
-    <div key={addr._id} className={styles.detailRow}>
-      <div className={styles.labelInfo}>
-        <MapPin size={18} />
-        <span>{addr.label} Address</span>
-      </div>
-      <div className={styles.value}>{addr.text}</div>
-    </div>
-  ))
-}
+            {homeAddress && (
+              <div className={styles.detailRow}>
+                <div className={styles.labelInfo}>
+                  <MapPin size={18} />
+                  <span>Permanent Address</span>
+                </div>
+                <div className={styles.value}>{homeAddress.text}</div>
+              </div>
+            )}
           </div>
         </div>
 
       </div>
 
-      
+
       {isEditModalOpen && (
         <div className={styles.modalOverlay}>
           <div className={styles.modal}>
@@ -496,7 +498,7 @@ export default function ProfilePage() {
         </div>
       )}
 
-    
+
     </section>
   );
 }

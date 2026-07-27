@@ -1,5 +1,6 @@
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
+import registrationOtps from "../../utils/otpStore.js";
 
 const register = async (req, res) => {
   const { fullName, email, phone, password } = req.body;
@@ -23,6 +24,14 @@ const register = async (req, res) => {
     const formattedPhone = phone.trim();
     const formattedName = fullName.trim();
 
+    const otpRecord = registrationOtps.get(formattedEmail);
+    if (!otpRecord || !otpRecord.isVerified) {
+      return res.status(400).json({
+        success: false,
+        message: "Please verify your email before creating an account.",
+      });
+    }
+
     const existingUser = await User.findOne({
       $or: [
         { email: formattedEmail },
@@ -43,6 +52,8 @@ const register = async (req, res) => {
       phone: formattedPhone,
       password,
     });
+
+    registrationOtps.delete(formattedEmail);
 
     createToken(res, user._id);
 

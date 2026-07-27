@@ -34,6 +34,14 @@ export default function RegisterPage() {
   const [errorMsg, setErrorMsg] = useState("");
   const [successMsg, setSuccessMsg] = useState("");
 
+  // OTP & Email Verification States
+  const [isEmailVerified, setIsEmailVerified] = useState(false);
+  const [otpSent, setOtpSent] = useState(false);
+  const [sendingOtp, setSendingOtp] = useState(false);
+  const [otpInput, setOtpInput] = useState("");
+  const [verifyingOtp, setVerifyingOtp] = useState(false);
+  const [otpError, setOtpError] = useState("");
+
   // Validation Error States
   const [nameError, setNameError] = useState("");
   const [emailError, setEmailError] = useState("");
@@ -42,7 +50,7 @@ export default function RegisterPage() {
   const [confirmPasswordError, setConfirmPasswordError] = useState("");
   const [termsError, setTermsError] = useState("");
 
-  const { register } = useAuth();
+  const { register, sendRegistrationOtp, verifyOtp } = useAuth();
   const router = useRouter();
 
   const countries = [
@@ -57,6 +65,55 @@ export default function RegisterPage() {
     { name: "France", code: "+33" }
   ];
 
+  const handleSendOtp = async () => {
+    setEmailError("");
+    setOtpError("");
+    setErrorMsg("");
+
+    if (!email.trim()) {
+      setEmailError("Email address is required");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      setEmailError("Please enter a valid email address");
+      return;
+    }
+
+    setSendingOtp(true);
+    const result = await sendRegistrationOtp(email.trim());
+    setSendingOtp(false);
+
+    if (result.success) {
+      setOtpSent(true);
+      setSuccessMsg("OTP sent to your email.");
+    } else {
+      setEmailError(result.message || "Failed to send OTP");
+    }
+  };
+
+  const handleVerifyOtp = async () => {
+    setOtpError("");
+    setErrorMsg("");
+
+    if (!otpInput.trim() || otpInput.trim().length !== 6) {
+      setOtpError("Please enter a valid 6-digit OTP");
+      return;
+    }
+
+    setVerifyingOtp(true);
+    const result = await verifyOtp(email.trim(), otpInput.trim());
+    setVerifyingOtp(false);
+
+    if (result.success) {
+      setIsEmailVerified(true);
+      setSuccessMsg("Email verified successfully.");
+      setOtpError("");
+    } else {
+      setOtpError(result.message || "Invalid or expired OTP");
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErrorMsg("");
@@ -67,6 +124,11 @@ export default function RegisterPage() {
     setPasswordError("");
     setConfirmPasswordError("");
     setTermsError("");
+
+    if (!isEmailVerified) {
+      setErrorMsg("Please verify your email before creating an account.");
+      return;
+    }
 
     let isValid = true;
 
@@ -208,13 +270,35 @@ export default function RegisterPage() {
                   id="email"
                   placeholder=" "
                   value={email}
+                  disabled={isEmailVerified}
                   onChange={(e) => {
                     setEmail(e.target.value);
                     if (emailError) setEmailError("");
+                    if (isEmailVerified) setIsEmailVerified(false);
+                    if (otpSent) setOtpSent(false);
                   }}
                   required
                 />
                 <label htmlFor="email" className={styles.floatingLabel}>Email Address</label>
+
+                {isEmailVerified ? (
+                  <span className={styles.verifiedBadge}>Verified ✓</span>
+                ) : (
+                  <button
+                    type="button"
+                    className={styles.verifyBtn}
+                    disabled={sendingOtp || !email.trim()}
+                    onClick={handleSendOtp}
+                  >
+                    {sendingOtp ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : otpSent ? (
+                      "Resend"
+                    ) : (
+                      "Verify"
+                    )}
+                  </button>
+                )}
               </div>
               {emailError && (
                 <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
@@ -222,6 +306,44 @@ export default function RegisterPage() {
                 </span>
               )}
             </div>
+
+            {otpSent && !isEmailVerified && (
+              <div className={styles.field}>
+                <div className={styles.inputBox}>
+                  <Lock size={18} />
+                  <input
+                    type="text"
+                    id="otpInput"
+                    placeholder=" "
+                    maxLength={6}
+                    value={otpInput}
+                    onChange={(e) => {
+                      setOtpInput(e.target.value.replace(/\D/g, ""));
+                      if (otpError) setOtpError("");
+                    }}
+                  />
+                  <label htmlFor="otpInput" className={styles.floatingLabel}>Enter 6-Digit OTP</label>
+
+                  <button
+                    type="button"
+                    className={styles.verifyOtpBtn}
+                    disabled={verifyingOtp || otpInput.trim().length !== 6}
+                    onClick={handleVerifyOtp}
+                  >
+                    {verifyingOtp ? (
+                      <Loader2 size={14} className="animate-spin" />
+                    ) : (
+                      "Verify OTP"
+                    )}
+                  </button>
+                </div>
+                {otpError && (
+                  <span style={{ color: "#b91c1c", fontSize: "12px", marginTop: "4px", display: "block", textAlign: "left" }}>
+                    {otpError}
+                  </span>
+                )}
+              </div>
+            )}
 
             <div className={styles.field}>
               <div className={styles.inputBox}>
@@ -372,14 +494,14 @@ export default function RegisterPage() {
             <button
               type="submit"
               className={styles.registerBtn}
-              disabled={loading}
+              disabled={loading || !isEmailVerified}
               style={{
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 gap: "8px",
-                opacity: loading ? 0.7 : 1,
-                cursor: loading ? "not-allowed" : "pointer"
+                opacity: loading || !isEmailVerified ? 0.7 : 1,
+                cursor: loading || !isEmailVerified ? "not-allowed" : "pointer"
               }}
             >
               {loading && <Loader2 size={16} className="animate-spin" />}
@@ -403,8 +525,6 @@ export default function RegisterPage() {
             </Link>
           </div>
         </div>
-
-   
       </div>
     </section>
   );

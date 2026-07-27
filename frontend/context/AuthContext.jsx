@@ -129,7 +129,6 @@ export function AuthProvider({ children }) {
         return {
           success: true,
           message: data.message,
-          otp: data.otp,
         };
       } else {
         return { success: false, message: data.message || "Failed to send reset link" };
@@ -153,7 +152,7 @@ export function AuthProvider({ children }) {
       const data = await response.json();
 
       if (response.ok && data.success) {
-        return { success: true, message: data.message, otp: data.otp };
+        return { success: true, message: data.message };
       } else {
         return { success: false, message: data.message || "Invalid or expired OTP" };
       }
@@ -233,12 +232,36 @@ export function AuthProvider({ children }) {
     }
   };
 
+  const sendRegistrationOtp = async (email) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/send-registration-otp`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email }),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (response.ok && data.success) {
+        return { success: true, message: data.message };
+      } else {
+        return { success: false, message: data.message || "Failed to send OTP" };
+      }
+    } catch (error) {
+      return { success: false, message: error.message || "An error occurred" };
+    }
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         loading,
         register,
+        sendRegistrationOtp,
         login,
         logout,
         forgotPassword,

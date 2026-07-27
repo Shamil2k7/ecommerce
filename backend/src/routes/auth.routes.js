@@ -1,6 +1,7 @@
 import express from "express";
 
 import register from "../controllers/auth/register.controller.js";
+import sendRegistrationOtp from "../controllers/auth/sendRegistrationOtp.controller.js";
 import login from "../controllers/auth/login.controller.js";
 import logout from "../controllers/auth/logout.controller.js";
 import forgotPassword from "../controllers/auth/forgotPassword.controller.js";
@@ -25,6 +26,7 @@ const router = express.Router();
 
 // Authentication
 router.post("/register", register);
+router.post("/send-registration-otp", sendRegistrationOtp);
 router.post("/login", login);
 router.post("/logout", logout);
 router.post("/forgot-password", forgotPassword);
