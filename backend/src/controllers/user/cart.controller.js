@@ -128,7 +128,7 @@ export const addToCart = async (req, res) => {
 
     const existingItem = cart.products.find(
       (item) =>
-        item.productId.toString() === productId &&
+        (item.productId?._id?.toString() === productId || item.productId?.toString() === productId) &&
         item.color === color &&
         item.size === size
     );
