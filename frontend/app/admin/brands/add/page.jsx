@@ -67,6 +67,7 @@ export default function AddBrandPage() {
 
     const res = await fetch("http://localhost:5000/api/brands", {
       method: "POST",
+       credentials: "include",
       body: formData,
     });
 

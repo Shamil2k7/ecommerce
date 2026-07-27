@@ -490,9 +490,10 @@ export default function AddProductPage() {
       });
 
       const response = await fetch(`${API}/api/products`, {
-        method: "POST",
-        body: formData,
-      });
+  method: "POST",
+  credentials: "include",
+  body: formData,
+});
 
       const contentType = response.headers.get("content-type");
 
