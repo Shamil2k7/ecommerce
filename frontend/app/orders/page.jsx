@@ -18,6 +18,7 @@ import styles from "./Orders.module.css";
 import axios from "axios";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+import TopProducts from "@/components/TopProducts/TopProducts";
 
 const API_BASE = "http://localhost:5000";
 const API_URL = `${API_BASE}/api/orders`;
@@ -748,6 +749,8 @@ export default function OrdersPage() {
         </div>
 
       )}
+            <TopProducts />
+      
 
     </section>
 

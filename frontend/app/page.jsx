@@ -9,11 +9,11 @@ import Image from "next/image";
 export default function Home() {
   return (
     <div className="">
-<CategoryBar/>
-      <Hero/>
-      <Categories/>
-      <Banner/>
-      <TopProducts/>
+      <CategoryBar />
+      <Hero />
+      <Categories />
+      <Banner />
+      <TopProducts />
       <ProductsList />
     </div>
   );

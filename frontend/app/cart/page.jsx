@@ -7,6 +7,7 @@ import CartSummary from "../../components/cart/CartSummary/CartSummary";
 import EmptyCart from "../../components/cart/EmptyCart/EmptyCart";
 import LoadingSpinner from "../../components/cart/LoadingSpinner/LoadingSpinner";
 import styles from "./Cart.module.css";
+import TopProducts from "@/components/TopProducts/TopProducts";
 
 export default function CartPage() {
   const {
@@ -58,6 +59,8 @@ export default function CartPage() {
 
         <CartSummary cart={cart} />
       </div>
+      <TopProducts />
+
     </div>
   );
 }
