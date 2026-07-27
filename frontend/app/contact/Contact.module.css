@@ -1,10 +1,16 @@
+/* ===========================
+        Main Layout
+=========================== */
+
 .contact {
   width: 100%;
-  background: #f8fafc;
+  background: var(--bg);
   min-height: 100vh;
 }
 
-/* Hero */
+/* ===========================
+        Hero Section
+=========================== */
 
 .hero {
   max-width: 1420px;
@@ -13,67 +19,69 @@
 }
 
 .hero h1 {
-  font-size: 35px;
+  font-size: clamp(24px, 4vw, 35px);
   font-weight: 700;
-  color: #090909;
+  color: var(--text);
   margin-bottom: 10px;
 }
 
 .hero p {
-  font-size: 16px;
-  color: #6b7280;
+  font-size: clamp(14px, 2vw, 16px);
+  color: var(--text-soft);
   max-width: 650px;
   line-height: 1.7;
 }
 
-/* Main Layout */
+/* ===========================
+        Grid Container
+=========================== */
 
 .container {
   max-width: 1420px;
   margin: auto;
   padding: 20px 24px 50px;
-
   display: grid;
   grid-template-columns: 1fr 1.2fr;
   gap: 32px;
 }
 
-/* Left Card */
+/* ===========================
+        Left Card (Info)
+=========================== */
 
 .info {
-  background: #fff;
-  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   padding: 30px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .info h2 {
   margin-bottom: 25px;
   font-size: 28px;
-  color: #111827;
+  color: var(--text);
 }
 
 .card {
   display: flex;
   align-items: flex-start;
   gap: 16px;
-
   padding: 18px;
   margin-bottom: 16px;
-
-  border: 1px solid #e5e7eb;
-  border-radius: 14px;
-
-  transition: .3s;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  transition: border-color 0.3s ease, transform 0.3s ease;
 }
 
 .card:hover {
-  border-color: #2563eb;
+  border-color: var(--primary);
   transform: translateY(-3px);
 }
 
 .card svg {
-  color: #2563eb;
+  color: var(--primary);
   width: 22px;
   height: 22px;
   flex-shrink: 0;
@@ -81,16 +89,18 @@
 
 .card h4 {
   margin-bottom: 5px;
-  color: #111827;
+  color: var(--text);
   font-size: 17px;
 }
 
 .card p {
-  color: #6b7280;
+  color: var(--text-soft);
   line-height: 1.6;
 }
 
-/* Social */
+/* ===========================
+        Social Links
+=========================== */
 
 .socials {
   display: flex;
@@ -101,36 +111,36 @@
 .socials a {
   width: 46px;
   height: 46px;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
-  background: #f3f4f6;
-  color: #2563eb;
-
-  border-radius: 50%;
-  transition: .3s;
+  background: var(--secondary-soft);
+  color: var(--primary);
+  border-radius: var(--radius-pill);
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 .socials a:hover {
-  background: #2563eb;
-  color: white;
+  background: var(--primary);
+  color: var(--surface);
 }
 
-/* Right Card */
+/* ===========================
+        Right Card (Form)
+=========================== */
 
 .formBox {
-  background: #fff;
-  border-radius: 18px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
   padding: 30px;
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  box-shadow: var(--shadow-sm);
 }
 
 .formBox h2 {
   font-size: 28px;
   margin-bottom: 25px;
-  color: #111827;
+  color: var(--text);
 }
 
 .formBox form {
@@ -143,21 +153,26 @@
 .formBox textarea {
   width: 100%;
   padding: 15px;
-
-  border: 1px solid #d1d5db;
-  border-radius: 10px;
-
+  border: 1px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--text);
   font-size: 15px;
   font-family: inherit;
-
   outline: none;
-  transition: .3s;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  box-sizing: border-box;
+}
+
+.formBox input::placeholder,
+.formBox textarea::placeholder {
+  color: var(--text-soft);
 }
 
 .formBox input:focus,
 .formBox textarea:focus {
-  border-color: #2563eb;
-  box-shadow: 0 0 0 4px rgba(37,99,235,.12);
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px var(--secondary-soft);
 }
 
 .formBox textarea {
@@ -170,32 +185,29 @@
   align-items: center;
   justify-content: center;
   gap: 10px;
-
-  background: #2563eb;
-  color: white;
-
+  background: var(--primary);
+  color: var(--surface);
   border: none;
-  border-radius: 10px;
-
+  border-radius: var(--radius-md);
   padding: 15px;
-
   font-size: 16px;
   font-weight: 600;
-
   cursor: pointer;
-  transition: .3s;
+  transition: background-color 0.3s ease;
 }
 
 .formBox button:hover {
-  background: #1d4ed8;
+  background: var(--primary-hover);
 }
 
 .formBox button:disabled {
-  opacity: .7;
+  opacity: 0.7;
   cursor: not-allowed;
 }
 
-/* Google Map */
+/* ===========================
+        Google Map Section
+=========================== */
 
 .map {
   max-width: 1420px;
@@ -206,126 +218,102 @@
 .map iframe {
   width: 100%;
   height: 450px;
-
-  border: none;
-  border-radius: 18px;
-
-  box-shadow: 0 6px 18px rgba(0,0,0,.06);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
 }
 
-/* Loading */
+/* ===========================
+        Loading State
+=========================== */
 
 .loading {
   height: 70vh;
   display: flex;
   justify-content: center;
   align-items: center;
-
   font-size: 24px;
   font-weight: 600;
+  color: var(--text-soft);
 }
 
-/* ========================= */
-/* Responsive */
-/* ========================= */
+/* ===========================
+        Responsive Media Queries
+=========================== */
 
-@media (max-width:1200px){
-
-  .container{
-    gap:24px;
+@media (max-width: 1200px) {
+  .container {
+    gap: 24px;
   }
-
 }
 
-@media (max-width:992px){
-
-  .container{
-    grid-template-columns:1fr;
+@media (max-width: 992px) {
+  .container {
+    grid-template-columns: 1fr;
   }
-
 }
 
-@media (max-width:768px){
-
-  .hero{
-    padding:35px 18px 15px;
+@media (max-width: 768px) {
+  .hero {
+    padding: 35px 18px 15px;
   }
 
-  .hero h1{
-    font-size:30px;
-  }
-
-  .hero p{
-    font-size:15px;
-  }
-
-  .container{
-    padding:18px;
+  .container {
+    padding: 18px;
   }
 
   .info,
-  .formBox{
-    padding:24px;
+  .formBox {
+    padding: 24px;
   }
 
   .info h2,
-  .formBox h2{
-    font-size:24px;
+  .formBox h2 {
+    font-size: 24px;
   }
 
-  .map{
-    padding:0 18px 40px;
+  .map {
+    padding: 0 18px 40px;
   }
 
-  .map iframe{
-    height:320px;
+  .map iframe {
+    height: 320px;
   }
-
 }
 
-@media (max-width:480px){
-
-  .hero{
-    padding:25px 15px 10px;
+@media (max-width: 480px) {
+  .hero {
+    padding: 25px 15px 10px;
   }
 
-  .hero h1{
-    font-size:24px;
-  }
-
-  .hero p{
-    font-size:14px;
-  }
-
-  .container{
-    padding:15px;
+  .container {
+    padding: 15px;
   }
 
   .info,
-  .formBox{
-    padding:18px;
+  .formBox {
+    padding: 18px;
   }
 
-  .card{
-    padding:15px;
+  .card {
+    padding: 15px;
   }
 
-  .socials{
-    justify-content:center;
-    flex-wrap:wrap;
+  .socials {
+    justify-content: center;
+    flex-wrap: wrap;
   }
 
-  .socials a{
-    width:42px;
-    height:42px;
+  .socials a {
+    width: 42px;
+    height: 42px;
   }
 
-  .map{
-    padding:0 15px 30px;
+  .map {
+    padding: 0 15px 30px;
   }
 
-  .map iframe{
-    height:250px;
+  .map iframe {
+    height: 250px;
   }
-
 }

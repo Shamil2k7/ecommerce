@@ -7,16 +7,14 @@ const featureSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
     description: {
       type: String,
       required: true,
       trim: true,
     },
-
     icon: {
       type: String,
-      default: "",
+      default: "⭐",
     },
   },
   { _id: false }
@@ -24,16 +22,15 @@ const featureSchema = new mongoose.Schema(
 
 const statSchema = new mongoose.Schema(
   {
-    title: {
+    value: {
       type: String,
       required: true,
       trim: true,
     },
-
-    value: {
-      type: Number,
+    label: {
+      type: String,
       required: true,
-      default: 0,
+      trim: true,
     },
   },
   { _id: false }
@@ -46,13 +43,15 @@ const teamSchema = new mongoose.Schema(
       required: true,
       trim: true,
     },
-
-    role: {
+    position: {
       type: String,
       required: true,
       trim: true,
     },
-
+    description: {
+      type: String,
+      default: "",
+    },
     image: {
       type: String,
       default: "",
@@ -63,16 +62,18 @@ const teamSchema = new mongoose.Schema(
 
 const aboutSchema = new mongoose.Schema(
   {
-    heroTitle: {
+    title: {
       type: String,
       default: "",
     },
-
-    heroSubtitle: {
+    subtitle: {
       type: String,
       default: "",
     },
-
+    description: {
+      type: String,
+      default: "",
+    },
     heroImage: {
       type: String,
       default: "",
@@ -82,27 +83,19 @@ const aboutSchema = new mongoose.Schema(
       type: String,
       default: "Our Story",
     },
-
-    story: {
+    storyDescription: {
       type: String,
       default: "",
     },
-
-    missionTitle: {
+    storyImage: {
       type: String,
-      default: "Our Mission",
+      default: "",
     },
 
     mission: {
       type: String,
       default: "",
     },
-
-    visionTitle: {
-      type: String,
-      default: "Our Vision",
-    },
-
     vision: {
       type: String,
       default: "",
@@ -128,21 +121,23 @@ const aboutSchema = new mongoose.Schema(
       default: [],
     },
 
+    storeName: {
+      type: String,
+      default: "",
+    },
+
     ctaTitle: {
       type: String,
       default: "",
     },
-
     ctaDescription: {
       type: String,
       default: "",
     },
-
     ctaButtonText: {
       type: String,
       default: "Shop Now",
     },
-
     ctaButtonLink: {
       type: String,
       default: "/products",
@@ -152,7 +147,6 @@ const aboutSchema = new mongoose.Schema(
       type: String,
       default: "",
     },
-
     seoDescription: {
       type: String,
       default: "",

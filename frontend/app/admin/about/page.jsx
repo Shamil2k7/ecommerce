@@ -9,11 +9,13 @@ const API = process.env.NEXT_PUBLIC_API_URL;
 export default function AdminAboutPage() {
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
+    const [uploading, setUploading] = useState({});
 
     const [about, setAbout] = useState({
         title: "",
         subtitle: "",
         description: "",
+        heroImage: "",
 
         storyTitle: "",
         storyDescription: "",
@@ -22,7 +24,10 @@ export default function AdminAboutPage() {
         mission: "",
         vision: "",
 
-        heroImage: "",
+        ctaTitle: "",
+        ctaDescription: "",
+        ctaButtonText: "",
+        ctaButtonLink: "",
 
         stats: [],
         features: [],
@@ -32,6 +37,63 @@ export default function AdminAboutPage() {
     useEffect(() => {
         fetchAbout();
     }, []);
+
+    // ================= IMAGE UPLOAD =================
+
+    const uploadFile = async (file) => {
+        const token = localStorage.getItem("token");
+        const formData = new FormData();
+        formData.append("image", file);
+
+        const { data } = await axios.post(
+           `${API}/api/about/image`,
+            formData,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "Content-Type": "multipart/form-data",
+                },
+                withCredentials: true,
+            }
+        );
+
+        return data.url;
+    };
+
+    const handleSingleImageUpload = async (e, field) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        setUploading((prev) => ({ ...prev, [field]: true }));
+
+        try {
+            const url = await uploadFile(file);
+            setAbout((prev) => ({ ...prev, [field]: url }));
+        } catch (err) {
+            alert(err.response?.data?.message || "Image upload failed");
+        } finally {
+            setUploading((prev) => ({ ...prev, [field]: false }));
+        }
+    };
+
+    const handleTeamImageUpload = async (e, index) => {
+        const file = e.target.files[0];
+        if (!file) return;
+
+        const key = `team-${index}`;
+        setUploading((prev) => ({ ...prev, [key]: true }));
+
+        try {
+            const url = await uploadFile(file);
+            updateTeam(index, "image", url);
+        } catch (err) {
+            alert(err.response?.data?.message || "Image upload failed");
+        } finally {
+            setUploading((prev) => ({ ...prev, [key]: false }));
+        }
+    };
+
+    // ================= FEATURES =================
 
     const addFeature = () => {
         setAbout({
@@ -72,7 +134,7 @@ export default function AdminAboutPage() {
             stats: [
                 ...about.stats,
                 {
-                    number: "",
+                    value: "",
                     label: "",
                 },
             ],
@@ -95,6 +157,7 @@ export default function AdminAboutPage() {
             stats: about.stats.filter((_, i) => i !== index),
         });
     };
+
     // ================= TEAM =================
 
     const addTeamMember = () => {
@@ -129,7 +192,6 @@ export default function AdminAboutPage() {
         });
     };
 
-
     const fetchAbout = async () => {
         try {
             const token = localStorage.getItem("token");
@@ -145,7 +207,7 @@ export default function AdminAboutPage() {
             );
 
             if (data.success) {
-                setAbout(data.about);
+                setAbout((prev) => ({ ...prev, ...data.about }));
             }
         } catch (err) {
             console.log(err);
@@ -230,13 +292,26 @@ export default function AdminAboutPage() {
                         onChange={handleChange}
                     />
 
-                    <input
-                        type="text"
-                        name="heroImage"
-                        placeholder="Hero Image URL"
-                        value={about.heroImage}
-                        onChange={handleChange}
-                    />
+                    <label className={styles.fileLabel}>
+                        Hero Image
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleSingleImageUpload(e, "heroImage")}
+                        />
+                    </label>
+
+                    {uploading.heroImage && (
+                        <p className={styles.uploadingText}>Uploading...</p>
+                    )}
+
+                    {about.heroImage && (
+                        <img
+                            src={about.heroImage}
+                            alt="Hero preview"
+                            className={styles.imagePreview}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -254,14 +329,6 @@ export default function AdminAboutPage() {
                         onChange={handleChange}
                     />
 
-                    <input
-                        type="text"
-                        name="storyImage"
-                        placeholder="Story Image URL"
-                        value={about.storyImage || ""}
-                        onChange={handleChange}
-                    />
-
                     <textarea
                         rows={8}
                         name="storyDescription"
@@ -269,6 +336,27 @@ export default function AdminAboutPage() {
                         value={about.storyDescription}
                         onChange={handleChange}
                     />
+
+                    <label className={styles.fileLabel}>
+                        Story Image
+                        <input
+                            type="file"
+                            accept="image/*"
+                            onChange={(e) => handleSingleImageUpload(e, "storyImage")}
+                        />
+                    </label>
+
+                    {uploading.storyImage && (
+                        <p className={styles.uploadingText}>Uploading...</p>
+                    )}
+
+                    {about.storyImage && (
+                        <img
+                            src={about.storyImage}
+                            alt="Story preview"
+                            className={styles.imagePreview}
+                        />
+                    )}
                 </div>
             </div>
 
@@ -296,19 +384,160 @@ export default function AdminAboutPage() {
                 </div>
             </div>
 
-            {/* ================= SAVE ================= */}
+            {/* ================= FEATURES ================= */}
 
-            <button
-                className={styles.saveBtn}
-                onClick={saveAbout}
-                disabled={saving}
-            >
-                {saving ? "Saving..." : "Save About Page"}
-            </button>
+            <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                    <h2>Features</h2>
+
+                    <button
+                        type="button"
+                        className={styles.addBtn}
+                        onClick={addFeature}
+                    >
+                        + Add Feature
+                    </button>
+                </div>
+
+                {about.features.length === 0 && (
+                    <p className={styles.empty}>No features added.</p>
+                )}
+
+                {about.features.map((feature, index) => (
+                    <div key={index} className={styles.itemCard}>
+                        <input
+                            type="text"
+                            placeholder="Icon (emoji)"
+                            value={feature.icon}
+                            onChange={(e) =>
+                                updateFeature(index, "icon", e.target.value)
+                            }
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Feature Title"
+                            value={feature.title}
+                            onChange={(e) =>
+                                updateFeature(index, "title", e.target.value)
+                            }
+                        />
+
+                        <textarea
+                            rows={3}
+                            placeholder="Feature Description"
+                            value={feature.description}
+                            onChange={(e) =>
+                                updateFeature(index, "description", e.target.value)
+                            }
+                        />
+
+                        <button
+                            type="button"
+                            className={styles.deleteBtn}
+                            onClick={() => deleteFeature(index)}
+                        >
+                            Delete Feature
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            {/* ================= STATS ================= */}
+
+            <div className={styles.card}>
+                <div className={styles.cardHeader}>
+                    <h2>Statistics</h2>
+
+                    <button
+                        type="button"
+                        className={styles.addBtn}
+                        onClick={addStat}
+                    >
+                        + Add Statistic
+                    </button>
+                </div>
+
+                {about.stats.length === 0 && (
+                    <p className={styles.empty}>No statistics added.</p>
+                )}
+
+                {about.stats.map((stat, index) => (
+                    <div key={index} className={styles.itemCard}>
+                        <input
+                            type="text"
+                            placeholder="Value (e.g. 50K+)"
+                            value={stat.value}
+                            onChange={(e) =>
+                                updateStat(index, "value", e.target.value)
+                            }
+                        />
+
+                        <input
+                            type="text"
+                            placeholder="Label (e.g. Happy Customers)"
+                            value={stat.label}
+                            onChange={(e) =>
+                                updateStat(index, "label", e.target.value)
+                            }
+                        />
+
+                        <button
+                            type="button"
+                            className={styles.deleteBtn}
+                            onClick={() => deleteStat(index)}
+                        >
+                            Delete Statistic
+                        </button>
+                    </div>
+                ))}
+            </div>
+
+            {/* ================= CTA ================= */}
+
+            <div className={styles.card}>
+                <h2>Call To Action</h2>
+
+                <div className={styles.formGrid}>
+                    <input
+                        type="text"
+                        name="ctaTitle"
+                        placeholder="CTA Title"
+                        value={about.ctaTitle}
+                        onChange={handleChange}
+                    />
+
+                    <textarea
+                        rows={4}
+                        name="ctaDescription"
+                        placeholder="CTA Description"
+                        value={about.ctaDescription}
+                        onChange={handleChange}
+                    />
+
+                    <input
+                        type="text"
+                        name="ctaButtonText"
+                        placeholder="Button Text"
+                        value={about.ctaButtonText}
+                        onChange={handleChange}
+                    />
+
+                    <input
+                        type="text"
+                        name="ctaButtonLink"
+                        placeholder="Button Link"
+                        value={about.ctaButtonLink}
+                        onChange={handleChange}
+                    />
+                </div>
+            </div>
+
+           
+
             {/* ================= TEAM ================= */}
 
             <div className={styles.card}>
-
                 <div className={styles.cardHeader}>
                     <h2>Team Members</h2>
 
@@ -319,7 +548,6 @@ export default function AdminAboutPage() {
                     >
                         + Add Member
                     </button>
-
                 </div>
 
                 {about.team.length === 0 && (
@@ -329,24 +557,19 @@ export default function AdminAboutPage() {
                 )}
 
                 {about.team.map((member, index) => (
+                    <div key={index} className={styles.teamCard}>
+                        <label className={styles.fileLabel}>
+                            Member Photo
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={(e) => handleTeamImageUpload(e, index)}
+                            />
+                        </label>
 
-                    <div
-                        key={index}
-                        className={styles.teamCard}
-                    >
-
-                        <input
-                            type="text"
-                            placeholder="Image URL"
-                            value={member.image}
-                            onChange={(e) =>
-                                updateTeam(
-                                    index,
-                                    "image",
-                                    e.target.value
-                                )
-                            }
-                        />
+                        {uploading[`team-${index}`] && (
+                            <p className={styles.uploadingText}>Uploading...</p>
+                        )}
 
                         {member.image && (
                             <img
@@ -361,11 +584,7 @@ export default function AdminAboutPage() {
                             placeholder="Member Name"
                             value={member.name}
                             onChange={(e) =>
-                                updateTeam(
-                                    index,
-                                    "name",
-                                    e.target.value
-                                )
+                                updateTeam(index, "name", e.target.value)
                             }
                         />
 
@@ -374,11 +593,7 @@ export default function AdminAboutPage() {
                             placeholder="Position"
                             value={member.position}
                             onChange={(e) =>
-                                updateTeam(
-                                    index,
-                                    "position",
-                                    e.target.value
-                                )
+                                updateTeam(index, "position", e.target.value)
                             }
                         />
 
@@ -387,11 +602,7 @@ export default function AdminAboutPage() {
                             placeholder="Description"
                             value={member.description}
                             onChange={(e) =>
-                                updateTeam(
-                                    index,
-                                    "description",
-                                    e.target.value
-                                )
+                                updateTeam(index, "description", e.target.value)
                             }
                         />
 
@@ -402,14 +613,18 @@ export default function AdminAboutPage() {
                         >
                             Delete Member
                         </button>
-
                     </div>
-
                 ))}
+                 {/* ================= SAVE ================= */}
 
+            <button
+                className={styles.saveBtn}
+                onClick={saveAbout}
+                disabled={saving}
+            >
+                {saving ? "Saving..." : "Save About Page"}
+            </button>
             </div>
         </section>
     );
 }
-// ================= FEATURES =================
-
