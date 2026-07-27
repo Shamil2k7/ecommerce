@@ -12,7 +12,7 @@ export default function StaffPage() {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(true);
 
-  // take all staff from backend 
+  // take all staff from backend simply
 
   const fetchStaff = async () => {
     try {
@@ -43,9 +43,9 @@ export default function StaffPage() {
     fetchStaff();
   }, []);
 
-  // ==========================
-  // Delete Staff
-  // ==========================
+
+  // delete staffs handel
+
   const handleDelete = async (id) => {
     const confirmResult = await Swal.fire({
       title: "Delete Staff?",
