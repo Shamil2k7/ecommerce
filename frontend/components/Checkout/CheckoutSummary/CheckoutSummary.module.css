@@ -357,7 +357,7 @@
   padding: 16px;
   border: none;
   border-radius: 10px;
-  background: #000000;
+  background:#7B1E3A;
   color: #fff;
   font-size: 15px;
   font-weight: 700;
@@ -368,7 +368,7 @@
 }
 
 .checkoutButton:hover:not(:disabled) {
-  background: #1b5e20;
+  background: #64182F;
   transform: translateY(-2px);
   /* box-shadow: 0 8px 20px rgba(46, 125, 50, .25); */
 }
@@ -417,27 +417,6 @@
   .grandTotalPrice {
     font-size: 26px;
   }
-
-  /* .couponTicket,
-  .activeCouponTicket {
-    flex-direction: column;
-  } */
-
-  /* .ticketButton,
-  .removeTicketButton {
-    width: 100%;
-    height: 56px;
-  } */
-/* 
-  .ticketButton::before,
-  .removeTicketButton::before {
-    left: 15px;
-    right: 15px;
-    top: 0;
-    bottom: auto;
-    border-left: none;
-    border-top: 2px dashed rgba(255,255,255,.6);
-  } */
 
   
   .stickyFooter {
