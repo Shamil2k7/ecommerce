@@ -19,33 +19,37 @@ const register = async (req, res) => {
     });
   }
 
-  try {
-    const formattedEmail = email.trim().toLowerCase();
-    const formattedPhone = phone.trim();
-    const formattedName = fullName.trim();
+  const formattedEmail = email.trim().toLowerCase();
+  const formattedPhone = phone.trim();
+  const formattedName = fullName.trim();
 
-    const otpRecord = registrationOtps.get(formattedEmail);
-    if (!otpRecord || !otpRecord.isVerified) {
+  try {
+    // Check whether email verification is completed
+    const otpData = registrationOtps.get(formattedEmail);
+
+    if (!otpData || !otpData.isVerified) {
       return res.status(400).json({
         success: false,
         message: "Please verify your email before creating an account.",
       });
     }
 
-    const existingUser = await User.findOne({
+    // Check if the user already exists
+    const userExists = await User.findOne({
       $or: [
         { email: formattedEmail },
         { phone: formattedPhone },
       ],
     });
 
-    if (existingUser) {
+    if (userExists) {
       return res.status(400).json({
         success: false,
         message: "User already exists",
       });
     }
 
+    // Create new user
     const user = await User.create({
       fullName: formattedName,
       email: formattedEmail,
@@ -53,11 +57,12 @@ const register = async (req, res) => {
       password,
     });
 
+    // Remove OTP after successful registration
     registrationOtps.delete(formattedEmail);
 
     createToken(res, user._id);
 
-    res.status(201).json({
+    return res.status(201).json({
       success: true,
       message: "Registration successful",
       user: {
@@ -71,7 +76,7 @@ const register = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

@@ -78,31 +78,32 @@ const userSchema = new mongoose.Schema(
       default: false,
     },
 
-    resetPasswordToken: {
-      type: String,
-    },
+    resetPasswordToken: String,
 
-    resetPasswordExpire: {
-      type: Date,
-    },
+    resetPasswordExpire: Date,
   },
   {
     timestamps: true,
   }
 );
 
-// Hash password before saving
+
+// Encrypt password before saving user
 userSchema.pre("save", async function () {
-  if (!this.isModified("password")) return;
+  if (!this.isModified("password")) {
+    return;
+  }
 
   const salt = await bcrypt.genSalt(10);
   this.password = await bcrypt.hash(this.password, salt);
 });
 
-// Compare password
-userSchema.methods.matchPassword = async function (enteredPassword) {
-  return bcrypt.compare(enteredPassword, this.password);
+
+// Check password
+userSchema.methods.matchPassword = function (password) {
+  return bcrypt.compare(password, this.password);
 };
+
 
 const User = mongoose.model("User", userSchema);
 

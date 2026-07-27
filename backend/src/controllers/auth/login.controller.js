@@ -12,9 +12,9 @@ const login = async (req, res) => {
   }
 
   try {
-    const user = await User.findOne({
-      email: email.trim().toLowerCase(),
-    });
+    const formattedEmail = email.trim().toLowerCase();
+
+    const user = await User.findOne({ email: formattedEmail });
 
     if (!user) {
       return res.status(401).json({
@@ -30,17 +30,7 @@ const login = async (req, res) => {
       });
     }
 
-    const isMatch = await user.matchPassword(password);
-
-    if (!isMatch) {
-      return res.status(401).json({
-        success: false,
-        message: "Invalid email or password",
-      });
-    }
-
-  // inactive staff from logging in not work 
-
+    // Prevent inactive staff from logging in
     if (user.role === "staff" && user.status === "Inactive") {
       return res.status(403).json({
         success: false,
@@ -48,9 +38,18 @@ const login = async (req, res) => {
       });
     }
 
+    const passwordMatched = await user.matchPassword(password);
+
+    if (!passwordMatched) {
+      return res.status(401).json({
+        success: false,
+        message: "Invalid email or password",
+      });
+    }
+
     createToken(res, user._id);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Login successful",
       user: {
@@ -62,7 +61,7 @@ const login = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

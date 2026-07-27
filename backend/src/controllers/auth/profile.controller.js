@@ -11,12 +11,12 @@ export const getProfile = async (req, res) => {
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       user,
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
@@ -24,9 +24,9 @@ export const getProfile = async (req, res) => {
 };
 
 export const updateProfile = async (req, res) => {
-  try {
-    const { fullName, phone, profileImage } = req.body;
+  const { fullName, phone, profileImage } = req.body;
 
+  try {
     const user = await User.findById(req.user._id);
 
     if (!user) {
@@ -36,8 +36,13 @@ export const updateProfile = async (req, res) => {
       });
     }
 
-    user.fullName = fullName || user.fullName;
-    user.phone = phone || user.phone;
+    if (fullName) {
+      user.fullName = fullName;
+    }
+
+    if (phone) {
+      user.phone = phone;
+    }
 
     if (profileImage !== undefined) {
       user.profileImage = profileImage;
@@ -45,7 +50,7 @@ export const updateProfile = async (req, res) => {
 
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Profile updated successfully",
       user: {
@@ -58,7 +63,7 @@ export const updateProfile = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

@@ -16,8 +16,9 @@ const sendRegistrationOtp = async (req, res) => {
   const formattedEmail = email.trim().toLowerCase();
 
   try {
-    const existingUser = await User.findOne({ email: formattedEmail });
-    if (existingUser) {
+    const userExists = await User.findOne({ email: formattedEmail });
+
+    if (userExists) {
       return res.status(400).json({
         success: false,
         message: "User with this email already exists",
@@ -25,6 +26,7 @@ const sendRegistrationOtp = async (req, res) => {
     }
 
     const otp = crypto.randomInt(100000, 1000000).toString();
+
     const hashedOtp = crypto
       .createHash("sha256")
       .update(otp)
@@ -36,7 +38,7 @@ const sendRegistrationOtp = async (req, res) => {
       isVerified: false,
     });
 
-    const sent = await sendEmail(
+    const emailSent = await sendEmail(
       formattedEmail,
       "Email Verification OTP",
       `
@@ -50,20 +52,21 @@ const sendRegistrationOtp = async (req, res) => {
       `
     );
 
-    if (!sent) {
+    if (!emailSent) {
       registrationOtps.delete(formattedEmail);
+
       return res.status(500).json({
         success: false,
         message: "Failed to send OTP email",
       });
     }
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "OTP sent successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

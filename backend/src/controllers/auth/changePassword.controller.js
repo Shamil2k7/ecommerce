@@ -27,9 +27,9 @@ const changePassword = async (req, res) => {
       });
     }
 
-    const isMatch = await user.matchPassword(currentPassword);
+    const passwordMatched = await user.matchPassword(currentPassword);
 
-    if (!isMatch) {
+    if (!passwordMatched) {
       return res.status(400).json({
         success: false,
         message: "Current password is incorrect",
@@ -39,12 +39,12 @@ const changePassword = async (req, res) => {
     user.password = newPassword;
     await user.save();
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Password changed successfully",
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });

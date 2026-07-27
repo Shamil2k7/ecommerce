@@ -11,7 +11,12 @@ import changePassword from "../controllers/auth/changePassword.controller.js";
 import googleLogin from "../controllers/auth/google.controller.js";
 import getUsers from "../controllers/auth/getUsers.controller.js";
 import toggleBlockUser from "../controllers/auth/blockUser.controller.js";
-import { getProfile, updateProfile } from "../controllers/auth/profile.controller.js";
+
+import {
+  getProfile,
+  updateProfile,
+} from "../controllers/auth/profile.controller.js";
+
 import {
   getAddresses,
   addAddress,
@@ -22,9 +27,11 @@ import {
 import protect from "../middlewares/auth.middleware.js";
 import { isAdminOrStaff } from "../middlewares/role.middleware.js";
 
+
 const router = express.Router();
 
-// Authentication
+
+// Auth routes
 router.post("/register", register);
 router.post("/send-registration-otp", sendRegistrationOtp);
 router.post("/login", login);
@@ -34,11 +41,12 @@ router.post("/verify-otp", verifyOtp);
 router.post("/reset-password", resetPassword);
 router.post("/google", googleLogin);
 
-// User
+
+// User routes
 router.post("/change-password", protect, changePassword);
 
 router.get("/me", protect, (req, res) => {
-  res.status(200).json({
+  return res.status(200).json({
     success: true,
     user: req.user,
   });
@@ -47,14 +55,17 @@ router.get("/me", protect, (req, res) => {
 router.get("/profile", protect, getProfile);
 router.put("/profile", protect, updateProfile);
 
-// Address
+
+// Address routes
 router.get("/addresses", protect, getAddresses);
 router.post("/addresses", protect, addAddress);
 router.put("/addresses/:id", protect, updateAddress);
 router.delete("/addresses/:id", protect, deleteAddress);
 
-// Admin / Staff
+
+// Admin routes
 router.get("/users", protect, isAdminOrStaff, getUsers);
 router.patch("/users/:id/block", protect, isAdminOrStaff, toggleBlockUser);
+
 
 export default router;

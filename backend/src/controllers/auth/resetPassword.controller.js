@@ -19,14 +19,16 @@ const resetPassword = async (req, res) => {
     });
   }
 
+  const formattedEmail = email.trim().toLowerCase();
+
   try {
     const hashedOtp = crypto
       .createHash("sha256")
-      .update(otp.trim())
+      .update(otp.toString().trim())
       .digest("hex");
 
     const user = await User.findOne({
-      email: email.trim().toLowerCase(),
+      email: formattedEmail,
       resetPasswordToken: hashedOtp,
       resetPasswordExpire: { $gt: Date.now() },
     });
@@ -46,7 +48,7 @@ const resetPassword = async (req, res) => {
 
     createToken(res, user._id);
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       message: "Password reset successfully",
       user: {
@@ -58,7 +60,7 @@ const resetPassword = async (req, res) => {
       },
     });
   } catch (error) {
-    res.status(500).json({
+    return res.status(500).json({
       success: false,
       message: error.message,
     });
