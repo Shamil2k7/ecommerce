@@ -196,6 +196,7 @@
 }
 
 .resendBtn:hover:not(:disabled) {
+  color: #2d2521;
   text-decoration: underline;
 }
 

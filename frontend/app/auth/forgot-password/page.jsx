@@ -156,7 +156,7 @@ export default function ForgotPasswordPage() {
             href="/auth/login"
             style={{
               marginLeft: "6px",
-              color: "var(--primary)",
+              color: "#3b2f2f",
               fontWeight: "600",
             }}
           >
