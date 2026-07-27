@@ -85,9 +85,9 @@ export default function EditBannerPage() {
 
     image.onload = () => {
       // Validate dimensions
-      if (image.width < 1600 || image.height < 500) {
+      if (image.width < 1920 || image.height < 600) {
         setErrors({
-          image: `Selected image is ${image.width} × ${image.height}px.\nMinimum required size is 1600 × 500 pixels.`,
+          image: `Selected image is ${image.width} × ${image.height}px.\nMinimum required size is 1920 × 600 pixels.`,
         });
 
         URL.revokeObjectURL(imageURL);
