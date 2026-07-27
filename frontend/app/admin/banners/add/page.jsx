@@ -22,32 +22,30 @@ export default function AddBanner() {
     image: "",
     displayOrder: "",
   });
- // Upload Banner Image
+
 const handleImage = (e) => {
   const file = e.target.files[0];
 
-  // Stop if no file is selected
   if (!file) return;
 
-  // Allow only image files
+
   if (!file.type.startsWith("image/")) {
-    setErrors({
-      ...errors,
+    setErrors((prev) => ({
+      ...prev,
       image: "Please select a valid image file.",
-    });
+    }));
     return;
   }
 
-  // Check image dimensions
-  const image = new Image();
+  const img = new Image();
 
-  image.onload = () => {
-    // Minimum banner size
-    if (image.width < 1920 || image.height < 600) {
-      setErrors({
-        ...errors,
-        image: "Banner image must be at least 1920 × 600 pixels.",
-      });
+  img.onload = () => {
+  
+    if (img.width < 1600 || img.height < 600) {
+      setErrors((prev) => ({
+        ...prev,
+        image: "Banner image must be at least 1600 × 600 pixels.",
+      }));
 
       setPreview(null);
 
@@ -59,19 +57,19 @@ const handleImage = (e) => {
       return;
     }
 
-    // Image is valid
-    setErrors({
-      ...errors,
-      image: "",
-    });
 
-    // Preview image
+    setErrors((prev) => ({
+      ...prev,
+      image: "",
+    }));
+
+
     setPreview(URL.createObjectURL(file));
 
-    // Convert image to Base64
+ 
     const reader = new FileReader();
 
-    reader.onload = () => {
+    reader.onloadend = () => {
       setBanner((prev) => ({
         ...prev,
         image: reader.result,
@@ -81,17 +79,17 @@ const handleImage = (e) => {
     reader.readAsDataURL(file);
   };
 
-  image.onerror = () => {
-    setErrors({
-      ...errors,
+  img.onerror = () => {
+    setErrors((prev) => ({
+      ...prev,
       image: "Unable to read image.",
-    });
+    }));
   };
 
-  // Load image to check width and height
-  image.src = URL.createObjectURL(file);
+  img.src = URL.createObjectURL(file);
 };
-  // Input Change
+
+
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -127,7 +125,7 @@ const handleImage = (e) => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Save Banner
+
   const handleSubmit = async () => {
     if (!validateForm()) return;
 
