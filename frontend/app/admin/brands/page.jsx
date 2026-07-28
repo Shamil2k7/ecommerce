@@ -33,41 +33,58 @@ export default function BrandsPage() {
       .finally(() => setLoading(false));
   }, []);
 
+  
+
   const handleDelete = async (id) => {
-    const confirmResult = await Swal.fire({
-      title: "Delete Brand?",
-      text: "Are you sure you want to delete this brand?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it",
-      cancelButtonText: "Cancel"
-    });
+  const confirmResult = await Swal.fire({
+    title: "Delete Brand?",
+    text: "Are you sure you want to delete this brand?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it",
+    cancelButtonText: "Cancel",
+  });
 
-    if (!confirmResult.isConfirmed) return;
+  if (!confirmResult.isConfirmed) return;
 
-    try {
-      const res = await fetch(
-        `http://localhost:5000/api/brands/${id}`,
-        {
-          method: "DELETE",
-        }
-      );
+  try {
+    const token = localStorage.getItem("token");
 
-      if (res.ok) {
-        setBrands((prev) =>
-          prev.filter((brand) => brand._id !== id)
-        );
-        toast.success("Brand deleted successfully!");
-      } else {
-        toast.error("Failed to delete brand");
+    const res = await fetch(
+      `http://localhost:5000/api/brands/${id}`,
+      {
+        method: "DELETE",
+        credentials: "include", // Send cookies if used
+        headers: {
+          ...(token && {
+            Authorization: `Bearer ${token}`,
+          }),
+        },
       }
-    } catch (err) {
-      console.error(err);
-      toast.error("Error deleting brand");
+    );
+
+    const data = await res.json();
+
+    console.log("Status:", res.status);
+    console.log("Response:", data);
+
+    if (!res.ok) {
+      toast.error(data.message || "Failed to delete brand");
+      return;
     }
-  };
+
+    setBrands((prev) =>
+      prev.filter((brand) => brand._id !== id)
+    );
+
+    toast.success("Brand deleted successfully!");
+  } catch (err) {
+    console.error(err);
+    toast.error("Something went wrong");
+  }
+};
 
   const filtered = brands.filter((item) =>
     item.name.toLowerCase().includes(search.toLowerCase())
