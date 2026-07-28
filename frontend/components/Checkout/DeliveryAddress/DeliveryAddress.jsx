@@ -9,6 +9,7 @@ export default function DeliveryAddress({
   setAddresses,
   selectedAddress,
   setSelectedAddress,
+  userPhone,
 }) {
   const API_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/auth`;
 
@@ -207,6 +208,12 @@ export default function DeliveryAddress({
                       </span>
 
                       <p className={styles.addressText}>{address.text}</p>
+
+                      {userPhone && (
+                        <p className={styles.addressPhone}>
+                          Phone: <span>{userPhone}</span>
+                        </p>
+                      )}
                     </div>
 
                     {/* Right Side Actions */}

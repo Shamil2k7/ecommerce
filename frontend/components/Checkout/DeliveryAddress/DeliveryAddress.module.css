@@ -126,6 +126,17 @@
   line-height: 1.6;
 }
 
+.addressPhone {
+  margin: 6px 0 0 0;
+  color: #4b5563;
+  font-size: 14px;
+}
+
+.addressPhone span {
+  color: #111827;
+  font-weight: 500;
+}
+
 
 .addressActions {
   display: flex;
