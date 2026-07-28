@@ -12,8 +12,8 @@ export default function Home() {
       <CategoryBar />
       <Hero />
       <Categories />
-      <Banner />
       <TopProducts />
+      <Banner />
       <ProductsList />
     </div>
   );

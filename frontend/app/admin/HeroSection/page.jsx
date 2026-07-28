@@ -13,7 +13,7 @@ export default function HeroSectionsPage() {
   const [loading, setLoading] = useState(true);
 
   const API =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    process.env.NEXT_PUBLIC_API_URL;
 
   useEffect(() => {
     fetchHeroSections();
@@ -93,7 +93,7 @@ export default function HeroSectionsPage() {
         <h1>Hero Sections</h1>
 
         <Link
-          href="/admin/HeroSection/add"
+          href="/admin/HeroSection/Add"
           className={styles.addBtn}
         >
           <Plus size={18} />
