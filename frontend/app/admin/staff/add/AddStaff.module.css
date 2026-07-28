@@ -4,9 +4,9 @@
   gap: 24px;
 }
 
-/* ===========================
-        Header & Nav
-=========================== */
+
+ /* navbar and head */
+
 
 .header h1 {
   font-size: 32px;
@@ -33,9 +33,7 @@
   color: var(--primary);
 }
 
-/* ===========================
-        Grid & Cards
-=========================== */
+/* card grids */
 
 .grid {
   display: grid;
@@ -66,9 +64,7 @@
   gap: 18px;
 }
 
-/* ===========================
-        Form Fields
-=========================== */
+/* form fields */
 
 .field {
   display: flex;
@@ -116,9 +112,7 @@
   color: var(--text-soft);
 }
 
-/* ===========================
-        Upload Box
-=========================== */
+/* image upload box */
 
 .upload {
   width: 100%;
@@ -146,9 +140,7 @@
   object-fit: cover;
 }
 
-/* ===========================
-        Actions & Buttons
-=========================== */
+/* buttons with icons ,actions*/
 
 .actions {
   display: flex;
@@ -214,9 +206,7 @@
   color: var(--danger);
 }
 
-/* ===========================
-        Responsive
-=========================== */
+/* mobile responsive */
 
 @media (max-width: 900px) {
   .grid {

@@ -4,9 +4,7 @@
   gap: 24px;
 }
 
-/* ===========================
-        Header
-=========================== */
+/* head */
 
 .header {
   display: flex;
@@ -24,9 +22,7 @@
   color: var(--text-soft);
 }
 
-/* ===========================
-        Add Button
-=========================== */
+/* add button css */
 
 .addBtn {
   height: 48px;
@@ -47,9 +43,7 @@
   background: var(--primary-hover);
 }
 
-/* ===========================
-        Search Box
-=========================== */
+/* search boxes */
 
 .searchBox {
   width: 400px;
@@ -77,9 +71,7 @@
   color: var(--text-soft);
 }
 
-/* ===========================
-        Staff / Customer Details
-=========================== */
+/* staff details */
 
 .staff,
 .customer {
@@ -125,9 +117,7 @@
   min-width: 260px;
 }
 
-/* ===========================
-        Table Area
-=========================== */
+/* table area css */
 
 .table {
   background: var(--surface);
@@ -202,9 +192,7 @@
   width: 120px;
 }
 
-/* ===========================
-        Status Badges
-=========================== */
+/* status badges */
 
 .active,
 .inactive {
@@ -228,9 +216,7 @@
   color: var(--danger);
 }
 
-/* ===========================
-        Action Buttons
-=========================== */
+/* actions buttons */
 
 .actions {
   display: flex;
@@ -258,9 +244,7 @@
   color: var(--surface);
 }
 
-/* ===========================
-        Responsive
-=========================== */
+/* mobile responsiveness */
 
 @media (max-width: 1024px) {
   .header {
