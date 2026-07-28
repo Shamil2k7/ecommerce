@@ -9,7 +9,8 @@ import {
   Trash2,
   Eye,
 } from "lucide-react";
-
+import Swal from "sweetalert2";
+import { toast } from "react-hot-toast";
 import styles from "./Products.module.css";
 
 export default function ProductsPage() {
@@ -59,34 +60,54 @@ export default function ProductsPage() {
   }, []);
 
   const handleDelete = async (id) => {
-    const confirmResult = await Swal.fire({
-      title: "Delete Product?",
-      text: "Are you sure you want to delete this product?",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, delete it",
-      cancelButtonText: "Cancel"
+  const confirmResult = await Swal.fire({
+    title: "Delete Product?",
+    text: "Are you sure you want to delete this product?",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#d33",
+    cancelButtonColor: "#3085d6",
+    confirmButtonText: "Yes, delete it",
+    cancelButtonText: "Cancel"
+  });
+
+  if (!confirmResult.isConfirmed) return;
+
+  try {
+    const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      method: "DELETE",
+      credentials: "include", // IMPORTANT
     });
 
-    if (!confirmResult.isConfirmed) return;
+    if (res.ok) {
+      setProductData((prev) => prev.filter((p) => p._id !== id));
 
-    try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
-        method: "DELETE",
+      await Swal.fire({
+        icon: "success",
+        title: "Deleted!",
+        text: "Product deleted successfully.",
+        timer: 1500,
+        showConfirmButton: false,
       });
-      if (res.ok) {
-        setProductData((prev) => prev.filter((p) => p._id !== id));
-        toast.success("Product deleted successfully!");
-      } else {
-        toast.error("Failed to delete product");
-      }
-    } catch (err) {
-      console.error(err);
-      toast.error("Error deleting product");
+    } else {
+      const data = await res.json();
+
+      await Swal.fire({
+        icon: "error",
+        title: "Delete failed",
+        text: data.message || "Failed to delete product.",
+      });
     }
-  };
+  } catch (err) {
+    console.error(err);
+
+    await Swal.fire({
+      icon: "error",
+      title: "Error",
+      text: "Something went wrong while deleting the product.",
+    });
+  }
+};
 
   const filteredProducts = productData.filter((item) => {
     const matchesSearch = item.name

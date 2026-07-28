@@ -61,6 +61,7 @@ export default function CategoriesPage() {
         try {
             const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
                 method: "DELETE",
+                credentials: "include",
             });
             if (res.ok) {
                 setCategories((prev) => prev.filter((cat) => cat._id !== id));
