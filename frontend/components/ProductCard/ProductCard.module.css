@@ -20,19 +20,19 @@
 .imageContainer {
   position: relative;
   height: 220px;
-  background: var(--surface);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 24px;
+  background: var(--secondary-soft);
+  overflow: hidden;
 }
 
 .image {
   width: 100%;
-  max-width: 170px;
-  max-height: 170px;
-  object-fit: contain;
-  transition: 0.35s ease;
+  height: 100%;
+  object-fit: cover;
+  transition: transform 0.35s ease;
+}
+
+.card:hover .image {
+  transform: scale(1.06);
 }
 
 /* ================= BADGES ================= */
@@ -178,11 +178,6 @@
   .imageContainer {
     height: 190px;
   }
-
-  .image {
-    max-width: 150px;
-    max-height: 150px;
-  }
 }
 
 @media (max-width: 768px) {
@@ -212,12 +207,6 @@
 @media (max-width: 480px) {
   .imageContainer {
     height: 150px;
-    padding: 18px;
-  }
-
-  .image {
-    max-width: 110px;
-    max-height: 110px;
   }
 
   .content {
