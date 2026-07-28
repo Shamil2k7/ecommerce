@@ -1,6 +1,4 @@
-/* ===========================
-        Upload & Overlay
-=========================== */
+/* overlay  */
 
 .upload {
   position: relative;
@@ -26,9 +24,7 @@
   opacity: 1;
 }
 
-/* ===========================
-        Delete Button
-=========================== */
+/* delete buttons */
 
 .deleteBtn {
   flex: 1;
