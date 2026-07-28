@@ -88,43 +88,45 @@ export default function EditProductPage() {
   };
 
   const handleDeleteImage = async () => {
-  if (!currentImageId) {
-    alert("No image found.");
-    return;
-  }
-
-  if (!confirm("Delete this image?")) return;
-
-  try {
-    const res = await fetch(
-      `http://localhost:5000/api/products/${id}/images/${currentImageId}`,
-      {
-        method: "DELETE",
-      }
-    );
-
-    const data = await res.json();
-
-    if (res.ok) {
-      alert(data.message || "Image deleted successfully.");
-
-      setCurrentImage("/images/headphone.png");
-      setCurrentImageId("");
-      setNewImageFile(null);
-    } else {
-      alert(data.message || "Failed to delete image.");
+    if (!currentImageId) {
+      alert("No image found.");
+      return;
     }
-  } catch (err) {
-    console.error(err);
-    alert("Error deleting image.");
-  }
-};
+
+    if (!confirm("Delete this image?")) return;
+
+    try {
+      const res = await fetch(
+        `http://localhost:5000/api/products/${id}/images/${currentImageId}`,
+        {
+          method: "DELETE",
+          credentials: "include",
+        }
+      );
+
+      const data = await res.json();
+
+      if (res.ok) {
+        alert(data.message || "Image deleted successfully.");
+
+        setCurrentImage("/images/headphone.png");
+        setCurrentImageId("");
+        setNewImageFile(null);
+      } else {
+        alert(data.message || "Failed to delete image.");
+      }
+    } catch (err) {
+      console.error(err);
+      alert("Error deleting image.");
+    }
+  };
 
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
       const res = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "DELETE",
+        credentials: "include",
       });
       if (res.ok) {
         alert("Product deleted successfully!");
@@ -162,12 +164,12 @@ export default function EditProductPage() {
 
       const patchRes = await fetch(`http://localhost:5000/api/products/${id}`, {
         method: "PATCH",
+        credentials: "include",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(updates),
       });
-
       if (!patchRes.ok) {
         const errJson = await patchRes.json();
         throw new Error(errJson.message || "Failed to update product details.");
@@ -180,8 +182,10 @@ export default function EditProductPage() {
 
         const imgRes = await fetch(`http://localhost:5000/api/products/${id}/images`, {
           method: "POST",
+          credentials: "include",
           body: imgData,
         });
+
 
         if (!imgRes.ok) {
           alert("Product details updated, but new image upload failed.");
