@@ -2,7 +2,7 @@ import User from "../../models/userModels.js";
 
 const getUsers = async (req, res) => {
   try {
-    const users = await User.find().select(
+    const users = await User.find({role: "user"}).select(
       "_id fullName email phone role profileImage department address status isVerified isBlocked createdAt updatedAt"
     );
 
