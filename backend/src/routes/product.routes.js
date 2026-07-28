@@ -3,7 +3,7 @@ import upload from "../config/multer.js";
 
 import protect from "../middlewares/auth.middleware.js";
 import { isAdminOrStaff } from "../middlewares/role.middleware.js";
-
+import { getAllReviews } from "../controllers/product/review.controller.js";
 import {
   getTopRatedProducts,
   createProduct,
@@ -128,3 +128,9 @@ router
 
 export default router;
 
+router.get(
+  "/reviews",
+  protect,
+  isAdminOrStaff,
+  getAllReviews
+);

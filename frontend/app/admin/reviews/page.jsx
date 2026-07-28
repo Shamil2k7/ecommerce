@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import axios from "axios";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import {
   Search,
@@ -12,36 +13,46 @@ import {
 
 import styles from "./Reviews.module.css";
 
-const reviews = [
-  {
-    id: 1,
-    product: "iPhone 16 Pro",
-    image: "/products/iphone.jpg",
-    customer: "John Smith",
-    rating: 5,
-    review: "Excellent phone. Amazing camera quality.",
-    date: "12 Jul 2026",
-    status: "Published",
-  },
-  {
-    id: 2,
-    product: "Nike Air Max",
-    image: "/products/shoe.jpg",
-    customer: "Sarah Wilson",
-    rating: 4,
-    review: "Comfortable shoes with great quality.",
-    date: "10 Jul 2026",
-    status: "Pending",
-  },
-];
+
+
+const API = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function ReviewsPage() {
+  const [reviews, setReviews] = useState([]);
+  const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
 
   const filtered = reviews.filter((item) =>
-    item.product.toLowerCase().includes(search.toLowerCase())
+    item.productName
+      ?.toLowerCase()
+      .includes(search.toLowerCase())
   );
+  useEffect(() => {
+    fetchReviews();
+  }, []);
 
+
+  const fetchReviews = async () => {
+    try {
+      const { data } = await axios.get(
+        `${API}/api/reviews`,
+        {
+          withCredentials: true,
+        }
+      );
+
+      console.log(data);
+
+      if (data.success) {
+        setReviews(data.reviews);
+      }
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setLoading(false);
+    }
+  };
   return (
     <section className={styles.container}>
       <div className={styles.header}>
@@ -77,59 +88,77 @@ export default function ReviewsPage() {
           </thead>
 
           <tbody>
-            {filtered.map((item) => (
-              <tr key={item.id}>
-                <td>
-                  <div className={styles.product}>
-                    <img src={item.image} alt={item.product} />
-                    <span>{item.product}</span>
-                  </div>
-                </td>
-
-                <td>{item.customer}</td>
-
-                <td>
-                  <div className={styles.rating}>
-                    <Star size={16} fill="#facc15" color="#facc15" />
-                    {item.rating}/5
-                  </div>
-                </td>
-
-                <td className={styles.review}>
-                  {item.review}
-                </td>
-
-                <td>{item.date}</td>
-
-                <td>
-                  <span
-                    className={
-                      item.status === "Published"
-                        ? styles.active
-                        : styles.pending
-                    }
-                  >
-                    {item.status}
-                  </span>
-                </td>
-
-                <td>
-                  <div className={styles.actions}>
-                    <button>
-                      <Eye size={18} />
-                    </button>
-
-                    <Link href={`/admin/reviews/edit/${item.id}`}>
-                      <Pencil size={18} />
-                    </Link>
-
-                    <button>
-                      <Trash2 size={18} />
-                    </button>
-                  </div>
-                </td>
+            {loading ? (
+              <tr>
+                <td colSpan={7}>Loading...</td>
               </tr>
-            ))}
+            ) : filtered.length === 0 ? (
+              <tr>
+                <td colSpan={7}>No Reviews Found</td>
+              </tr>
+            ) : (
+              filtered.map((item) => (
+                <tr key={item.id}>
+                  <td>
+                    <div className={styles.product}>
+                      
+                     
+
+                      <span>{item.productName}</span>
+                    </div>
+                  </td>
+
+                  <td>{item.customer}</td>
+
+                  <td>
+                    <div className={styles.rating}>
+                      <Star
+                        size={16}
+                        fill="#facc15"
+                        color="#facc15"
+                      />
+                      {item.rating}/5
+                    </div>
+                  </td>
+
+                  {/* <td className={styles.review}>
+                    {item.review}
+                  </td> */}
+
+                  <td>
+                    {new Date(item.date).toLocaleDateString()}
+                  </td>
+
+                  <td>
+                    <span
+                      className={
+                        item.status === "Published"
+                          ? styles.active
+                          : styles.pending
+                      }
+                    >
+                      {item.status}
+                    </span>
+                  </td>
+
+                  <td>
+                    <div className={styles.actions}>
+                      <button>
+                        <Eye size={18} />
+                      </button>
+
+                      <Link href={`/admin/reviews/edit/${item.id}`}>
+                        <Pencil size={18} />
+                      </Link>
+
+                      <button>
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            )}
           </tbody>
         </table>
       </div>
