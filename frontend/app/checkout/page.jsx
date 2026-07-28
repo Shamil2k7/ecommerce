@@ -170,6 +170,7 @@ function CheckoutContent() {
             setAddresses={setAddresses}
             selectedAddress={selectedAddress}
             setSelectedAddress={setSelectedAddress}
+            userPhone={user?.phone}
           />
 
           <div className={styles.card}>
