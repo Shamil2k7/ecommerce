@@ -1,6 +1,8 @@
 import mongoose, { Schema } from "mongoose";
 
-/* ---------- Variant ---------- */
+/* ===========================
+   Variant Schema
+=========================== */
 
 const variantSchema = new Schema(
   {
@@ -17,18 +19,40 @@ const variantSchema = new Schema(
     sku: {
       type: String,
       trim: true,
-      unique: false,
     },
 
     price: {
       type: Number,
-      min: 0,
+      default: 0,
     },
 
     stock: {
       type: Number,
       default: 0,
-      min: 0,
+    },
+  },
+  { _id: false }
+);
+
+/* ===========================
+   Image Schema
+=========================== */
+
+const imageSchema = new Schema(
+  {
+    url: {
+      type: String,
+      required: true,
+    },
+
+    public_id: {
+      type: String,
+      required: true,
+    },
+
+    isPrimary: {
+      type: Boolean,
+      default: false,
     },
   },
   { _id: false }
@@ -64,24 +88,19 @@ const reviewSchema = new Schema(
 );
 
 /* ===========================
-   Image Schema
+   Specification Schema
 =========================== */
 
-const imageSchema = new Schema(
+const specificationSchema = new Schema(
   {
-    url: {
+    key: {
       type: String,
-      required: true,
+      trim: true,
     },
 
-    public_id: {
+    value: {
       type: String,
-      required: true,
-    },
-
-    isPrimary: {
-      type: Boolean,
-      default: false,
+      trim: true,
     },
   },
   { _id: false }
@@ -93,7 +112,10 @@ const imageSchema = new Schema(
 
 const productSchema = new Schema(
   {
-    // Basic Details
+    /* ===========================
+       BASIC
+    =========================== */
+
     name: {
       type: String,
       required: true,
@@ -114,10 +136,22 @@ const productSchema = new Schema(
       trim: true,
     },
 
+    shortDescription: {
+      type: String,
+      trim: true,
+      default: "",
+    },
+
     category: {
       type: Schema.Types.ObjectId,
       ref: "Category",
       required: true,
+    },
+
+    subcategory: {
+      type: Schema.Types.ObjectId,
+      ref: "SubCategory",
+      default: null,
     },
 
     brand: {
@@ -126,7 +160,10 @@ const productSchema = new Schema(
       required: true,
     },
 
-    // Pricing
+    /* ===========================
+       PRICING
+    =========================== */
+
     price: {
       type: Number,
       required: true,
@@ -136,30 +173,227 @@ const productSchema = new Schema(
     discountPrice: {
       type: Number,
       default: 0,
-      min: 0,
     },
 
-    // Inventory
+    costPrice: {
+      type: Number,
+      default: 0,
+    },
+
+    tax: {
+      type: Number,
+      default: 0,
+    },
+
+    /* ===========================
+       INVENTORY
+    =========================== */
+
     sku: {
       type: String,
       unique: true,
+      sparse: true,
       trim: true,
+    },
+
+    barcode: {
+      type: String,
+      trim: true,
+      default: "",
     },
 
     stock: {
       type: Number,
-      required: true,
       default: 0,
-      min: 0,
     },
 
-    // Images
+    /* ===========================
+       MEASUREMENT
+    =========================== */
+
+    measurement: {
+      type: {
+        type: String,
+        enum: ["weight", "volume", "qty", ""],
+        default: "",
+      },
+
+      value: {
+        type: Number,
+        default: 0,
+      },
+
+      unit: {
+        type: String,
+        default: "",
+      },
+    },
+
+    /* ===========================
+       IMAGES
+    =========================== */
+
     images: [imageSchema],
 
-    // Variants
+    /* ===========================
+       COLORS
+    =========================== */
+
+    colors: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    /* ===========================
+       SIZES
+    =========================== */
+
+    sizes: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    /* ===========================
+       FEATURES
+    =========================== */
+
+    features: [
+      {
+        type: String,
+        trim: true,
+      },
+    ],
+
+    /* ===========================
+       SPECIFICATIONS
+    =========================== */
+
+    specifications: [specificationSchema],
+
+    /* ===========================
+       VARIANTS
+    =========================== */
+
     variants: [variantSchema],
 
-    // Tags
+    /* ===========================
+       OFFER
+    =========================== */
+
+    offerEnabled: {
+      type: Boolean,
+      default: false,
+    },
+
+    offerTitle: {
+      type: String,
+      default: "",
+    },
+
+    offerType: {
+      type: String,
+      enum: ["percentage", "fixed"],
+      default: "percentage",
+    },
+
+    offerValue: {
+      type: Number,
+      default: 0,
+    },
+
+    offerStartDate: {
+      type: Date,
+    },
+
+    offerEndDate: {
+      type: Date,
+    },
+
+    /* ===========================
+       SHIPPING
+    =========================== */
+
+    freeDelivery: {
+      type: Boolean,
+      default: false,
+    },
+
+    deliveryCharge: {
+      type: Number,
+      default: 0,
+    },
+
+    estimatedDays: {
+      type: Number,
+      default: 0,
+    },
+
+    cashOnDelivery: {
+      type: Boolean,
+      default: true,
+    },
+
+    expressDelivery: {
+      type: Boolean,
+      default: false,
+    },
+
+    /* ===========================
+       RETURN POLICY
+    =========================== */
+
+    returnAvailable: {
+      type: Boolean,
+      default: true,
+    },
+
+    returnDays: {
+      type: Number,
+      default: 7,
+    },
+
+    refundAvailable: {
+      type: Boolean,
+      default: true,
+    },
+
+    replacementAvailable: {
+      type: Boolean,
+      default: true,
+    },
+
+    warranty: {
+      type: String,
+      default: "",
+    },
+
+    /* ===========================
+       SEO
+    =========================== */
+
+    seoTitle: {
+      type: String,
+      default: "",
+    },
+
+    seoDescription: {
+      type: String,
+      default: "",
+    },
+
+    seoKeywords: {
+      type: String,
+      default: "",
+    },
+
+    /* ===========================
+       TAGS
+    =========================== */
+
     tags: [
       {
         type: String,
@@ -168,7 +402,10 @@ const productSchema = new Schema(
       },
     ],
 
-    // Reviews
+    /* ===========================
+       REVIEWS
+    =========================== */
+
     reviews: [reviewSchema],
 
     ratingsAverage: {
@@ -183,7 +420,10 @@ const productSchema = new Schema(
       default: 0,
     },
 
-    // Product Flags
+    /* ===========================
+       FLAGS
+    =========================== */
+
     isFeatured: {
       type: Boolean,
       default: false,
@@ -209,17 +449,19 @@ const productSchema = new Schema(
       default: true,
     },
 
-    // Vendor
+    /* ===========================
+       ADMIN
+    =========================== */
+
     vendor: {
       type: Schema.Types.ObjectId,
       ref: "Vendor",
       default: null,
     },
 
-    // Admin
     adminNote: {
       type: String,
-      trim: true,
+      default: "",
     },
   },
   {
@@ -228,7 +470,7 @@ const productSchema = new Schema(
 );
 
 /* ===========================
-   Indexes
+   INDEXES
 =========================== */
 
 productSchema.index({
