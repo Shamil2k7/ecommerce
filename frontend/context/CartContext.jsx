@@ -128,11 +128,6 @@ export const CartProvider = ({ children }) => {
 
     if (data) {
       setCart(data.cart || data);
-
-      toast.success(data.message || "Item removed from cart", {
-        position: "top-center",
-        autoClose: 2000,
-      });
     }
   };
 
@@ -147,11 +142,6 @@ export const CartProvider = ({ children }) => {
 
     if (data) {
       setCart(data.cart || data);
-
-      toast.success(data.message || "Cart cleared", {
-        position: "top-center",
-        autoClose: 2000,
-      });
     }
   };
 
