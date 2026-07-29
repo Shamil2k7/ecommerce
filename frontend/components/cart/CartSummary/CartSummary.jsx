@@ -8,19 +8,19 @@ const CartSummary = ({ cart }) => {
   return (
     <div className={styles.cartSummaryContainer}>
       <h3 className={styles.summaryTitle}>Price Details</h3>
-      
+
       <div className={styles.summaryRow}>
         <span>Subtotal ({cart.products.reduce((acc, item) => acc + item.quantity, 0)} items)</span>
         <span>₹{cart.subtotal.toFixed(2)}</span>
       </div>
-      
+
       {cart.discount > 0 && (
         <div className={styles.summaryRow}>
           <span>Product Discounts</span>
           <span className={styles.discountText}>-₹{cart.discount.toFixed(2)}</span>
         </div>
       )}
-      
+
       {cart.offerDiscount > 0 && (
         <div className={styles.summaryRow}>
           <span>Offer Discount</span>
@@ -28,25 +28,26 @@ const CartSummary = ({ cart }) => {
         </div>
       )}
 
-      <div className={styles.summaryRow} style={{marginTop: '1.5rem'}}>
+      <div className={styles.summaryRow} style={{ marginTop: '1.5rem' }}>
         <span>Shipping</span>
         <span>{cart.shipping === 0 ? 'Free' : `$${cart.shipping.toFixed(2)}`}</span>
       </div>
-      
+
       <div className={styles.summaryRow}>
-        <span>Estimated GST (18%)</span>
+        <span>Estimated GST</span>
         <span>${cart.tax.toFixed(2)}</span>
       </div>
 
-      {/* Sticky on mobile via CSS, normal flow on desktop */}
+
+
       <div className={styles.stickyFooter}>
         <div className={`${styles.summaryRow} ${styles.total}`}>
           <span>Total</span>
           <span>₹{cart.finalTotal.toFixed(2)}</span>
         </div>
 
-        <button 
-          className={styles.checkoutBtn} 
+        <button
+          className={styles.checkoutBtn}
           onClick={() => router.push('/checkout')}
           disabled={cart.products.length === 0}
         >
