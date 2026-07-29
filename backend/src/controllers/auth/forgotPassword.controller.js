@@ -35,7 +35,7 @@ const forgotPassword = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    const emailSent = await sendEmail(
+    const emailResult = await sendEmail(
       user.email,
       "Password Reset OTP",
       `
@@ -49,7 +49,7 @@ const forgotPassword = async (req, res) => {
       `
     );
 
-    if (!emailSent) {
+    if (!emailResult || !emailResult.success) {
       user.resetPasswordToken = undefined;
       user.resetPasswordExpire = undefined;
 
@@ -57,7 +57,9 @@ const forgotPassword = async (req, res) => {
 
       return res.status(500).json({
         success: false,
-        message: "Failed to send OTP",
+        message: emailResult?.error
+          ? `Failed to send OTP: ${emailResult.error}`
+          : "Failed to send OTP",
       });
     }
 

@@ -42,7 +42,7 @@ const sendRegistrationOtp = async (req, res) => {
       { upsert: true, new: true }
     );
 
-    const emailSent = await sendEmail(
+    const emailResult = await sendEmail(
       formattedEmail,
       "Email Verification OTP",
       `
@@ -56,12 +56,14 @@ const sendRegistrationOtp = async (req, res) => {
       `
     );
 
-    if (!emailSent) {
+    if (!emailResult || !emailResult.success) {
       await Otp.deleteOne({ email: formattedEmail });
 
       return res.status(500).json({
         success: false,
-        message: "Failed to send OTP email",
+        message: emailResult?.error
+          ? `Failed to send OTP: ${emailResult.error}`
+          : "Failed to send OTP email",
       });
     }
 

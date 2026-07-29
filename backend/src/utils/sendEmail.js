@@ -11,13 +11,11 @@ const sendEmail = async (to, subject, html) => {
 
     await transporter.sendMail(emailData);
 
-    console.log("Email sent successfully");
-
-    return true;
+    return { success: true };
   } catch (error) {
     console.error("Email sending failed:", error.message);
 
-    return false;
+    return { success: false, error: error.message };
   }
 };
 
