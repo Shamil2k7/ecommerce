@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import User from "../../models/userModels.js";
 import sendEmail from "../../utils/sendEmail.js";
-import registrationOtps from "../../utils/otpStore.js";
+import Otp from "../../models/otpModel.js";
 
 const sendRegistrationOtp = async (req, res) => {
   const { email } = req.body;
@@ -32,11 +32,15 @@ const sendRegistrationOtp = async (req, res) => {
       .update(otp)
       .digest("hex");
 
-    registrationOtps.set(formattedEmail, {
-      hashedOtp,
-      expiresAt: Date.now() + 5 * 60 * 1000,
-      isVerified: false,
-    });
+    await Otp.findOneAndUpdate(
+      { email: formattedEmail },
+      {
+        hashedOtp,
+        isVerified: false,
+        createdAt: new Date(),
+      },
+      { upsert: true, new: true }
+    );
 
     const emailSent = await sendEmail(
       formattedEmail,
@@ -53,7 +57,7 @@ const sendRegistrationOtp = async (req, res) => {
     );
 
     if (!emailSent) {
-      registrationOtps.delete(formattedEmail);
+      await Otp.deleteOne({ email: formattedEmail });
 
       return res.status(500).json({
         success: false,

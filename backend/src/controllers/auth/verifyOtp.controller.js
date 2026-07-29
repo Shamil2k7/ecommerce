@@ -1,6 +1,6 @@
 import crypto from "crypto";
 import User from "../../models/userModels.js";
-import registrationOtps from "../../utils/otpStore.js";
+import Otp from "../../models/otpModel.js";
 
 const verifyOtp = async (req, res) => {
   const { email, otp } = req.body;
@@ -45,21 +45,12 @@ const verifyOtp = async (req, res) => {
     }
 
     // Check registration OTP
-    const otpData = registrationOtps.get(formattedEmail);
+    const otpData = await Otp.findOne({ email: formattedEmail });
 
     if (!otpData) {
       return res.status(400).json({
         success: false,
         message: "Invalid or expired OTP",
-      });
-    }
-
-    if (otpData.expiresAt < Date.now()) {
-      registrationOtps.delete(formattedEmail);
-
-      return res.status(400).json({
-        success: false,
-        message: "OTP has expired",
       });
     }
 
@@ -71,6 +62,7 @@ const verifyOtp = async (req, res) => {
     }
 
     otpData.isVerified = true;
+    await otpData.save();
 
     return res.status(200).json({
       success: true,

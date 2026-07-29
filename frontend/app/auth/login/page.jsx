@@ -53,7 +53,7 @@ export default function LoginPage() {
     if (result.success) {
       setSuccessMsg("Logged in successfully! Redirecting...");
       setTimeout(() => {
-         if (result.user?.role === "admin" || result.user?.role === "staff") {
+        if (result.user?.role === "admin" || result.user?.role === "staff") {
           router.push("/admin/dashboard");
         } else {
           router.push("/");
@@ -215,7 +215,7 @@ export default function LoginPage() {
           </div>
         </div>
 
-    
+
       </div>
     </section>
   );
