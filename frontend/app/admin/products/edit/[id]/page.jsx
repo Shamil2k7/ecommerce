@@ -9,7 +9,7 @@ import styles from "../../add/AddProduct.module.css";
 export default function EditProductPage() {
   const { id } = useParams();
   const router = useRouter();
-
+ const API = process.env.NEXT_PUBLIC_API_URL;
   // Categories list
   const [categories, setCategories] = useState([]);
   const [brands, setBrands] = useState([]);
@@ -32,7 +32,7 @@ export default function EditProductPage() {
 
   useEffect(() => {
     // 1. Fetch categories
-    fetch("http://localhost:5000/api/categories")
+    fetch(`${API}/api/categories`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -42,7 +42,7 @@ export default function EditProductPage() {
       .catch((err) => console.error("Error fetching categories:", err));
 
     // 1.5. Fetch brands
-    fetch("http://localhost:5000/api/brands")
+    fetch(`${API}/api/brands`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -52,7 +52,7 @@ export default function EditProductPage() {
       .catch((err) => console.error("Error fetching brands:", err));
 
     // 2. Fetch product by ID
-    fetch(`http://localhost:5000/api/products/${id}`)
+    fetch(`${API}/api/products/${id}`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -97,7 +97,7 @@ export default function EditProductPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/products/${id}/images/${currentImageId}`,
+        `${API}/api/products/${id}/images/${currentImageId}`,
         {
           method: "DELETE",
           credentials: "include",
@@ -124,7 +124,7 @@ export default function EditProductPage() {
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this product?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const res = await fetch(`${API}/api/products/${id}`, {
         method: "DELETE",
         credentials: "include",
       });
@@ -162,7 +162,7 @@ export default function EditProductPage() {
         description,
       };
 
-      const patchRes = await fetch(`http://localhost:5000/api/products/${id}`, {
+      const patchRes = await fetch(`${API}/api/products/${id}`, {
         method: "PATCH",
         credentials: "include",
         headers: {
@@ -180,7 +180,7 @@ export default function EditProductPage() {
         const imgData = new FormData();
         imgData.append("images", newImageFile);
 
-        const imgRes = await fetch(`http://localhost:5000/api/products/${id}/images`, {
+        const imgRes = await fetch(`${API}/api/products/${id}/images`, {
           method: "POST",
           credentials: "include",
           body: imgData,

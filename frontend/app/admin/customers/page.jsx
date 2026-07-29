@@ -6,7 +6,7 @@ import styles from "./Customers.module.css";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 export default function CustomersPage() {
   const [customers, setCustomers] = useState([]);

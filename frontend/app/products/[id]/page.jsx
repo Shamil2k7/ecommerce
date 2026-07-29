@@ -22,7 +22,7 @@ import { FaHeart } from "react-icons/fa";
 import styles from "./ProductDetails.module.css";
 import { useCart } from "../../../context/CartContext";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_API_URL ;
 
 const TABS = [
   { key: "details", label: "Details" },

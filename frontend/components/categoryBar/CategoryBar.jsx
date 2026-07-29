@@ -8,7 +8,7 @@ export default function CategoryBar() {
   const [categories, setCategories] = useState([]);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/categories")
+    fetch(`${API}/api/categories`)
       .then((res) => res.json())
       .then((json) => {
         setCategories(json.data || []);

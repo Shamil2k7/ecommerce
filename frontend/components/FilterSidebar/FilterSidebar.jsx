@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import styles from "./FilterSidebar.module.css";
-
+const API = process.env.NEXT_PUBLIC_API_URL;
 export default function FilterSidebar({
   categoriesList = [],
   selectedCategories,
@@ -14,7 +14,7 @@ export default function FilterSidebar({
 
   useEffect(() => {
     // Load Brands
-    fetch("http://localhost:5000/api/brands")
+    fetch(`${API}/api/brands`)
       .then((res) => res.json())
       .then((json) => {
         setBrandsList(json.data || []);

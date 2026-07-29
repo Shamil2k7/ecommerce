@@ -11,8 +11,8 @@ import {
 } from "lucide-react";
 
 import styles from "./RefundRequest.module.css";
-
-const API_URL = "http://localhost:5000/api/orders";
+const API = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = `${API}/api/orders`;
 
 export default function RefundRequestPage() {
   const [refunds, setRefunds] = useState([]);

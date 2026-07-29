@@ -6,7 +6,7 @@ import { useAuth } from "@/context/AuthContext";
 import styles from "./Profile.module.css";
 import { User, Mail, Phone, Shield, Calendar, LogOut, Loader2, MapPin, Plus, Package, Map, X, Trash2, Edit } from "lucide-react";
 
-const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000"}/api/auth`;
+const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL}/api/auth`;
 
 export default function ProfilePage() {
   const { user, loading, logout, checkAuth } = useAuth();

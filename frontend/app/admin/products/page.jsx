@@ -13,6 +13,8 @@ import Swal from "sweetalert2";
 import { toast } from "react-hot-toast";
 import styles from "./Products.module.css";
 
+const API = process.env.NEXT_PUBLIC_API_URL;
+
 export default function ProductsPage() {
   const router = useRouter();
   const [search, setSearch] = useState("");
@@ -28,7 +30,7 @@ export default function ProductsPage() {
 
   useEffect(() => {
     // Fetch products
-    fetch("http://localhost:5000/api/products")
+    fetch(`${API}/api/products`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data && json.data.products) {
@@ -39,7 +41,7 @@ export default function ProductsPage() {
       .finally(() => setLoading(false));
 
     // Fetch brands
-    fetch("http://localhost:5000/api/brands")
+    fetch(`/api/brands`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -49,7 +51,7 @@ export default function ProductsPage() {
       .catch((err) => console.error("Error fetching brands:", err));
 
     // Fetch categories
-    fetch("http://localhost:5000/api/categories")
+    fetch(`${API}/api/categories`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -74,7 +76,7 @@ export default function ProductsPage() {
   if (!confirmResult.isConfirmed) return;
 
   try {
-    const res = await fetch(`http://localhost:5000/api/products/${id}`, {
+    const res = await fetch(`${API}/api/products/${id}`, {
       method: "DELETE",
       credentials: "include", // IMPORTANT
     });

@@ -20,7 +20,7 @@ import { toast } from "react-toastify";
 import Swal from "sweetalert2";
 import TopProducts from "@/components/TopProducts/TopProducts";
 
-const API_BASE = "http://localhost:5000";
+const API_BASE =process.env.NEXT_PUBLIC_API_URL;;
 const API_URL = `${API_BASE}/api/orders`;
 
 const TABS = [

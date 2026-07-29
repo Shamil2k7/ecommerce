@@ -15,8 +15,8 @@ import {
 import styles from "./Orders.module.css";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
-
-const API_URL = "http://localhost:5000/api/orders";
+const API = process.env.NEXT_PUBLIC_API_URL;
+const API_URL = `${API}/api/orders`;
 
 export default function OrdersPage() {
   const [orders, setOrders] = useState([]);
