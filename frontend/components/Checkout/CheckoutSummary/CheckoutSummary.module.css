@@ -241,7 +241,7 @@
   margin: 24px 0;
   overflow: hidden;
   border-radius: 14px ;
-  background: linear-gradient(135deg,#9ce37f 0%,#9ce37f 100%);
+  background: linear-gradient(135deg,#7c2a42 0%,#762e44 100%);
   color: #000000;
   height: 120px;
 }
@@ -353,35 +353,76 @@
 
 .checkoutButton {
   width: 100%;
+  height: 48px;
   margin-top: 24px;
-  padding: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background-color: #7B1E3A;
   border: none;
   border-radius: 10px;
-  background:#7B1E3A;
-  color: #fff;
+  color: white;
   font-size: 15px;
   font-weight: 700;
   letter-spacing: 1.5px;
   text-transform: uppercase;
   cursor: pointer;
-  transition: all .3s ease;
+  position: relative;
+  overflow: hidden;
+  /* box-shadow: 5px 5px 10px rgba(0, 0, 0, 0.103); */
+  transition-duration: .3s;
 }
 
-.checkoutButton:hover:not(:disabled) {
-  background: #64182F;
-  transform: translateY(-2px);
-  /* box-shadow: 0 8px 20px rgba(46, 125, 50, .25); */
+.checkoutButton::before {
+  width: calc(100% + 40px);
+  aspect-ratio: 1/1;
+  position: absolute;
+  content: "";
+
+  background-color: #64182F;
+  border-radius: 50%;
+  left: -20px;
+  top: 50%;
+  transform: translate(-150%, -50%);
+  transition-duration: .5s;
+  mix-blend-mode: difference;
+}
+
+.checkoutButton:hover:not(:disabled)::before {
+  transform: translate(0, -50%);
 }
 
 .checkoutButton:active:not(:disabled) {
-  transform: scale(.98);
+  transform: translateY(4px);
+  transition-duration: .3s;
 }
 
 .checkoutButton:disabled {
-  background: #d6d6d6;
+  background-color: #d6d6d6;
   color: #777;
   cursor: not-allowed;
   box-shadow: none;
+}
+
+.checkoutButton:disabled::before {
+  display: none;
+}
+
+.checkoutButtonIcon {
+  width: 18px;
+  flex-shrink: 0;
+  position: relative;
+  z-index: 1;
+}
+
+.checkoutButtonIcon path {
+  fill: currentColor;
+}
+
+.checkoutButton span {
+  position: relative;
+  z-index: 1;
 }
 
 .checkoutSecurity {
@@ -487,18 +528,9 @@
   .grandTotalPrice {
     font-size: 24px;
   }
-/* 
-  .ticketLeft,
-  .ticketSuccessLeft {
-    padding: 18px;
-  }
-
-  .ticketCouponCode {
-    font-size: 22px;
-  } */
 
   .checkoutButton {
-    padding: 15px;
+    padding: 0 15px;
     font-size: 14px;
   }
 
@@ -562,7 +594,7 @@
 
   .checkoutButton {
     font-size: 14px;
-    padding: 14px;
+    padding: 0 14px;
     letter-spacing: 1px;
   }
 
