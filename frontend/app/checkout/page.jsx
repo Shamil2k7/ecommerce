@@ -11,6 +11,7 @@ import DeliveryAddress from "../../components/Checkout/DeliveryAddress/DeliveryA
 import CheckoutSummary from "../../components/Checkout/CheckoutSummary/CheckoutSummary";
 import { toast } from "react-toastify";
 import styles from "./Checkout.module.css";
+import Swal from "sweetalert2";
 
 function CheckoutContent() {
   const router = useRouter();
@@ -22,6 +23,7 @@ function CheckoutContent() {
   const [paymentMethod, setPaymentMethod] = useState("Cash on Delivery");
   const [addresses, setAddresses] = useState([]);
   const [selectedAddress, setSelectedAddress] = useState(null);
+  const [isProcessing, setIsProcessing] = useState(false);
 
   const buyNowProductId = searchParams.get("buyNow");
   const buyNowColor = searchParams.get("color");
@@ -55,6 +57,8 @@ function CheckoutContent() {
   }, [cart, buyNowProductId, buyNowColor, buyNowSize]);
 
   const handlePlaceOrder = async () => {
+    if (isProcessing) return;
+
     if (!selectedAddress) {
       toast.error("Please select a delivery address");
       return;
@@ -64,6 +68,22 @@ function CheckoutContent() {
       toast.error("Please login to place an order");
       return;
     }
+
+    const swalResult = await Swal.fire({
+      title: 'Confirm Order',
+      text: 'Are you sure you want to place this order?',
+      icon: 'question',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, place it!'
+    });
+
+    if (!swalResult.isConfirmed) {
+      return;
+    }
+
+    setIsProcessing(true);
 
     const addr = addresses.find((a) => a._id === selectedAddress);
     
@@ -110,6 +130,7 @@ function CheckoutContent() {
 
       if (failedOrder) {
         alert(failedOrder.message || "Unable to place the order.");
+        setIsProcessing(false);
         return;
       }
       
@@ -117,6 +138,7 @@ function CheckoutContent() {
       
       if (hasError) {
         toast.error(hasError.message || "Error placing one or more orders.");
+        setIsProcessing(false);
       } else {
         toast.success("Order successfully placed!");
         if (buyNowProductId) {
@@ -126,11 +148,10 @@ function CheckoutContent() {
         }
         router.push("/orders");
       }
-
-      router.push("/orders");
     } catch (error) {
       console.error("Order error:", error);
       toast.error("Something went wrong while placing the order.");
+      setIsProcessing(false);
     }
   };
 
@@ -206,6 +227,7 @@ function CheckoutContent() {
           handlePlaceOrder={handlePlaceOrder}
           applyCoupon={applyCoupon}
           removeCoupon={removeCoupon}
+          isProcessing={isProcessing}
         />
       </div>
     </section>
