@@ -59,6 +59,16 @@ function ProductsContent() {
                 typeof p.category === "object"
                   ? p.category?.name
                   : p.category || "Uncategorized",
+
+              categorySlug:
+                typeof p.category === "object"
+                  ? p.category?.slug
+                  : "",
+
+              categorySlug:
+                typeof p.category === "object"
+                  ? p.category?.slug
+                  : "",
               brand:
                 typeof p.brand === "object"
                   ? p.brand?.name
@@ -71,8 +81,8 @@ function ProductsContent() {
               oldPrice: hasDiscount ? p.price : null,
               discount: hasDiscount
                 ? Math.round(
-                    ((p.price - p.discountPrice) / p.price) * 100
-                  )
+                  ((p.price - p.discountPrice) / p.price) * 100
+                )
                 : null,
               rating: p.ratingsAverage || 5,
               reviews: p.ratingsCount || 0,
@@ -112,7 +122,7 @@ function ProductsContent() {
       result.add(catName);
 
       const parentCat = categoriesList.find(
-        (c) => c.name === catName && !c.parentCategory
+        (c) => c.slug === catName && !c.parentCategory
       );
       if (parentCat) {
         const children = categoriesList.filter((c) => {
@@ -122,7 +132,7 @@ function ProductsContent() {
               : c.parentCategory;
           return pId === parentCat._id;
         });
-        children.forEach((child) => result.add(child.name));
+        children.forEach((child) => result.add(child.slug));
       }
     });
     return Array.from(result);
@@ -139,7 +149,7 @@ function ProductsContent() {
 
     if (expandedSelectedCategories.length > 0) {
       data = data.filter((item) =>
-        expandedSelectedCategories.includes(item.category)
+        expandedSelectedCategories.includes(item.categorySlug)
       );
     }
 
