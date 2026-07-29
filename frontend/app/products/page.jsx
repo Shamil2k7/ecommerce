@@ -109,30 +109,53 @@ function ProductsContent() {
 
   useEffect(() => {
     if (initialCategory) {
-      setSelectedCategories([initialCategory]);
+      const decodedCategory = decodeURIComponent(initialCategory);
+      if (categoriesList.length > 0) {
+        const cat = categoriesList.find(
+          (c) =>
+            c.slug.toLowerCase() === decodedCategory.toLowerCase() ||
+            c.name.toLowerCase() === decodedCategory.toLowerCase()
+        );
+        if (cat) {
+          setSelectedCategories([cat.name]);
+          return;
+        }
+      }
+      setSelectedCategories([decodedCategory]);
     } else {
       setSelectedCategories([]);
     }
-  }, [initialCategory]);
+  }, [initialCategory, categoriesList]);
 
   const expandedSelectedCategories = useMemo(() => {
     if (selectedCategories.length === 0) return [];
     const result = new Set();
     selectedCategories.forEach((catName) => {
-      result.add(catName);
-
-      const parentCat = categoriesList.find(
-        (c) => c.slug === catName && !c.parentCategory
+      const cat = categoriesList.find(
+        (c) =>
+          c.name.toLowerCase() === catName.toLowerCase() ||
+          c.slug.toLowerCase() === catName.toLowerCase()
       );
-      if (parentCat) {
-        const children = categoriesList.filter((c) => {
-          const pId =
-            typeof c.parentCategory === "object" && c.parentCategory
-              ? c.parentCategory._id
-              : c.parentCategory;
-          return pId === parentCat._id;
-        });
-        children.forEach((child) => result.add(child.slug));
+      if (cat) {
+        result.add(cat.name);
+        result.add(cat.slug);
+
+        const isParent = !cat.parentCategory;
+        if (isParent) {
+          const children = categoriesList.filter((c) => {
+            const pId =
+              typeof c.parentCategory === "object" && c.parentCategory
+                ? c.parentCategory._id
+                : c.parentCategory;
+            return pId === cat._id;
+          });
+          children.forEach((child) => {
+            result.add(child.name);
+            result.add(child.slug);
+          });
+        }
+      } else {
+        result.add(catName);
       }
     });
     return Array.from(result);
@@ -149,7 +172,11 @@ function ProductsContent() {
 
     if (expandedSelectedCategories.length > 0) {
       data = data.filter((item) =>
-        expandedSelectedCategories.includes(item.categorySlug)
+        expandedSelectedCategories.some(
+          (cat) =>
+            cat.toLowerCase() === item.category.toLowerCase() ||
+            (item.categorySlug && cat.toLowerCase() === item.categorySlug.toLowerCase())
+        )
       );
     }
 
