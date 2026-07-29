@@ -1,8 +1,8 @@
 .hero {
   width: 100%;
-  overflow: hidden;
   margin: 0;
   padding: 0;
+  overflow: hidden;
   background: #fff;
 }
 
@@ -27,17 +27,21 @@
   position: relative;
   flex: 0 0 100%;
   width: 100%;
-  height: 600px;
   overflow: hidden;
+
+  /* 1920 × 600 Banner Ratio */
+  aspect-ratio: 1920 / 600;
 }
 
 .bannerImage {
   width: 100%;
-  height: 500px;
+  height: 100%;
   display: block;
+
   object-fit: cover;
   object-position: center;
 }
+
 
 .arrow {
   position: absolute;
@@ -51,7 +55,8 @@
   border: none;
   border-radius: 50%;
 
-  background: rgba(255, 255, 255, 0.95);
+  background: rgba(255,255,255,.95);
+  color: #111;
 
   display: flex;
   align-items: center;
@@ -60,7 +65,7 @@
   cursor: pointer;
   transition: all .3s ease;
 
-  box-shadow: 0 5px 15px rgba(0,0,0,.2);
+  box-shadow: 0 6px 15px rgba(0,0,0,.15);
 }
 
 .arrow:hover {
@@ -79,7 +84,7 @@
 .dots {
   position: absolute;
   left: 50%;
-  bottom: 20px;
+  bottom: 18px;
   transform: translateX(-50%);
 
   display: flex;
@@ -97,7 +102,7 @@
   background: rgba(255,255,255,.6);
 
   cursor: pointer;
-  transition: .3s;
+  transition: all .3s ease;
 }
 
 .active {
@@ -108,116 +113,110 @@
 
 .loader {
   width: 100%;
-  height: 600px;
+  aspect-ratio: 1920 / 600;
 
   display: flex;
   justify-content: center;
   align-items: center;
 }
 
-/* Large Laptop */
 
-@media (max-width:1400px){
 
-  .slide{
-    height:520px;
+@media (min-width: 1600px) {
+
+  .slide,
+  .loader {
+    max-height: 600px;
   }
 
 }
 
-/* Laptop */
+@media (max-width: 1200px) {
 
-@media (max-width:1200px){
-
-  .slide{
-    height:430px;
+  .arrow {
+    width: 44px;
+    height: 44px;
   }
 
 }
+@media (max-width: 992px) {
 
-/* Tablet */
-
-@media (max-width:992px){
-
-  .slide{
-    height:340px;
+  .arrow {
+    width: 40px;
+    height: 40px;
   }
 
-  .arrow{
-    width:40px;
-    height:40px;
+  .leftArrow {
+    left: 12px;
   }
 
-  .leftArrow{
-    left:12px;
+  .rightArrow {
+    right: 12px;
   }
 
-  .rightArrow{
-    right:12px;
+  .dots {
+    bottom: 14px;
   }
 
 }
+@media (max-width: 768px) {
 
-/* Mobile */
-
-@media (max-width:768px){
-
-  .slide{
-    height:240px;
+  .slide {
+    aspect-ratio: 16 / 9;
   }
 
-  .bannerImage{
-    object-fit:cover;
-    object-position:center;
+  .loader {
+    aspect-ratio: 16 / 9;
   }
 
-  .arrow{
-    width:34px;
-    height:34px;
+  .bannerImage {
+    object-fit: cover;
+    object-position: center;
   }
 
-  .leftArrow{
-    left:8px;
+  .arrow {
+    width: 34px;
+    height: 34px;
   }
 
-  .rightArrow{
-    right:8px;
+  .leftArrow {
+    left: 8px;
   }
 
-  .dots{
-    bottom:12px;
+  .rightArrow {
+    right: 8px;
   }
 
-  .dot{
-    width:8px;
-    height:8px;
+  .dots {
+    bottom: 10px;
   }
 
-  .active{
-    width:22px;
+  .dot {
+    width: 8px;
+    height: 8px;
+  }
+
+  .active {
+    width: 22px;
   }
 
 }
+@media (max-width: 480px) {
 
-/* Small Mobile */
-
-@media (max-width:480px){
-
-  .slide{
-    height:190px;
+  .slide {
+    aspect-ratio: 16 / 9;
   }
 
-  .bannerImage{
-    object-fit:cover;
-    object-position:center;
+  .loader {
+    aspect-ratio: 16 / 9;
   }
 
-  .arrow{
-    display:none;
+  .arrow {
+    display: none;
   }
 
-  .dots{
-    bottom:8px;
+  .dots {
+    bottom: 8px;
   }
 
 }
