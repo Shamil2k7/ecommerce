@@ -21,23 +21,18 @@ export default function Categories() {
     fetchCategories();
   }, []);
 
-  const fetchCategories = async () => {
+  async function fetchCategories() {
     try {
-      const response = await fetch(`${API}/api/categories`, {
+      const res = await fetch(`${API}/api/categories`, {
         cache: "no-store",
       });
 
-      const result = await response.json();
+      const data = await res.json();
 
-      if (result.success) {
-        const activeCategories = [];
-
-        for (const category of result.data) {
-          if (category.parentCategory) continue;
-          if (!category.isActive) continue;
-
-          activeCategories.push(category);
-        }
+      if (data.success) {
+        const activeCategories = data.data.filter(
+          (category) => !category.parentCategory && category.isActive
+        );
 
         setCategories(activeCategories);
       }
@@ -46,75 +41,76 @@ export default function Categories() {
     } finally {
       setLoading(false);
     }
-  };
+  }
 
   const sliderCategories = useMemo(() => {
-    if (categories.length === 0) return [];
+    if (!categories.length) return [];
 
-    const list = [];
+    const items = [];
 
-    while (list.length < 24) {
-      for (const category of categories) {
-        list.push(category);
-
-        if (list.length >= 24) {
-          break;
-        }
-      }
+    while (items.length < 24) {
+      items.push(...categories);
     }
 
-    return list;
+    return items.slice(0, 24);
   }, [categories]);
 
-  if (loading) return null;
-
-  if (sliderCategories.length === 0) return null;
+  if (loading || sliderCategories.length === 0) return null;
 
   return (
     <section className={styles.categories}>
       <div className={styles.container}>
-        {/* Heading */}
-
         <div className={styles.header}>
+          <h2 className={styles.heading}>Shop by Category</h2>
+
           <Link href="/products" className={styles.viewAll}>
             View All →
           </Link>
         </div>
 
-        {/* Slider */}
         <Swiper
           modules={[Autoplay]}
-          loop
-          speed={2000}
-          grabCursor
+          loop={true}
+          grabCursor={true}
+          speed={600}
           autoplay={{
-            delay: 0,
+            delay: 2000,
             disableOnInteraction: false,
             pauseOnMouseEnter: true,
           }}
           breakpoints={{
             0: {
               slidesPerView: 2,
+              spaceBetween: 10,
+            },
+
+            480: {
+              slidesPerView: 2.3,
               spaceBetween: 12,
             },
-            480: {
-              slidesPerView: 2.5,
-              spaceBetween: 14,
-            },
+
             640: {
               slidesPerView: 3,
-              spaceBetween: 16,
+              spaceBetween: 15,
             },
+
             768: {
               slidesPerView: 4,
               spaceBetween: 18,
             },
+
             992: {
               slidesPerView: 5,
               spaceBetween: 20,
             },
+
             1200: {
               slidesPerView: 6,
+              spaceBetween: 24,
+            },
+
+            1400: {
+              slidesPerView: 7,
               spaceBetween: 24,
             },
           }}
@@ -132,13 +128,15 @@ export default function Categories() {
                       alt={category.name}
                       fill
                       className={styles.image}
-                      sizes="250px"
+                      sizes="(max-width:480px) 50vw,
+                             (max-width:768px) 33vw,
+                             (max-width:1200px) 20vw,
+                             180px"
                     />
                   </div>
                 </div>
 
                 <h3 className={styles.title}>{category.name}</h3>
-
               </Link>
             </SwiperSlide>
           ))}

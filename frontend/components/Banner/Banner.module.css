@@ -1,7 +1,7 @@
 .bannerSection {
   width: 100%;
-  padding: 0;
   margin: 0;
+  padding: 0;
   overflow: hidden;
   background: #fff;
 }
@@ -9,6 +9,7 @@
 .carouselWrapper {
   width: 100%;
   position: relative;
+  overflow: hidden;
 }
 
 .slider {
@@ -18,7 +19,7 @@
 
 .bannerImage {
   width: 100%;
-  height: 500px;
+  aspect-ratio: 1920 / 600;
   object-fit: cover;
   object-position: center;
   display: block;
@@ -36,23 +37,30 @@
   top: 50%;
   transform: translateY(-50%);
   z-index: 10;
+
   width: 46px;
   height: 46px;
-  border-radius: var(--radius-pill);
+
+  border: none;
+  border-radius: 50%;
+
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--surface);
-  color: var(--text);
-  box-shadow: var(--shadow-sm);
-  transition: 0.25s;
+
+  background: rgba(255, 255, 255, 0.9);
+  color: #222;
+
+  cursor: pointer;
+
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  transition: 0.3s;
 }
 
 .arrow:hover {
-  background: var(--accent);
-  color: var(--surface);
+  background: #c9a227;
+  color: #fff;
 }
-
 
 .leftArrow {
   left: 20px;
@@ -63,53 +71,96 @@
 }
 
 .bannerSection :global(.swiper-pagination) {
-  bottom: 15px;
+  bottom: 18px !important;
 }
+
 .bannerSection :global(.swiper-pagination-bullet) {
-  background: var(--surface);
+  width: 10px;
+  height: 10px;
+  background: #fff;
   opacity: 0.6;
 }
+
 .bannerSection :global(.swiper-pagination-bullet-active) {
+  width: 24px;
+  border-radius: 20px;
   background: #c9a227;
   opacity: 1;
 }
 
-/* ================= RESPONSIVE ================= */
+@media (max-width: 1200px) {
+
+  .bannerImage {
+    aspect-ratio: 16 / 6;
+  }
+
+}
 
 @media (max-width: 992px) {
+
   .bannerImage {
-    height: 450px;
+    aspect-ratio: 16 / 7;
   }
-}
-@media (max-width:992px){
-  .bannerImage {
-    height:320px;
-  }
-}
-@media (max-width:768px){
-  .bannerImage {
-    height:220px;
-  }
+
   .arrow {
-    width:34px;
-    height:34px;
+    width: 40px;
+    height: 40px;
   }
+
   .leftArrow {
-    left:10px;
+    left: 14px;
   }
+
   .rightArrow {
-    right:10px;
+    right: 14px;
   }
+
 }
-@media (max-width:480px){
+
+@media (max-width: 768px) {
 
   .bannerImage {
-    height:180px;
+    aspect-ratio: 16 / 9;
+    object-position: center;
   }
 
+  .arrow {
+    width: 34px;
+    height: 34px;
+  }
+
+  .leftArrow {
+    left: 8px;
+  }
+
+  .rightArrow {
+    right: 8px;
+  }
+
+  .bannerSection :global(.swiper-pagination) {
+    bottom: 10px !important;
+  }
+
+}
+
+@media (max-width: 480px) {
+
+  .bannerImage {
+    aspect-ratio: 4 / 3;
+    object-position: center;
+  }
 
   .arrow {
-    display:none;
+    display: none;
+  }
+
+  .bannerSection :global(.swiper-pagination-bullet) {
+    width: 8px;
+    height: 8px;
+  }
+
+  .bannerSection :global(.swiper-pagination-bullet-active) {
+    width: 18px;
   }
 
 }
