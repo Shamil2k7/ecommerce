@@ -5,7 +5,7 @@ import { ArrowLeft, Upload, Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./EditCategory.module.css";
-
+const API = process.env.NEXT_PUBLIC_API_URL;
 export default function EditCategoryPage() {
   const { id } = useParams();
   const router = useRouter();
@@ -27,7 +27,7 @@ export default function EditCategoryPage() {
 
   useEffect(() => {
     // 1. Fetch all categories to populate parent selection dropdown
-    fetch("http://localhost:5000/api/categories")
+    fetch(`${API}/api/categories`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -37,7 +37,7 @@ export default function EditCategoryPage() {
       .catch((err) => console.error("Error fetching categories:", err));
 
     // 2. Fetch current category details
-    fetch(`http://localhost:5000/api/categories/${id}`)
+    fetch(`${API}/api/categories/${id}`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -53,7 +53,7 @@ export default function EditCategoryPage() {
           setIsActive(cat.isActive !== false ? "Active" : "Inactive");
           setCurrentImage(
             cat.image?.url
-              ? (cat.image.url.startsWith("http") ? cat.image.url : `http://localhost:5000${cat.image.url}`)
+              ? (cat.image.url.startsWith("http") ? cat.image.url : `${API}${cat.image.url}`)
               : "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
           );
         }
@@ -73,7 +73,7 @@ export default function EditCategoryPage() {
   const handleDelete = async () => {
     if (!confirm("Are you sure you want to delete this category?")) return;
     try {
-      const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
+      const res = await fetch(`${API}/api/categories/${id}`, {
         method: "DELETE",
       });
       const json = await res.json();
@@ -119,7 +119,7 @@ export default function EditCategoryPage() {
       }
 
       const res = await fetch(
-        `http://localhost:5000/api/categories/${id}`,
+        `${API}/api/categories/${id}`,
         {
           method: "PATCH",
           body: formData,

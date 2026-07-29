@@ -13,6 +13,8 @@ import {
 import styles from "./Brands.module.css";
 import { toast } from "react-toastify";
 import Swal from "sweetalert2";
+const API = process.env.NEXT_PUBLIC_API_URL;
+
 
 export default function BrandsPage() {
   const router = useRouter();
@@ -22,7 +24,7 @@ export default function BrandsPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/brands")
+    fetch(`${API}/api/brands`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -53,7 +55,7 @@ export default function BrandsPage() {
     const token = localStorage.getItem("token");
 
     const res = await fetch(
-      `http://localhost:5000/api/brands/${id}`,
+      `${API}/api/brands/${id}`,
       {
         method: "DELETE",
         credentials: "include", // Send cookies if used
@@ -157,7 +159,7 @@ export default function BrandsPage() {
                     <img
                       src={
                         item.logo?.url
-                          ? (item.logo.url.startsWith("http") ? item.logo.url : `http://localhost:5000${item.logo.url}`)
+                          ? (item.logo.url.startsWith("http") ? item.logo.url : `${API}${item.logo.url}`)
                           : "https://via.placeholder.com/60x60?text=Logo"
                       }
                       alt={item.name}

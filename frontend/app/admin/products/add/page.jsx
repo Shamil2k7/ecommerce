@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 export default function AddProductPage() {
   const router = useRouter();
 
-  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API = process.env.NEXT_PUBLIC_API_URL ;
 
   // ===========================
   // Basic Information

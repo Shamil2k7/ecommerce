@@ -5,6 +5,7 @@ import { ArrowLeft, Upload } from "lucide-react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./AddBrand.module.css";
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function AddBrandPage() {
   const router = useRouter();
@@ -65,7 +66,7 @@ export default function AddBrandPage() {
       formData.append("logo", logoFile);
     }
 
-    const res = await fetch("http://localhost:5000/api/brands", {
+    const res = await fetch(`${API}/api/brands`, {
       method: "POST",
        credentials: "include",
       body: formData,

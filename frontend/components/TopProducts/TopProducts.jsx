@@ -5,7 +5,7 @@ import axios from "axios";
 import ProductCard from "../ProductCard/ProductCard";
 import styles from "./TopProducts.module.css";
 
-const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function TopProducts() {
   const [topRatedProducts, setTopRatedProducts] = useState([]);

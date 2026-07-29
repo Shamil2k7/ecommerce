@@ -5,6 +5,7 @@ import { ArrowLeft, Upload, Trash2 } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 import Link from "next/link";
 import styles from "./EditBrand.module.css";
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 export default function EditBrandPage() {
   const { id } = useParams();
@@ -22,7 +23,7 @@ export default function EditBrandPage() {
   const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
-    fetch(`http://localhost:5000/api/brands/${id}`)
+    fetch(`${API}/api/brands/${id}`)
       .then((res) => res.json())
       .then((json) => {
         if (json.data) {
@@ -35,7 +36,7 @@ export default function EditBrandPage() {
 
           setCurrentLogo(
             brand.logo?.url
-              ? (brand.logo.url.startsWith("http") ? brand.logo.url : `http://localhost:5000${brand.logo.url}`)
+              ? (brand.logo.url.startsWith("http") ? brand.logo.url : `${API}${brand.logo.url}`)
               : "https://via.placeholder.com/300x200?text=Brand"
           );
         }
@@ -58,7 +59,7 @@ export default function EditBrandPage() {
 
     try {
       const res = await fetch(
-        `http://localhost:5000/api/brands/${id}`,
+        `${API}/api/brands/${id}`,
         {
           method: "DELETE",
         }
@@ -98,7 +99,7 @@ export default function EditBrandPage() {
       }
 
       const res = await fetch(
-        `http://localhost:5000/api/brands/${id}`,
+        `${API}/api/brands/${id}`,
         {
           method: "PATCH",
           body: formData,

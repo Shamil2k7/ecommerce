@@ -8,7 +8,7 @@ import TopProducts from "@/components/TopProducts/TopProducts";
 
 export default function WishlistPage() {
   const API =
-    process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+    process.env.NEXT_PUBLIC_API_URL;
 
   const [wishlist, setWishlist] = useState([]);
   const [loading, setLoading] = useState(true);

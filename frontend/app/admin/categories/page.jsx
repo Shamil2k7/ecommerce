@@ -9,6 +9,7 @@ import {
     Pencil,
     Trash2,
 } from "lucide-react";
+const API = process.env.NEXT_PUBLIC_API_URL;
 
 import styles from "./Categories.module.css";
 import { toast } from "react-toastify";
@@ -23,7 +24,7 @@ export default function CategoriesPage() {
 
     useEffect(() => {
         // Fetch categories
-        fetch("http://localhost:5000/api/categories")
+        fetch(`${API}/api/categories`)
             .then((res) => res.json())
             .then((json) => {
                 if (json.data) {
@@ -34,7 +35,7 @@ export default function CategoriesPage() {
             .finally(() => setLoading(false));
 
         // Fetch products to count them
-        fetch("http://localhost:5000/api/products")
+        fetch(`${API}/api/products`)
             .then((res) => res.json())
             .then((json) => {
                 if (json.data && json.data.products) {
@@ -59,7 +60,7 @@ export default function CategoriesPage() {
         if (!confirmResult.isConfirmed) return;
 
         try {
-            const res = await fetch(`http://localhost:5000/api/categories/${id}`, {
+            const res = await fetch(`${API}/api/categories/${id}`, {
                 method: "DELETE",
                 credentials: "include",
             });
@@ -154,7 +155,7 @@ export default function CategoriesPage() {
                                             <img
                                                 src={
                                                     item.image?.url
-                                                        ? (item.image.url.startsWith("http") ? item.image.url : `http://localhost:5000${item.image.url}`)
+                                                        ? (item.image.url.startsWith("http") ? item.image.url : `${API}${item.image.url}`)
                                                         : "https://images.unsplash.com/photo-1511707171634-5f897ff02aa9?w=500"
                                                 }
                                                 alt={item.name}

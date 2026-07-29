@@ -15,6 +15,8 @@ import FilterSidebar from "@/components/FilterSidebar/FilterSidebar";
 
 import styles from "./ProductsPage.module.css";
 
+const API = process.env.NEXT_PUBLIC_API_URL;
+
 function ProductsContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("category") || "";
@@ -33,7 +35,7 @@ function ProductsContent() {
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/categories")
+    fetch(`${API}/api/categories`)
       .then((res) => res.json())
       .then((json) => {
         setCategoriesList(json.data || []);
@@ -42,7 +44,7 @@ function ProductsContent() {
 
     const fetchProducts = async () => {
       try {
-        const res = await fetch("http://localhost:5000/api/products");
+        const res = await fetch(`${API}/api/products`);
         const json = await res.json();
 
         if (json.data?.products) {

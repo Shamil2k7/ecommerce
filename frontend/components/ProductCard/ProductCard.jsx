@@ -16,7 +16,7 @@ export default function ProductCard({ product }) {
   const [wishlisted, setWishlisted] = useState(false);
   const [wishlistLoading, setWishlistLoading] = useState(false);
 
-  const API = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
+  const API = process.env.NEXT_PUBLIC_API_URL;
 
   const [loading, setLoading] = useState(false);
 

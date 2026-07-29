@@ -4,8 +4,6 @@
 frontend env
 
 
-NEXT_PUBLIC_API_URL=http://localhost:5000
-
 
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
