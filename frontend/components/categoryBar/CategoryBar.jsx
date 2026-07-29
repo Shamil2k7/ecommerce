@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import styles from "./categoryBar.module.css";
-
+const API = process.env.NEXT_PUBLIC_API_URL;
 export default function CategoryBar() {
   const [categories, setCategories] = useState([]);
 
