@@ -206,6 +206,62 @@
   letter-spacing: 1px;
 }
 
+/* ================= Colors & Sizes (variant chips) ================= */
+
+.right h3 {
+  font-size: 12.5px;
+  font-weight: 700;
+  color: var(--text);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin: 0 0 8px;
+}
+
+.colorList,
+.sizeList {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0 0 16px;
+  max-width: 100%;
+}
+
+.colorList span,
+.sizeList span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px solid var(--line);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 12.5px;
+  font-weight: 600;
+  cursor: default;
+  user-select: none;
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+  white-space: nowrap;
+}
+
+.colorList span {
+  padding: 6px 14px;
+  border-radius: var(--radius-pill);
+  text-transform: capitalize;
+}
+
+.sizeList span {
+  min-width: 40px;
+  height: 36px;
+  padding: 0 10px;
+  border-radius: var(--radius-sm);
+  text-transform: uppercase;
+}
+
+.colorList span:hover,
+.sizeList span:hover {
+  border-color: var(--primary);
+  background: var(--bg);
+}
+
 /* ================= Price Section ================= */
 
 .priceSection {
@@ -384,6 +440,11 @@
   background: var(--primary-hover);
 }
 
+.cartBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
 .wishBtn {
   width: 48px;
   height: 48px;
@@ -425,6 +486,11 @@
 .buyBtn:hover {
   background: var(--primary);
   color: var(--surface);
+}
+
+.buyBtn:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
 }
 
 /* ================= Perks ================= */
@@ -821,6 +887,25 @@
   }
 }
 
+@media (max-width: 640px) {
+  .colorList,
+  .sizeList {
+    gap: 6px;
+    margin-bottom: 14px;
+  }
+
+  .colorList span {
+    padding: 5px 12px;
+    font-size: 12px;
+  }
+
+  .sizeList span {
+    min-width: 36px;
+    height: 34px;
+    font-size: 12px;
+  }
+}
+
 @media (max-width: 560px) {
   .container {
     padding: 10px 10px 36px;
@@ -935,5 +1020,9 @@
     flex-direction: column;
     align-items: flex-start;
     gap: 6px;
+  }
+
+  .relatedGrid {
+    grid-template-columns: 1fr;
   }
 }

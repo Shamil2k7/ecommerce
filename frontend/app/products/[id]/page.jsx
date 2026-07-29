@@ -224,6 +224,27 @@ export default function ProductDetailsPage() {
             <span className={styles.stars}>★★★★★</span>
             <span>({product.ratingsCount || 0} reviews)</span>
           </div>
+          {product.colors?.length > 0 && (
+  <>
+    <h3>Available Colors</h3>
+    <div className={styles.colorList}>
+      {product.colors.map((color) => (
+        <span key={color}>{color}</span>
+      ))}
+    </div>
+  </>
+)}
+
+{product.sizes?.length > 0 && (
+  <>
+    <h3>Available Sizes</h3>
+    <div className={styles.sizeList}>
+      {product.sizes.map((size) => (
+        <span key={size}>{size}</span>
+      ))}
+    </div>
+  </>
+)}
 
           {/* Price Section */}
           <div className={styles.priceSection}>

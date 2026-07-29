@@ -11,29 +11,58 @@ import Order from "../../models/Order.js";
 // @desc Create Product
 // @route POST /api/products
 export const createProduct = asyncHandler(async (req, res) => {
-  const { name, description, category, brand, price, stock } = req.body;
+  const {
+    name,
+    slug,
+    description,
+    shortDescription,
+    category,
+    subcategory,
+    brand,
+    price,
+    discountPrice,
+    costPrice,
+    tax,
+    stock,
+    sku,
+    barcode,
+  } = req.body;
 
-  if (!name || !name.trim()) {
+  // ===========================
+  // Validation
+  // ===========================
+
+  if (!name?.trim()) {
     throw new ApiError(400, "Product name is required");
   }
-  if (!description || !description.trim()) {
+
+  if (!description?.trim()) {
     throw new ApiError(400, "Description is required");
   }
+
   if (!category) {
     throw new ApiError(400, "Category is required");
   }
 
+  if (!brand) {
+    throw new ApiError(400, "Brand is required");
+  }
+
   const categoryExists = await Category.findById(category);
+
   if (!categoryExists) {
     throw new ApiError(404, "Category not found");
   }
 
-  if (brand) {
-    const brandExists = await Brand.findById(brand);
-    if (!brandExists) {
-      throw new ApiError(404, "Brand not found");
-    }
+  const brandExists = await Brand.findById(brand);
+
+  if (!brandExists) {
+    throw new ApiError(404, "Brand not found");
   }
+
+  // ===========================
+  // Images
+  // ===========================
 
   const images =
     req.files?.map((file, index) => ({
@@ -42,24 +71,86 @@ export const createProduct = asyncHandler(async (req, res) => {
       isPrimary: index === 0,
     })) || [];
 
+  // ===========================
+  // Product Object
+  // ===========================
+
   const productData = {
-    ...req.body,
+    name,
+    slug,
+    description,
+    shortDescription,
+
     category,
+    subcategory: subcategory || null,
+    brand,
+
+    price: Number(price),
+    discountPrice: Number(discountPrice || 0),
+    costPrice: Number(costPrice || 0),
+    tax: Number(tax || 0),
+
+    stock: Number(stock || 0),
+    sku,
+    barcode,
+
+    measurement: {
+      type: req.body["measurement[type]"] || "",
+      value: Number(req.body["measurement[value]"] || 0),
+      unit: req.body["measurement[unit]"] || "",
+    },
+
+    colors: JSON.parse(req.body.colors || "[]"),
+    sizes: JSON.parse(req.body.sizes || "[]"),
+    features: JSON.parse(req.body.features || "[]"),
+    specifications: JSON.parse(req.body.specifications || "[]"),
+    tags: JSON.parse(req.body.tags || "[]"),
+
+    offerEnabled: req.body.offerEnabled === "true",
+    offerTitle: req.body.offerTitle || "",
+    offerType: req.body.offerType || "percentage",
+    offerValue: Number(req.body.offerValue || 0),
+    offerStartDate: req.body.offerStartDate || null,
+    offerEndDate: req.body.offerEndDate || null,
+
+    freeDelivery: req.body.freeDelivery === "true",
+    deliveryCharge: Number(req.body.deliveryCharge || 0),
+    estimatedDays: Number(req.body.estimatedDays || 0),
+    cashOnDelivery: req.body.cashOnDelivery === "true",
+    expressDelivery: req.body.expressDelivery === "true",
+
+    returnAvailable: req.body.returnAvailable === "true",
+    refundAvailable: req.body.refundAvailable === "true",
+    replacementAvailable:
+      req.body.replacementAvailable === "true",
+    returnDays: Number(req.body.returnDays || 7),
+    warranty: req.body.warranty || "",
+
+    seoTitle: req.body.seoTitle || "",
+    seoDescription: req.body.seoDescription || "",
+    seoKeywords: req.body.seoKeywords || "",
+
+    isFeatured: req.body.isFeatured === "true",
+    isTrending: req.body.isTrending === "true",
+    isBestSeller: req.body.isBestSeller === "true",
+    isNewArrival: req.body.isNewArrival === "true",
+    isActive:
+      req.body.isActive === undefined
+        ? true
+        : req.body.isActive === "true",
+
     images,
   };
-  if (brand) {
-    productData.brand = brand;
-  } else {
-    delete productData.brand;
-  }
 
   const product = await Product.create(productData);
 
-  return res
-    .status(201)
-    .json(
-      new ApiResponse(201, product, "Product created successfully")
-    );
+  return res.status(201).json(
+    new ApiResponse(
+      201,
+      product,
+      "Product created successfully"
+    )
+  );
 });
 
 // @desc Get All Products
