@@ -127,7 +127,9 @@ export default function ProductCard({ product }) {
 
       <div className={styles.content}>
         <p className={styles.category}>
-          {product.category?.name || "Uncategorized"}
+          {typeof product.category === "object"
+            ? product.category?.name || "Uncategorized"
+            : product.category || "Uncategorized"}
         </p>
 
         <Link href={`/products/${product.id}`}>

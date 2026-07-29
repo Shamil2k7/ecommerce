@@ -117,7 +117,19 @@ function ProductsContent() {
             c.name.toLowerCase() === decodedCategory.toLowerCase()
         );
         if (cat) {
-          setSelectedCategories([cat.name]);
+          const names = [cat.name];
+          const isParent = !cat.parentCategory;
+          if (isParent) {
+            const children = categoriesList.filter((c) => {
+              const pId =
+                typeof c.parentCategory === "object" && c.parentCategory
+                  ? c.parentCategory._id
+                  : c.parentCategory;
+              return pId === cat._id;
+            });
+            children.forEach((child) => names.push(child.name));
+          }
+          setSelectedCategories(names);
           return;
         }
       }

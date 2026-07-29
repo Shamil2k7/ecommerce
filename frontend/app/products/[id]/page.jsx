@@ -211,7 +211,9 @@ export default function ProductDetailsPage() {
 
           <div className={styles.eyebrowRow}>
             <span className={styles.category}>
-              {product.category?.name || "Uncategorized"}
+              {typeof product.category === "object"
+                ? product.category?.name || "Uncategorized"
+                : product.category || "Uncategorized"}
             </span>
             <span className={styles.brand}>
               {product.brand?.name || "No Brand"}

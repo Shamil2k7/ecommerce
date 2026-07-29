@@ -31,34 +31,74 @@ export default function FilterSidebar({
 
     const isParent = !category.parentCategory;
 
-    // Find all children of this category (if it is a parent)
-    const children = isParent
-      ? categoriesList
-          .filter((c) => {
-            const pId = typeof c.parentCategory === "object" && c.parentCategory
-              ? c.parentCategory._id
-              : c.parentCategory;
-            return pId === category._id;
-          })
-          .map((c) => c.name)
-      : [];
+    if (isParent) {
+      // Find all children of this parent category
+      const children = categoriesList
+        .filter((c) => {
+          const pId = typeof c.parentCategory === "object" && c.parentCategory
+            ? c.parentCategory._id
+            : c.parentCategory;
+          return pId === category._id;
+        })
+        .map((c) => c.name);
 
-    const related = [categoryName, ...children];
-    const allRelatedSelected = related.every((name) =>
-      selectedCategories.includes(name)
-    );
+      const related = [categoryName, ...children];
+      const isParentSelected = selectedCategories.includes(categoryName);
 
-    if (allRelatedSelected) {
-      // Uncheck all of them
-      setSelectedCategories((prev) =>
-        prev.filter((name) => !related.includes(name))
-      );
+      if (isParentSelected) {
+        // If parent is checked, uncheck parent and all children
+        setSelectedCategories((prev) =>
+          prev.filter((name) => !related.includes(name))
+        );
+      } else {
+        // If parent is unchecked, check parent and all children
+        setSelectedCategories((prev) => {
+          const next = new Set([...prev, ...related]);
+          return Array.from(next);
+        });
+      }
     } else {
-      // Check all of them
-      setSelectedCategories((prev) => {
-        const next = new Set([...prev, ...related]);
-        return Array.from(next);
-      });
+      // It is a child category
+      const isChildSelected = selectedCategories.includes(categoryName);
+      const parentId = typeof category.parentCategory === "object" && category.parentCategory
+        ? category.parentCategory._id
+        : category.parentCategory;
+      const parentCategory = categoriesList.find((c) => c._id === parentId);
+
+      if (isChildSelected) {
+        // Uncheck the child category
+        setSelectedCategories((prev) => {
+          let next = prev.filter((name) => name !== categoryName);
+          // Also uncheck the parent category
+          if (parentCategory) {
+            next = next.filter((name) => name !== parentCategory.name);
+          }
+          return next;
+        });
+      } else {
+        // Check the child category
+        setSelectedCategories((prev) => {
+          const next = new Set([...prev, categoryName]);
+          
+          // Check if all children of this parent are now checked
+          if (parentCategory) {
+            const siblings = categoriesList.filter((c) => {
+              const pId = typeof c.parentCategory === "object" && c.parentCategory
+                ? c.parentCategory._id
+                : c.parentCategory;
+              return pId === parentId;
+            });
+            // If all siblings (except this one, which is being added) are checked, add parent name
+            const allSiblingsChecked = siblings.every((sib) =>
+              sib.name === categoryName || prev.includes(sib.name)
+            );
+            if (allSiblingsChecked) {
+              next.add(parentCategory.name);
+            }
+          }
+          return Array.from(next);
+        });
+      }
     }
   };
 
