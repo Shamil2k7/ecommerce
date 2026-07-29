@@ -1,145 +1,147 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import styles from "./Hero.module.css";
+import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-const AUTO_SLIDE = 3000;
+import styles from "./Hero.module.css";
+
+const AUTO_SLIDE = 4000;
+
 export default function Hero() {
   const [slides, setSlides] = useState([]);
   const [current, setCurrent] = useState(0);
   const [loading, setLoading] = useState(true);
+
   const API = process.env.NEXT_PUBLIC_API_URL;
- 
-  const fetchHeroSections = async () => {
 
-    try {
-      const res = await fetch(
-        `${API}/api/marketing/hero-sections`
-      );
-      const data = await res.json();
-      const activeHeroSections = data.heroSections.filter(
-        (item) => item.status === "Active"
-      );
-      setSlides(activeHeroSections);
 
-    } catch (error) {
-      console.log(
-        "Hero Section Fetch Error:",
-        error
-      );
-    } finally {
-      setLoading(false);
-    }
-  };
   useEffect(() => {
+    const fetchHeroSections = async () => {
+      try {
+        const res = await fetch(
+          `${API}/api/marketing/hero-sections`,
+          {
+            cache: "no-store",
+          }
+        );
+
+        const data = await res.json();
+
+        const activeSlides = (data.heroSections || []).filter(
+          (item) => item.status === "Active"
+        );
+
+        setSlides(activeSlides);
+      } catch (err) {
+        console.error("Hero Fetch Error:", err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchHeroSections();
-  }, []);
-  // Next-slide
+  }, [API]);
+
 
   const nextSlide = () => {
-
     setCurrent((prev) =>
-      prev === slides.length - 1
-        ? 0
-        : prev + 1
+      prev === slides.length - 1 ? 0 : prev + 1
     );
-
   };
-  // Previous-slide
 
+ 
   const prevSlide = () => {
-
     setCurrent((prev) =>
-      prev === 0
-        ? slides.length - 1
-        : prev - 1
+      prev === 0 ? slides.length - 1 : prev - 1
     );
-
   };
-  // Auto-slider
+
 
   useEffect(() => {
+    if (slides.length <= 1) return;
 
-    if (slides.length <= 1)
-      return;
-    const timer = setInterval(
-      nextSlide,
-      AUTO_SLIDE
-    );
+    const timer = setInterval(() => {
+      setCurrent((prev) =>
+        prev === slides.length - 1 ? 0 : prev + 1
+      );
+    }, AUTO_SLIDE);
+
     return () => clearInterval(timer);
-  }, [slides]);
-  if (loading) {
+  }, [slides.length]);
 
+  if (loading) {
     return (
       <section className={styles.hero}>
-        Loading...
+        <div className={styles.loader}>
+          Loading...
+        </div>
       </section>
     );
-
   }
-  if (slides.length === 0) {
 
-    return null;
+  if (!slides.length) return null;
 
-  }
   return (
     <section className={styles.hero}>
       <div className={styles.carouselWrapper}>
+   
         <button
           className={`${styles.arrow} ${styles.leftArrow}`}
           onClick={prevSlide}
+          aria-label="Previous Slide"
         >
-          <ChevronLeft size={26} />
+          <ChevronLeft size={28} />
         </button>
-        <div className={styles.sliderWindow}>
 
+    
+        <div className={styles.sliderWindow}>
           <div
             className={styles.sliderTrack}
             style={{
-              transform:
-                `translateX(-${current * 100}%)`
+              transform: `translateX(-${current * 100}%)`,
             }}
           >
-            {
-              slides.map((slide) => (
-                <div
-                  className={styles.slide}
-                  key={slide._id}
-                >
-                  <img
-                    src={slide.image}
-                    alt="Hero Banner"
-                    className={styles.bannerImage}
-                  />
-                </div>
-              ))
-            }
+            {slides.map((slide, index) => (
+              <div
+                className={styles.slide}
+                key={slide._id || index}
+              >
+                <Image
+                  src={slide.image}
+                  alt={slide.title || "Hero Banner"}
+                  fill
+                  priority={index === 0}
+                  sizes="100vw"
+                  className={styles.bannerImage}
+                />
+
+                {/* Optional Overlay */}
+                <div className={styles.overlay}></div>
+              </div>
+            ))}
           </div>
         </div>
+
+    
         <button
           className={`${styles.arrow} ${styles.rightArrow}`}
           onClick={nextSlide}
+          aria-label="Next Slide"
         >
-          <ChevronRight size={26} />
+          <ChevronRight size={28} />
         </button>
+
+      
         <div className={styles.dots}>
-          {
-            slides.map((_, index) => (
-              <button
-                key={index}
-                onClick={() =>
-                  setCurrent(index)
-                }
-                className={
-                  `${styles.dot}
-                  ${current === index
-                    ? styles.active
-                    : ""
-                  }`
-                }
-              />
-            ))
-          }
+          {slides.map((_, index) => (
+            <button
+              key={index}
+              onClick={() => setCurrent(index)}
+              className={`${styles.dot} ${
+                current === index ? styles.active : ""
+              }`}
+            />
+          ))}
         </div>
       </div>
     </section>
