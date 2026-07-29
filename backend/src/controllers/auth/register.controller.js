@@ -1,6 +1,6 @@
 import User from "../../models/userModels.js";
 import createToken from "../../utils/generateToken.js";
-import registrationOtps from "../../utils/otpStore.js";
+import Otp from "../../models/otpModel.js";
 
 const register = async (req, res) => {
   const { fullName, email, phone, password } = req.body;
@@ -25,7 +25,7 @@ const register = async (req, res) => {
 
   try {
     // Check whether email verification is completed
-    const otpData = registrationOtps.get(formattedEmail);
+    const otpData = await Otp.findOne({ email: formattedEmail });
 
     if (!otpData || !otpData.isVerified) {
       return res.status(400).json({
@@ -57,8 +57,8 @@ const register = async (req, res) => {
       password,
     });
 
-    // Remove OTP after successful registration
-    registrationOtps.delete(formattedEmail);
+    // Remove OTP document after successful registration
+    await Otp.deleteOne({ email: formattedEmail });
 
     createToken(res, user._id);
 

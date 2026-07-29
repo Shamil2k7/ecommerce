@@ -3,7 +3,7 @@ const logout = async (req, res) => {
     res.cookie("jwt", "", {
       httpOnly: true,
       secure: true,
-      sameSite: "strict",
+      sameSite: "none",
       expires: new Date(0),
     });
 

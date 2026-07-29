@@ -505,7 +505,7 @@ export default function RegisterPage() {
               }}
             >
               {loading && <Loader2 size={16} className="animate-spin" />}
-              {loading ? "Creating Account..." : !isEmailVerified  ? "Verify Email to Continue" : "Create Account"}
+              {loading ? "Creating Account..." : !isEmailVerified ? "Verify Email to Continue" : "Create Account"}
             </button>
           </form>
 

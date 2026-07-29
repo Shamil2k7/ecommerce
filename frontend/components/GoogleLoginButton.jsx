@@ -27,13 +27,20 @@ export default function GoogleLoginButton() {
 
     if (checkScript()) return;
 
-    const interval = setInterval(() => {
-      if (checkScript()) {
-        clearInterval(interval);
-      }
-    }, 500);
+    let script = document.querySelector(
+      'script[src="https://accounts.google.com/gsi/client"]'
+    );
 
-    return () => clearInterval(interval);
+    if (!script) {
+      script = document.createElement("script");
+      script.src = "https://accounts.google.com/gsi/client";
+      script.async = true;
+      script.defer = true;
+      script.onload = () => setIsLoaded(true);
+      document.head.appendChild(script);
+    } else {
+      script.addEventListener("load", () => setIsLoaded(true));
+    }
   }, []);
 
   useEffect(() => {
