@@ -64,7 +64,7 @@ app.use("/api/policies", policyRoutes);
 app.use("/api/wishlist", wishlistRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/about", aboutRoutes);
-
+app.use("/",()=>{"hello"});
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
