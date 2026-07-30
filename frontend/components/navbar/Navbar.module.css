@@ -209,13 +209,22 @@
 .mobileIcons {
   display: none;
   align-items: center;
-  gap: 18px;
+  justify-content: flex-end;
+  gap: 14px;
   margin-left: auto;
 }
 
 .mobileIcons a {
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: var(--text);
   font-size: 28px;
+  transition: 0.25s ease;
+}
+
+.mobileIcons a:hover {
+  color: var(--accent);
 }
 
 /* =========================================
@@ -421,55 +430,32 @@
 
 /* 768px */
 @media (max-width: 768px) {
-  .container {
-    gap: 10px;
-    padding: 10px 14px;
-  }
-
-  .logoImage,
-  .logoMark {
-    width: 38px;
-    height: 38px;
-  }
-
-  .logoText h2 {
-    font-size: 18px;
-  }
-
-  .logoText p {
-    display: none;
-  }
-
-  .search {
-    margin-top: 6px;
-  }
-
-  .search input {
-    height: 42px;
-    font-size: 14px;
-    padding-left: 42px;
-  }
-
-  .searchIcon {
-    font-size: 20px;
-    left: 14px;
-  }
-
   .mobileIcons {
-    gap: 16px;
+    gap: 14px;
   }
 
   .mobileIcons a {
     font-size: 26px;
   }
+}
 
-  .sidebar {
-    width: 280px;
-    left: -280px;
+@media (max-width: 480px) {
+  .mobileIcons {
+    gap: 10px;
   }
 
-  .sidebar.show {
-    left: 0;
+  .mobileIcons a {
+    font-size: 24px;
+  }
+}
+
+@media (max-width: 360px) {
+  .mobileIcons {
+    gap: 8px;
+  }
+
+  .mobileIcons a {
+    font-size: 22px;
   }
 }
 

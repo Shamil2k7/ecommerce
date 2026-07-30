@@ -197,16 +197,23 @@ export default function Navbar() {
           </div>
 
           {/* Mobile Icons */}
-          <div className={styles.mobileIcons}>
-            <Link href="/wishlist">
-              <CiHeart />
-            </Link>
+        {/* Mobile Icons */}
+<div className={styles.mobileIcons}>
+  <Link href="/profile" aria-label="Profile">
+    <CiUser />
+  </Link>
 
-            <Link href="/cart" className={styles.mobileCart}>
-              <IoCartOutline />
-              <span className={styles.badge}>{mounted ? cartItemCount : 0}</span>
-            </Link>
-          </div>
+  <Link href="/wishlist" aria-label="Wishlist">
+    <CiHeart />
+  </Link>
+
+  <Link href="/cart" className={styles.mobileCart} aria-label="Cart">
+    <IoCartOutline />
+    <span className={styles.badge}>
+      {mounted ? cartItemCount : 0}
+    </span>
+  </Link>
+</div>
         </div>
 
         {/* Mobile Sidebar */}
@@ -227,21 +234,19 @@ export default function Navbar() {
             <IoClose />
           </button>
 
-          <div className={styles.sidebarLogo}>
-            {logoSrc ? (
-              <Image
-                src={logoSrc}
-                alt={settings.storeName}
-                width={50}
-                height={50}
-                className={styles.logoImage}
-              />
-            ) : (
-              <div className={styles.logoMark}>S</div>
-            )}
+         <div className={styles.sidebarLogo}>
+  {logoSrc && (
+    <Image
+      src={logoSrc}
+      alt={settings.storeName}
+      width={50}
+      height={50}
+      className={styles.logoImage}
+    />
+  )}
 
-            <h3>{settings.storeName}</h3>
-          </div>
+  <h3>{settings.storeName}</h3>
+</div>
 
           <Link href="/" onClick={() => setMenuOpen(false)}>
             Home
